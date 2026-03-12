@@ -21,3 +21,17 @@ body {
   background-color: var(--color-drac-surface);
   color: var(--color-drac-fg);
 }
+
+/* SimpleForm error styles */
+.input span.error {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--color-drac-red);
+}
+
+.field_with_errors input,
+.field_with_errors select,
+.field_with_errors textarea {
+  border-color: var(--color-drac-red) !important;
+}

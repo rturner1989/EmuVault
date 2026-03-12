@@ -9,6 +9,13 @@ class GamesController < ApplicationController
   def show
     authorize! @game
     @game = GameDecorator.new(@game)
+    @saves = GameSaveDecorator.decorate(@game.game_saves.includes(:emulator_profile).order(:slot))
+    @new_save = @game.game_saves.build
+    @sync_events = SyncEvent.joins(:game_save)
+                            .where(game_saves: { game_id: @game.id })
+                            .includes(game_save: :emulator_profile)
+                            .order(performed_at: :desc)
+                            .limit(20)
   end
 
   def new

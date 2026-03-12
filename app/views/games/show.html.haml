@@ -1,23 +1,62 @@
 - content_for :title, "#{@game.title} — EmuVault"
 
-.p-6
-  = render ::UI::PageHeaderComponent.new(title: @game.title) do |header|
-    - header.with_action do
-      = link_to "Edit", edit_game_path(@game), class: "rounded-lg border border-drac-current px-4 py-2 text-sm font-medium text-drac-fg hover:bg-drac-current transition-colors"
-    - header.with_action do
-      = button_to "Remove", game_path(@game), method: :delete, data: { turbo_confirm: "Remove #{@game.title}?" }, class: "rounded-lg border border-drac-red px-4 py-2 text-sm font-medium text-drac-red hover:bg-drac-red/10 transition-colors"
+.p-4
+  .flex.items-center.gap-3.mb-4
+    = link_to games_path, class: "text-drac-comment hover:text-drac-fg" do
+      ← Back
+    .flex-1.min-w-0
+      %h1.text-xl.font-bold.text-drac-fg.truncate= @game.title
+    .flex.gap-2.shrink-0
+      = link_to "Edit", edit_game_path(@game), class: "rounded border border-drac-current px-3 py-1.5 text-xs text-drac-comment hover:bg-drac-current transition-colors"
+      = button_to "✕", game_path(@game), method: :delete, data: { turbo_confirm: "Remove #{@game.title}?" }, class: "rounded border border-drac-red px-3 py-1.5 text-xs text-drac-red hover:bg-drac-current transition-colors"
 
-  .rounded-lg.bg-drac-bg.border.border-drac-current.p-5.mb-6
-    .grid.grid-cols-2.gap-4.sm:grid-cols-3
-      .space-y-1
-        .text-xs.text-drac-comment System
-        = render ::UI::BadgeComponent.new(label: @game.system_label, color: @game.system_badge_color)
-      - if @game.rom_hash.present?
-        .space-y-1
-          .text-xs.text-drac-comment ROM Hash
-          .text-sm.text-drac-fg.font-mono.truncate= @game.rom_hash
+  - if @saves.any?
+    .space-y-4.mb-6
+      - @saves.each do |save|
+        .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+          .px-4.py-3.border-b.border-drac-current
+            .text-sm.font-semibold.text-drac-fg= save.emulator_label
+            .text-xs.text-drac-comment.mt-0.5= "#{save.slot_label} · #{save.file_size_label} · #{save.saved_at_label}"
+
+          .p-4.space-y-3
+            = form_with url: download_game_game_save_path(@game, save), method: :get, class: "space-y-2" do |f|
+              = f.select :target_profile_id,
+                  EmulatorProfile.order(:name, :platform).map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
+                  { selected: save.emulator_profile_id },
+                  { class: "block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 focus:outline-none focus:border-drac-purple" }
+              = f.submit "⬇  Download", class: "w-full rounded-lg bg-drac-cyan py-3 text-sm font-semibold text-drac-bg hover:opacity-90 transition-opacity cursor-pointer"
+
+            = form_with url: game_game_saves_path(@game), method: :post, multipart: true, scope: :game_save, class: "space-y-2" do |f|
+              = f.hidden_field :emulator_profile_id, value: save.emulator_profile_id
+              = f.hidden_field :slot, value: save.slot
+              = f.file_field :file, class: "block w-full text-sm text-drac-comment file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg hover:file:bg-drac-comment"
+              = f.submit "⬆  Upload New Version", class: "w-full rounded-lg bg-drac-purple py-3 text-sm font-semibold text-drac-bg hover:opacity-90 transition-opacity cursor-pointer"
+
+          .px-4.py-2.border-t.border-drac-current
+            = button_to "Remove this save", game_game_save_path(@game, save), method: :delete, data: { turbo_confirm: "Remove this save?" }, class: "text-xs text-drac-red hover:opacity-80 transition-opacity"
+
+  - else
+    .rounded-lg.bg-drac-bg.border.border-drac-current.px-4.py-8.text-center.text-sm.text-drac-comment.mb-6
+      No save files yet.
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current.mb-6
+    .px-4.py-3.border-b.border-drac-current
+      %h2.text-sm.font-semibold.text-drac-fg
+        = @saves.any? ? "Add Save for Another Emulator" : "Upload Save File"
+    .p-4
+      = render "game_saves/form", game: @game, game_save: @new_save
 
   .rounded-lg.bg-drac-bg.border.border-drac-current
-    .px-5.py-4.border-b.border-drac-current
-      %h2.text-sm.font-semibold.text-drac-fg Save Slots
-    .px-5.py-8.text-center.text-sm.text-drac-comment No save slots yet.
+    .px-4.py-3.border-b.border-drac-current
+      %h2.text-sm.font-semibold.text-drac-fg Sync History
+    - if @sync_events.any?
+      .divide-y.divide-drac-current
+        - @sync_events.each do |event|
+          .px-4.py-3.flex.items-center.gap-3
+            = render ::UI::BadgeComponent.new(label: event.push? ? "↑" : "↓", color: event.push? ? :purple : :cyan)
+            .flex-1.min-w-0
+              .text-sm.text-drac-fg.truncate= event.game_save ? "#{event.game_save.emulator_profile.name} — #{event.push? ? 'Upload' : 'Download'}" : "—"
+              .text-xs.text-drac-comment= event.performed_at.strftime("%b %-d at %H:%M")
+            = render ::UI::BadgeComponent.new(label: event.status.text, color: event.success? ? :green : event.conflict? ? :yellow : :red)
+    - else
+      .px-4.py-8.text-center.text-sm.text-drac-comment No sync activity yet.

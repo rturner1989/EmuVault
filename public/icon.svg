@@ -1,3 +1,22 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#282a36"/>
+  <!-- Floppy disk body -->
+  <rect x="104" y="88" width="304" height="336" rx="28" fill="#bd93f9"/>
+  <!-- Notch (top-right corner cut) -->
+  <polygon points="328,88 408,168 408,88" fill="#282a36"/>
+  <rect x="328" y="88" width="80" height="80" fill="#282a36"/>
+  <polygon points="328,88 408,168 328,168" fill="#6272a4"/>
+  <!-- Label area -->
+  <rect x="136" y="108" width="176" height="136" rx="10" fill="#f8f8f2"/>
+  <!-- Label lines (suggests text/data) -->
+  <rect x="156" y="136" width="136" height="10" rx="5" fill="#6272a4"/>
+  <rect x="156" y="158" width="100" height="10" rx="5" fill="#6272a4"/>
+  <rect x="156" y="180" width="120" height="10" rx="5" fill="#6272a4"/>
+  <!-- Shutter area -->
+  <rect x="136" y="296" width="240" height="96" rx="10" fill="#21222c"/>
+  <!-- Disk slot -->
+  <rect x="200" y="320" width="112" height="48" rx="6" fill="#44475a"/>
+  <!-- Read hole -->
+  <rect x="226" y="332" width="60" height="24" rx="4" fill="#282a36"/>
 </svg>

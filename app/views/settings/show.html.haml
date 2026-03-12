@@ -1,0 +1,28 @@
+- content_for :title, "Settings — EmuVault"
+
+.p-6.max-w-2xl
+  = render ::UI::PageHeaderComponent.new(title: "Settings")
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current.p-6.mb-6
+    %h2.text-sm.font-semibold.text-drac-fg.mb-4 API Token
+    %p.text-sm.text-drac-comment.mb-4
+      Use this token to authenticate the sync agent on your PC. Keep it secret.
+    .flex.items-center.gap-3.mb-4
+      %code.flex-1.rounded.bg-drac-surface.border.border-drac-current.px-3.py-2.text-sm.text-drac-cyan.font-mono.break-all= @user.api_token
+    = button_to "Regenerate Token", regenerate_token_settings_path, method: :post, data: { turbo_confirm: "This will invalidate the current token. Continue?" }, class: "rounded-lg border border-drac-red px-4 py-2 text-sm font-medium text-drac-red hover:bg-drac-current transition-colors"
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current.p-6
+    %h2.text-sm.font-semibold.text-drac-fg.mb-4 Sync Agent Setup
+    %p.text-sm.text-drac-comment.mb-3 Run the sync agent on your PC to automatically pull saves to your emulator directories.
+    %ol.text-sm.text-drac-comment.space-y-2.list-decimal.list-inside
+      %li
+        Copy
+        %code.text-drac-cyan scripts/sync_agent.yml.example
+        to
+        %code.text-drac-cyan scripts/sync_agent.yml
+        and fill in your paths and token.
+      %li
+        Run
+        %code.text-drac-cyan ruby scripts/sync_agent
+        — it polls every 30 seconds and pulls changed saves.
+      %li Add it to your system startup to run automatically.

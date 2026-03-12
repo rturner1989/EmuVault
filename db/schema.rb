@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_12_200236) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_12_212428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,7 +96,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_12_200236) do
   create_table "sync_events", force: :cascade do |t|
     t.string "action", null: false
     t.datetime "created_at", null: false
-    t.bigint "device_id", null: false
+    t.bigint "device_id"
     t.bigint "game_save_id", null: false
     t.datetime "performed_at", null: false
     t.string "status", null: false
@@ -106,10 +106,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_12_200236) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "api_token"
     t.datetime "created_at", null: false
     t.string "email_address", null: false
     t.string "password_digest", null: false
     t.datetime "updated_at", null: false
+    t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
@@ -119,5 +121,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_12_200236) do
   add_foreign_key "game_saves", "games"
   add_foreign_key "sessions", "users"
   add_foreign_key "sync_events", "devices"
-  add_foreign_key "sync_events", "game_saves", column: "game_save_id"
+  add_foreign_key "sync_events", "game_saves"
 end

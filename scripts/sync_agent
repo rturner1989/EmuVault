@@ -1,0 +1,85 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "net/http"
+require "json"
+require "digest"
+require "yaml"
+require "fileutils"
+
+CONFIG_PATH = File.join(__dir__, "sync_agent.yml")
+
+unless File.exist?(CONFIG_PATH)
+  abort "Config file not found. Copy scripts/sync_agent.yml.example to scripts/sync_agent.yml and fill in your details."
+end
+
+config = YAML.load_file(CONFIG_PATH, symbolize_names: true)
+SERVER_URL   = config[:server_url].chomp("/")
+API_TOKEN    = config[:api_token]
+POLL_INTERVAL = config[:poll_interval] || 30
+MAPPINGS     = config[:mappings] || []
+
+def get_save(id)
+  uri = URI("#{SERVER_URL}/api/game_saves/#{id}")
+  req = Net::HTTP::Get.new(uri)
+  req["Authorization"] = "Bearer #{API_TOKEN}"
+  res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") { |h| h.request(req) }
+  JSON.parse(res.body, symbolize_names: true) if res.is_a?(Net::HTTPSuccess)
+end
+
+def download_file(id, target_profile_id, dest_path)
+  url = "#{SERVER_URL}/api/game_saves/#{id}/file"
+  url += "?target_profile_id=#{target_profile_id}" if target_profile_id
+  uri = URI(url)
+  req = Net::HTTP::Get.new(uri)
+  req["Authorization"] = "Bearer #{API_TOKEN}"
+  Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == "https") do |http|
+    http.request(req) do |res|
+      if res.is_a?(Net::HTTPSuccess)
+        FileUtils.mkdir_p(File.dirname(dest_path))
+        File.binwrite(dest_path, res.body)
+        true
+      end
+    end
+  end
+end
+
+def local_checksum(path)
+  return nil unless File.exist?(path)
+  Digest::SHA256.hexdigest(File.binread(path))
+end
+
+def sync_once
+  MAPPINGS.each do |mapping|
+    id           = mapping[:game_save_id]
+    local_path   = mapping[:local_path]
+    target_id    = mapping[:target_profile_id]
+
+    save = get_save(id)
+    next unless save
+
+    remote_checksum = save[:checksum]
+    local = local_checksum(local_path)
+
+    if remote_checksum != local
+      puts "[#{Time.now}] #{save[:game_title]} (slot #{save[:slot]}) — pulling to #{local_path}"
+      if download_file(id, target_id, local_path)
+        puts "  ✓ Done"
+      else
+        puts "  ✗ Download failed"
+      end
+    end
+  rescue => e
+    puts "[#{Time.now}] Error syncing save #{id}: #{e.message}"
+  end
+end
+
+puts "EmuVault sync agent started. Polling every #{POLL_INTERVAL}s."
+puts "Server: #{SERVER_URL}"
+puts "Mappings: #{MAPPINGS.size}"
+puts
+
+loop do
+  sync_once
+  sleep POLL_INTERVAL
+end

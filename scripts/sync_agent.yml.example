@@ -1,0 +1,16 @@
+# EmuVault sync agent configuration
+# Copy this file to scripts/sync_agent.yml and fill in your details.
+
+server_url: "http://localhost:3000"
+api_token: "your-api-token-here"
+poll_interval: 30  # seconds
+
+# Map each game save to a local file path and target emulator profile ID.
+# Find game_save IDs and profile IDs in the web UI URLs.
+mappings:
+  - game_save_id: 1
+    local_path: "/home/user/.config/retroarch/saves/SuperMarioWorld.srm"
+    target_profile_id: 1
+  - game_save_id: 2
+    local_path: "/home/user/.config/retroarch/saves/PokemonRed.srm"
+    target_profile_id: 1

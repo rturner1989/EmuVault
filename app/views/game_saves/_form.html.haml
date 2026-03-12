@@ -1,0 +1,26 @@
+= simple_form_for game_save, url: game_game_saves_path(game), html: { class: "space-y-4", multipart: true } do |f|
+  - if game_save.errors.any?
+    %div{ class: "rounded-lg border border-drac-red bg-drac-red/10 p-3 text-sm text-drac-red" }
+      %ul.list-disc.list-inside.space-y-1
+        - game_save.errors.full_messages.each do |msg|
+          %li= msg
+  .grid.grid-cols-1.gap-4.sm:grid-cols-2
+    = f.association :emulator_profile,
+        collection: EmulatorProfile.order(:name, :platform),
+        label_method: ->(p) { "#{p.name} (#{p.platform.text})" },
+        value_method: :id,
+        prompt: "Select emulator…",
+        label: "Emulator Profile",
+        input_html: { class: "mt-1 block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg px-3 py-2 text-sm focus:border-drac-purple focus:outline-none" },
+        label_html: { class: "block text-sm font-medium text-drac-fg" }
+    = f.input :slot,
+        as: :integer,
+        label: "Slot (0 = auto-save)",
+        input_html: { value: 0, min: 0, class: "mt-1 block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg px-3 py-2 text-sm focus:border-drac-purple focus:outline-none" },
+        label_html: { class: "block text-sm font-medium text-drac-fg" }
+  = f.input :file,
+      as: :file,
+      label: "Save File",
+      input_html: { class: "mt-1 block w-full text-sm text-drac-comment file:mr-4 file:rounded-lg file:border-0 file:bg-drac-current file:px-4 file:py-2 file:text-sm file:font-medium file:text-drac-fg hover:file:bg-drac-comment" },
+      label_html: { class: "block text-sm font-medium text-drac-fg" }
+  = f.button :submit, "Upload Save", class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity"

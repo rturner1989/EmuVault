@@ -156,6 +156,7 @@ See `.env.example` for all required vars. Key ones:
 - `HUB_URL` — Selenium hub for system tests (e.g. `http://selenium-hub:4444/wd/hub`)
 - `APP_HOST` — used by Capybara for system tests
 - `ADMIN_EMAIL` / `ADMIN_PASSWORD` — seeded admin credentials
+- `api_token` on `User` — 64-char hex token auto-generated on user create; viewable/regeneratable at `/settings`
 
 ## Notable config
 
@@ -166,6 +167,8 @@ See `.env.example` for all required vars. Key ones:
 - `config/environments/production.rb` — force_ssl, assume_ssl, host_authorization enabled
 - `Procfile.dev` — Puma binds to `0.0.0.0` so it's reachable inside Docker
 - `scripts/install.sh` — one-command setup, generates secure DB password via openssl
+- `scripts/sync_agent` — executable Ruby polling agent for PC auto-sync (compares checksums, pulls changed saves to configured local paths)
+- `scripts/sync_agent.yml.example` — config template for sync agent (server_url, api_token, mappings of profile→local path)
 - `scripts/` — attach, bash, bundle, console, migrate, rollback, run_tests, i18n, install
 
 ## Docker services
@@ -184,6 +187,7 @@ See `.env.example` for all required vars. Key ones:
 - `force_ssl` + `assume_ssl` in production
 - Rack::Attack rate limiting
 - BetterErrors restricted to development only
+- API Bearer token auth via `Authorization: Bearer <token>` header or `?token=` query param (no session required)
 - Single-user authentication via Rails 8 native auth (`rails generate authentication`)
   - Admin credentials seeded from `ADMIN_EMAIL` / `ADMIN_PASSWORD` env vars
   - All routes protected by default via `ApplicationController`
@@ -199,7 +203,49 @@ Users configure:
 - Which emulators they use (picked from a pre-built list of profiles)
 - Which games they want to sync
 
-The app knows each emulator's save format and file location conventions. It handles format conversion (e.g. `.srm` to `.sav`) and serves a mobile-friendly web UI so any device with a browser can push or pull saves.
+The app knows each emulator's save format and file location conventions. It handles format conversion (rename-only — raw save bytes are identical across emulators for the same game; only the extension and filename differ) and serves a mobile-friendly web UI so any device with a browser can push or pull saves.
+
+## REST API
+
+Base path: `/api/`
+
+Authentication: `Authorization: Bearer <token>` or `?token=<token>` query param.
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/game_saves` | List all game saves (with game and profile info) |
+| GET | `/api/game_saves/:id` | Show a single game save |
+| GET | `/api/game_saves/:id/file` | Download save file; pass `?target_profile_id=N` for converted filename |
+
+The `scripts/sync_agent` polls this API, compares SHA-256 checksums, and writes updated saves to configured local paths automatically.
+
+## Inflection gotchas
+
+- `ui/` directory → Zeitwerk resolves as `Ui` not `UI`. Fixed with `inflect.acronym "UI"` in `config/initializers/inflections.rb`.
+- `game_saves` → Rails singularizes `saves` as `safe` by default. Fixed with `inflect.irregular "game_save", "game_saves"` in inflections.rb.
+
+## Active Storage checksum
+
+When computing a file's SHA-256 before saving (for conflict detection), read from the raw uploaded tempfile, **not** from Active Storage after save:
+
+```ruby
+# CORRECT — read from UploadedFile before save
+uploaded = params_hash[:file]
+uploaded.rewind
+checksum = Digest::SHA256.hexdigest(uploaded.read)
+
+# WRONG — ActiveStorage::FileNotFoundError (file not in storage yet)
+checksum = Digest::SHA256.hexdigest(record.file.download)
+```
+
+## SimpleForm error styling
+
+SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrapper. Tailwind won't include these classes via scanning. Add explicit rules in `application.tailwind.css`:
+
+```css
+.input span.error { @apply text-xs text-drac-red mt-1 block; }
+.field_with_errors input, .field_with_errors select { @apply border-drac-red; }
+```
 
 ## Progress
 
@@ -208,5 +254,8 @@ The app knows each emulator's save format and file location conventions. It hand
 - [x] Stage 3 — Authentication (Rails 8 native auth, single-user, seeded admin)
 - [x] Stage 4 — Seeds (28 EmulatorProfile records across RetroArch, Delta, mGBA, Dolphin, PPSSPP, melonDS, Snes9x, OpenEmu, DuckStation)
 - [x] Stage 5 — Core UI (ViewComponents, Dracula theme, controllers, views, ActionPolicy, decorators, form objects)
-- [ ] Stage 6 — Save file upload/download (Active Storage, GameSave management)
-- [ ] Stage 7 — Sync logic (push/pull, conflict detection, SyncEvent history)
+- [x] Stage 6 — Save file upload/download (Active Storage, GameSave management)
+- [x] Stage 7 — Sync logic (push/pull, conflict detection, SyncEvent history)
+- [x] Stage 8 — REST API + PC sync agent + Settings page
+- [x] Mobile UI redesign — card-based layouts, full-width tap targets, no tables
+- [x] PWA + app icon — Dracula floppy disk SVG icon, manifest.json, iOS home screen meta tags

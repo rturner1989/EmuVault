@@ -5,7 +5,7 @@ class SyncEvent < ApplicationRecord
   enumerize :status, in: %i[success failed conflict], predicates: true
 
   belongs_to :game_save
-  belongs_to :device
+  belongs_to :device, optional: true
 
   validates :action, presence: true
   validates :status, presence: true

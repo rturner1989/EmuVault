@@ -15,6 +15,8 @@
 
     .border-t.border-drac-current.p-3.space-y-1
       .px-3.py-1.text-xs.text-drac-comment.truncate= Current.user.email_address
+      = link_to settings_path, class: "flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-fg transition-colors" do
+        %span Settings
       = link_to edit_password_path, class: "flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-fg transition-colors" do
         %span Change Password
       = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-red transition-colors" do
