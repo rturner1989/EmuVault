@@ -1,0 +1,91 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/emu-vault
+      - node_modules:/emu-vault/node_modules
+      - ./tmp/capybara:/emu-vault/tmp/capybara
+    depends_on:
+      - postgres
+      - selenium-hub
+    restart: always
+    tty: true
+    stdin_open: true
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:17
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+  redis:
+    image: "redis:latest"
+    command: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - "redis:/data"
+
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq
+    volumes:
+      - .:/emu-vault
+      - /emu-vault/tmp
+    depends_on:
+      - redis
+      - postgres
+    env_file:
+      - .env
+
+  selenium-hub:
+    image: selenium/hub:latest
+    container_name: selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+
+  chrome:
+    image: selenium/node-chrome:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - selenium-hub
+    env_file:
+      - .env
+
+  edge:
+    image: selenium/node-edge:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - selenium-hub
+    env_file:
+      - .env
+
+  firefox:
+    image: selenium/node-firefox:latest
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - selenium-hub
+    env_file:
+      - .env
+
+volumes:
+  node_modules:
+  pg_data:
+  redis:
