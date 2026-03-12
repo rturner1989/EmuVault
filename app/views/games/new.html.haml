@@ -1,0 +1,7 @@
+- content_for :title, "Add Game — EmuVault"
+
+.p-6.max-w-lg
+  = render ::UI::PageHeaderComponent.new(title: "Add Game")
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current.p-6
+    = render "form", form_url: games_path, submit_label: "Add Game", cancel_path: games_path

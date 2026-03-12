@@ -1,0 +1,8 @@
+.flex.flex-col.items-center.justify-center.py-16.px-4.text-center
+  .w-16.h-16.rounded-full.bg-drac-current.flex.items-center.justify-center.mb-4
+    %span.text-2xl ✦
+  %h3.text-lg.font-semibold.text-drac-fg= @title
+  - if @description
+    %p.mt-1.text-sm.text-drac-comment.max-w-sm= @description
+  - if action
+    .mt-4= action

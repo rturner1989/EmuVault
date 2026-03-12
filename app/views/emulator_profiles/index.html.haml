@@ -1,0 +1,23 @@
+- content_for :title, "Emulator Profiles — EmuVault"
+
+.p-6
+  = render ::UI::PageHeaderComponent.new(title: "Emulator Profiles", subtitle: "Pre-configured save file locations for supported emulators")
+
+  .space-y-4
+    - @profiles_by_name.each do |emulator_name, profiles|
+      .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+        .px-5.py-3.border-b.border-drac-current
+          %h2.text-sm.font-semibold.text-drac-fg= emulator_name
+        %table.min-w-full.divide-y.divide-drac-current
+          %thead
+            %tr
+              %th.px-5.py-2.text-left.text-xs.font-medium.text-drac-comment Platform
+              %th.px-5.py-2.text-left.text-xs.font-medium.text-drac-comment Extension
+              %th.px-5.py-2.text-left.text-xs.font-medium.text-drac-comment Default Save Path
+          %tbody.divide-y.divide-drac-current
+            - profiles.each do |profile|
+              %tr
+                %td.px-5.py-2
+                  = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
+                %td.px-5.py-2.text-sm.text-drac-fg.font-mono= ".#{profile.save_extension}"
+                %td.px-5.py-2.text-sm.text-drac-comment.font-mono= profile.default_save_path || "—"

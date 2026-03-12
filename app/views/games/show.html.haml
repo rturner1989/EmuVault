@@ -1,0 +1,23 @@
+- content_for :title, "#{@game.title} — EmuVault"
+
+.p-6
+  = render ::UI::PageHeaderComponent.new(title: @game.title) do |header|
+    - header.with_action do
+      = link_to "Edit", edit_game_path(@game), class: "rounded-lg border border-drac-current px-4 py-2 text-sm font-medium text-drac-fg hover:bg-drac-current transition-colors"
+    - header.with_action do
+      = button_to "Remove", game_path(@game), method: :delete, data: { turbo_confirm: "Remove #{@game.title}?" }, class: "rounded-lg border border-drac-red px-4 py-2 text-sm font-medium text-drac-red hover:bg-drac-red/10 transition-colors"
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current.p-5.mb-6
+    .grid.grid-cols-2.gap-4.sm:grid-cols-3
+      .space-y-1
+        .text-xs.text-drac-comment System
+        = render ::UI::BadgeComponent.new(label: @game.system_label, color: @game.system_badge_color)
+      - if @game.rom_hash.present?
+        .space-y-1
+          .text-xs.text-drac-comment ROM Hash
+          .text-sm.text-drac-fg.font-mono.truncate= @game.rom_hash
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current
+    .px-5.py-4.border-b.border-drac-current
+      %h2.text-sm.font-semibold.text-drac-fg Save Slots
+    .px-5.py-8.text-center.text-sm.text-drac-comment No save slots yet.

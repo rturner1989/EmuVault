@@ -23,15 +23,20 @@ if [ ! -f ".env" ]; then
   echo "Generating .env with secure credentials..."
 
   DB_PASSWORD=$(openssl rand -base64 24 | tr -d '=/+' | head -c 32)
+  ADMIN_PASSWORD=$(openssl rand -base64 24 | tr -d '=/+' | head -c 32)
 
   sed \
     -e "s/DB_PASSWORD=emuvault/DB_PASSWORD=${DB_PASSWORD}/" \
+    -e "s/ADMIN_PASSWORD=changeme/ADMIN_PASSWORD=${ADMIN_PASSWORD}/" \
     .env.example > .env
 
-  echo ".env created with a randomly generated database password."
+  echo ".env created with randomly generated credentials."
   echo ""
-  echo "  DB password: ${DB_PASSWORD}"
-  echo "  (this is saved in your .env file — keep it safe)"
+  echo "  DB password:    ${DB_PASSWORD}"
+  echo "  Admin password: ${ADMIN_PASSWORD}"
+  echo "  Admin email:    admin@emuvault.local"
+  echo ""
+  echo "  (these are saved in your .env file — keep it safe)"
   echo ""
 else
   echo "Using existing .env file."

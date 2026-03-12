@@ -1,0 +1,7 @@
+- content_for :title, "Add Device — EmuVault"
+
+.p-6.max-w-lg
+  = render ::UI::PageHeaderComponent.new(title: "Add Device")
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current.p-6
+    = render "form", form_url: devices_path, submit_label: "Add Device", cancel_path: devices_path

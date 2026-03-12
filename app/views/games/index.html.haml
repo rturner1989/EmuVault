@@ -1,0 +1,29 @@
+- content_for :title, "Games — EmuVault"
+
+.p-6
+  = render ::UI::PageHeaderComponent.new(title: "Games", subtitle: "#{@games.size} game#{'s' unless @games.size == 1}") do |header|
+    - header.with_action do
+      = link_to "Add Game", new_game_path, class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity"
+
+  - if @games.empty?
+    = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
+      - c.with_action do
+        = link_to "Add Game", new_game_path, class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90"
+  - else
+    .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+      %table.min-w-full.divide-y.divide-drac-current
+        %thead
+          %tr
+            %th.px-5.py-3.text-left.text-xs.font-semibold.text-drac-comment.uppercase.tracking-wide Title
+            %th.px-5.py-3.text-left.text-xs.font-semibold.text-drac-comment.uppercase.tracking-wide System
+            %th.px-5.py-3
+        %tbody.divide-y.divide-drac-current
+          - @games.each do |game|
+            %tr.hover:bg-drac-current.transition-colors
+              %td.px-5.py-3
+                = link_to game.title, game_path(game), class: "text-sm font-medium text-drac-fg hover:text-drac-purple"
+              %td.px-5.py-3
+                = render ::UI::BadgeComponent.new(label: game.system_label, color: game.system_badge_color)
+              %td.px-5.py-3.text-right.whitespace-nowrap
+                = link_to "Edit", edit_game_path(game), class: "text-xs text-drac-comment hover:text-drac-fg mr-3"
+                = button_to "Remove", game_path(game), method: :delete, data: { turbo_confirm: "Remove #{game.title}?" }, class: "text-xs text-drac-red hover:opacity-80"

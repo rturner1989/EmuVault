@@ -57,3 +57,5 @@ group :test do
   gem "shoulda-matchers"
   gem "database_cleaner-active_record"
 end
+
+gem "bcrypt", "~> 3.1"
