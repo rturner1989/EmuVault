@@ -9,7 +9,7 @@
 :position_in_test: before
 :classified_sort: true
 :exclude_controllers: true
-:exclude_factories: false
+:exclude_factories: true
 :exclude_fixtures: false
 :exclude_helpers: true
 :exclude_scaffolds: true

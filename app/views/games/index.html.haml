@@ -18,20 +18,19 @@
       selected: @selected_system,
       clear_url: games_path)
 
-  = turbo_frame_tag :games_results do
-    - if @games.empty?
-      = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
-        - c.with_action do
-          = link_to new_game_path, class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity cursor-pointer inline-flex items-center gap-2" do
-            %i.fa-solid.fa-plus
-            Add Game
-    - else
-      .space-y-3
-        - @games.each do |game|
-          = link_to game_path(game), class: "block rounded-lg bg-drac-bg border border-drac-current p-4 hover:border-drac-purple transition-colors" do
-            .flex.items-start.justify-between.gap-3
-              .min-w-0
-                .text-base.font-semibold.text-drac-fg.truncate= game.title
-                .mt-1
-                  = render ::UI::BadgeComponent.new(label: game.system_label, color: game.system_badge_color)
-              %i.fa-solid.fa-chevron-right.text-drac-comment.mt-1
+  - if @games.empty?
+    = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
+      - c.with_action do
+        = link_to new_game_path, class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity cursor-pointer inline-flex items-center gap-2" do
+          %i.fa-solid.fa-plus
+          Add Game
+  - else
+    .space-y-3
+      - @games.each do |game|
+        = link_to game_path(game), class: "block rounded-lg bg-drac-bg border border-drac-current p-4 hover:border-drac-purple transition-colors" do
+          .flex.items-start.justify-between.gap-3
+            .min-w-0
+              .text-base.font-semibold.text-drac-fg.truncate= game.title
+              .mt-1
+                = render ::UI::BadgeComponent.new(label: game.system_label, color: game.system_badge_color)
+            %i.fa-solid.fa-chevron-right.text-drac-comment.mt-1

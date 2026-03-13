@@ -31,6 +31,8 @@ class GameSavesController < ApplicationController
       @latest_save = GameSaveDecorator.decorate(@game.game_saves.latest_first.first) if @game.game_saves.exists?
       @history = @game.game_saves.latest_first.offset(1).includes(:emulator_profile).limit(19)
       @new_save = @game_save
+      @user_profiles = EmulatorProfile.where(user_selected: true).ordered
+      @form = GameForm.from(@game)
       render "games/show", status: :unprocessable_entity
     end
   end

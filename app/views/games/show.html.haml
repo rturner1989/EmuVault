@@ -67,12 +67,14 @@
         .px-4.py-3.border-t.border-drac-current
           %h2.text-sm.font-semibold.text-drac-fg Upload New Version
         .px-4.pb-4
-          = simple_form_for :game_save, url: game_game_saves_path(@game), method: :post, html: { multipart: true, class: "space-y-3" } do |f|
+          = simple_form_for :game_save, url: game_game_saves_path(@game), method: :post, html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
             = f.select :emulator_profile_id,
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
                 { include_blank: "Which emulator is this save from? (optional)" },
                 { class: "block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-purple" }
-            = f.file_field :file, class: "block w-full text-sm text-drac-comment cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg file:cursor-pointer hover:file:bg-drac-fg hover:file:text-drac-bg file:transition-colors"
+            = f.file_field :file, required: true, class: "block w-full text-sm text-drac-comment cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg file:cursor-pointer hover:file:bg-drac-fg hover:file:text-drac-bg file:transition-colors"
+            - if @new_save&.errors&.any?
+              %p.text-xs.text-drac-red= @new_save.errors.full_messages.to_sentence
             .flex.justify-end
               %button{ type: "submit", class: "rounded-lg bg-drac-purple px-5 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-drac-purple focus:ring-offset-2 focus:ring-offset-drac-bg inline-flex items-center gap-2" }
                 %i.fa-solid.fa-upload
@@ -84,12 +86,14 @@
         .px-4.py-3.border-b.border-drac-current
           %h2.text-sm.font-semibold.text-drac-fg Upload Save File
         .p-4
-          = simple_form_for :game_save, url: game_game_saves_path(@game), method: :post, html: { multipart: true, class: "space-y-3" } do |f|
+          = simple_form_for :game_save, url: game_game_saves_path(@game), method: :post, html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
             = f.select :emulator_profile_id,
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
                 { include_blank: "Which emulator is this save from? (optional)" },
                 { class: "block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-purple" }
-            = f.file_field :file, class: "block w-full text-sm text-drac-comment cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg file:cursor-pointer hover:file:bg-drac-fg hover:file:text-drac-bg file:transition-colors"
+            = f.file_field :file, required: true, class: "block w-full text-sm text-drac-comment cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg file:cursor-pointer hover:file:bg-drac-fg hover:file:text-drac-bg file:transition-colors"
+            - if @new_save&.errors&.any?
+              %p.text-xs.text-drac-red= @new_save.errors.full_messages.to_sentence
             .flex.justify-end
               %button{ type: "submit", class: "rounded-lg bg-drac-purple px-5 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-drac-purple focus:ring-offset-2 focus:ring-offset-drac-bg inline-flex items-center gap-2" }
                 %i.fa-solid.fa-upload

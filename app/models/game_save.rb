@@ -7,7 +7,7 @@
 #  saved_at            :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
-#  emulator_profile_id :bigint           not null
+#  emulator_profile_id :bigint
 #  game_id             :bigint           not null
 #
 # Indexes

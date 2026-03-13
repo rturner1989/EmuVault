@@ -20,7 +20,7 @@ module Layouts
 
     def mobile_nav_class(path)
       active = active_path?(path)
-      base = "flex flex-col items-center justify-center flex-1 py-2 text-xs font-medium transition-colors"
+      base = "flex flex-col items-center justify-center flex-1 py-4 text-xs font-medium transition-colors"
       active ? "#{base} text-drac-purple" : "#{base} text-drac-comment"
     end
 

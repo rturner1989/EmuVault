@@ -59,6 +59,19 @@ body {
   display: none;
 }
 
+/* iPhone safe-area */
+.mobile-top-bar {
+  padding-top: env(safe-area-inset-top);
+}
+
+.mobile-bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mobile-bottom-content-pad {
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+}
+
 /* SimpleForm error styles */
 .input span.error {
   display: block;
