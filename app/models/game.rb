@@ -25,6 +25,7 @@ class Game < ApplicationRecord
   ], predicates: true
 
   has_many :game_saves, dependent: :destroy
+  has_many :game_emulator_configs, dependent: :destroy
 
   validates :title, presence: true
   validates :system, presence: true

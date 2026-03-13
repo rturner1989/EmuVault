@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resource :settings, only: %i[show]
 
   resources :games do
+    resource :emulator_configs, only: [:update], controller: "game_emulator_configs"
     resources :game_saves, only: %i[create destroy] do
       member do
         get :download

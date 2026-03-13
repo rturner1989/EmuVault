@@ -27,7 +27,12 @@ class GameSaveDecorator < ApplicationDecorator
   def download_filename(target_profile = nil)
     profile = target_profile || emulator_profile
     ext = profile&.save_extension || "sav"
-    base = object.game.title.gsub(/[^0-9A-Za-z\-_ ]/, "").strip.gsub(/\s+/, "_")
+    base = if profile
+      config = emulator_configs_map[profile.id]
+      config&.save_filename.presence || default_base_name
+    else
+      default_base_name
+    end
     "#{base}.#{ext}"
   end
 
@@ -38,5 +43,15 @@ class GameSaveDecorator < ApplicationDecorator
 
     dir = profile.default_save_path.chomp("/")
     "#{dir}/#{download_filename(target_profile)}"
+  end
+
+  private
+
+  def emulator_configs_map
+    @emulator_configs_map ||= object.game.game_emulator_configs.index_by(&:emulator_profile_id)
+  end
+
+  def default_base_name
+    object.game.title.gsub(/[^0-9A-Za-z\-_ ]/, "").strip.gsub(/\s+/, "_")
   end
 end

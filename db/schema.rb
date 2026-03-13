@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_13_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_13_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_140000) do
     t.datetime "updated_at", null: false
     t.boolean "user_selected", default: false, null: false
     t.index ["name", "platform"], name: "index_emulator_profiles_on_name_and_platform", unique: true
+  end
+
+  create_table "game_emulator_configs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "emulator_profile_id", null: false
+    t.bigint "game_id", null: false
+    t.string "save_filename", null: false
+    t.datetime "updated_at", null: false
+    t.index ["emulator_profile_id"], name: "index_game_emulator_configs_on_emulator_profile_id"
+    t.index ["game_id", "emulator_profile_id"], name: "index_game_emulator_configs_on_game_id_and_emulator_profile_id", unique: true
+    t.index ["game_id"], name: "index_game_emulator_configs_on_game_id"
   end
 
   create_table "game_saves", force: :cascade do |t|
@@ -108,6 +119,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_140000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "game_emulator_configs", "emulator_profiles"
+  add_foreign_key "game_emulator_configs", "games"
   add_foreign_key "game_saves", "emulator_profiles"
   add_foreign_key "game_saves", "games"
   add_foreign_key "sessions", "users"

@@ -58,7 +58,7 @@
                   %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
                     %i.fa-regular.fa-clipboard.fa-fw
                 %p.text-xs.text-drac-comment Your browser will save it to Downloads — move it to the path above.
-              .flex.justify-end
+              .flex.justify-start
                 %button{ type: "submit", class: "rounded-lg bg-drac-cyan px-5 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-drac-cyan focus:ring-offset-2 focus:ring-offset-drac-bg inline-flex items-center gap-2" }
                   %i.fa-solid.fa-download
                   Download
@@ -75,7 +75,7 @@
             = f.file_field :file, required: true, class: "block w-full text-sm text-drac-comment cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg file:cursor-pointer hover:file:bg-drac-fg hover:file:text-drac-bg file:transition-colors"
             - if @new_save&.errors&.any?
               %p.text-xs.text-drac-red= @new_save.errors.full_messages.to_sentence
-            .flex.justify-end
+            .flex.justify-start
               %button{ type: "submit", class: "rounded-lg bg-drac-purple px-5 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-drac-purple focus:ring-offset-2 focus:ring-offset-drac-bg inline-flex items-center gap-2" }
                 %i.fa-solid.fa-upload
                 Upload
@@ -94,14 +94,14 @@
             = f.file_field :file, required: true, class: "block w-full text-sm text-drac-comment cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg file:cursor-pointer hover:file:bg-drac-fg hover:file:text-drac-bg file:transition-colors"
             - if @new_save&.errors&.any?
               %p.text-xs.text-drac-red= @new_save.errors.full_messages.to_sentence
-            .flex.justify-end
+            .flex.justify-start
               %button{ type: "submit", class: "rounded-lg bg-drac-purple px-5 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-drac-purple focus:ring-offset-2 focus:ring-offset-drac-bg inline-flex items-center gap-2" }
                 %i.fa-solid.fa-upload
                 Upload Save
 
     -# History
     - if @history.exists?
-      %details.rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+      %details{ open: true, class: "rounded-lg bg-drac-bg border border-drac-current overflow-hidden" }
         %summary.px-4.py-3.text-sm.font-medium.text-drac-comment.cursor-pointer.hover:text-drac-fg.transition-colors= "Previous versions (#{@history.count})"
         .divide-y.divide-drac-current
           - @history.each do |save|
@@ -112,3 +112,30 @@
                 .text-xs.text-drac-comment= "#{decorated.emulator_label} · #{decorated.file_size_label}"
               = link_to download_game_game_save_path(@game, save), class: "text-xs text-drac-cyan px-3 py-1.5 rounded-lg border border-drac-cyan shrink-0 cursor-pointer hover:bg-drac-cyan hover:text-drac-bg transition-colors", data: { turbo: false } do
                 %i.fa-solid.fa-download
+
+  -# Emulator save filenames
+  .mt-4.rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+    .px-4.py-3.border-b.border-drac-current
+      %h2.text-sm.font-semibold.text-drac-fg Emulator Save Filenames
+      %p.text-xs.text-drac-comment.mt-1 Set the filename each emulator expects for this game. Leave blank to use a default based on the game title.
+    - if @user_profiles.any?
+      = form_with url: game_emulator_configs_path(@game), method: :patch, data: { turbo: false } do |f|
+        .divide-y.divide-drac-current
+          - @user_profiles.each do |profile|
+            - config = @emulator_configs[profile.id]
+            .flex.items-center.gap-3.px-4.py-3
+              .flex-1.min-w-0
+                .flex.items-center.gap-2.mb-1.5
+                  = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
+                  %span.text-sm.text-drac-fg= profile.name
+                .flex.items-center.gap-1
+                  = f.text_field "emulator_configs[#{profile.id}]",
+                      value: config&.save_filename,
+                      placeholder: @game.title.gsub(/[^0-9A-Za-z\-_ ]/, "").strip.gsub(/\s+/, "_"),
+                      class: "flex-1 rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-1.5 focus:outline-none focus:border-drac-purple placeholder:text-drac-comment min-w-0"
+                  %span.text-xs.text-drac-comment.shrink-0.font-mono= ".#{profile.save_extension}"
+        .px-4.py-3.flex.justify-start.border-t.border-drac-current
+          %button{ type: "submit", class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity" }
+            Save Filenames
+    - else
+      .px-4.py-4.text-sm.text-drac-comment No emulators selected. Add emulators from the Profiles page.

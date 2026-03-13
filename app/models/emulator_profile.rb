@@ -22,6 +22,7 @@ class EmulatorProfile < ApplicationRecord
   enumerize :platform, in: %i[linux windows macos ios android], predicates: true
 
   has_many :game_saves, dependent: :nullify
+  has_many :game_emulator_configs, dependent: :destroy
 
   validates :name, presence: true
   validates :platform, presence: true

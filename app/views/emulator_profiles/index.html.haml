@@ -36,7 +36,7 @@
 
   -# Add from library
   - if @library_by_name.any?
-    %details.rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+    %details{ class: "rounded-lg bg-drac-bg border border-drac-current overflow-hidden" }
       %summary.px-5.py-3.text-sm.font-medium.text-drac-comment.cursor-pointer Add from library
       .divide-y.divide-drac-current
         - @library_by_name.each do |emulator_name, profiles|
