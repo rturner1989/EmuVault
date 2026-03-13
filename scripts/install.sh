@@ -46,6 +46,35 @@ fi
 echo "Building Docker containers (this may take a few minutes)..."
 docker compose build
 
+# Generate VAPID keys for web push if not already present
+if ! grep -q "^VAPID_PUBLIC_KEY=.\+" .env 2>/dev/null; then
+  echo ""
+  echo "Generating VAPID keys for push notifications..."
+
+  VAPID_OUTPUT=$(docker compose run --rm app bundle exec ruby -e '
+require "openssl"
+require "base64"
+key       = OpenSSL::PKey::EC.generate("prime256v1")
+pub_asn1  = OpenSSL::ASN1.decode(key.public_to_der)
+pub_bytes = pub_asn1.value[1].value[1..]
+outer      = OpenSSL::ASN1.decode(key.private_to_der)
+ec_priv    = OpenSSL::ASN1.decode(outer.value[2].value)
+priv_bytes = ec_priv.value[1].value
+puts "VAPID_PUBLIC_KEY=#{Base64.urlsafe_encode64(pub_bytes, padding: false)}"
+puts "VAPID_PRIVATE_KEY=#{Base64.urlsafe_encode64(priv_bytes, padding: false)}"
+' 2>/dev/null)
+
+  VAPID_PUB=$(echo "$VAPID_OUTPUT" | grep VAPID_PUBLIC_KEY)
+  VAPID_PRIV=$(echo "$VAPID_OUTPUT" | grep VAPID_PRIVATE_KEY)
+
+  sed -i \
+    -e "s|^VAPID_PUBLIC_KEY=.*|${VAPID_PUB}|" \
+    -e "s|^VAPID_PRIVATE_KEY=.*|${VAPID_PRIV}|" \
+    .env
+
+  echo "VAPID keys generated and saved to .env."
+fi
+
 echo ""
 echo "Starting database and Redis..."
 docker compose up -d postgres redis

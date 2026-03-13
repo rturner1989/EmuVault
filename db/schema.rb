@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_13_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_13_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -85,6 +85,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_150000) do
     t.index ["rom_hash"], name: "index_games_on_rom_hash"
   end
 
+  create_table "noticed_events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "notifications_count", default: 0, null: false
+    t.jsonb "params", default: {}
+    t.bigint "record_id"
+    t.string "record_type"
+    t.string "type"
+    t.datetime "updated_at", null: false
+    t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"
+  end
+
+  create_table "noticed_notifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "event_id", null: false
+    t.datetime "read_at"
+    t.bigint "recipient_id", null: false
+    t.string "recipient_type", null: false
+    t.datetime "seen_at"
+    t.string "type"
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_noticed_notifications_on_event_id"
+    t.index ["recipient_type", "recipient_id", "read_at"], name: "index_noticed_notifications_on_recipient_and_read_at"
+    t.index ["recipient_type", "recipient_id"], name: "index_noticed_notifications_on_recipient"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -117,12 +142,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_150000) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  create_table "web_push_subscriptions", force: :cascade do |t|
+    t.string "auth", null: false
+    t.datetime "created_at", null: false
+    t.string "endpoint", null: false
+    t.string "p256dh", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["endpoint"], name: "index_web_push_subscriptions_on_endpoint", unique: true
+    t.index ["user_id"], name: "index_web_push_subscriptions_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "game_emulator_configs", "emulator_profiles"
   add_foreign_key "game_emulator_configs", "games"
   add_foreign_key "game_saves", "emulator_profiles"
   add_foreign_key "game_saves", "games"
+  add_foreign_key "noticed_notifications", "noticed_events", column: "event_id"
   add_foreign_key "sessions", "users"
   add_foreign_key "sync_events", "game_saves"
+  add_foreign_key "web_push_subscriptions", "users"
 end

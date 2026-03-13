@@ -64,6 +64,14 @@ body {
   padding-top: env(safe-area-inset-top);
 }
 
+.notification-panel-top {
+  padding-top: max(0.75rem, env(safe-area-inset-top));
+}
+
+.notification-panel-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
 .mobile-bottom-nav {
   padding-bottom: env(safe-area-inset-bottom);
 }

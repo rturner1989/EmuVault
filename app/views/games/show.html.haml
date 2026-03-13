@@ -4,7 +4,7 @@
   -# Back breadcrumb
   = link_to games_path, class: "text-xs text-drac-comment hover:text-drac-fg transition-colors cursor-pointer inline-flex items-center gap-1" do
     %i.fa-solid.fa-arrow-left
-    Games
+    = "Games"
 
   -# Title + actions
   .flex.items-start.justify-between.gap-3
@@ -17,6 +17,7 @@
           %button{ class: "rounded-lg border border-drac-current px-3 py-1.5 text-xs text-drac-comment hover:border-drac-fg hover:text-drac-fg transition-colors cursor-pointer", data: { action: "dialog#open" } } Edit
         = modal.with_body do
           = render "games/form", form_url: game_path(@game), submit_label: "Save Changes", cancel_path: game_path(@game)
+
       = render ::UI::ConfirmComponent.new(id: "remove-game-dialog",
         title: "Remove game?",
         message: "Remove #{@game.title} from your library? This will also delete all saved versions.",
@@ -48,9 +49,9 @@
           = simple_form_for :game_save, url: download_game_game_save_path(@game, @latest_save), method: :get, html: { data: { controller: "save-hint", turbo: false } } do |f|
             .space-y-2
               = f.select :target_profile_id,
-                  @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @latest_save.save_path_hint(p) } }] },
-                  { include_blank: "Select emulator to download for…" },
-                  { class: "block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan", data: { action: "change->save-hint#update", save_hint_target: "select" } }
+                @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @latest_save.save_path_hint(p) } }] },
+                { include_blank: "Select emulator to download for…" },
+                { class: "block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan", data: { action: "change->save-hint#update", save_hint_target: "select" } }
               .hidden{ data: { save_hint_target: "note" } }
                 %p.text-xs.text-drac-comment.mb-2 Place the downloaded file at:
                 .flex.items-center.gap-2.mb-2

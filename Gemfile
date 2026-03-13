@@ -29,6 +29,8 @@ gem "action_policy"
 gem "rails-i18n", "~> 8.0.0"
 gem "dotenv-rails"
 gem "rack-attack"
+gem "noticed", "~> 2.4"
+gem "webpush"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

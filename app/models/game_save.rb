@@ -30,4 +30,20 @@ class GameSave < ApplicationRecord
   validates :file, presence: true
 
   scope :latest_first, -> { order(created_at: :desc) }
+
+  after_create_commit :notify_new_save, if: -> { Current.user.present? }
+
+  private
+
+  def notify_new_save
+    user = Current.user
+    NewSaveNotifier.with(game_save: self).deliver(user)
+    count = user.notifications.where(read_at: nil).count
+    Turbo::StreamsChannel.broadcast_replace_later_to(
+      "notifications_#{user.id}",
+      targets: "[data-notification-badge]",
+      partial: "shared/notification_badge",
+      locals: { count: count }
+    )
+  end
 end

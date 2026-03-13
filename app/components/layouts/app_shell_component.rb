@@ -24,6 +24,10 @@ module Layouts
       active ? "#{base} text-drac-purple" : "#{base} text-drac-comment"
     end
 
+    def unread_count
+      Current.user.notifications.where(read_at: nil).count
+    end
+
     private
 
     def active_path?(path)

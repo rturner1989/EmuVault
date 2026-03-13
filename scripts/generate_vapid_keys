@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Generates VAPID keys for web push notifications.
+# Run once and add the output to your .env file.
+# Uses OpenSSL directly — works with OpenSSL 3.0.
+set -e
+docker compose run --rm app bundle exec ruby -e '
+require "openssl"
+require "base64"
+
+key = OpenSSL::PKey::EC.generate("prime256v1")
+
+# Public key: 65-byte uncompressed EC point (04 || x || y)
+# public_to_der gives SubjectPublicKeyInfo: SEQUENCE { AlgorithmIdentifier, BIT STRING }
+pub_asn1  = OpenSSL::ASN1.decode(key.public_to_der)
+pub_bytes = pub_asn1.value[1].value[1..]   # strip leading padding byte from BIT STRING
+
+# Private key: 32-byte raw scalar
+# private_to_der in OpenSSL 3.0 gives PKCS#8 PrivateKeyInfo:
+#   SEQUENCE { version, AlgorithmIdentifier, OCTET STRING { ECPrivateKey DER } }
+# ECPrivateKey (RFC 5915):
+#   SEQUENCE { version, OCTET STRING (private key bytes), ... }
+outer      = OpenSSL::ASN1.decode(key.private_to_der)
+ec_priv    = OpenSSL::ASN1.decode(outer.value[2].value)  # inner ECPrivateKey DER
+priv_bytes = ec_priv.value[1].value
+
+puts "VAPID_PUBLIC_KEY=#{Base64.urlsafe_encode64(pub_bytes, padding: false)}"
+puts "VAPID_PRIVATE_KEY=#{Base64.urlsafe_encode64(priv_bytes, padding: false)}"
+'

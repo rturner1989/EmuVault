@@ -22,6 +22,13 @@ Rails.application.routes.draw do
   resource :activity, only: [:show], controller: "activity"
   resources :emulator_profiles
 
+  resources :notifications, only: %i[index] do
+    collection do
+      patch :mark_all_read
+    end
+  end
+  resources :web_push_subscriptions, only: %i[create destroy]
+
   require "sidekiq/web"
   mount Sidekiq::Web => "/sidekiq"
   mount ActionCable.server => "/cable"

@@ -3,6 +3,10 @@
 module UI
   class ModalComponent < ApplicationComponent
     renders_one :trigger
+    # renders_one :trigger, lambda { |label: nil, **kwargs|
+    #   args = kwargs.merge({ label: label, data: { action: "dialog#open" }})
+    #   UI::ActionComponent.new(**args) 
+    # }
     renders_one :body
 
     def initialize(id:, title:)

@@ -11,3 +11,10 @@
         = render ::UI::ActionComponent.new(label: "Change Password", variant: :secondary, data: { action: "dialog#open" })
       = modal.with_body do
         = render "passwords/form"
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current.p-5{ data: { controller: "push-subscription", "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s } }
+    %h2.text-sm.font-semibold.text-drac-fg.mb-1 Push Notifications
+    %p.text-sm.text-drac-comment.mb-4 Get notified on this device when a new save is uploaded. Works when EmuVault is installed as a home screen app.
+    %button.px-3.py-1.5.rounded-lg.text-sm.bg-drac-purple.text-white.hover:opacity-90.transition-opacity{ data: { action: "push-subscription#subscribe", "push-subscription-target": "button" } }
+      Enable push notifications
+    %p.text-xs.text-drac-comment.mt-2{ data: { "push-subscription-target": "status" } }
