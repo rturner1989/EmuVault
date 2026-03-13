@@ -1,0 +1,21 @@
+-# Renders the wizard chrome: logo, step indicator, and a centred card.
+-# Usage: = render "wizard_shell", current_step: 1 do
+-#   ...content...
+.min-h-screen.bg-drac-surface.flex.items-start.justify-center.p-6.pt-10
+  .w-full{ style: "max-width: 560px" }
+    .text-center.mb-8
+      %h1.text-2xl.font-bold.text-drac-purple.mb-4 EmuVault
+
+      -# Step indicator
+      .flex.items-center.justify-center.gap-2
+        - [["1", "Account", setup_path], ["2", "Emulators", profiles_setup_path], ["3", "Paths", configure_setup_path]].each_with_index do |(num, label, _path), i|
+          - active = current_step == i + 1
+          - done = current_step > i + 1
+          .flex.items-center.gap-2
+            %span.w-7.h-7.rounded-full.flex.items-center.justify-center.text-xs.font-bold{ class: active ? "bg-drac-purple text-drac-bg" : done ? "bg-drac-green text-drac-bg" : "bg-drac-current text-drac-comment" }
+              = done ? "✓" : num
+            %span.text-xs{ class: active ? "text-drac-fg" : "text-drac-comment" }= label
+          - if i < 2
+            .h-px.w-6.bg-drac-current
+
+    = yield

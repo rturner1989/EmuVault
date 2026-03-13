@@ -5,7 +5,8 @@ A cross-platform emulator save file manager. Allows users to sync game saves bet
 ## Stack
 
 - **Ruby on Rails 8.1** with PostgreSQL 17
-- **Hotwire** (Turbo + Stimulus) for reactive UI without a JS framework
+- **Hotwire** (Turbo + Stimulus) for reactive UI — bundled via esbuild (npm packages `@hotwired/turbo`, `@hotwired/stimulus`)
+- **a11y-dialog** for accessible modal dialogs (Stimulus `dialog` controller in `app/javascript/controllers/dialog_controller.js`)
 - **esbuild** for JavaScript bundling
 - **Tailwind CSS v4** for styling
 - **HAML** for templates (not ERB)
@@ -45,6 +46,14 @@ bundle exec rubocop        # check
 bundle exec rubocop -A     # auto-fix
 ```
 
+## Rebuilding JS/CSS after changes
+
+```bash
+docker compose run --rm app npm run build
+docker compose run --rm app npm run build:css
+docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/builds
+```
+
 ## Key conventions
 
 - Use HAML for all views, never ERB
@@ -56,6 +65,7 @@ bundle exec rubocop -A     # auto-fix
 - Use form objects (`ApplicationForm` with `ActiveModel::API`) for non-trivial form handling — `app/forms/`
 - Controllers are thin — logic lives in models, decorators, or form objects
 - Use Turbo Frames and Turbo Streams for dynamic updates, avoid full page reloads
+- Use a11y-dialog via the Stimulus `dialog` controller for CRUD modals
 - RSpec request specs for API/controller behaviour, system specs (Capybara) for feature flows
 - FactoryBot for test data, Faker for fake values
 - DatabaseCleaner handles test DB state — truncation for system/feature specs, transaction for unit specs
@@ -111,6 +121,12 @@ Component namespaces:
 - `app/components/layouts/` — layout-level components (`AppShellComponent`, `FlashComponent`)
 - `app/components/ui/` — reusable UI primitives (`BadgeComponent`, `PageHeaderComponent`, `EmptyStateComponent`)
 
+## Stimulus controllers
+
+All controllers in `app/javascript/controllers/`:
+- `dialog` — wraps a11y-dialog for CRUD modals. Targets: `container`. Actions: `open`, `close`.
+- `save-hint` — shows the suggested save file path when a download profile is selected. Targets: `select`, `hint`.
+
 ## Decorator pattern
 
 ```ruby
@@ -142,11 +158,39 @@ Form objects live in `app/forms/`. Views use `url:` explicitly (don't rely on po
 
 ## Data model
 
-- `EmulatorProfile` — pre-seeded, read-only. Describes a known emulator (name, platform, save extension, default save path). Managed via seeds.
-- `Game` — a game in the user's library, identified by ROM hash where possible. Has system (platform) enum via Enumerize.
-- `GameSave` — a specific save file, linked to a game and emulator profile. File stored via Active Storage.
-- `SyncEvent` — history of push/pull actions with timestamps for conflict detection.
-- `Device` — a registered device (PC, phone, tablet) with name, device_type, and identifier.
+- `EmulatorProfile` — library of known emulators. Seeded defaults have `is_default: true` (can't be deleted, only deselected). User-activated ones have `user_selected: true`. Fields: `name`, `platform` (Enumerize), `save_extension`, `default_save_path`, `is_default`, `user_selected`.
+- `Game` — a game in the user's library. Has `system` enum via Enumerize.
+- `GameSave` — a save file version, linked to a game and optional emulator profile. Latest = most recent by `created_at`. No slot concept. File stored via Active Storage. Fields: `game_id`, `emulator_profile_id` (optional), `checksum`, `saved_at`.
+- `SyncEvent` — history of push/pull actions with timestamps.
+- `Device` — a registered device (PC, phone, tablet).
+- `User` — has `setup_completed` boolean (false until wizard is finished).
+
+## First-run setup wizard
+
+On first login (`setup_completed: false`), all routes redirect to `/setup`. The wizard has 3 steps:
+
+1. **Account** (`GET/PATCH /setup`) — set email and password
+2. **Emulators** (`GET /setup/profiles`, `POST /setup/select_profiles`) — pick from the seeded library
+3. **Paths** (`GET /setup/configure`, `PATCH /setup/save_configuration`) — set save directory per selected profile
+
+Uses a separate `setup` layout (`app/views/layouts/setup.html.haml`) — no nav sidebar. Shared step indicator in `app/views/setup/_wizard_shell.html.haml` rendered via `render layout: "setup/wizard_shell", locals: { current_step: N }`.
+
+After completion: redirects to `games_path` if games exist, otherwise `new_game_path`.
+
+### Setup routing gotcha
+
+`resource :setup` (singular) requires `controller: "setup"` explicitly — otherwise Rails pluralises to `SetupsController`. Extra actions defined inside the block (no `on: :collection`) generate helpers named `{action}_setup_path` (e.g. `profiles_setup_path`, `configure_setup_path`), **not** `setup_{action}_path`.
+
+## Emulator profiles
+
+Managed at `/emulator_profiles`. Index shows only `user_selected` profiles. Edit/new via a11y-dialog modals. "Add from library" expander for unselected defaults. Seeded defaults use `is_default: true` — destroy action deselects rather than deletes them.
+
+## Game show page
+
+- **Current save** — latest `GameSave` by `created_at`. Shows upload date, source emulator badge, download form with profile selector.
+- **Save path hint** — when a profile is selected for download, the `save-hint` Stimulus controller reads `data-path` from the option and shows the full suggested path (e.g. `~/.config/retroarch/saves/Pokemon_Emerald.srm`).
+- **Upload new version** — behind a `<details>` toggle, optional source profile.
+- **Previous versions** — collapsible `<details>` panel listing older saves, each downloadable.
 
 ## Environment variables
 
@@ -156,7 +200,6 @@ See `.env.example` for all required vars. Key ones:
 - `HUB_URL` — Selenium hub for system tests (e.g. `http://selenium-hub:4444/wd/hub`)
 - `APP_HOST` — used by Capybara for system tests
 - `ADMIN_EMAIL` / `ADMIN_PASSWORD` — seeded admin credentials
-- `api_token` on `User` — 64-char hex token auto-generated on user create; viewable/regeneratable at `/settings`
 
 ## Notable config
 
@@ -167,8 +210,6 @@ See `.env.example` for all required vars. Key ones:
 - `config/environments/production.rb` — force_ssl, assume_ssl, host_authorization enabled
 - `Procfile.dev` — Puma binds to `0.0.0.0` so it's reachable inside Docker
 - `scripts/install.sh` — one-command setup, generates secure DB password via openssl
-- `scripts/sync_agent` — executable Ruby polling agent for PC auto-sync (compares checksums, pulls changed saves to configured local paths)
-- `scripts/sync_agent.yml.example` — config template for sync agent (server_url, api_token, mappings of profile→local path)
 - `scripts/` — attach, bash, bundle, console, migrate, rollback, run_tests, i18n, install
 
 ## Docker services
@@ -187,7 +228,6 @@ See `.env.example` for all required vars. Key ones:
 - `force_ssl` + `assume_ssl` in production
 - Rack::Attack rate limiting
 - BetterErrors restricted to development only
-- API Bearer token auth via `Authorization: Bearer <token>` header or `?token=` query param (no session required)
 - Single-user authentication via Rails 8 native auth (`rails generate authentication`)
   - Admin credentials seeded from `ADMIN_EMAIL` / `ADMIN_PASSWORD` env vars
   - All routes protected by default via `ApplicationController`
@@ -200,24 +240,10 @@ See `.env.example` for all required vars. Key ones:
 Distributed as a Docker image — users run `./scripts/install.sh` then `docker compose up` on their PC or home server and access from any device via browser (or Tailscale for remote access).
 
 Users configure:
-- Which emulators they use (picked from a pre-built list of profiles)
+- Which emulators they use (selected during setup wizard, manageable at `/emulator_profiles`)
 - Which games they want to sync
 
-The app knows each emulator's save format and file location conventions. It handles format conversion (rename-only — raw save bytes are identical across emulators for the same game; only the extension and filename differ) and serves a mobile-friendly web UI so any device with a browser can push or pull saves.
-
-## REST API
-
-Base path: `/api/`
-
-Authentication: `Authorization: Bearer <token>` or `?token=<token>` query param.
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/game_saves` | List all game saves (with game and profile info) |
-| GET | `/api/game_saves/:id` | Show a single game save |
-| GET | `/api/game_saves/:id/file` | Download save file; pass `?target_profile_id=N` for converted filename |
-
-The `scripts/sync_agent` polls this API, compares SHA-256 checksums, and writes updated saves to configured local paths automatically.
+The app stores one canonical save per game (the latest upload). Previous uploads are kept as history. On download, the user picks their target emulator and gets the file renamed to match that emulator's expected extension. If the profile has a save directory configured, the UI shows exactly where to put the file.
 
 ## Inflection gotchas
 
@@ -255,7 +281,12 @@ SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrappe
 - [x] Stage 4 — Seeds (28 EmulatorProfile records across RetroArch, Delta, mGBA, Dolphin, PPSSPP, melonDS, Snes9x, OpenEmu, DuckStation)
 - [x] Stage 5 — Core UI (ViewComponents, Dracula theme, controllers, views, ActionPolicy, decorators, form objects)
 - [x] Stage 6 — Save file upload/download (Active Storage, GameSave management)
-- [x] Stage 7 — Sync logic (push/pull, conflict detection, SyncEvent history)
-- [x] Stage 8 — REST API + PC sync agent + Settings page
+- [x] Stage 7 — Sync logic (push/pull, SyncEvent history)
 - [x] Mobile UI redesign — card-based layouts, full-width tap targets, no tables
 - [x] PWA + app icon — Dracula floppy disk SVG icon, manifest.json, iOS home screen meta tags
+- [x] Save model refactor — dropped slot, one canonical save per game (latest by created_at), history preserved
+- [x] Emulator profiles refactor — user_selected + is_default flags, setup wizard selects from library
+- [x] Setup wizard — 3-step first-run flow (account, emulator selection, save paths), separate layout
+- [x] JS stack — Hotwire + a11y-dialog wired via esbuild; Stimulus controllers: dialog, save-hint
+- [x] Game show redesign — current save card, save path hint, upload toggle, history panel
+- [x] Emulator profiles CRUD — index shows selected only, edit/new via a11y-dialog modals

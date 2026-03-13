@@ -3,9 +3,13 @@ Rails.application.routes.draw do
 
   resource :session
   resource :password, only: %i[edit update]
-  resource :settings, only: %i[show] do
-    post :regenerate_token, on: :collection
+  resource :setup, only: %i[show update], controller: "setup" do
+    get :profiles
+    post :select_profiles
+    get :configure
+    patch :save_configuration
   end
+  resource :settings, only: %i[show]
 
   resources :games do
     resources :game_saves, only: %i[create destroy] do
@@ -15,15 +19,7 @@ Rails.application.routes.draw do
     end
   end
   resources :devices
-  resources :emulator_profiles, only: %i[index]
-
-  namespace :api do
-    resources :game_saves, only: %i[index show] do
-      member do
-        get :file
-      end
-    end
-  end
+  resources :emulator_profiles
 
   require "sidekiq/web"
   mount Sidekiq::Web => "/sidekiq"

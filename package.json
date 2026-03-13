@@ -9,7 +9,10 @@
     "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
   },
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo": "^8.0.23",
     "@tailwindcss/cli": "^4.2.1",
+    "a11y-dialog": "^8.1.5",
     "tailwindcss": "^4.2.1"
   }
 }

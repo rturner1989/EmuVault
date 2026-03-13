@@ -6,14 +6,9 @@ class GameSavesController < ApplicationController
     authorize! GameSave, to: :create?
 
     uploaded = params.dig(:game_save, :file)
-    slot = params.dig(:game_save, :slot).to_i
-    emulator_profile_id = params.dig(:game_save, :emulator_profile_id)
+    emulator_profile_id = params.dig(:game_save, :emulator_profile_id).presence
 
-    existing = @game.game_saves.find_by(emulator_profile_id:, slot:)
-    conflict = existing.present?
-
-    @game_save = existing || @game.game_saves.build
-    @game_save.assign_attributes(game_save_params)
+    @game_save = @game.game_saves.build(game_save_params)
     @game_save.saved_at = Time.current
 
     if uploaded.present?
@@ -25,14 +20,14 @@ class GameSavesController < ApplicationController
       SyncEvent.create!(
         game_save: @game_save,
         action: :push,
-        status: conflict ? :conflict : :success,
+        status: :success,
         performed_at: Time.current
       )
-      notice = conflict ? "Save replaced (previous version overwritten)." : "Save uploaded."
-      redirect_to @game, notice: notice
+      redirect_to @game, notice: "Save uploaded."
     else
       @game = GameDecorator.new(@game)
-      @saves = GameSaveDecorator.decorate(@game.game_saves.includes(:emulator_profile).order(:slot))
+      @latest_save = GameSaveDecorator.decorate(@game.game_saves.latest_first.first) if @game.game_saves.exists?
+      @history = @game.game_saves.latest_first.offset(1).includes(:emulator_profile).limit(19)
       @new_save = @game_save
       render "games/show", status: :unprocessable_entity
     end
@@ -46,14 +41,17 @@ class GameSavesController < ApplicationController
 
   def download
     authorize! @game_save, to: :show?
+
     target_profile = params[:target_profile_id].present? ? EmulatorProfile.find(params[:target_profile_id]) : nil
     decorated = GameSaveDecorator.new(@game_save)
+
     SyncEvent.create!(
       game_save: @game_save,
       action: :pull,
       status: :success,
       performed_at: Time.current
     )
+
     send_data @game_save.file.download,
               filename: decorated.download_filename(target_profile),
               disposition: "attachment"
@@ -70,6 +68,6 @@ class GameSavesController < ApplicationController
   end
 
   def game_save_params
-    params.require(:game_save).permit(:emulator_profile_id, :slot, :file)
+    params.require(:game_save).permit(:emulator_profile_id, :file)
   end
 end

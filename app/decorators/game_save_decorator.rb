@@ -2,11 +2,9 @@
 
 class GameSaveDecorator < ApplicationDecorator
   def emulator_label
-    "#{emulator_profile.name} — #{emulator_profile.platform.text}"
-  end
+    return "Unknown emulator" unless emulator_profile
 
-  def slot_label
-    slot == 0 ? "Auto / State" : "Slot #{slot}"
+    "#{emulator_profile.name} — #{emulator_profile.platform.text}"
   end
 
   def file_size_label
@@ -22,13 +20,23 @@ class GameSaveDecorator < ApplicationDecorator
     end
   end
 
-  def saved_at_label
-    saved_at&.strftime("%b %-d, %Y at %H:%M") || "—"
+  def uploaded_at_label
+    created_at.strftime("%b %-d, %Y at %H:%M")
   end
 
   def download_filename(target_profile = nil)
     profile = target_profile || emulator_profile
-    base = object.game.title.gsub(/[^0-9A-Za-z\-_]/, "_")
-    "#{base}.#{profile.save_extension}"
+    ext = profile&.save_extension || "sav"
+    base = object.game.title.gsub(/[^0-9A-Za-z\-_ ]/, "").strip.gsub(/\s+/, "_")
+    "#{base}.#{ext}"
+  end
+
+  # Returns the full suggested path, e.g. ~/.config/retroarch/saves/Pokemon_Emerald.srm
+  def save_path_hint(target_profile = nil)
+    profile = target_profile || emulator_profile
+    return nil unless profile&.default_save_path.present?
+
+    dir = profile.default_save_path.chomp("/")
+    "#{dir}/#{download_filename(target_profile)}"
   end
 end

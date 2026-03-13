@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_12_212428) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_13_084934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -55,10 +55,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_12_212428) do
   create_table "emulator_profiles", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "default_save_path"
+    t.boolean "is_default", default: false, null: false
     t.string "name", null: false
     t.string "platform", null: false
     t.string "save_extension", null: false
     t.datetime "updated_at", null: false
+    t.boolean "user_selected", default: false, null: false
     t.index ["name", "platform"], name: "index_emulator_profiles_on_name_and_platform", unique: true
   end
 
@@ -68,10 +70,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_12_212428) do
     t.bigint "emulator_profile_id", null: false
     t.bigint "game_id", null: false
     t.datetime "saved_at"
-    t.integer "slot", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["emulator_profile_id"], name: "index_game_saves_on_emulator_profile_id"
-    t.index ["game_id", "emulator_profile_id", "slot"], name: "index_game_saves_on_game_id_and_emulator_profile_id_and_slot", unique: true
     t.index ["game_id"], name: "index_game_saves_on_game_id"
   end
 
@@ -110,6 +110,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_12_212428) do
     t.datetime "created_at", null: false
     t.string "email_address", null: false
     t.string "password_digest", null: false
+    t.boolean "setup_completed", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["email_address"], name: "index_users_on_email_address", unique: true

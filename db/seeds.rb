@@ -82,9 +82,12 @@ profiles = [
 
 profiles.each do |attrs|
   EmulatorProfile.find_or_create_by!(name: attrs[:name], platform: attrs[:platform]) do |profile|
-    profile.save_extension   = attrs[:save_extension]
+    profile.save_extension    = attrs[:save_extension]
     profile.default_save_path = attrs[:default_save_path]
+    profile.is_default        = true
   end
+  # Ensure existing seeded profiles get is_default: true on re-seed
+  EmulatorProfile.where(name: attrs[:name], platform: attrs[:platform]).update_all(is_default: true)
 end
 
 puts "Emulator profiles ready: #{EmulatorProfile.count} total"

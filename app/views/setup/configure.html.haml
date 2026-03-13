@@ -1,0 +1,23 @@
+- content_for :title, "Setup — EmuVault"
+
+= render layout: "setup/wizard_shell", locals: { current_step: 3 } do
+  .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+
+    .px-5.py-4.border-b.border-drac-current
+      %h2.text-base.font-semibold.text-drac-fg Where do your emulators store saves?
+      %p.text-sm.text-drac-comment.mt-0.5 Used to show you where to put downloaded files. Leave blank for mobile-only emulators.
+
+    = form_with url: save_configuration_setup_path, method: :patch do |f|
+      .divide-y.divide-drac-current
+        - @profiles.each do |profile|
+          .px-5.py-4
+            .flex.items-center.gap-2.mb-2
+              %span.text-sm.font-medium.text-drac-fg= profile.name
+              = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
+              %span.text-xs.text-drac-comment.font-mono .#{profile.save_extension}
+            %input.w-full.bg-drac-surface.border.border-drac-current.rounded-lg.px-3.py-2.text-sm.text-drac-fg.font-mono{ type: "text", name: "profiles[#{profile.id}][default_save_path]", value: profile.default_save_path, placeholder: "e.g. ~/.config/retroarch/saves/" }
+
+      .px-5.py-4.border-t.border-drac-current.flex.gap-3
+        = link_to "← Back", profiles_setup_path, class: "flex-1 py-3 rounded-lg border border-drac-current text-drac-comment text-sm font-medium text-center"
+        %button.flex-1.py-3.rounded-lg.bg-drac-purple.text-drac-bg.font-semibold.text-sm{ type: "submit" }
+          Finish setup
