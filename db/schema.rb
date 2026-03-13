@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_13_084934) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_13_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,16 +40,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_084934) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
-  end
-
-  create_table "devices", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "device_type", null: false
-    t.string "identifier"
-    t.datetime "last_seen_at"
-    t.string "name", null: false
-    t.datetime "updated_at", null: false
-    t.index ["identifier"], name: "index_devices_on_identifier", unique: true, where: "(identifier IS NOT NULL)"
   end
 
   create_table "emulator_profiles", force: :cascade do |t|
@@ -96,12 +86,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_084934) do
   create_table "sync_events", force: :cascade do |t|
     t.string "action", null: false
     t.datetime "created_at", null: false
-    t.bigint "device_id"
     t.bigint "game_save_id", null: false
+    t.string "ip_address"
     t.datetime "performed_at", null: false
     t.string "status", null: false
     t.datetime "updated_at", null: false
-    t.index ["device_id"], name: "index_sync_events_on_device_id"
+    t.string "user_agent"
     t.index ["game_save_id"], name: "index_sync_events_on_game_save_id"
   end
 
@@ -121,6 +111,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_084934) do
   add_foreign_key "game_saves", "emulator_profiles"
   add_foreign_key "game_saves", "games"
   add_foreign_key "sessions", "users"
-  add_foreign_key "sync_events", "devices"
   add_foreign_key "sync_events", "game_saves"
 end

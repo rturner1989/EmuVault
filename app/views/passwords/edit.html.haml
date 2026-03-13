@@ -1,15 +1,20 @@
 - content_for :title, "Change Password — EmuVault"
 
-.max-w-md.mx-auto.mt-12.px-4
-  %h1.text-2xl.font-bold.text-gray-900.mb-6 Change Password
+.p-4.lg:p-6.max-w-lg
+  = render ::UI::PageHeaderComponent.new(title: "Change Password")
 
-  - if notice
-    .mb-4.rounded.bg-green-50.p-3.text-sm.text-green-700= notice
-  - if alert
-    .mb-4.rounded.bg-red-50.p-3.text-sm.text-red-700= alert
-
-  = simple_form_for :password, url: password_path, method: :patch, html: { class: "space-y-4" } do |f|
-    = f.input :current_password, as: :password, label: "Current password", input_html: { autocomplete: "current-password", class: "mt-1 block w-full rounded border-gray-300 shadow-sm" }
-    = f.input :password, as: :password, label: "New password", input_html: { autocomplete: "new-password", class: "mt-1 block w-full rounded border-gray-300 shadow-sm" }
-    = f.input :password_confirmation, as: :password, label: "Confirm new password", input_html: { autocomplete: "new-password", class: "mt-1 block w-full rounded border-gray-300 shadow-sm" }
-    = f.button :submit, "Update password", class: "rounded bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+  .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+    = simple_form_for :password, url: password_path, method: :patch do |f|
+      = f.input :current_password, as: :password, label: "Current password",
+          input_html: { autocomplete: "current-password", class: "w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg px-3 py-2 text-sm focus:outline-none focus:border-drac-purple" },
+          label_html: { class: "block text-sm font-medium text-drac-fg mb-1" },
+          wrapper_html: { class: "mb-4" }
+      = f.input :password, as: :password, label: "New password",
+          input_html: { autocomplete: "new-password", class: "w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg px-3 py-2 text-sm focus:outline-none focus:border-drac-purple" },
+          label_html: { class: "block text-sm font-medium text-drac-fg mb-1" },
+          wrapper_html: { class: "mb-4" }
+      = f.input :password_confirmation, as: :password, label: "Confirm new password",
+          input_html: { autocomplete: "new-password", class: "w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg px-3 py-2 text-sm focus:outline-none focus:border-drac-purple" },
+          label_html: { class: "block text-sm font-medium text-drac-fg mb-1" },
+          wrapper_html: { class: "mb-6" }
+      = f.button :submit, "Update password", class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity"

@@ -8,8 +8,8 @@
         %span Dashboard
       = link_to games_path, class: nav_link_class("/games") do
         %span Games
-      = link_to devices_path, class: nav_link_class("/devices") do
-        %span Devices
+      = link_to activity_path, class: nav_link_class("/activity") do
+        %span Activity
       = link_to emulator_profiles_path, class: nav_link_class("/emulator_profiles") do
         %span Emulator Profiles
 
@@ -17,8 +17,6 @@
       .px-3.py-1.text-xs.text-drac-comment.truncate= Current.user.email_address
       = link_to settings_path, class: "flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-fg transition-colors" do
         %span Settings
-      = link_to edit_password_path, class: "flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-fg transition-colors" do
-        %span Change Password
       = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-red transition-colors" do
         %span Sign Out
 
@@ -34,7 +32,7 @@
         %span Dashboard
       = link_to games_path, class: mobile_nav_class("/games") do
         %span Games
-      = link_to devices_path, class: mobile_nav_class("/devices") do
-        %span Devices
+      = link_to activity_path, class: mobile_nav_class("/activity") do
+        %span Activity
       = link_to emulator_profiles_path, class: mobile_nav_class("/emulator_profiles") do
         %span Profiles

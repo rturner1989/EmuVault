@@ -18,7 +18,7 @@ Rails.application.routes.draw do
       end
     end
   end
-  resources :devices
+  resource :activity, only: [:show], controller: "activity"
   resources :emulator_profiles
 
   require "sidekiq/web"

@@ -21,7 +21,9 @@ class GameSavesController < ApplicationController
         game_save: @game_save,
         action: :push,
         status: :success,
-        performed_at: Time.current
+        performed_at: Time.current,
+        ip_address: request.remote_ip,
+        user_agent: request.user_agent
       )
       redirect_to @game, notice: "Save uploaded."
     else
@@ -49,7 +51,9 @@ class GameSavesController < ApplicationController
       game_save: @game_save,
       action: :pull,
       status: :success,
-      performed_at: Time.current
+      performed_at: Time.current,
+      ip_address: request.remote_ip,
+      user_agent: request.user_agent
     )
 
     send_data @game_save.file.download,

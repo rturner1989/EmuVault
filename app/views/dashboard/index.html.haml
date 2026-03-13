@@ -10,9 +10,9 @@
       .mt-2= link_to "View all →", games_path, class: "text-xs text-drac-purple hover:underline"
 
     .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
-      .text-sm.text-drac-comment Devices
-      .mt-1.text-3xl.font-bold.text-drac-fg= @devices_count
-      .mt-2= link_to "View all →", devices_path, class: "text-xs text-drac-purple hover:underline"
+      .text-sm.text-drac-comment Sync Events
+      .mt-1.text-3xl.font-bold.text-drac-fg= @sync_events_count
+      .mt-2= link_to "View all →", activity_path, class: "text-xs text-drac-purple hover:underline"
 
     .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
       .text-sm.text-drac-comment Emulator Profiles
@@ -20,13 +20,16 @@
       .mt-2= link_to "View all →", emulator_profiles_path, class: "text-xs text-drac-purple hover:underline"
 
   .rounded-lg.bg-drac-bg.border.border-drac-current
-    .px-5.py-4.border-b.border-drac-current
-      %h2.text-sm.font-semibold.text-drac-fg Recent Sync Activity
+    .px-5.py-4.border-b.border-drac-current.flex.items-center.justify-between
+      %h2.text-sm.font-semibold.text-drac-fg Recent Activity
+      = link_to "View all →", activity_path, class: "text-xs text-drac-purple hover:underline"
     - if @recent_sync_events.empty?
-      .px-5.py-8.text-center.text-sm.text-drac-comment No sync activity yet.
+      .px-5.py-8.text-center.text-sm.text-drac-comment No activity yet.
     - else
       %ul.divide-y.divide-drac-current
         - @recent_sync_events.each do |event|
           %li.px-5.py-3.flex.items-center.justify-between.gap-4
-            .text-sm.text-drac-fg= event.game_save&.game&.title
-            .text-xs.text-drac-comment= event.performed_at.strftime("%b %-d at %H:%M")
+            .flex.items-center.gap-2
+              = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
+              .text-sm.text-drac-fg= event.game_title
+            .text-xs.text-drac-comment= event.performed_at_label

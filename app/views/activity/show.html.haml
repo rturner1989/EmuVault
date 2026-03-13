@@ -1,0 +1,19 @@
+- content_for :title, "Activity — EmuVault"
+
+.p-4.lg:p-6.max-w-3xl
+  = render ::UI::PageHeaderComponent.new(title: "Activity", subtitle: "Recent uploads and downloads")
+
+  - if @events.empty?
+    = render ::UI::EmptyStateComponent.new(title: "No activity yet", description: "Uploads and downloads will appear here.")
+  - else
+    .rounded-lg.bg-drac-bg.border.border-drac-current.divide-y.divide-drac-current
+      - @events.each do |event|
+        .flex.items-center.gap-4.px-5.py-4
+          .flex-1.min-w-0
+            .flex.items-center.gap-2.mb-1
+              = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
+              = render ::UI::BadgeComponent.new(label: event.device_label, color: event.device_badge_color)
+            %p.text-sm.font-medium.text-drac-fg.truncate= event.game_title
+            %p.text-xs.text-drac-comment= event.performed_at_label
+          - if event.ip_address.present?
+            %span.text-xs.text-drac-comment.font-mono.hidden.lg:block= event.ip_address

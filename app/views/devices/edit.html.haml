@@ -1,7 +1,0 @@
-- content_for :title, "Edit #{@device.name} — EmuVault"
-
-.p-6.max-w-lg
-  = render ::UI::PageHeaderComponent.new(title: "Edit Device")
-
-  .rounded-lg.bg-drac-bg.border.border-drac-current.p-6
-    = render "form", form_url: device_path(@device), submit_label: "Save Changes", cancel_path: device_path(@device)
