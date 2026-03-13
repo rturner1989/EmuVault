@@ -1,0 +1,9 @@
+= form_with url: @url, method: :get, class: "flex items-center gap-3", data: form_data do
+  = select_tag @param,
+    options_for_select(@options, @selected),
+    class: "rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan",
+    data: { action: "change->auto-submit#submit" }
+  - if @selected.present?
+    = link_to @clear_url, class: "text-xs text-drac-comment hover:text-drac-fg transition-colors inline-flex items-center gap-1", data: clear_data do
+      %i.fa-solid.fa-xmark
+      Clear

@@ -4,7 +4,10 @@ class GamesController < ApplicationController
   def index
     authorize! Game
     @form = GameForm.new
-    @games = GameDecorator.decorate(Game.order(:title))
+    @selected_system = params[:system].presence
+    games = Game.order(:title)
+    games = games.where(system: @selected_system) if @selected_system
+    @games = GameDecorator.decorate(games)
   end
 
   def show

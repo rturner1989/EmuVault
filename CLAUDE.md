@@ -11,7 +11,8 @@ A cross-platform emulator save file manager. Allows users to sync game saves bet
 - **Tailwind CSS v4** for styling
 - **HAML** for templates (not ERB)
 - **ViewComponent** for reusable UI components
-- **SimpleForm** for form building
+- **SimpleForm** for form building — use `simple_form_for` for model-backed forms. For non-model forms (e.g. filters), use `form_with url: ..., method: :get`
+- **Font Awesome Free 6** for icons — served from `public/fontawesome/` (copied there by the `postinstall` npm script). Use `%i.fa-solid.fa-icon-name` (solid), `%i.fa-regular.fa-icon-name` (regular). Add `fa-fw` for fixed-width icons. Linked in the layout before the app stylesheet.
 - **Enumerize** for i18n-aware enums on models (not Rails enums)
 - **ActionPolicy** for authorization
 - **SimpleDelegator** for decorators (no Draper gem)
@@ -58,7 +59,7 @@ docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/bui
 
 - Use HAML for all views, never ERB
 - Use ViewComponent for any UI element used in more than one place
-- Use SimpleForm for all forms
+- Use `simple_form_for` for model-backed forms, `form_with url:` for non-model forms (filters, search)
 - Use Enumerize for model enum fields — gives i18n support
 - Use ActionPolicy for any authorization logic — all policies in `app/policies/`
 - Use `ApplicationDecorator < SimpleDelegator` for view-layer decoration — `app/decorators/`
@@ -125,6 +126,7 @@ Component namespaces:
 ## Stimulus controllers
 
 All controllers in `app/javascript/controllers/`:
+- `auto-submit` — submits the parent form. Use on a `<form>` with `data-controller="auto-submit"` and on the triggering element with `data-action="change->auto-submit#submit"`. Used for filter selects that should apply immediately on change.
 - `dialog` — wraps a11y-dialog for CRUD modals. Targets: `container`. Actions: `open`, `close`.
 - `save-hint` — shows the suggested save file path when a download profile is selected. Targets: `select`, `hint`.
 

@@ -6,47 +6,42 @@
   -# Game filter
   - if @games.any?
     .mb-4
-      = form_tag activity_path, method: :get, class: "flex items-center gap-3", data: { turbo_frame: "activity_results" } do
-        = select_tag :game_id,
-            options_for_select([["All games", ""]] + @games.map { |g| [g.title, g.id] }, @selected_game_id),
-            class: "rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan"
-        %button.rounded-lg.border.border-drac-current.px-3.py-2.text-sm.text-drac-comment.hover:border-drac-fg.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "submit" } Filter
-        - if @selected_game_id
-          = link_to activity_path, class: "text-xs text-drac-comment hover:text-drac-fg transition-colors inline-flex items-center gap-1", data: { turbo_frame: "activity_results" } do
-            %i.fa-solid.fa-xmark
-            Clear
+      = render ::UI::FilterSelectComponent.new(url: activity_path,
+        param: :game_id,
+        options: [["All games", ""]] + @games.map { |g| [g.title, g.id] },
+        selected: @selected_game_id,
+        clear_url: activity_path)
 
-  = turbo_frame_tag :activity_results do
-    - if @events.empty?
-      = render ::UI::EmptyStateComponent.new(title: "No activity yet", description: "Uploads and downloads will appear here.")
+  - if @events.empty?
+    = render ::UI::EmptyStateComponent.new(title: "No activity yet", description: "Uploads and downloads will appear here.")
 
-    - elsif @selected_game_id
-      -# Filtered: flat chronological list for one game
-      .rounded-lg.bg-drac-bg.border.border-drac-current.divide-y.divide-drac-current
-        - @events.each do |event|
-          .flex.items-center.gap-4.px-5.py-4
-            .flex-1.min-w-0
-              .flex.items-center.gap-2.mb-1
-                = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
-                = render ::UI::BadgeComponent.new(label: event.device_label, color: event.device_badge_color)
-              %p.text-xs.text-drac-comment= event.performed_at_label
-            - if event.ip_address.present?
-              %span.text-xs.text-drac-comment.font-mono.hidden.lg:block= event.ip_address
+  - elsif @selected_game_id
+    -# Filtered: flat chronological list for one game
+    .rounded-lg.bg-drac-bg.border.border-drac-current.divide-y.divide-drac-current
+      - @events.each do |event|
+        .flex.items-center.gap-4.px-5.py-4
+          .flex-1.min-w-0
+            .flex.items-center.gap-2.mb-1
+              = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
+              = render ::UI::BadgeComponent.new(label: event.device_label, color: event.device_badge_color)
+            %p.text-xs.text-drac-comment= event.performed_at_label
+          - if event.ip_address.present?
+            %span.text-xs.text-drac-comment.font-mono.hidden.lg:block= event.ip_address
 
-    - else
-      -# Unfiltered: grouped by game
-      .space-y-3
-        - @events.group_by { |e| [e.game_id, e.game_title] }.each do |(gid, gtitle), events|
-          .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
-            .px-5.py-3.border-b.border-drac-current
-              = link_to gtitle, game_path(gid), class: "text-sm font-semibold text-drac-purple hover:underline cursor-pointer"
-            .divide-y.divide-drac-current
-              - events.each do |event|
-                .flex.items-center.gap-4.px-5.py-3
-                  .flex-1.min-w-0
-                    .flex.items-center.gap-2
-                      = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
-                      = render ::UI::BadgeComponent.new(label: event.device_label, color: event.device_badge_color)
-                      %span.text-xs.text-drac-comment= event.performed_at_label
-                  - if event.ip_address.present?
-                    %span.text-xs.text-drac-comment.font-mono.hidden.lg:block= event.ip_address
+  - else
+    -# Unfiltered: grouped by game
+    .space-y-3
+      - @events.group_by { |e| [e.game_id, e.game_title] }.each do |(gid, gtitle), events|
+        .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+          .px-5.py-3.border-b.border-drac-current
+            = link_to gtitle, game_path(gid), class: "text-sm font-semibold text-drac-purple hover:underline cursor-pointer"
+          .divide-y.divide-drac-current
+            - events.each do |event|
+              .flex.items-center.gap-4.px-5.py-3
+                .flex-1.min-w-0
+                  .flex.items-center.gap-2
+                    = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
+                    = render ::UI::BadgeComponent.new(label: event.device_label, color: event.device_badge_color)
+                    %span.text-xs.text-drac-comment= event.performed_at_label
+                - if event.ip_address.present?
+                  %span.text-xs.text-drac-comment.font-mono.hidden.lg:block= event.ip_address
