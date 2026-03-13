@@ -13,7 +13,10 @@
           - done = current_step > i + 1
           .flex.items-center.gap-2
             %span.w-7.h-7.rounded-full.flex.items-center.justify-center.text-xs.font-bold{ class: active ? "bg-drac-purple text-drac-bg" : done ? "bg-drac-green text-drac-bg" : "bg-drac-current text-drac-comment" }
-              = done ? "✓" : num
+              - if done
+                %i.fa-solid.fa-check
+              - else
+                = num
             %span.text-xs{ class: active ? "text-drac-fg" : "text-drac-comment" }= label
           - if i < 2
             .h-px.w-6.bg-drac-current

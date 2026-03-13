@@ -6,32 +6,29 @@
   - if @selected_profiles.any?
     .space-y-3
       - @selected_profiles.each do |profile|
-        %div{ data: { controller: "dialog" } }
-          .flex.items-center.gap-3.rounded-lg.bg-drac-bg.border.border-drac-current.px-4.py-3
-            .flex-1.min-w-0
-              .flex.items-center.gap-2.mb-0.5
-                %span.font-medium.text-drac-fg= profile.name
-                = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
-                %span.text-xs.text-drac-comment.font-mono .#{profile.save_extension}
-              - if profile.default_save_path.present?
-                %p.text-xs.text-drac-comment.font-mono.truncate= profile.default_save_path
-              - else
-                %p.text-xs.text-drac-comment No save path set
-            .flex.items-center.gap-2.shrink-0
-              %button.text-xs.text-drac-comment.px-3.py-1.5.rounded-lg.border.border-drac-current{ data: { action: "dialog#open" } }
-                Edit
-              = button_to emulator_profile_path(profile), method: :delete, form: { data: { turbo_confirm: profile.is_default ? "Remove this profile from your list?" : "Delete this profile?" } }, class: "text-xs text-drac-red px-3 py-1.5 rounded-lg border border-drac-red/40 bg-transparent cursor-pointer" do
-                Remove
-
-          -# Edit dialog
-          %div{ id: "dialog-profile-#{profile.id}", aria: { hidden: "true" }, data: { dialog_target: "container" } }
-            .dialog-overlay{ data: { action: "click->dialog#close" } }
-            .dialog-content
-              %div
-                .flex.items-center.justify-between.mb-4
-                  %h2.text-base.font-semibold.text-drac-fg Edit Profile
-                  %button.text-drac-comment{ data: { action: "dialog#close" }, "aria-label": "Close" } ✕
+        .flex.items-center.gap-3.rounded-lg.bg-drac-bg.border.border-drac-current.px-4.py-3
+          .flex-1.min-w-0
+            .flex.items-center.gap-2.mb-0.5
+              %span.font-medium.text-drac-fg= profile.name
+              = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
+              %span.text-xs.text-drac-comment.font-mono .#{profile.save_extension}
+            - if profile.default_save_path.present?
+              %p.text-xs.text-drac-comment.font-mono.truncate= profile.default_save_path
+            - else
+              %p.text-xs.text-drac-comment No save path set
+          .flex.items-center.gap-2.shrink-0
+            -# Edit dialog
+            = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
+              = modal.with_trigger do
+                %button{ class: "text-xs text-drac-comment px-3 py-1.5 rounded-lg border border-drac-current cursor-pointer hover:border-drac-fg hover:text-drac-fg transition-colors", data: { action: "dialog#open" } } Edit
+              = modal.with_body do
                 = render "form", profile: profile, url: emulator_profile_path(profile), method: :patch
+            -# Confirm delete
+            = render ::UI::ConfirmComponent.new(id: "delete-profile-#{profile.id}",
+              title: profile.is_default ? "Remove profile?" : "Delete profile?",
+              message: profile.is_default ? "Remove this profile from your list? You can add it back later." : "Delete this profile permanently?",
+              url: emulator_profile_path(profile),
+              method: :delete)
   - else
     .rounded-lg.bg-drac-bg.border.border-drac-current.p-8.text-center
       %p.text-drac-comment.mb-4 No profiles configured yet.
@@ -49,20 +46,16 @@
                 %span.text-sm.text-drac-fg= emulator_name
                 = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
                 %span.text-xs.text-drac-comment.font-mono .#{profile.save_extension}
-              = button_to emulator_profile_path(profile), method: :patch, params: { emulator_profile: { user_selected: true } }, class: "text-xs text-drac-purple px-3 py-1.5 rounded-lg border border-drac-purple bg-transparent cursor-pointer" do
+              = button_to emulator_profile_path(profile), method: :patch, params: { emulator_profile: { user_selected: true } }, class: "text-xs text-drac-purple px-3 py-1.5 rounded-lg border border-drac-purple bg-transparent cursor-pointer inline-flex items-center gap-1" do
+                %i.fa-solid.fa-plus
                 Add
 
   -# New custom profile
-  %div{ data: { controller: "dialog" } }
-    .flex.justify-end
-      %button.text-sm.text-drac-comment.border.border-drac-current.rounded-lg.px-4.py-2{ data: { action: "dialog#open" } }
-        + Add custom profile
-
-    %div{ id: "dialog-new-profile", aria: { hidden: "true" }, data: { dialog_target: "container" } }
-      .dialog-overlay{ data: { action: "click->dialog#close" } }
-      .dialog-content
-        %div
-          .flex.items-center.justify-between.mb-4
-            %h2.text-base.font-semibold.text-drac-fg New Profile
-            %button.text-drac-comment{ data: { action: "dialog#close" }, "aria-label": "Close" } ✕
-          = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post
+  .flex.justify-end
+    = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
+      = modal.with_trigger do
+        %button{ class: "text-sm text-drac-comment border border-drac-current rounded-lg px-4 py-2 cursor-pointer hover:border-drac-fg hover:text-drac-fg transition-colors inline-flex items-center gap-2", data: { action: "dialog#open" } }
+          %i.fa-solid.fa-plus
+          Add custom profile
+      = modal.with_body do
+        = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post

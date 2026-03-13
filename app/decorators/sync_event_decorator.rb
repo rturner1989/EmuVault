@@ -37,4 +37,8 @@ class SyncEventDecorator < ApplicationDecorator
   def game_title
     object.game_save.game.title
   end
+
+  def game_id
+    object.game_save.game_id
+  end
 end

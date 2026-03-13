@@ -44,7 +44,8 @@ class GameSavesController < ApplicationController
   def download
     authorize! @game_save, to: :show?
 
-    target_profile = params[:target_profile_id].present? ? EmulatorProfile.find(params[:target_profile_id]) : nil
+    target_profile_id = params.dig(:game_save, :target_profile_id)
+    target_profile = target_profile_id.present? ? EmulatorProfile.find(target_profile_id) : nil
     decorated = GameSaveDecorator.new(@game_save)
 
     SyncEvent.create!(
@@ -56,8 +57,11 @@ class GameSavesController < ApplicationController
       user_agent: request.user_agent
     )
 
+    flash[:notice] = "Save downloaded."
+
     send_data @game_save.file.download,
               filename: decorated.download_filename(target_profile),
+              type: "application/octet-stream",
               disposition: "attachment"
   end
 

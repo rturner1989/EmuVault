@@ -1,35 +1,91 @@
 - content_for :title, "Dashboard — EmuVault"
 
-.p-6
-  = render ::UI::PageHeaderComponent.new(title: "Dashboard")
+.p-4.lg:p-6.space-y-6
+  = render ::UI::PageHeaderComponent.new(title: "Dashboard") do |header|
+    = header.with_action do
+      = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
+        = modal.with_trigger do
+          %button{ class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 active:opacity-70 transition-opacity cursor-pointer inline-flex items-center gap-2", data: { action: "dialog#open" } }
+            %i.fa-solid.fa-plus
+            Add Game
+        = modal.with_body do
+          = render "games/form", form_url: games_path, submit_label: "Add Game", cancel_path: root_path
 
-  .grid.grid-cols-1.gap-4.sm:grid-cols-3.mb-8
+  -# Stat cards — 2×2 on mobile, 4-col on desktop
+  .grid.grid-cols-2.gap-4.lg:grid-cols-4
     .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
       .text-sm.text-drac-comment Games
       .mt-1.text-3xl.font-bold.text-drac-fg= @games_count
-      .mt-2= link_to "View all →", games_path, class: "text-xs text-drac-purple hover:underline"
+      .mt-2.text-xs
+        = link_to games_path, class: "text-drac-purple hover:underline cursor-pointer inline-flex items-center gap-1" do
+          View all
+          %i.fa-solid.fa-arrow-right
+
+    .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+      .text-sm.text-drac-comment Needs Upload
+      .mt-1.text-3xl.font-bold{ class: @games_without_save > 0 ? "text-drac-orange" : "text-drac-green" }= @games_without_save
+      .mt-2.text-xs.text-drac-comment= @games_without_save == 0 ? "All synced" : "#{@games_without_save} game#{"s" if @games_without_save != 1} with no save"
+
+    .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+      .text-sm.text-drac-comment Storage Used
+      .mt-1.text-3xl.font-bold.text-drac-fg= @storage_used
+      .mt-2.text-xs.text-drac-comment Save files
 
     .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
       .text-sm.text-drac-comment Sync Events
       .mt-1.text-3xl.font-bold.text-drac-fg= @sync_events_count
-      .mt-2= link_to "View all →", activity_path, class: "text-xs text-drac-purple hover:underline"
+      .mt-2.text-xs
+        = link_to activity_path, class: "text-drac-purple hover:underline cursor-pointer inline-flex items-center gap-1" do
+          View all
+          %i.fa-solid.fa-arrow-right
 
-    .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
-      .text-sm.text-drac-comment Emulator Profiles
-      .mt-1.text-3xl.font-bold.text-drac-fg= @emulator_profiles_count
-      .mt-2= link_to "View all →", emulator_profiles_path, class: "text-xs text-drac-purple hover:underline"
+  -# Main content — activity + insights
+  .grid.grid-cols-1.gap-4.lg:grid-cols-3
 
-  .rounded-lg.bg-drac-bg.border.border-drac-current
-    .px-5.py-4.border-b.border-drac-current.flex.items-center.justify-between
-      %h2.text-sm.font-semibold.text-drac-fg Recent Activity
-      = link_to "View all →", activity_path, class: "text-xs text-drac-purple hover:underline"
-    - if @recent_sync_events.empty?
-      .px-5.py-8.text-center.text-sm.text-drac-comment No activity yet.
-    - else
-      %ul.divide-y.divide-drac-current
-        - @recent_sync_events.each do |event|
-          %li.px-5.py-3.flex.items-center.justify-between.gap-4
-            .flex.items-center.gap-2
-              = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
-              .text-sm.text-drac-fg= event.game_title
-            .text-xs.text-drac-comment= event.performed_at_label
+    -# Recent Activity (wider)
+    .lg:col-span-2
+      .rounded-lg.bg-drac-bg.border.border-drac-current
+        .px-5.py-4.border-b.border-drac-current.flex.items-center.justify-between
+          %h2.text-sm.font-semibold.text-drac-fg Recent Activity
+          = link_to activity_path, class: "text-xs text-drac-purple hover:underline cursor-pointer inline-flex items-center gap-1" do
+            View all
+            %i.fa-solid.fa-arrow-right
+        - if @recent_sync_events.empty?
+          .px-5.py-8.text-center.text-sm.text-drac-comment No activity yet.
+        - else
+          %ul.divide-y.divide-drac-current
+            - @recent_sync_events.each do |event|
+              %li.px-5.py-3.flex.items-center.justify-between.gap-4
+                .flex.items-center.gap-2
+                  = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
+                  = link_to event.game_title, game_path(event.game_id), class: "text-sm text-drac-purple hover:underline truncate cursor-pointer"
+                .text-xs.text-drac-comment= event.performed_at_label
+
+    -# Insights sidebar
+    .space-y-4
+
+      -# Top games
+      .rounded-lg.bg-drac-bg.border.border-drac-current
+        .px-5.py-4.border-b.border-drac-current
+          %h2.text-sm.font-semibold.text-drac-fg Most Active Games
+        - if @top_games.empty?
+          .px-5.py-6.text-center.text-sm.text-drac-comment No syncs yet.
+        - else
+          %ul.divide-y.divide-drac-current
+            - @top_games.each do |game|
+              %li.px-5.py-3.flex.items-center.justify-between.gap-2
+                = link_to game[:title], game_path(game[:id]), class: "text-sm text-drac-purple hover:underline truncate cursor-pointer"
+                .text-xs.text-drac-comment.shrink-0= "#{game[:count]} sync#{"s" if game[:count] != 1}"
+
+      -# Systems breakdown
+      .rounded-lg.bg-drac-bg.border.border-drac-current
+        .px-5.py-4.border-b.border-drac-current
+          %h2.text-sm.font-semibold.text-drac-fg Systems
+        - if @system_counts.empty?
+          .px-5.py-6.text-center.text-sm.text-drac-comment No games yet.
+        - else
+          %ul.divide-y.divide-drac-current
+            - @system_counts.sort_by { |_, count| -count }.each do |system, count|
+              %li.px-5.py-3.flex.items-center.justify-between.gap-2
+                .text-sm.text-drac-fg= system.to_s.upcase
+                .text-xs.text-drac-comment= "#{count} game#{"s" if count != 1}"

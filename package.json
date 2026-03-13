@@ -6,9 +6,11 @@
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+    "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/_application.tailwind.css -o ./app/assets/builds/application.css --minify",
+    "postinstall": "mkdir -p public/fontawesome && cp -r node_modules/@fortawesome/fontawesome-free/css public/fontawesome/css && cp -r node_modules/@fortawesome/fontawesome-free/webfonts public/fontawesome/webfonts"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo": "^8.0.23",
     "@tailwindcss/cli": "^4.2.1",

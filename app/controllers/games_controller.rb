@@ -3,6 +3,7 @@ class GamesController < ApplicationController
 
   def index
     authorize! Game
+    @form = GameForm.new
     @games = GameDecorator.decorate(Game.order(:title))
   end
 
@@ -14,6 +15,7 @@ class GamesController < ApplicationController
     @history = saves.offset(1).limit(19)
     @new_save = @game.game_saves.build
     @user_profiles = EmulatorProfile.where(user_selected: true).ordered
+    @form = GameForm.from(@game)
   end
 
   def new

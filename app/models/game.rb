@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: games
+#
+#  id         :bigint           not null, primary key
+#  rom_hash   :string
+#  system     :string           not null
+#  title      :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_games_on_rom_hash  (rom_hash)
+#
 class Game < ApplicationRecord
   extend Enumerize
 

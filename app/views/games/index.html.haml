@@ -3,12 +3,20 @@
 .p-4
   = render ::UI::PageHeaderComponent.new(title: "Games") do |header|
     - header.with_action do
-      = link_to "Add Game", new_game_path, class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity"
+      = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
+        = modal.with_trigger do
+          %button{ class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 active:opacity-70 transition-opacity cursor-pointer inline-flex items-center gap-2", data: { action: "dialog#open" } }
+            %i.fa-solid.fa-plus
+            Add Game
+        = modal.with_body do
+          = render "games/form", form_url: games_path, submit_label: "Add Game", cancel_path: games_path
 
   - if @games.empty?
     = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
       - c.with_action do
-        = link_to "Add Game", new_game_path, class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90"
+        = link_to new_game_path, class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity cursor-pointer inline-flex items-center gap-2" do
+          %i.fa-solid.fa-plus
+          Add Game
   - else
     .space-y-3
       - @games.each do |game|
@@ -18,4 +26,4 @@
               .text-base.font-semibold.text-drac-fg.truncate= game.title
               .mt-1
                 = render ::UI::BadgeComponent.new(label: game.system_label, color: game.system_badge_color)
-            %span.text-drac-comment.text-lg →
+            %i.fa-solid.fa-chevron-right.text-drac-comment.mt-1

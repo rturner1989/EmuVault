@@ -64,7 +64,8 @@ docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/bui
 - Use `ApplicationDecorator < SimpleDelegator` for view-layer decoration — `app/decorators/`
 - Use form objects (`ApplicationForm` with `ActiveModel::API`) for non-trivial form handling — `app/forms/`
 - Controllers are thin — logic lives in models, decorators, or form objects
-- Use Turbo Frames and Turbo Streams for dynamic updates, avoid full page reloads
+- Prefer Turbo Frames for partial page updates — wrap sections that change independently (e.g. form results, filtered lists) in `turbo_frame_tag`. Controllers need no changes; Turbo follows redirects and extracts the matching frame from the response.
+- Avoid inline event handlers (`onchange="..."`, `onclick="..."`) — use Stimulus data-actions instead. Never add `unsafe-inline` to CSP.
 - Use a11y-dialog via the Stimulus `dialog` controller for CRUD modals
 - RSpec request specs for API/controller behaviour, system specs (Capybara) for feature flows
 - FactoryBot for test data, Faker for fake values
@@ -161,9 +162,19 @@ Form objects live in `app/forms/`. Views use `url:` explicitly (don't rely on po
 - `EmulatorProfile` — library of known emulators. Seeded defaults have `is_default: true` (can't be deleted, only deselected). User-activated ones have `user_selected: true`. Fields: `name`, `platform` (Enumerize), `save_extension`, `default_save_path`, `is_default`, `user_selected`.
 - `Game` — a game in the user's library. Has `system` enum via Enumerize.
 - `GameSave` — a save file version, linked to a game and optional emulator profile. Latest = most recent by `created_at`. No slot concept. File stored via Active Storage. Fields: `game_id`, `emulator_profile_id` (optional), `checksum`, `saved_at`.
-- `SyncEvent` — history of push/pull actions with timestamps.
-- `Device` — a registered device (PC, phone, tablet).
+- `SyncEvent` — passive audit log of uploads/downloads. Auto-created on every upload/download. Fields: `game_save_id`, `action` (push/pull), `status` (success/failed), `performed_at`, `ip_address`, `user_agent`. No manual device registration — device type is inferred from `user_agent` in `SyncEventDecorator`.
 - `User` — has `setup_completed` boolean (false until wizard is finished).
+
+## Activity log
+
+`SyncEvent` records are created automatically by `GameSavesController` on every upload (`action: :push`) and download (`action: :pull`), capturing `request.remote_ip` and `request.user_agent`. No manual device management.
+
+`SyncEventDecorator` infers device type from UA:
+- iPad/Android Tablet/Kindle → `:tablet`
+- Mobile/Android/iPhone/iPod → `:phone`
+- Anything else → `:desktop`
+
+Activity is exposed at `/activity` (`ActivityController#show`, singular resource with `controller: "activity"` to avoid Rails pluralising to `ActivitiesController`).
 
 ## First-run setup wizard
 
@@ -177,9 +188,11 @@ Uses a separate `setup` layout (`app/views/layouts/setup.html.haml`) — no nav 
 
 After completion: redirects to `games_path` if games exist, otherwise `new_game_path`.
 
-### Setup routing gotcha
+### Singular resource routing gotcha
 
-`resource :setup` (singular) requires `controller: "setup"` explicitly — otherwise Rails pluralises to `SetupsController`. Extra actions defined inside the block (no `on: :collection`) generate helpers named `{action}_setup_path` (e.g. `profiles_setup_path`, `configure_setup_path`), **not** `setup_{action}_path`.
+`resource :foo` (singular) requires `controller: "foo"` explicitly when Rails would pluralise the controller name (e.g. `activity` → `ActivitiesController`, `setup` → `SetupsController`). Always add `controller:` for non-standard pluralisations.
+
+Extra actions defined inside a singular resource block (no `on: :collection`) generate helpers named `{action}_foo_path` (e.g. `profiles_setup_path`), **not** `foo_{action}_path`.
 
 ## Emulator profiles
 
@@ -232,12 +245,12 @@ See `.env.example` for all required vars. Key ones:
   - Admin credentials seeded from `ADMIN_EMAIL` / `ADMIN_PASSWORD` env vars
   - All routes protected by default via `ApplicationController`
   - Sidekiq Web protected by HTTP Basic Auth using admin credentials
-  - Password change available at `/password/edit` (no email reset — self-hosted)
+  - Password change available via Settings → `/password/edit` (no email reset — self-hosted)
   - `simple_form_for :session` nests params under `session[field]` — controller uses `params.require(:session).permit(...)`
 
 ## Architecture intent
 
-Distributed as a Docker image — users run `./scripts/install.sh` then `docker compose up` on their PC or home server and access from any device via browser (or Tailscale for remote access).
+Distributed as a Docker image — users run `./scripts/install.sh` then `docker compose up` on their PC or home server and access from any device via browser (or Tailscale for remote access). No Tailscale requirement — it's just one convenient remote access option alongside a reverse proxy.
 
 Users configure:
 - Which emulators they use (selected during setup wizard, manageable at `/emulator_profiles`)
@@ -290,3 +303,5 @@ SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrappe
 - [x] JS stack — Hotwire + a11y-dialog wired via esbuild; Stimulus controllers: dialog, save-hint
 - [x] Game show redesign — current save card, save path hint, upload toggle, history panel
 - [x] Emulator profiles CRUD — index shows selected only, edit/new via a11y-dialog modals
+- [x] Activity log — auto-tracked SyncEvents (ip_address + user_agent), Device model removed, UA-based device type inference in SyncEventDecorator, /activity page
+- [x] Nav/settings cleanup — removed duplicate Change Password nav link, password form restyled to Dracula theme

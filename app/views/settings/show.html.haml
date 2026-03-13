@@ -6,4 +6,8 @@
   .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
     %h2.text-sm.font-semibold.text-drac-fg.mb-1 Account
     %p.text-sm.text-drac-comment.mb-4= @user.email_address
-    = link_to "Change Password", edit_password_path, class: "text-sm text-drac-purple underline"
+    = render ::UI::ModalComponent.new(id: "change-password-dialog", title: "Change Password") do |modal|
+      = modal.with_trigger do
+        = render ::UI::ActionComponent.new(label: "Change Password", variant: :secondary, data: { action: "dialog#open" })
+      = modal.with_body do
+        = render "passwords/form"

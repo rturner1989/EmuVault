@@ -18,6 +18,8 @@
             %input.w-full.bg-drac-surface.border.border-drac-current.rounded-lg.px-3.py-2.text-sm.text-drac-fg.font-mono{ type: "text", name: "profiles[#{profile.id}][default_save_path]", value: profile.default_save_path, placeholder: "e.g. ~/.config/retroarch/saves/" }
 
       .px-5.py-4.border-t.border-drac-current.flex.gap-3
-        = link_to "← Back", profiles_setup_path, class: "flex-1 py-3 rounded-lg border border-drac-current text-drac-comment text-sm font-medium text-center"
+        = link_to profiles_setup_path, class: "flex-1 py-3 rounded-lg border border-drac-current text-drac-comment text-sm font-medium inline-flex items-center justify-center gap-2" do
+          %i.fa-solid.fa-arrow-left
+          Back
         %button.flex-1.py-3.rounded-lg.bg-drac-purple.text-drac-bg.font-semibold.text-sm{ type: "submit" }
           Finish setup

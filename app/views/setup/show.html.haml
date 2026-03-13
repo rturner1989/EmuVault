@@ -24,5 +24,6 @@
         %label.text-xs.font-medium.text-drac-comment Confirm password
         %input.w-full.bg-drac-surface.border.border-drac-current.rounded-lg.px-3.py-2.text-sm.text-drac-fg{ type: "password", name: "user[password_confirmation]", autocomplete: "new-password" }
 
-      %button.w-full.py-3.rounded-lg.bg-drac-purple.text-drac-bg.font-semibold.text-sm{ type: "submit" }
-        Next: Choose emulators →
+      %button{ class: "w-full py-3 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm inline-flex items-center justify-center gap-2", type: "submit" }
+        Next: Choose emulators
+        %i.fa-solid.fa-arrow-right

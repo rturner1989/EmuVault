@@ -5,12 +5,12 @@ class PasswordsController < ApplicationController
   def update
     if Current.user.authenticate(params[:current_password])
       if Current.user.update(params.permit(:password, :password_confirmation))
-        redirect_to root_path, notice: "Password updated."
+        redirect_to settings_path, notice: "Password updated."
       else
-        redirect_to edit_password_path, alert: "New passwords did not match."
+        redirect_to settings_path, alert: "New passwords did not match."
       end
     else
-      redirect_to edit_password_path, alert: "Current password is incorrect."
+      redirect_to settings_path, alert: "Current password is incorrect."
     end
   end
 end

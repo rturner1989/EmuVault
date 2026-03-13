@@ -1,0 +1,4 @@
+- if @href
+  = link_to @label, @href, **@html_options
+- else
+  %button{ **@html_options }= @label

@@ -1,3 +1,25 @@
+# == Schema Information
+#
+# Table name: game_saves
+#
+#  id                  :bigint           not null, primary key
+#  checksum            :string
+#  saved_at            :datetime
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  emulator_profile_id :bigint           not null
+#  game_id             :bigint           not null
+#
+# Indexes
+#
+#  index_game_saves_on_emulator_profile_id  (emulator_profile_id)
+#  index_game_saves_on_game_id              (game_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (emulator_profile_id => emulator_profiles.id)
+#  fk_rails_...  (game_id => games.id)
+#
 class GameSave < ApplicationRecord
   belongs_to :game
   belongs_to :emulator_profile, optional: true

@@ -1,0 +1,11 @@
+%div{ data: { controller: "dialog" } }
+  = trigger
+  %div{ id: @id, aria: { hidden: "true" }, data: { dialog_target: "container" } }
+    .dialog-overlay{ data: { action: "click->dialog#close" } }
+    .dialog-content
+      %div
+        .flex.items-center.justify-between.mb-4
+          %h2.text-base.font-semibold.text-drac-fg= @title
+          %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "dialog#close" }, "aria-label": "Close" }
+            %i.fa-solid.fa-xmark
+        = body
