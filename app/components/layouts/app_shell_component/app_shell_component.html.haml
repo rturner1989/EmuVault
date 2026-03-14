@@ -20,7 +20,7 @@
       .px-3.py-1.text-xs.text-drac-comment.truncate= Current.user.email_address
       %button.flex.items-center.justify-between.w-full.px-3.py-2.rounded-lg.text-sm.text-drac-comment.hover:bg-drac-current.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "notifications#open" } }
         %span Notifications
-        .relative.inline-flex.mr-1
+        .relative.inline-flex.items-center.justify-center.w-6.h-6
           %i.fas.fa-bell
           = render "shared/notification_badge", count: unread_count
       = link_to settings_path, class: "flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-fg transition-colors" do
@@ -33,8 +33,8 @@
       = link_to root_path, class: "text-lg font-bold text-drac-purple hover:opacity-80 transition-opacity" do
         EmuVault
       .ml-auto
-        %button.relative.p-2.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "notifications#open" } }
-          %i.fas.fa-bell.text-lg
+        %button.relative.inline-flex.items-center.justify-center.w-8.h-8.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "notifications#open" } }
+          %i.fas.fa-bell
           = render "shared/notification_badge", count: unread_count
 
     .w-full.max-w-4xl.mx-auto
@@ -52,9 +52,9 @@
         %span Profiles
 
   -# Notification panel overlay
-  %div{ data: { notifications_target: "backdrop" }, class: "fixed inset-0 z-50 hidden" }
-    %div.absolute.inset-0{ class: "bg-black/40", data: { action: "click->notifications#close" } }
-    .absolute.right-0.top-0.h-full.w-full.lg:max-w-sm.bg-drac-bg.border-l.border-drac-current.flex.flex-col
+  %div{ data: { notifications_target: "backdrop" }, class: "fixed inset-0 z-50 pointer-events-none" }
+    %div.absolute.inset-0.opacity-0.transition-opacity.duration-300{ class: "bg-black/40", data: { notifications_target: "overlay", action: "click->notifications#close" } }
+    .absolute.right-0.top-0.h-full.w-full.lg:max-w-sm.bg-drac-bg.border-l.border-drac-current.flex.flex-col.translate-x-full.transition-transform.duration-300.ease-out{ data: { notifications_target: "panel" } }
       .flex.items-center.justify-between.px-4.py-3.border-b.border-drac-current.notification-panel-top
         %h2.font-semibold.text-drac-fg Notifications
         %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer.p-1{ data: { action: "click->notifications#close" } }

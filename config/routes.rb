@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   resource :activity, only: [:show], controller: "activity"
   resources :emulator_profiles
 
-  resources :notifications, only: %i[index] do
+  resources :notifications, only: %i[index show] do
     collection do
       patch :mark_all_read
     end

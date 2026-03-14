@@ -6,13 +6,12 @@
   - else
     .divide-y.divide-drac-current
       - @notifications.each do |notification|
-        .flex.gap-3.px-4.py-3{ class: notification.read_at ? "opacity-60" : "" }
+        = link_to notification_path(notification), data: { turbo_frame: "_top", turbo_prefetch: false }, class: "flex gap-3 px-4 py-3 hover:bg-drac-current transition-colors cursor-pointer" do
           .flex-shrink-0.mt-0.5
             .w-8.h-8.rounded-full.bg-drac-current.flex.items-center.justify-center
               %i.fas.fa-floppy-disk.text-drac-purple.text-xs
           .flex-1.min-w-0
             %p.text-sm.text-drac-fg.leading-snug= notification.message
             %p.text-xs.text-drac-comment.mt-0.5= time_ago_in_words(notification.created_at) + " ago"
-          - unless notification.read_at
-            .flex-shrink-0.mt-1.5
-              .w-2.h-2.rounded-full.bg-drac-purple
+          .flex-shrink-0.mt-1.5
+            .w-2.h-2.rounded-full.bg-drac-purple
