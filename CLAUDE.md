@@ -129,6 +129,7 @@ All controllers in `app/javascript/controllers/`:
 - `auto-submit` — submits the parent form. Use on a `<form>` with `data-controller="auto-submit"` and on the triggering element with `data-action="change->auto-submit#submit"`. Used for filter selects that should apply immediately on change.
 - `dialog` — wraps a11y-dialog for CRUD modals. Targets: `container`. Actions: `open`, `close`.
 - `save-hint` — shows the suggested save file path when a download profile is selected. Targets: `select`, `hint`.
+- `notifications` — slide-in notification panel with backdrop. Targets: `backdrop`, `overlay`, `panel`, `frame`. Actions: `open`, `close`, `markAllRead`.
 
 ## Decorator pattern
 
@@ -222,12 +223,12 @@ See `.env.example` for all required vars. Key ones:
 - `config/initializers/better_errors.rb` — allows BetterErrors from any IP (needed for Docker)
 - `config/initializers/rack_attack.rb` — rate limiting (300 req/5min, 30 uploads/5min)
 - `config/initializers/content_security_policy.rb` — CSP enabled, frame-ancestors :none
-- `config/environments/production.rb` — force_ssl, assume_ssl, host_authorization enabled
+- `config/environments/production.rb` — SSL controlled via `FORCE_SSL` env var (off by default for Tailscale)
 - `Procfile.dev` — Puma binds to `0.0.0.0` so it's reachable inside Docker
 - `scripts/install.sh` — one-command setup, generates secure DB password via openssl
 - `scripts/` — attach, bash, bundle, console, migrate, rollback, run_tests, i18n, install
 
-## Docker services
+## Docker services (development)
 
 - `app` — Rails + esbuild + Tailwind (port 3000)
 - `postgres` — PostgreSQL 17 (credentials from .env)
@@ -235,12 +236,52 @@ See `.env.example` for all required vars. Key ones:
 - `sidekiq` — background job worker
 - `selenium-hub` + `chrome` + `edge` + `firefox` — for system tests
 
+## Production deployment
+
+Distributed as a Docker image on Docker Hub: `rturner1989/emuvault:latest`
+
+### Building and pushing
+
+```bash
+docker build -f Dockerfile.prod -t rturner1989/emuvault:latest .
+docker push rturner1989/emuvault:latest
+```
+
+### Dockerfile.prod
+
+Multi-stage build:
+- **Stage 1 (build)**: Ruby + Node.js, installs gems (without dev/test), yarn packages, precompiles JS/CSS/assets
+- **Stage 2 (runtime)**: `ruby:3.4.8-slim`, copies gems + app code, no Node.js in production
+
+### Production compose (`docker-compose.prod.yml`)
+
+4 services: `app`, `sidekiq`, `postgres`, `redis`. All env vars are inline (no `.env` file) — suitable for TrueNAS Scale custom apps or any Docker host.
+
+Required environment variables:
+- `SECRET_KEY_BASE` — generate with `bundle exec rails secret`
+- `DB_PASSWORD` — shared between app/sidekiq/postgres
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — login credentials (seeded on first run)
+- `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` — web push notifications
+
+Volume mounts (bind to host paths):
+- `/path/to/storage` → `/emu-vault/storage` (Active Storage save files)
+- `/path/to/postgres` → `/var/lib/postgresql/data`
+- `/path/to/redis` → `/data`
+
+### SSL
+
+SSL is off by default (`FORCE_SSL` env var). Tailscale encrypts traffic end-to-end, so no reverse proxy or SSL termination is needed when accessing via Tailscale IP.
+
+### First run
+
+The app command runs `rails db:prepare` before starting Puma, which creates the database, runs migrations, and seeds. The setup wizard appears on first login.
+
 ## Security
 
 - DB credentials via `.env` only (gitignored), not hardcoded anywhere
 - `master.key` gitignored
 - CSP enabled with Turbo/esbuild-compatible settings
-- `force_ssl` + `assume_ssl` in production
+- `force_ssl` + `assume_ssl` controlled via `FORCE_SSL` env var (off by default for Tailscale)
 - Rack::Attack rate limiting
 - BetterErrors restricted to development only
 - Single-user authentication via Rails 8 native auth (`rails generate authentication`)
@@ -307,3 +348,5 @@ SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrappe
 - [x] Emulator profiles CRUD — index shows selected only, edit/new via a11y-dialog modals
 - [x] Activity log — auto-tracked SyncEvents (ip_address + user_agent), Device model removed, UA-based device type inference in SyncEventDecorator, /activity page
 - [x] Nav/settings cleanup — removed duplicate Change Password nav link, password form restyled to Dracula theme
+- [x] Notifications — real-time badge via ActionCable, slide-in panel, click-to-read, mark all read, web push (VAPID)
+- [x] Production deployment — Dockerfile.prod, docker-compose.prod.yml, Docker Hub image, TrueNAS Scale support

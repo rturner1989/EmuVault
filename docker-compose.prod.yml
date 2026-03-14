@@ -1,0 +1,91 @@
+# docker-compose.prod.yml — Production deployment for NAS / home server
+#
+# Quick start:
+#   1. Copy this file and replace all YOUR_* placeholders with real values
+#   2. Create persistent directories for postgres, redis, and storage
+#   3. Deploy as a custom app (TrueNAS Scale) or run: docker compose -f docker-compose.prod.yml up -d
+#
+# Generate SECRET_KEY_BASE with:
+#   docker run --rm rturner1989/emuvault:latest bundle exec rails secret
+#
+# Generate VAPID keys with:
+#   docker run --rm rturner1989/emuvault:latest bundle exec rails runner "puts WebPush.generate_key.to_hash"
+
+services:
+  app:
+    image: rturner1989/emuvault:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: production
+      RAILS_LOG_TO_STDOUT: "true"
+      RAILS_SERVE_STATIC_FILES: "true"
+      DB_HOST: postgres
+      DB_USERNAME: emuvault
+      DB_PASSWORD: YOUR_DB_PASSWORD
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY_BASE: YOUR_SECRET_KEY_BASE
+      ADMIN_EMAIL: YOUR_EMAIL
+      ADMIN_PASSWORD: YOUR_PASSWORD
+      VAPID_PUBLIC_KEY: YOUR_VAPID_PUBLIC_KEY
+      VAPID_PRIVATE_KEY: YOUR_VAPID_PRIVATE_KEY
+    volumes:
+      - /path/to/storage:/emu-vault/storage
+    command: >
+      bash -c "
+        bundle exec rails db:prepare &&
+        bundle exec puma -C config/puma.rb
+      "
+
+  sidekiq:
+    image: rturner1989/emuvault:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: production
+      DB_HOST: postgres
+      DB_USERNAME: emuvault
+      DB_PASSWORD: YOUR_DB_PASSWORD
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY_BASE: YOUR_SECRET_KEY_BASE
+      VAPID_PUBLIC_KEY: YOUR_VAPID_PUBLIC_KEY
+      VAPID_PRIVATE_KEY: YOUR_VAPID_PRIVATE_KEY
+    volumes:
+      - /path/to/storage:/emu-vault/storage
+    command: bundle exec sidekiq
+
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: emuvault
+      POSTGRES_PASSWORD: YOUR_DB_PASSWORD
+      POSTGRES_DB: emu_vault_production
+    volumes:
+      - /path/to/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U emuvault"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - /path/to/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5

@@ -66,6 +66,74 @@ The app binds to `0.0.0.0:3000`, so it's reachable from any device on your local
 
 For remote access (e.g. from your phone when away from home), a reverse proxy or [Tailscale](https://tailscale.com) works well.
 
+## Deploying to a NAS or home server
+
+EmuVault is available as a Docker image on Docker Hub: `rturner1989/emuvault`
+
+This is the recommended way to run EmuVault in production — pull the pre-built image and deploy it alongside PostgreSQL and Redis using the provided compose file.
+
+### 1. Generate secrets
+
+```bash
+# Generate a SECRET_KEY_BASE
+docker run --rm rturner1989/emuvault:latest bundle exec rails secret
+
+# Generate VAPID keys for push notifications
+docker run --rm rturner1989/emuvault:latest bundle exec rails runner "puts WebPush.generate_key.to_hash"
+```
+
+### 2. Create persistent directories
+
+Create three directories on your NAS for data persistence:
+
+```
+/path/to/emuvault/postgres   # database
+/path/to/emuvault/redis      # job queue
+/path/to/emuvault/storage    # save files
+```
+
+### 3. Deploy with Docker Compose
+
+Copy `docker-compose.prod.yml` from this repo and replace the placeholder values:
+
+- `YOUR_SECRET_KEY_BASE` — from step 1
+- `YOUR_DB_PASSWORD` — choose a strong password
+- `YOUR_EMAIL` / `YOUR_PASSWORD` — your login credentials
+- `YOUR_VAPID_PUBLIC_KEY` / `YOUR_VAPID_PRIVATE_KEY` — from step 1
+- `/path/to/...` — your persistent directory paths from step 2
+
+Then start it:
+
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+
+The app will create the database, run migrations, seed emulator profiles, and start. Access it at `http://<server-ip>:3000`.
+
+### TrueNAS Scale
+
+1. Go to **Apps > Discover Apps > Custom App**
+2. Name: `emuvault`
+3. Paste the contents of `docker-compose.prod.yml` with your values filled in
+4. Save and deploy
+
+### SSL
+
+SSL is off by default. If you access EmuVault over [Tailscale](https://tailscale.com), traffic is already encrypted end-to-end — no reverse proxy needed.
+
+To enable SSL (e.g. behind nginx or Caddy), add `FORCE_SSL: "true"` to the app and sidekiq environment variables.
+
+### Updating
+
+```bash
+docker pull rturner1989/emuvault:latest
+docker compose -f docker-compose.prod.yml up -d
+```
+
+The app runs `rails db:prepare` on startup, so any pending migrations are applied automatically.
+
+---
+
 ## Installing as a home screen app (iPhone)
 
 1. Open the app in Safari
