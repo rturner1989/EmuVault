@@ -5,9 +5,19 @@ class GamesController < ApplicationController
     authorize! Game
     @form = GameForm.new
     @selected_system = params[:system].presence
-    games = Game.order(:title)
+    @selected_sort = params[:sort].presence || "title_asc"
+    games = Game.all
     games = games.where(system: @selected_system) if @selected_system
+    games = case @selected_sort
+            when "title_desc" then games.order(title: :desc)
+            when "newest"     then games.order(created_at: :desc)
+            when "oldest"     then games.order(created_at: :asc)
+            when "system"     then games.order(:system, :title)
+            else                   games.order(:title)
+            end
     @games = GameDecorator.decorate(games)
+    used_systems = Game.distinct.pluck(:system).compact
+    @system_options = Game.system.options.select { |_text, value| used_systems.include?(value) }
   end
 
   def show

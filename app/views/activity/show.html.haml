@@ -3,14 +3,17 @@
 .p-4.lg:p-6.max-w-3xl
   = render ::UI::PageHeaderComponent.new(title: "Activity", subtitle: "Recent uploads and downloads")
 
-  -# Game filter
-  - if @games.any?
+  - if @games.any? || @events.any?
     .mb-4
-      = render ::UI::FilterSelectComponent.new(url: activity_path,
-        param: :game_id,
-        options: [["All games", ""]] + @games.map { |g| [g.title, g.id] },
-        selected: @selected_game_id,
-        clear_url: activity_path)
+      = form_with url: activity_path, method: :get, data: { controller: "auto-submit" } do
+        .flex.items-center.gap-2.flex-wrap
+          - if @games.any?
+            = select_tag :game_id, options_for_select([["All games", ""], *@games.map { |g| [g.title, g.id] }], @selected_game_id), class: "rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan", data: { action: "change->auto-submit#submit" }
+          = select_tag :sort, options_for_select([["Newest first", "newest"], ["Oldest first", "oldest"]], @selected_sort), class: "rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan", data: { action: "change->auto-submit#submit" }
+          - if @selected_game_id.present?
+            = link_to activity_path(sort: @selected_sort), class: "text-xs text-drac-comment hover:text-drac-fg transition-colors inline-flex items-center gap-1" do
+              %i.fa-solid.fa-xmark
+              Clear
 
   - if @events.empty?
     = render ::UI::EmptyStateComponent.new(title: "No activity yet", description: "Uploads and downloads will appear here.")

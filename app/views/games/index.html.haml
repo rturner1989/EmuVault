@@ -13,11 +13,15 @@
     = modal.with_page_content do
       - if @games.any? || @selected_system.present?
         .mb-4
-          = render ::UI::FilterSelectComponent.new(url: games_path,
-            param: :system,
-            options: [["All games", ""]] + Game.system.options,
-            selected: @selected_system,
-            clear_url: games_path)
+          = form_with url: games_path, method: :get, data: { controller: "auto-submit" } do
+            .flex.items-center.gap-2.flex-wrap
+              - if @system_options.size > 1
+                = select_tag :system, options_for_select([["All systems", ""], *@system_options], @selected_system), class: "rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan", data: { action: "change->auto-submit#submit" }
+              = select_tag :sort, options_for_select([["Title A→Z", "title_asc"], ["Title Z→A", "title_desc"], ["Newest first", "newest"], ["Oldest first", "oldest"], ["By system", "system"]], @selected_sort), class: "rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan", data: { action: "change->auto-submit#submit" }
+              - if @selected_system.present?
+                = link_to games_path(sort: @selected_sort), class: "text-xs text-drac-comment hover:text-drac-fg transition-colors inline-flex items-center gap-1" do
+                  %i.fa-solid.fa-xmark
+                  Clear
       - if @games.empty?
         = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
           - c.with_action do
