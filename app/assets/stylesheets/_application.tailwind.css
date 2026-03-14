@@ -61,6 +61,11 @@ body {
 
 /* iPhone safe-area */
 .mobile-top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
   padding-top: env(safe-area-inset-top);
 }
 
@@ -77,6 +82,7 @@ body {
 }
 
 .mobile-bottom-content-pad {
+  padding-top: calc(2.5rem + env(safe-area-inset-top));
   padding-bottom: calc(4rem + env(safe-area-inset-bottom));
 }
 

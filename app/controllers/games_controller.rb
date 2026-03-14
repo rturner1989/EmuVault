@@ -15,7 +15,7 @@ class GamesController < ApplicationController
     @game = GameDecorator.new(@game)
     saves = @game.game_saves.latest_first.includes(:emulator_profile)
     @latest_save = GameSaveDecorator.decorate(saves.first) if saves.exists?
-    @history = saves.offset(1).limit(19)
+    @history = saves.offset(1)
     @new_save = @game.game_saves.build
     @user_profiles = EmulatorProfile.where(user_selected: true).ordered
     @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)

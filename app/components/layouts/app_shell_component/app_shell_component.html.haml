@@ -28,7 +28,7 @@
       = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-red transition-colors" do
         %span Sign Out
 
-  .lg:pl-64.flex-1.flex.flex-col.min-h-screen.mobile-bottom-content-pad.lg:pb-0
+  .lg:pl-64.flex-1.flex.flex-col.min-h-screen.mobile-bottom-content-pad.lg:pt-0.lg:pb-0
     .lg:hidden.flex.items-center.px-4.pb-2.bg-drac-bg.border-b.border-drac-current.mobile-top-bar
       = link_to root_path, class: "text-lg font-bold text-drac-purple hover:opacity-80 transition-opacity" do
         EmuVault
@@ -50,6 +50,8 @@
         %span Activity
       = link_to emulator_profiles_path, class: mobile_nav_class("/emulator_profiles") do
         %span Profiles
+      = link_to settings_path, class: mobile_nav_class("/settings") do
+        %span Settings
 
   -# Notification panel overlay
   %div{ data: { notifications_target: "backdrop" }, class: "fixed inset-0 z-50 pointer-events-none" }

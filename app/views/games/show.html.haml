@@ -102,10 +102,32 @@
 
     -# History
     - if @history.exists?
-      %details{ open: true, class: "rounded-lg bg-drac-bg border border-drac-current overflow-hidden" }
-        %summary.px-4.py-3.text-sm.font-medium.text-drac-comment.cursor-pointer.hover:text-drac-fg.transition-colors= "Previous versions (#{@history.count})"
+      - history_all = @history.to_a
+      - history_preview = history_all.first(5)
+      .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+        - if history_all.size > 5
+          = render ::UI::ModalComponent.new(id: "save-history-dialog", title: "Save History") do |modal|
+            = modal.with_trigger do
+              .px-4.py-3.border-b.border-drac-current.flex.items-center.justify-between
+                %h2.text-sm.font-semibold.text-drac-fg Previous Versions
+                %button{ class: "text-xs text-drac-purple hover:opacity-80 transition-opacity cursor-pointer", data: { action: "dialog#open" } }
+                  View all #{history_all.size}
+            = modal.with_body do
+              .max-h-80.overflow-y-auto.-mx-6.-mb-6
+                .divide-y.divide-drac-current
+                  - history_all.each do |save|
+                    - decorated = GameSaveDecorator.new(save)
+                    .flex.items-center.gap-3.px-6.py-3
+                      .flex-1.min-w-0
+                        .text-sm.text-drac-fg= decorated.uploaded_at_label
+                        .text-xs.text-drac-comment= "#{decorated.emulator_label} · #{decorated.file_size_label}"
+                      = link_to download_game_game_save_path(@game, save), class: "text-xs text-drac-cyan px-3 py-1.5 rounded-lg border border-drac-cyan shrink-0 cursor-pointer hover:bg-drac-cyan hover:text-drac-bg transition-colors", data: { turbo: false } do
+                        %i.fa-solid.fa-download
+        - else
+          .px-4.py-3.border-b.border-drac-current
+            %h2.text-sm.font-semibold.text-drac-fg Previous Versions
         .divide-y.divide-drac-current
-          - @history.each do |save|
+          - history_preview.each do |save|
             - decorated = GameSaveDecorator.new(save)
             .flex.items-center.gap-3.px-4.py-3
               .flex-1.min-w-0

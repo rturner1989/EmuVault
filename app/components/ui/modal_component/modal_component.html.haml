@@ -9,3 +9,5 @@
           %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "dialog#close" }, "aria-label": "Close" }
             %i.fa-solid.fa-xmark
         = body
+  - if page_content?
+    = page_content

@@ -1,0 +1,4 @@
+prune_sync_events:
+  cron: "0 3 * * *"
+  class: PruneSyncEventsJob
+  description: "Remove SyncEvent records older than ACTIVITY_RETENTION_DAYS (default 90 days)"
