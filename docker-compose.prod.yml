@@ -5,6 +5,10 @@
 #   2. Create persistent directories for postgres, redis, and storage
 #   3. Deploy as a custom app (TrueNAS Scale) or run: docker compose -f docker-compose.prod.yml up -d
 #
+# Updating to a new version (TrueNAS Scale):
+#   Edit the app and change the image tag (e.g. 1.0.0 → 1.1.0) — TrueNAS will pull and restart automatically.
+#   Available versions: https://hub.docker.com/r/rturner1989/emuvault/tags
+#
 # Generate SECRET_KEY_BASE with:
 #   docker run --rm rturner1989/emuvault:latest bundle exec rails secret
 #
