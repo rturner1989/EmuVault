@@ -1,6 +1,6 @@
 - content_for :title, "Settings — EmuVault"
 
-.p-4.lg:p-6.max-w-2xl.space-y-4
+.p-4.lg:p-6.max-w-2xl.space-y-4.overflow-x-hidden
   = render ::UI::PageHeaderComponent.new(title: "Settings")
 
   .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
@@ -31,7 +31,9 @@
       .flex.items-center.justify-between.rounded-lg.border.border-drac-current.px-4.py-3
         .min-w-0
           %p.text-sm.font-medium.text-drac-fg Uptime Kuma
-          %p.text-xs.text-drac-comment Run as a standalone app on your server to monitor EmuVault and other services at #{request.host}/up
+          %p.text-xs.text-drac-comment
+            Run as a standalone app on your server. Monitor EmuVault at
+            %span.font-mono.break-all= "#{request.host}/up"
 
   .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
     %h2.text-sm.font-semibold.text-drac-fg.mb-1 Data
@@ -48,8 +50,8 @@
             .min-w-0
               %p.text-sm.font-medium.text-drac-fg Import library
               %p.text-xs.text-drac-comment Restore from a previous EmuVault export ZIP
-          .flex.items-center.gap-3
-            = f.file_field :file, accept: ".zip", class: "flex-1 min-w-0 text-sm text-drac-comment file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-drac-current file:text-drac-fg file:text-sm file:cursor-pointer hover:file:opacity-80 transition-opacity"
+          .flex.items-center.gap-3.min-w-0
+            = f.file_field :file, accept: ".zip", class: "w-0 flex-1 min-w-0 text-sm text-drac-comment file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-drac-current file:text-drac-fg file:text-sm file:cursor-pointer hover:file:opacity-80 transition-opacity"
             = f.submit "Import", class: "shrink-0 px-3 py-1.5 bg-drac-cyan text-drac-bg font-medium rounded-lg text-sm hover:opacity-90 transition-opacity cursor-pointer"
 
   .rounded-lg.bg-drac-bg.border.border-drac-current.p-5{ data: { controller: "push-subscription", "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s } }
