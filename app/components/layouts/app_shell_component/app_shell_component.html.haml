@@ -44,16 +44,16 @@
 
   %nav.fixed.bottom-0.left-0.right-0.z-50.lg:hidden.bg-drac-bg.border-t.border-drac-current.mobile-bottom-nav
     .flex
-      = link_to root_path, class: mobile_nav_class("/") do
-        %span Dashboard
-      = link_to games_path, class: mobile_nav_class("/games") do
-        %span Games
-      = link_to activity_path, class: mobile_nav_class("/activity") do
-        %span Activity
-      = link_to emulator_profiles_path, class: mobile_nav_class("/emulator_profiles") do
-        %span Profiles
-      = link_to settings_path, class: mobile_nav_class("/settings") do
-        %span Settings
+      = link_to root_path, class: mobile_nav_class("/"), aria: { label: "Dashboard" } do
+        %i.fa-solid.fa-house.fa-fw
+      = link_to games_path, class: mobile_nav_class("/games"), aria: { label: "Games" } do
+        %i.fa-solid.fa-gamepad.fa-fw
+      = link_to activity_path, class: mobile_nav_class("/activity"), aria: { label: "Activity" } do
+        %i.fa-solid.fa-clock-rotate-left.fa-fw
+      = link_to emulator_profiles_path, class: mobile_nav_class("/emulator_profiles"), aria: { label: "Profiles" } do
+        %i.fa-solid.fa-microchip.fa-fw
+      = link_to settings_path, class: mobile_nav_class("/settings"), aria: { label: "Settings" } do
+        %i.fa-solid.fa-gear.fa-fw
 
   -# Notification panel overlay
   %div{ data: { notifications_target: "backdrop" }, class: "fixed inset-0 z-50 pointer-events-none" }

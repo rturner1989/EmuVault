@@ -19,21 +19,25 @@ export default class extends Controller {
   }
 
   disconnect() {
+    document.body.style.overflow = ""
     this.dialog.destroy()
   }
 
   open(event) {
     event.preventDefault()
+    document.body.style.overflow = "hidden"
     this.dialog.show()
   }
 
   close(event) {
     event.preventDefault()
+    document.body.style.overflow = ""
     this.dialog.hide()
   }
 
   // Called by Turbo Stream after a successful form submit to close the dialog
   closeOnSuccess() {
+    document.body.style.overflow = ""
     this.dialog.hide()
   }
 }

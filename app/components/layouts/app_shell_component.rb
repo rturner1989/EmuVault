@@ -20,8 +20,8 @@ module Layouts
 
     def mobile_nav_class(path)
       active = active_path?(path)
-      base = "flex flex-col items-center justify-center flex-1 py-4 text-xs font-medium transition-colors"
-      active ? "#{base} text-drac-purple" : "#{base} text-drac-comment"
+      base = "flex items-center justify-center flex-1 py-4 text-lg transition-colors"
+      active ? "#{base} text-drac-purple" : "#{base} text-drac-comment hover:text-drac-fg"
     end
 
     def unread_count
