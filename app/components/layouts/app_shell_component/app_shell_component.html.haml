@@ -9,24 +9,30 @@
 
     .flex-1.overflow-y-auto.px-3.py-4.space-y-1
       = link_to root_path, class: nav_link_class("/") do
+        %i.fa-solid.fa-house.fa-fw
         %span Dashboard
       = link_to games_path, class: nav_link_class("/games") do
+        %i.fa-solid.fa-gamepad.fa-fw
         %span Games
       = link_to activity_path, class: nav_link_class("/activity") do
+        %i.fa-solid.fa-clock-rotate-left.fa-fw
         %span Activity
       = link_to emulator_profiles_path, class: nav_link_class("/emulator_profiles") do
+        %i.fa-solid.fa-microchip.fa-fw
         %span Emulator Profiles
 
     .border-t.border-drac-current.p-3.space-y-1
       .px-3.py-1.text-xs.text-drac-comment.truncate= Current.user.email_address
-      %button.flex.items-center.justify-between.w-full.px-3.py-2.rounded-lg.text-sm.text-drac-comment.hover:bg-drac-current.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "notifications#open" } }
-        %span Notifications
-        .relative.inline-flex.items-center.justify-center.w-6.h-6
-          %i.fas.fa-bell
+      %button.flex.items-center.gap-2.w-full.px-3.py-2.rounded-lg.text-sm.text-drac-comment.hover:bg-drac-current.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "notifications#open" } }
+        .relative.inline-flex.items-center.justify-center
+          %i.fa-solid.fa-bell.fa-fw
           = render "shared/notification_badge", count: unread_count
-      = link_to settings_path, class: "flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-fg transition-colors" do
+        %span Notifications
+      = link_to settings_path, class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-fg transition-colors" do
+        %i.fa-solid.fa-gear.fa-fw
         %span Settings
-      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-red transition-colors" do
+      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-red transition-colors" do
+        %i.fa-solid.fa-right-from-bracket.fa-fw
         %span Sign Out
 
   .lg:pl-64.flex-1.flex.flex-col.min-h-screen.mobile-bottom-content-pad.lg:pt-0.lg:pb-0

@@ -110,6 +110,13 @@ body {
   padding-bottom: calc(4rem + env(safe-area-inset-bottom));
 }
 
+/* Prevent iOS auto-zoom on input focus (triggered when font-size < 16px) */
+@media (max-width: 1023px) {
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
+
 /* SimpleForm error styles */
 .input span.error {
   display: block;
