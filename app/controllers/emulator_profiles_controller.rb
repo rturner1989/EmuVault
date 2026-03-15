@@ -3,7 +3,7 @@ class EmulatorProfilesController < ApplicationController
 
   def index
     authorize! EmulatorProfile
-    @selected_profiles = EmulatorProfile.where(user_selected: true).ordered
+    @selected_by_name = EmulatorProfile.where(user_selected: true).ordered.group_by(&:name)
     @library_by_name = EmulatorProfile.where(is_default: true, user_selected: false).ordered.group_by(&:name)
   end
 

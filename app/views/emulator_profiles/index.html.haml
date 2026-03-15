@@ -3,32 +3,39 @@
 .p-4.lg:p-6.space-y-6
   = render ::UI::PageHeaderComponent.new(title: "Emulator Profiles", subtitle: "Your configured emulators and save locations")
 
-  - if @selected_profiles.any?
+  - if @selected_by_name.any?
     .space-y-3
-      - @selected_profiles.each do |profile|
-        .flex.items-center.gap-3.rounded-lg.bg-drac-bg.border.border-drac-current.px-4.py-3
-          .flex-1.min-w-0
-            .flex.items-center.gap-2.mb-0.5
-              %span.font-medium.text-drac-fg= profile.name
-              = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
-              %span.text-xs.text-drac-comment.font-mono .#{profile.save_extension}
-            - if profile.default_save_path.present?
-              %p.text-xs.text-drac-comment.font-mono.truncate= profile.default_save_path
-            - else
-              %p.text-xs.text-drac-comment No save path set
-          .flex.items-center.gap-2.shrink-0
-            -# Edit dialog
-            = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
-              = modal.with_trigger do
-                %button{ class: "text-xs text-drac-comment px-3 py-1.5 rounded-lg border border-drac-current cursor-pointer hover:border-drac-fg hover:text-drac-fg transition-colors", data: { action: "dialog#open" } } Edit
-              = modal.with_body do
-                = render "form", profile: profile, url: emulator_profile_path(profile), method: :patch
-            -# Confirm delete
-            = render ::UI::ConfirmComponent.new(id: "delete-profile-#{profile.id}",
-              title: profile.is_default ? "Remove profile?" : "Delete profile?",
-              message: profile.is_default ? "Remove this profile from your list? You can add it back later." : "Delete this profile permanently?",
-              url: emulator_profile_path(profile),
-              method: :delete)
+      - @selected_by_name.each do |emulator_name, profiles|
+        .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+          -# Emulator header row
+          .flex.items-center.gap-2.px-4.py-3.border-b.border-drac-current
+            %span.font-medium.text-drac-fg= emulator_name
+            %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
+            .ml-auto.flex.items-center.gap-1
+              - profiles.each do |p|
+                = render ::UI::BadgeComponent.new(label: p.platform.text, color: platform_badge_color(p.platform))
+
+          -# One row per platform
+          .divide-y.divide-drac-current
+            - profiles.each do |profile|
+              .flex.items-center.gap-3.px-4.py-2.5
+                = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
+                .flex-1.min-w-0
+                  - if profile.default_save_path.present?
+                    %p.text-xs.text-drac-comment.font-mono.truncate= profile.default_save_path
+                  - else
+                    %p.text-xs.text-drac-comment No save path set
+                .flex.items-center.gap-2.shrink-0
+                  = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
+                    = modal.with_trigger do
+                      %button{ class: "text-xs text-drac-comment px-3 py-1.5 rounded-lg border border-drac-current cursor-pointer hover:border-drac-fg hover:text-drac-fg transition-colors", data: { action: "dialog#open" } } Edit
+                    = modal.with_body do
+                      = render "form", profile: profile, url: emulator_profile_path(profile), method: :patch
+                  = render ::UI::ConfirmComponent.new(id: "delete-profile-#{profile.id}",
+                    title: profile.is_default ? "Remove profile?" : "Delete profile?",
+                    message: profile.is_default ? "Remove this profile from your list? You can add it back later." : "Delete this profile permanently?",
+                    url: emulator_profile_path(profile),
+                    method: :delete)
   - else
     .rounded-lg.bg-drac-bg.border.border-drac-current.p-8.text-center
       %p.text-drac-comment.mb-4 No profiles configured yet.
@@ -40,15 +47,17 @@
       %summary.px-5.py-3.text-sm.font-medium.text-drac-comment.cursor-pointer Add from library
       .divide-y.divide-drac-current
         - @library_by_name.each do |emulator_name, profiles|
-          - profiles.each do |profile|
-            .flex.items-center.gap-3.px-5.py-3
-              .flex-1
-                %span.text-sm.text-drac-fg= emulator_name
-                = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
-                %span.text-xs.text-drac-comment.font-mono .#{profile.save_extension}
-              = button_to emulator_profile_path(profile), method: :patch, params: { emulator_profile: { user_selected: true } }, class: "text-xs text-drac-purple px-3 py-1.5 rounded-lg border border-drac-purple bg-transparent cursor-pointer inline-flex items-center gap-1" do
-                %i.fa-solid.fa-plus
-                Add
+          .px-5.py-3
+            .flex.items-center.gap-2.mb-2
+              %span.text-sm.font-medium.text-drac-fg= emulator_name
+              %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
+            .flex.flex-wrap.gap-2
+              - profiles.each do |profile|
+                .flex.items-center.gap-2.rounded-lg.border.border-drac-current.pl-3.pr-2.py-1.5
+                  = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
+                  = button_to emulator_profile_path(profile), method: :patch, params: { emulator_profile: { user_selected: true } }, class: "text-xs text-drac-purple cursor-pointer hover:opacity-80 transition-opacity inline-flex items-center gap-1" do
+                    %i.fa-solid.fa-plus
+                    Add
 
   -# New custom profile
   .flex.justify-end
