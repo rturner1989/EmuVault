@@ -35,8 +35,8 @@
         %i.fa-solid.fa-right-from-bracket.fa-fw
         %span Sign Out
 
-  .lg:pl-64.flex-1.flex.flex-col.min-h-screen.mobile-bottom-content-pad.lg:pt-0.lg:pb-0
-    .lg:hidden.flex.items-center.px-4.pb-2.bg-drac-bg.border-b.border-drac-current.mobile-top-bar
+  .lg:pl-64.flex-1.min-w-0.flex.flex-col.min-h-screen.mobile-bottom-content-pad.lg:pt-0.lg:pb-0
+    .lg:hidden.flex.items-center.pb-2.bg-drac-bg.border-b.border-drac-current.mobile-top-bar
       = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
         %img{ src: "/icon.svg", alt: "", width: "24", height: "24", class: "rounded-md" }
         %span.text-lg.font-bold.text-drac-purple EmuVault
@@ -45,7 +45,7 @@
           %i.fas.fa-bell
           = render "shared/notification_badge", count: unread_count
 
-    .w-full.max-w-4xl.mx-auto
+    .w-full.max-w-4xl.mx-auto.min-w-0
       = content_body
 
   %nav.fixed.bottom-0.left-0.right-0.z-50.lg:hidden.bg-drac-bg.border-t.border-drac-current.mobile-bottom-nav

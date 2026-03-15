@@ -8,10 +8,10 @@
       - @selected_by_name.each do |emulator_name, profiles|
         .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
           -# Emulator header row
-          .flex.items-center.gap-2.px-4.py-3.border-b.border-drac-current
+          .flex.flex-wrap.items-center.gap-2.px-4.py-3.border-b.border-drac-current
             %span.font-medium.text-drac-fg= emulator_name
             %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
-            .ml-auto.flex.items-center.gap-1
+            .ml-auto.flex.flex-wrap.items-center.gap-1
               - profiles.each do |p|
                 = render ::UI::BadgeComponent.new(label: p.platform.text, color: platform_badge_color(p.platform))
 
