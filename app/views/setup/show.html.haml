@@ -6,23 +6,10 @@
     %h2.text-base.font-semibold.text-drac-fg.mb-1 Your account
     %p.text-sm.text-drac-comment.mb-5 Set a personal email and password. You'll use these to log in.
 
-    - if @errors&.any?
-      .rounded-lg.border.border-drac-red.px-4.py-3.mb-4.space-y-1
-        - @errors.each do |error|
-          %p.text-xs.text-drac-red= error
-
-    = form_with url: setup_path, method: :patch, class: "space-y-4" do |f|
-      .space-y-1
-        %label.text-xs.font-medium.text-drac-comment Email
-        %input.w-full.bg-drac-surface.border.border-drac-current.rounded-lg.px-3.py-2.text-sm.text-drac-fg{ type: "email", name: "user[email_address]", value: current_user.email_address, autocomplete: "email" }
-
-      .space-y-1
-        %label.text-xs.font-medium.text-drac-comment New password
-        %input.w-full.bg-drac-surface.border.border-drac-current.rounded-lg.px-3.py-2.text-sm.text-drac-fg{ type: "password", name: "user[password]", autocomplete: "new-password" }
-
-      .space-y-1
-        %label.text-xs.font-medium.text-drac-comment Confirm password
-        %input.w-full.bg-drac-surface.border.border-drac-current.rounded-lg.px-3.py-2.text-sm.text-drac-fg{ type: "password", name: "user[password_confirmation]", autocomplete: "new-password" }
+    = simple_form_for current_user, url: setup_path, method: :patch, html: { class: "space-y-4" } do |f|
+      = f.input :email_address, as: :email, label: "Email", autocomplete: "email", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
+      = f.input :password, as: :password, label: "New password", autocomplete: "new-password", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
+      = f.input :password_confirmation, as: :password, label: "Confirm password", autocomplete: "new-password", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
 
       %button{ class: "w-full py-3 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm inline-flex items-center justify-center gap-2", type: "submit" }
         Next: Choose emulators

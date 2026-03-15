@@ -11,6 +11,14 @@ Rails.application.routes.draw do
   end
   resource :settings, only: %i[show]
 
+  resources :data_exports, only: %i[create]
+  resources :data_imports, only: %i[create] do
+    member do
+      get   :review
+      patch :resolve
+    end
+  end
+
   resources :games do
     resource :emulator_configs, only: [:update], controller: "game_emulator_configs"
     resources :game_saves, only: %i[create destroy] do

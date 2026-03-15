@@ -520,6 +520,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   rubocop-rspec_rails
+  rubyzip
   selenium-webdriver
   shoulda-matchers
   sidekiq
