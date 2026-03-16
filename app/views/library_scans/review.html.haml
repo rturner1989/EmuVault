@@ -1,0 +1,58 @@
+- content_for :title, "Scan Review — EmuVault"
+
+.p-4.lg:p-6.max-w-2xl.space-y-4
+  = render ::UI::PageHeaderComponent.new(title: "Scan Review", subtitle: "Select the games you want to add to your library")
+
+  -# Summary banner
+  .rounded-lg.border.border-drac-current.px-4.py-3.flex.flex-wrap.items-center.gap-4
+    .flex.items-center.gap-2
+      %i.fa-solid.fa-gamepad{ class: "text-drac-purple" }
+      %span.text-sm.text-drac-fg
+        %strong= @found.size
+        new #{pluralize(@found.size, "game")} found
+    .flex.items-center.gap-2
+      %i.fa-solid.fa-circle-check{ class: "text-drac-comment" }
+      %span.text-sm.text-drac-comment= "#{@already_in_lib} already in library"
+
+  -# Warning: paths that couldn't be read
+  - if @skipped_paths.any?
+    .rounded-lg.border.px-4.py-3{ class: "border-drac-yellow/40 bg-drac-yellow/5" }
+      %p.text-sm.font-medium{ class: "text-drac-yellow" }
+        %i.fa-solid.fa-triangle-exclamation.mr-1
+        #{@skipped_paths.size} #{pluralize(@skipped_paths.size, "path")} could not be read
+      %ul.mt-2.space-y-1
+        - @skipped_paths.each do |sp|
+          %li.text-xs.font-mono{ class: "text-drac-comment" }= sp["path"]
+      %p.text-xs.mt-2{ class: "text-drac-comment" } Make sure the directory is mounted into the container.
+
+  - if @found.empty?
+    .rounded-lg.bg-drac-bg.border.border-drac-current.p-8.text-center
+      %i.fa-solid.fa-box-open.text-2xl.text-drac-comment.mb-3
+      %p.text-drac-comment.mb-1 No new games found
+      %p.text-xs.text-drac-comment Add scan paths in Settings and make sure the directories are mounted.
+      = link_to "Back to Settings", settings_path, class: "text-sm text-drac-purple underline mt-4 inline-block"
+
+  - else
+    = form_with url: confirm_library_scan_path, method: :post do |f|
+      .space-y-4
+        - @grouped.each do |system_key, items|
+          - system_label = ScanPath.game_system.find_value(system_key)&.text || system_key.upcase
+          .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+            .flex.items-center.justify-between.px-4.py-3.border-b.border-drac-current
+              %h3.text-sm.font-semibold.text-drac-fg= system_label
+              %span.text-xs.text-drac-comment= "#{items.size} #{pluralize(items.size, "game")}"
+            .divide-y.divide-drac-current
+              - items.each do |item|
+                .flex.items-start.gap-3.px-4.py-3
+                  %input.mt-0.5.accent-drac-purple.shrink-0{ type: "checkbox", name: "selected_roms[]", value: item["rom_path"], checked: true }
+                  .min-w-0.flex-1
+                    %p.text-sm.text-drac-fg= item["title"]
+                    %p.text-xs.text-drac-comment.font-mono.truncate= item["rom_path"]
+                    - if item["save_files"]&.any?
+                      %p.text-xs.mt-1{ class: "text-drac-green" }
+                        %i.fa-solid.fa-floppy-disk.mr-1
+                        #{item["save_files"].size} save #{pluralize(item["save_files"].size, "file")} found alongside ROM
+
+      .flex.items-center.gap-3.pt-2
+        = link_to "Cancel", settings_path, class: "flex-1 py-2.5 rounded-lg border border-drac-current text-drac-comment text-sm font-medium inline-flex items-center justify-center"
+        = f.submit "Add to library", class: "flex-1 py-2.5 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm cursor-pointer hover:opacity-90 transition-opacity inline-flex items-center justify-center"

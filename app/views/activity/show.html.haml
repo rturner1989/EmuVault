@@ -1,6 +1,6 @@
 - content_for :title, "Activity — EmuVault"
 
-.p-4.lg:p-6.max-w-3xl
+.p-4.lg:p-6
   = render ::UI::PageHeaderComponent.new(title: "Activity", subtitle: "Recent uploads and downloads")
 
   - if @games.any? || @events.any?

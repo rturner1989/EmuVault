@@ -1,0 +1,54 @@
+= render ::UI::ModalComponent.new(id: "add-scan-path-dialog", title: "Add Scan Path") do |modal|
+  = modal.with_trigger do
+    %button.text-sm.text-drac-comment.border.border-drac-current.rounded-lg.px-4.py-2.cursor-pointer.hover:border-drac-fg.hover:text-drac-fg.transition-colors.inline-flex.items-center.gap-2{ data: { action: "dialog#open" } }
+      %i.fa-solid.fa-plus
+      Add path
+  = modal.with_body do
+    = form_with model: ScanPath.new, url: scan_paths_path, method: :post, html: { class: "space-y-4", data: { controller: "directory-browser" } } do |f|
+
+      -# Path input + browse button
+      = f.label :path, "Directory path", class: "block text-sm text-drac-fg mb-1"
+      .flex.items-center.gap-2
+        = f.text_field :path, placeholder: "/saves/gba/", required: true, class: "flex-1 min-w-0 bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg font-mono", data: { "directory-browser-target": "input" }
+        %button.shrink-0.px-3.py-2.rounded-lg.border.border-drac-current.text-sm.text-drac-comment.hover:border-drac-fg.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "button", data: { action: "click->directory-browser#toggle" } }
+          %i.fa-solid.fa-folder-open.mr-1
+          Browse
+
+      -# File browser panel (hidden until Browse clicked)
+      %div{ hidden: "", data: { "directory-browser-target": "browser" }, class: "rounded-lg border border-drac-current overflow-hidden" }
+        -# Toolbar: up + current path + select
+        .flex.items-center.gap-2.px-3.py-2.border-b.border-drac-current{ class: "bg-drac-surface" }
+          %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
+            %i.fa-solid.fa-arrow-up.fa-fw
+          %span.text-xs.font-mono.text-drac-comment.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
+          %button.shrink-0.text-xs.px-2.py-1.rounded.bg-drac-purple.text-drac-bg.font-medium.cursor-pointer.hover:opacity-90.transition-opacity{ type: "button", data: { action: "click->directory-browser#select" } }
+            Select folder
+
+        -# Quick-jump shortcuts (populated dynamically from server mount points)
+        .flex.items-center.flex-wrap.gap-1.px-3.py-2.border-b.border-drac-current
+          %span.text-xs.text-drac-comment.shrink-0 Jump to:
+          .flex.items-center.flex-wrap.gap-1{ data: { "directory-browser-target": "shortcuts" } }
+
+        -# Directory listing
+        .max-h-48.overflow-y-auto{ data: { "directory-browser-target": "list" } }
+          %p.text-xs.text-drac-comment.px-3.py-3 Click Browse to explore
+
+      %p.text-xs.text-drac-comment
+        Enter the path to your games directory.
+        On a NAS or Docker setup, mount the directory as a volume first (e.g.
+        %span.font-mono /saves
+        ). On a local install, use the full path directly (e.g.
+        %span.font-mono /home/user/games/gba
+        ).
+
+      -# Game system
+      = f.label :game_system, "Game system", class: "block text-sm text-drac-fg mb-1"
+      = f.select :game_system, ScanPath.game_system.values.map { |v| [v.text, v.value] }, { include_blank: "Select system" }, class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg", required: true
+
+      -# Auto-scan toggle
+      .flex.items-center.gap-2
+        = f.check_box :auto_scan, class: "accent-drac-purple w-4 h-4 cursor-pointer"
+        = f.label :auto_scan, "Include in auto-scan", class: "text-sm text-drac-fg cursor-pointer"
+
+      .pt-2
+        = f.submit "Add path", class: "w-full py-2.5 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm cursor-pointer hover:opacity-90 transition-opacity"

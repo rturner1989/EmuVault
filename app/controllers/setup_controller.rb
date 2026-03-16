@@ -53,19 +53,28 @@ class SetupController < ApplicationController
     redirect_to profiles_setup_path if @profiles.empty?
   end
 
-  # Step 3 POST — save paths, mark setup complete
+  # Step 3 POST — save paths, continue to library step
   def save_configuration
     params[:profiles]&.each do |id, attrs|
       profile = EmulatorProfile.find_by(id: id, user_selected: true)
       profile&.update(default_save_path: attrs[:default_save_path].presence)
     end
 
-    current_user.update!(setup_completed: true)
+    redirect_to library_setup_path
+  end
 
-    if Game.exists?
-      redirect_to games_path, notice: "Setup complete!"
-    else
-      redirect_to new_game_path, notice: "Setup complete! Add your first game."
-    end
+  # Step 4 — configure scan paths + auto-scan
+  def library
+    @scan_paths = ScanPath.ordered
+  end
+
+  # Step 4 POST — save auto-scan settings, mark setup complete
+  def save_library
+    current_user.update!(
+      params.require(:user).permit(:scan_enabled, :scan_interval)
+    )
+    current_user.update!(setup_completed: true)
+    session[:show_onboarding] = true
+    redirect_to root_path
   end
 end

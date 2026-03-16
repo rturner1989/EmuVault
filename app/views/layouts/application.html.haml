@@ -18,10 +18,12 @@
     %link{ rel: "manifest", href: "/manifest.json" }
     %link{ rel: "stylesheet", href: "/fontawesome/css/all.min.css" }
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
+    - if @show_onboarding
+      %link{ rel: "stylesheet", href: "/driver/driver.css" }
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
   %body
     - if authenticated?
-      = render ::Layouts::AppShellComponent.new(current_path: request.path) do |shell|
+      = render ::Layouts::AppShellComponent.new(current_path: request.path, onboarding: @show_onboarding) do |shell|
         - shell.with_content_body do
           = render ::Layouts::FlashComponent.new(flash: flash)
           = yield

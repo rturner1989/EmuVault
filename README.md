@@ -12,7 +12,10 @@ Designed to run on your own PC or home server and be accessed from any device vi
 - **Automatic filename handling** — configure per-game filenames per emulator; downloads are renamed to match what each emulator expects (e.g. `Pokemon - Emerald Version.srm` for RetroArch, `Pokemon_Emerald.sav` for Delta)
 - **Save history** — every upload is versioned; previous saves are kept and can be re-downloaded
 - **Save path hints** — shows the exact path to place the downloaded file based on your emulator's configured save directory
+- **Library scan** — point EmuVault at your emulator saves directories and it will automatically discover and import save files, grouped by game system. Works like Plex: mount a dataset, configure the path per profile, scan.
+- **Auto-scan** — optionally run library scans automatically in the background (hourly, every 6 hours, or daily)
 - **Multi-emulator support** — ships with profiles for RetroArch, Delta, mGBA, Dolphin, PPSSPP, melonDS, Snes9x, OpenEmu, DuckStation and more (28 profiles across Linux, Windows, macOS, iOS, Android)
+- **Export / Import** — export your entire library (games, saves, emulator configs) as a ZIP archive; restore from a previous export with conflict resolution
 - **Activity log** — every upload and download is recorded with timestamp, device type (inferred from user agent), and IP address
 - **First-run setup wizard** — guided 3-step flow: account setup → choose your emulators → configure save directories
 - **Notifications** — in-app notification panel with live badge updates; web push to iPhone (when installed as a home screen app) via the Web Push API
@@ -89,8 +92,10 @@ Create directories on your NAS for data persistence:
 ```
 /path/to/emuvault/postgres   # database
 /path/to/emuvault/redis      # job queue
-/path/to/emuvault/storage    # save files
+/path/to/emuvault/storage    # save files (Active Storage — EmuVault's internal store)
 ```
+
+If you want to use the **library scan** feature, you'll also need your emulator saves directory accessible on the host (e.g. a TrueNAS dataset at `/mnt/tank/saves`). See the [Library Scan](#library-scan) section below.
 
 ### 3. Deploy with Docker Compose
 
@@ -133,7 +138,7 @@ docker compose -f docker-compose.prod.yml pull
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-**TrueNAS Scale:** Stop the app, then Start — TrueNAS re-pulls `:latest` automatically on start.
+**TrueNAS Scale:** TrueNAS does not re-pull `:latest` on restart. To update, edit the app in the TrueNAS UI and change the image tag to the new version (e.g. `1.0.3` → `1.1.0`). TrueNAS will pull the new image and restart automatically.
 
 The app runs `rails db:prepare` on startup so any pending migrations are applied automatically.
 
@@ -240,6 +245,45 @@ On the game's page, select the emulator you're downloading for from the dropdown
 ### Emulator profiles
 
 Manage your active emulators at `/emulator_profiles`. You can add from the built-in library, create custom profiles, or edit save paths. Built-in profiles can be deactivated but not deleted.
+
+Each profile has a **game system** field (required for library scanning) and a **save directory** field (used for save path hints and library scanning).
+
+### Library scan
+
+EmuVault can automatically discover and import save files from your emulator directories — similar to how Plex imports media from a library folder.
+
+**Setup:**
+
+1. **Make the directory accessible to EmuVault:**
+   - **NAS / Docker:** mount the directory as a volume in `docker-compose.prod.yml` for both `app` and `sidekiq`:
+     ```yaml
+     volumes:
+       - /path/to/storage:/emu-vault/storage
+       - /mnt/tank/saves:/saves:ro   # ← your saves dataset
+     ```
+     The `:ro` flag makes it read-only — EmuVault only reads files during scanning.
+   - **Local install (PC/Mac):** no mounting needed — use the full local path directly (e.g. `/home/user/games/gba/` or `/Users/robert/RetroArch/saves/`).
+
+2. **Configure each emulator profile** — go to **Emulator Profiles** and for each profile set:
+   - **Game system** — which console (e.g. Game Boy Advance)
+   - **Save directory** — the path *inside the container* to that emulator's saves (e.g. `/saves/retroarch/gba/`)
+
+   EmuVault matches files to profiles by directory prefix, so each profile should point to a specific system subdirectory — the same way Plex uses separate folders for Movies and TV Shows.
+
+3. **Scan** — go to **Settings → Library Scan** and click **Scan now**. EmuVault walks each configured directory, finds save files matching the profile's extension, and shows a review page grouped by game system. Deselect anything you don't want, then confirm to import.
+
+**Auto-scan:**
+
+Turn on **Auto-scan** in Settings to have EmuVault check for new saves automatically. Choose an interval (hourly, every 6 hours, or daily). Auto-scan runs silently in the background via Sidekiq — no review step, only new files are imported.
+
+> **Note:** Files already in EmuVault (matched by checksum) are always skipped, so re-scanning is safe.
+
+### Export and Import
+
+Go to **Settings → Data** to back up your library or restore from a previous backup.
+
+- **Export** — downloads a ZIP archive containing all games, save files, and emulator filename configs
+- **Import** — upload a previously exported ZIP; a review page shows what will be added and flags any conflicts (games that already exist), letting you choose to skip or replace each one
 
 ### Activity log
 
