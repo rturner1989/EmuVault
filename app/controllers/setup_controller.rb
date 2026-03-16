@@ -74,11 +74,7 @@ class SetupController < ApplicationController
       params.require(:user).permit(:scan_enabled, :scan_interval)
     )
     current_user.update!(setup_completed: true)
-
-    if Game.exists?
-      redirect_to games_path, notice: "Setup complete!"
-    else
-      redirect_to new_game_path, notice: "Setup complete! Add your first game."
-    end
+    session[:show_onboarding] = true
+    redirect_to root_path
   end
 end

@@ -11,6 +11,6 @@
       = f.input :password, as: :password, label: "New password", autocomplete: "new-password", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
       = f.input :password_confirmation, as: :password, label: "Confirm password", autocomplete: "new-password", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
 
-      %button{ class: "w-full py-3 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm inline-flex items-center justify-center gap-2", type: "submit" }
+      %button{ class: "w-full py-3 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm inline-flex items-center justify-center gap-2 cursor-pointer hover:opacity-90 transition-opacity", type: "submit" }
         Next: Choose emulators
         %i.fa-solid.fa-arrow-right

@@ -9,7 +9,7 @@
       -# Path input + browse button
       = f.label :path, "Directory path", class: "block text-sm text-drac-fg mb-1"
       .flex.items-center.gap-2
-        = f.text_field :path, placeholder: "/saves/gba/", class: "flex-1 min-w-0 bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg font-mono", data: { "directory-browser-target": "input" }
+        = f.text_field :path, placeholder: "/saves/gba/", required: true, class: "flex-1 min-w-0 bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg font-mono", data: { "directory-browser-target": "input" }
         %button.shrink-0.px-3.py-2.rounded-lg.border.border-drac-current.text-sm.text-drac-comment.hover:border-drac-fg.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "button", data: { action: "click->directory-browser#toggle" } }
           %i.fa-solid.fa-folder-open.mr-1
           Browse
@@ -43,7 +43,7 @@
 
       -# Game system
       = f.label :game_system, "Game system", class: "block text-sm text-drac-fg mb-1"
-      = f.select :game_system, ScanPath.game_system.values.map { |v| [v.text, v.value] }, { include_blank: "Select system" }, class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg"
+      = f.select :game_system, ScanPath.game_system.values.map { |v| [v.text, v.value] }, { include_blank: "Select system" }, class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg", required: true
 
       -# Auto-scan toggle
       .flex.items-center.gap-2

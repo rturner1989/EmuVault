@@ -7,7 +7,7 @@
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
     "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/_application.tailwind.css -o ./app/assets/builds/application.css --minify",
-    "postinstall": "mkdir -p public/fontawesome && cp -r node_modules/@fortawesome/fontawesome-free/css public/fontawesome/css && cp -r node_modules/@fortawesome/fontawesome-free/webfonts public/fontawesome/webfonts"
+    "postinstall": "mkdir -p public/fontawesome && cp -r node_modules/@fortawesome/fontawesome-free/css public/fontawesome/css && cp -r node_modules/@fortawesome/fontawesome-free/webfonts public/fontawesome/webfonts && mkdir -p public/driver && cp node_modules/driver.js/dist/driver.css public/driver/driver.css"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
@@ -16,6 +16,7 @@
     "@rails/actioncable": "^8.1.200",
     "@tailwindcss/cli": "^4.2.1",
     "a11y-dialog": "^8.1.5",
+    "driver.js": "^1.4.0",
     "tailwindcss": "^4.2.1"
   }
 }

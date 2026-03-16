@@ -5,7 +5,7 @@
     = header.with_action do
       = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
         = modal.with_trigger do
-          %button{ class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 active:opacity-70 transition-opacity cursor-pointer inline-flex items-center gap-2", data: { action: "dialog#open" } }
+          %button{ id: "add-game-btn", class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 active:opacity-70 transition-opacity cursor-pointer inline-flex items-center gap-2", data: { action: "dialog#open" } }
             %i.fa-solid.fa-plus
             Add Game
         = modal.with_body do

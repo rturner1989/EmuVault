@@ -4,8 +4,9 @@ module Layouts
   class AppShellComponent < ApplicationComponent
     renders_one :content_body
 
-    def initialize(current_path:)
+    def initialize(current_path:, onboarding: false)
       @current_path = current_path
+      @onboarding = onboarding
     end
 
     def nav_link_class(path)
