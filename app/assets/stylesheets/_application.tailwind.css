@@ -117,6 +117,19 @@ body {
   }
 }
 
+/* Turbo progress bar */
+.turbo-progress-bar {
+  height: 3px;
+  background: var(--color-drac-purple);
+}
+
+/* Immediate tap feedback on nav links/buttons */
+.mobile-bottom-nav a:active,
+.mobile-bottom-nav button:active {
+  opacity: 0.5;
+  transition: none;
+}
+
 /* SimpleForm error styles */
 .input span.error {
   display: block;
