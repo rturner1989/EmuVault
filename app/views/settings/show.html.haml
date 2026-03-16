@@ -36,6 +36,65 @@
             %span.font-mono.break-all= "#{request.host}/up"
 
   .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+    %h2.text-sm.font-semibold.text-drac-fg.mb-1 Library Scan
+    %p.text-sm.text-drac-comment.mb-4 Point EmuVault at your games directories. It will discover new games and any save files alongside them.
+
+    -# Last scan result
+    - result = @user.last_scan_result
+    - if result.present? && result["status"] == "completed"
+      .rounded-lg.border.border-drac-current.px-4.py-3.mb-4
+        %p.text-xs.text-drac-comment.mb-1 Last scan
+        %p.text-sm.text-drac-fg
+          Added #{result["added"]} #{pluralize(result["added"].to_i, "game")}
+          — #{result["skipped"] || 0} already in library
+        - if result["errors"]&.any?
+          %p.text-xs.mt-1{ class: "text-drac-red" }= "#{result["errors"].size} errors"
+        %p.text-xs.text-drac-comment.mt-1= @user.last_scanned_at&.strftime("%d %b %Y at %H:%M")
+
+    -# Scan actions
+    .flex.items-center.gap-3.mb-5
+      = button_to library_scan_path, method: :post, class: "px-3 py-1.5 bg-drac-purple text-drac-bg font-medium rounded-lg text-sm hover:opacity-90 transition-opacity cursor-pointer" do
+        %i.fa-solid.fa-magnifying-glass.mr-1
+        Scan now
+      - if result.present? && result["status"] == "pending_review"
+        = link_to review_library_scan_path, class: "px-3 py-1.5 rounded-lg border border-drac-yellow text-drac-yellow text-sm hover:opacity-80 transition-opacity" do
+          %i.fa-solid.fa-eye.mr-1
+          Review (#{(result["found"] || []).size} found)
+
+    = turbo_frame_tag "scan_paths" do
+      -# Configured scan paths
+      - if @scan_paths.any?
+        .rounded-lg.border.border-drac-current.overflow-hidden.mb-4
+          .divide-y.divide-drac-current
+            - @scan_paths.each do |sp|
+              .flex.items-center.gap-3.px-4.py-3
+                .flex-1.min-w-0
+                  %p.text-sm.text-drac-fg.font-mono.truncate= sp.path
+                  %p.text-xs.text-drac-comment= sp.game_system.text
+                = button_to scan_path_path(sp), method: :patch, params: { scan_path: { auto_scan: !sp.auto_scan } }, class: "shrink-0 text-xs px-2 py-1 rounded border transition-colors cursor-pointer #{sp.auto_scan ? 'border-drac-purple text-drac-purple' : 'border-drac-current text-drac-comment hover:border-drac-fg hover:text-drac-fg'}" do
+                  %i.fa-solid.fa-rotate.mr-1
+                  = sp.auto_scan ? "Auto-scan on" : "Auto-scan off"
+                = button_to scan_path_path(sp), method: :delete, class: "shrink-0 text-drac-comment hover:text-drac-red transition-colors cursor-pointer px-2 py-1" do
+                  %i.fa-solid.fa-trash
+
+      -# Add path modal
+      = render "scan_paths/add_modal"
+
+    -# Auto-scan schedule
+    .border-t.border-drac-current.mt-5.pt-5
+      %p.text-sm.font-medium.text-drac-fg.mb-3 Auto-scan schedule
+      = form_with model: @user, url: settings_path, method: :patch, html: { class: "space-y-3" } do |f|
+        .flex.items-center.justify-between
+          .min-w-0
+            %p.text-sm.text-drac-fg Enable auto-scan
+            %p.text-xs.text-drac-comment Paths marked "auto-scan on" will be scanned automatically
+          = f.check_box :scan_enabled, class: "accent-drac-purple w-4 h-4 cursor-pointer shrink-0 ml-4"
+        .flex.items-center.justify-between
+          %label.text-sm.text-drac-fg{ for: "user_scan_interval" } Interval
+          = f.select :scan_interval, User.scan_interval.values.map { |v| [v.text, v.value] }, {}, class: "bg-drac-surface border border-drac-current rounded-lg px-3 py-1.5 text-sm text-drac-fg"
+        = f.submit "Save", class: "px-3 py-1.5 rounded-lg border border-drac-current text-sm text-drac-comment hover:border-drac-fg hover:text-drac-fg transition-colors cursor-pointer"
+
+  .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
     %h2.text-sm.font-semibold.text-drac-fg.mb-1 Data
     %p.text-sm.text-drac-comment.mb-4 Export your games and save files, or restore from a previous export.
     .space-y-4

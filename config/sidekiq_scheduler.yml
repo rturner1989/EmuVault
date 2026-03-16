@@ -2,3 +2,8 @@ prune_sync_events:
   cron: "0 3 * * *"
   class: PruneSyncEventsJob
   description: "Remove SyncEvent records older than ACTIVITY_RETENTION_DAYS (default 90 days)"
+
+game_scan_check:
+  cron: "0 * * * *"
+  class: GameScanJob
+  description: "Run auto-scan if enabled and interval has elapsed"

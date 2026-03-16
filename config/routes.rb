@@ -8,8 +8,16 @@ Rails.application.routes.draw do
     post :select_profiles
     get :configure
     patch :save_configuration
+    get :library
+    patch :save_library
   end
-  resource :settings, only: %i[show]
+  resource :settings, only: %i[show update]
+  get "directory_browser", to: "directory_browser#show"
+  resources :scan_paths, only: %i[create update destroy]
+  resource :library_scan, only: %i[create] do
+    get  :review
+    post :confirm
+  end
 
   resources :data_exports, only: %i[create]
   resources :data_imports, only: %i[create] do

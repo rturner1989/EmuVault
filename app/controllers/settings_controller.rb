@@ -1,5 +1,21 @@
 class SettingsController < ApplicationController
   def show
+    @user       = Current.user
+    @scan_paths = ScanPath.ordered
+  end
+
+  def update
     @user = Current.user
+    if @user.update(scan_params)
+      redirect_to settings_path, notice: "Settings saved."
+    else
+      render :show, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def scan_params
+    params.require(:user).permit(:scan_enabled, :scan_interval)
   end
 end

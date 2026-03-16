@@ -4,6 +4,7 @@
 #
 #  id                :bigint           not null, primary key
 #  default_save_path :string
+#  game_system       :string
 #  is_default        :boolean          default(FALSE), not null
 #  name              :string           not null
 #  platform          :string           not null
@@ -20,6 +21,13 @@ class EmulatorProfile < ApplicationRecord
   extend Enumerize
 
   enumerize :platform, in: %i[linux windows macos ios android], predicates: true
+  enumerize :game_system, in: %i[
+    nes snes gb gbc gba nds
+    genesis sms gg
+    psx ps2 psp
+    n64 gc wii
+    arcade
+  ]
 
   has_many :game_saves, dependent: :nullify
   has_many :game_emulator_configs, dependent: :destroy

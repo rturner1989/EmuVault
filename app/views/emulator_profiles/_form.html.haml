@@ -1,7 +1,8 @@
 = simple_form_for profile, url: url, method: method, html: { class: "space-y-4" } do |f|
   = f.input :name, label: "Emulator name", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
   = f.input :platform, collection: EmulatorProfile.platform.values, label_method: :text, value_method: :value, include_blank: "Select platform", label: "Platform", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
+  = f.input :game_system, collection: EmulatorProfile.game_system.values, label_method: :text, value_method: :value, include_blank: "Select game system", label: "Game system", hint: "Required for library scanning", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
   = f.input :save_extension, label: "Save extension (without dot)", placeholder: "e.g. srm", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
-  = f.input :default_save_path, label: "Save directory (optional)", placeholder: "e.g. ~/.config/retroarch/saves/", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg font-mono" }
+  = f.input :default_save_path, label: "Save directory", placeholder: "e.g. /games/retroarch/saves/gba/", hint: "Path inside the container — mount your saves directory as a volume", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg font-mono" }
   .pt-2
     = f.submit "Save", class: "w-full py-2.5 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm cursor-pointer"
