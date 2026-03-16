@@ -1,0 +1,38 @@
+linters:
+  # Line length — set generously to avoid noise on long class chains
+  LineLength:
+    enabled: true
+    max: 300
+
+  # Rubocop integration — disabled here, RuboCop runs separately
+  RuboCop:
+    enabled: false
+
+  # Avoid bare divs when a semantic element would do
+  ImplicitDiv:
+    enabled: true
+
+  # Classes before IDs in shorthand notation
+  ClassesBeforeIds:
+    enabled: true
+
+  # Warn on consecutive silent comments
+  ConsecutiveComments:
+    enabled: true
+
+  # Enforce consistent indentation (2 spaces)
+  Indentation:
+    enabled: true
+    character: space
+
+  # Don't allow trailing whitespace
+  TrailingWhitespace:
+    enabled: true
+
+  # Warn on empty scripts (e.g. bare `-`)
+  EmptyScript:
+    enabled: true
+
+exclude:
+  - "vendor/**"
+  - "node_modules/**"

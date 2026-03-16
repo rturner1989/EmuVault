@@ -38,6 +38,7 @@ group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "bundler-audit", require: false
   gem "brakeman", require: false
+  gem "haml-lint", require: false
   gem "rubocop-rails-omakase", require: false
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
