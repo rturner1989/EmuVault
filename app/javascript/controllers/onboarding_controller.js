@@ -17,6 +17,7 @@ export default class extends Controller {
       nextBtnText: "Next →",
       prevBtnText: "← Back",
       doneBtnText: "Let's go!",
+      smoothScroll: true,
       steps: [
         {
           popover: {
