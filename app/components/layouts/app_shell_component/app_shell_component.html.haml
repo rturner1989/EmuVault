@@ -1,6 +1,6 @@
 = helpers.turbo_stream_from "notifications_#{Current.user.id}"
 
-.flex.min-h-screen.bg-drac-surface{ data: { controller: "notifications onboarding", "onboarding-active-value": @onboarding.to_s } }
+.flex.min-h-screen.bg-drac-surface{ data: { controller: "notifications onboarding quick-sync", "onboarding-active-value": @onboarding.to_s } }
   %nav.hidden.lg:flex.lg:flex-col.lg:w-64.lg:fixed.lg:inset-y-0.bg-drac-bg.border-r.border-drac-current
     .flex.items-center.h-16.px-6.border-b.border-drac-current
       = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
@@ -54,12 +54,27 @@
         %i.fa-solid.fa-house.fa-fw
       = link_to games_path, id: "mobile-nav-games", class: mobile_nav_class("/games"), aria: { label: "Games" } do
         %i.fa-solid.fa-gamepad.fa-fw
+      -# Centre Quick Sync button — prominent, always accessible
+      %button#mobile-nav-quick-sync.flex-1.flex.flex-col.items-center.justify-center.py-2.cursor-pointer{ aria: { label: "Quick Sync" }, data: { action: "quick-sync#open" } }
+        .relative.flex.items-center.justify-center{ class: "w-10 h-10 rounded-full bg-drac-purple -mt-5 shadow-lg" }
+          %i.fa-solid.fa-rotate.text-drac-bg
       = link_to activity_path, id: "mobile-nav-activity", class: mobile_nav_class("/activity"), aria: { label: "Activity" } do
         %i.fa-solid.fa-clock-rotate-left.fa-fw
-      = link_to emulator_profiles_path, id: "mobile-nav-profiles", class: mobile_nav_class("/emulator_profiles"), aria: { label: "Profiles" } do
-        %i.fa-solid.fa-microchip.fa-fw
       = link_to settings_path, id: "mobile-nav-settings", class: mobile_nav_class("/settings"), aria: { label: "Settings" } do
         %i.fa-solid.fa-gear.fa-fw
+
+  -# Quick sync bottom sheet
+  %div{ id: "quick-sync-sheet", aria: { hidden: "true" }, data: { "quick-sync-target": "container" }, class: "dialog-container" }
+    .dialog-overlay{ data: { action: "click->quick-sync#close" } }
+    %div{ class: "dialog-content dialog-content--bottom" }
+      %div
+        .flex.items-center.justify-between.mb-5
+          .flex.items-center.gap-2
+            %i.fa-solid.fa-rotate.text-drac-purple
+            %h2.text-base.font-semibold.text-drac-fg Quick Sync
+          %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "quick-sync#close" }, "aria-label": "Close" }
+            %i.fa-solid.fa-xmark
+        = render "shared/quick_sync_content"
 
   -# Notification panel overlay
   %div{ data: { notifications_target: "backdrop" }, class: "fixed inset-0 z-50 pointer-events-none" }

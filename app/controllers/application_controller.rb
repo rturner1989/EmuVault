@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   before_action :require_setup_complete
   before_action :load_onboarding_flag
+  before_action :load_quick_sync_data
 
   private
 
@@ -17,6 +18,16 @@ class ApplicationController < ActionController::Base
 
   def load_onboarding_flag
     @show_onboarding = session.delete(:show_onboarding).present?
+  end
+
+  def load_quick_sync_data
+    return unless current_user
+    @quick_sync_game = current_user.current_game
+    return unless @quick_sync_game
+
+    latest = @quick_sync_game.game_saves.latest_first.first
+    @quick_sync_save = latest ? GameSaveDecorator.new(latest) : nil
+    @quick_sync_profiles = EmulatorProfile.where(user_selected: true).ordered
   end
 
   def require_setup_complete

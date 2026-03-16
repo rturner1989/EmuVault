@@ -10,9 +10,15 @@ module UI
     renders_one :body
     renders_one :page_content
 
-    def initialize(id:, title:)
+    def initialize(id:, title:, variant: :default)
       @id = id
       @title = title
+      @variant = variant
+    end
+
+    def content_classes
+      base = "dialog-content"
+      @variant == :bottom_sheet ? "#{base} dialog-content--bottom" : base
     end
   end
 end

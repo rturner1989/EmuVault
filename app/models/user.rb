@@ -13,11 +13,17 @@
 #  setup_completed  :boolean          default(FALSE), not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  current_game_id  :bigint
 #
 # Indexes
 #
-#  index_users_on_api_token      (api_token) UNIQUE
-#  index_users_on_email_address  (email_address) UNIQUE
+#  index_users_on_api_token        (api_token) UNIQUE
+#  index_users_on_current_game_id  (current_game_id)
+#  index_users_on_email_address    (email_address) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (current_game_id => games.id) ON DELETE => nullify
 #
 class User < ApplicationRecord
   extend Enumerize
@@ -25,6 +31,7 @@ class User < ApplicationRecord
   enumerize :scan_interval, in: %i[hourly every_6_hours daily], default: :hourly
 
   has_secure_password
+  belongs_to :current_game, class_name: "Game", optional: true
   has_many :sessions, dependent: :destroy
   has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
   has_many :web_push_subscriptions, dependent: :destroy

@@ -11,6 +11,27 @@
         = modal.with_body do
           = render "games/form", form_url: games_path, submit_label: "Add Game", cancel_path: root_path
 
+  -# Now Playing — mobile slim banner (tap to open quick sync sheet)
+  - if @quick_sync_game
+    %button.lg:hidden.w-full.flex.items-center.gap-3.rounded-lg.bg-drac-bg.border.border-drac-purple.px-4.py-3.text-left.cursor-pointer{ data: { action: "quick-sync#open" } }
+      %i.fa-solid.fa-rotate.text-drac-purple.shrink-0
+      .min-w-0.flex-1
+        %p.text-xs.text-drac-comment.leading-none.mb-0.5 Now Playing
+        %p.text-sm.font-medium.text-drac-fg.truncate= @quick_sync_game.title
+      %i.fa-solid.fa-chevron-up.text-drac-comment.text-xs.shrink-0
+
+  -# Now Playing — desktop accordion (hidden on mobile, use nav centre button instead)
+  - if @quick_sync_game
+    %details.hidden.lg:block.rounded-lg.bg-drac-bg.border.border-drac-purple.overflow-hidden
+      %summary.flex.items-center.gap-3.px-4.py-3.cursor-pointer.select-none.list-none
+        %i.fa-solid.fa-rotate.text-drac-purple.shrink-0
+        .min-w-0.flex-1
+          %p.text-xs.text-drac-comment.leading-none.mb-0.5 Now Playing
+          %p.text-sm.font-medium.text-drac-fg.truncate= @quick_sync_game.title
+        %i.fa-solid.fa-chevron-down.text-drac-comment.text-xs.shrink-0.details-chevron
+      .border-t.border-drac-current.p-5
+        = render "shared/quick_sync_content"
+
   -# Stat cards — 2×2 on mobile, 4-col on desktop
   .grid.grid-cols-2.gap-4.lg:grid-cols-4
     .rounded-lg.bg-drac-bg.border.border-drac-current.p-5

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     patch :save_library
   end
   resource :settings, only: %i[show update]
+  resource :current_game, only: %i[update destroy], controller: "current_game"
   get "directory_browser", to: "directory_browser#show"
   resources :scan_paths, only: %i[create update destroy]
   resource :library_scan, only: %i[create] do

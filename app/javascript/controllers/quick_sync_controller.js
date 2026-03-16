@@ -2,23 +2,14 @@ import { Controller } from "@hotwired/stimulus"
 import A11yDialog from "a11y-dialog"
 import { lockScroll, unlockScroll } from "./scroll_lock"
 
-// Wraps a11y-dialog for Turbo-compatible modal dialogs.
-//
-// Usage:
-//   %div{ data: { controller: "dialog" } }
-//     %button{ data: { action: "dialog#open" } } Open
-//     %div{ data: { dialog_target: "container" }, id: "my-dialog", aria: { hidden: "true" } }
-//       %div.dialog-overlay{ data: { action: "click->dialog#close" } }
-//       %div.dialog-content{ role: "document" }
-//         %button{ data: { action: "dialog#close" } } ✕
-//         = yield
+// Manages the quick sync bottom sheet — triggered from the mobile centre nav button.
+// Works identically to the dialog controller but scoped to the app shell wrapper
+// so the trigger can live outside the dialog markup.
 export default class extends Controller {
   static targets = ["container"]
 
   connect() {
     this.dialog = new A11yDialog(this.containerTarget)
-    // Hook into a11y-dialog events so Escape key, backdrop click, and button
-    // close all go through the same animation path.
     this.dialog.on("show", () => {
       lockScroll()
       requestAnimationFrame(() => this.containerTarget.classList.add("dialog--open"))
@@ -42,11 +33,6 @@ export default class extends Controller {
 
   close(event) {
     event.preventDefault()
-    this.dialog.hide()
-  }
-
-  // Called by Turbo Stream after a successful form submit to close the dialog
-  closeOnSuccess() {
     this.dialog.hide()
   }
 }

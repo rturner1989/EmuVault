@@ -79,6 +79,84 @@ body {
   }
 }
 
+/* Animated dialog containers
+   Overrides [aria-hidden="true"] { display: none } so we can transition instead */
+.dialog-container {
+  display: flex !important;
+}
+
+.dialog-container .dialog-overlay {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+
+.dialog-container .dialog-content {
+  pointer-events: none;
+}
+
+.dialog-container .dialog-content > * {
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+  transition: opacity 250ms ease, transform 250ms ease;
+  pointer-events: none;
+}
+
+/* Bottom sheet enters from below */
+.dialog-container .dialog-content--bottom > * {
+  transform: translateY(100%);
+}
+
+/* Open state */
+.dialog-container.dialog--open .dialog-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dialog-container.dialog--open .dialog-content > * {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.dialog-container.dialog--open .dialog-content--bottom > * {
+  transform: translateY(0);
+}
+
+/* Bottom sheet variant — overrides centred modal and mobile full-screen styles */
+.dialog-content.dialog-content--bottom {
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+
+.dialog-content.dialog-content--bottom > * {
+  width: 100%;
+  max-width: 32rem;
+  height: auto;
+  max-height: 85dvh;
+  border-radius: 0.75rem 0.75rem 0 0;
+  border-bottom: none;
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 1023px) {
+  .dialog-content.dialog-content--bottom {
+    align-items: flex-end;
+  }
+
+  .dialog-content.dialog-content--bottom > * {
+    max-width: 100%;
+    height: auto;
+    max-height: 85dvh;
+    border-radius: 0.75rem 0.75rem 0 0;
+    border-left: 1px solid var(--color-drac-current);
+    border-right: 1px solid var(--color-drac-current);
+    padding-top: 1.5rem;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+}
+
 /* iPhone safe-area */
 .mobile-top-bar {
   position: fixed;
@@ -117,10 +195,29 @@ body {
   }
 }
 
+/* Details/summary accordion chevron */
+.details-chevron {
+  transition: transform 200ms ease;
+}
+
+details[open] .details-chevron {
+  transform: rotate(180deg);
+}
+
+/* Remove default disclosure triangle across browsers */
+summary::-webkit-details-marker { display: none; }
+summary::marker { display: none; }
+
 /* Turbo progress bar */
 .turbo-progress-bar {
   height: 3px;
   background: var(--color-drac-purple);
+}
+
+@media (max-width: 1023px) {
+  .turbo-progress-bar {
+    top: calc(2.5rem + env(safe-area-inset-top));
+  }
 }
 
 /* Immediate tap feedback on nav links/buttons */

@@ -12,6 +12,14 @@
       %h1.text-xl.font-bold.text-drac-fg.truncate= @game.title
       = render ::UI::BadgeComponent.new(label: @game.system.text, color: :comment)
     .flex.gap-2.shrink-0.mt-0.5
+      - if current_user.current_game_id == @game.id
+        = button_to current_game_path, method: :delete, class: "rounded-lg border border-drac-purple px-3 py-1.5 text-xs text-drac-purple hover:opacity-70 transition-opacity cursor-pointer inline-flex items-center gap-1.5" do
+          %i.fa-solid.fa-rotate.fa-fw
+          Now Playing
+      - else
+        = button_to current_game_path, method: :patch, params: { game_id: @game.id }, class: "rounded-lg border border-drac-current px-3 py-1.5 text-xs text-drac-comment hover:border-drac-purple hover:text-drac-purple transition-colors cursor-pointer inline-flex items-center gap-1.5" do
+          %i.fa-solid.fa-rotate.fa-fw
+          Set as current
       = render ::UI::ModalComponent.new(id: "edit-game-dialog", title: "Edit Game") do |modal|
         = modal.with_trigger do
           %button{ class: "rounded-lg border border-drac-current px-3 py-1.5 text-xs text-drac-comment hover:border-drac-fg hover:text-drac-fg transition-colors cursor-pointer", data: { action: "dialog#open" } } Edit

@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { lockScroll, unlockScroll } from "./scroll_lock"
 
 export default class extends Controller {
   static targets = ["backdrop", "overlay", "panel", "frame"]
@@ -9,7 +10,7 @@ export default class extends Controller {
     this.overlayTarget.classList.add("opacity-100")
     this.panelTarget.classList.remove("translate-x-full")
     this.panelTarget.classList.add("translate-x-0")
-    document.body.style.overflow = "hidden"
+    lockScroll()
     if (this.hasFrameTarget) {
       this.frameTarget.reload()
     }
@@ -20,7 +21,7 @@ export default class extends Controller {
     this.overlayTarget.classList.add("opacity-0")
     this.panelTarget.classList.remove("translate-x-0")
     this.panelTarget.classList.add("translate-x-full")
-    document.body.style.overflow = ""
+    unlockScroll()
 
     this.panelTarget.addEventListener("transitionend", () => {
       this.backdropTarget.classList.add("pointer-events-none")
@@ -41,6 +42,7 @@ export default class extends Controller {
       },
     }).then(() => {
       if (this.hasFrameTarget) this.frameTarget.reload()
+      this.close()
     })
   }
 }

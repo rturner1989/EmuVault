@@ -25,7 +25,7 @@ class GameSavesController < ApplicationController
         ip_address: request.remote_ip,
         user_agent: request.user_agent
       )
-      redirect_to @game, notice: "Save uploaded."
+      redirect_back_or_to game_path(@game), notice: "Save uploaded."
     else
       @game = GameDecorator.new(@game)
       @latest_save = GameSaveDecorator.decorate(@game.game_saves.latest_first.first) if @game.game_saves.exists?

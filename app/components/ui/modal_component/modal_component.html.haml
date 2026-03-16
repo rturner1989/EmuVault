@@ -1,8 +1,8 @@
 %div{ data: { controller: "dialog" } }
   = trigger
-  %div{ id: @id, aria: { hidden: "true" }, data: { dialog_target: "container" } }
+  %div{ id: @id, aria: { hidden: "true" }, data: { dialog_target: "container" }, class: "dialog-container" }
     .dialog-overlay{ data: { action: "click->dialog#close" } }
-    .dialog-content
+    %div{ class: content_classes }
       %div
         .flex.items-center.justify-between.mb-4
           %h2.text-base.font-semibold.text-drac-fg= @title
