@@ -27,11 +27,19 @@ export default class extends Controller {
       this.containerTarget.classList.remove("dialog--open")
       setTimeout(() => unlockScroll(), 250)
     })
+    // Belt-and-suspenders: a11y-dialog's keydown listener is scoped to the
+    // container element, so ESC can silently fail if focus drifts outside it.
+    // This document-level handler ensures ESC always closes the dialog.
+    this._handleEscape = (event) => {
+      if (event.key === "Escape" && this.dialog.shown) this.dialog.hide()
+    }
+    document.addEventListener("keydown", this._handleEscape)
   }
 
   disconnect() {
     this.containerTarget.classList.remove("dialog--open")
     unlockScroll()
+    document.removeEventListener("keydown", this._handleEscape)
     this.dialog.destroy()
   }
 

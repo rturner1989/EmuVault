@@ -4,7 +4,20 @@ import { lockScroll, unlockScroll } from "./scroll_lock"
 export default class extends Controller {
   static targets = ["backdrop", "overlay", "panel", "frame"]
 
+  connect() {
+    this._handleEscape = (event) => {
+      if (event.key === "Escape" && this._isOpen) this.close()
+    }
+    document.addEventListener("keydown", this._handleEscape)
+    this._isOpen = false
+  }
+
+  disconnect() {
+    document.removeEventListener("keydown", this._handleEscape)
+  }
+
   open() {
+    this._isOpen = true
     this.backdropTarget.classList.remove("pointer-events-none")
     this.overlayTarget.classList.remove("opacity-0")
     this.overlayTarget.classList.add("opacity-100")
@@ -17,6 +30,7 @@ export default class extends Controller {
   }
 
   close() {
+    this._isOpen = false
     this.overlayTarget.classList.remove("opacity-100")
     this.overlayTarget.classList.add("opacity-0")
     this.panelTarget.classList.remove("translate-x-0")
