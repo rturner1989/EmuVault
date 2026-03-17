@@ -7,11 +7,11 @@
     = "Games"
 
   -# Title + actions
-  .flex.items-start.justify-between.gap-3
+  .flex.flex-wrap.items-start.justify-between.gap-3
     .min-w-0
-      %h1.text-xl.font-bold.truncate= @game.title
+      %h1.text-xl.font-bold= @game.title
       = render ::UI::BadgeComponent.new(context_text: @game.system_label, color: @game.system_badge_color)
-    .flex.gap-2.shrink-0.mt-0.5
+    .flex.gap-2.shrink-0
       - if current_user.current_game_id == @game.id
         = button_to current_game_path, method: :delete, class: "btn btn-outline btn-primary btn-sm" do
           %i.fa-solid.fa-rotate.fa-fw
@@ -82,7 +82,7 @@
                 { class: "select select-bordered w-full" }
             %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
               %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
-              %span.text-sm.text-drac-comment.flex-1.px-3.py-3.truncate{ data: { file_picker_target: "filename" } } No file selected
+              %span.text-sm.text-drac-comment.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
               = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
             - if @new_save&.errors&.any?
               %p.text-xs.text-error= @new_save.errors.full_messages.to_sentence
