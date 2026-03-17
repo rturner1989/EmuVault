@@ -10,7 +10,7 @@
   .flex.items-start.justify-between.gap-3
     .min-w-0
       %h1.text-xl.font-bold.truncate= @game.title
-      = render ::UI::BadgeComponent.new(context_text: @game.system.text, color: :comment)
+      = render ::UI::BadgeComponent.new(context_text: @game.system_label, color: @game.system_badge_color)
     .flex.gap-2.shrink-0.mt-0.5
       - if current_user.current_game_id == @game.id
         = button_to current_game_path, method: :delete, class: "btn btn-outline btn-primary btn-sm" do
@@ -68,7 +68,7 @@
                     %i.fa-regular.fa-clipboard.fa-fw
                 %p.text-xs.text-drac-comment Your browser will save it to Downloads — move it to the path above.
               .flex.justify-start
-                = render ::UI::ActionComponent.new(content_text: "Download", variant: :info, size: :md, type: "submit") do |a|
+                = render ::UI::ActionComponent.new(content_text: "Download", variant: :info, type: "submit") do |a|
                   - a.with_leading_icon(name: "fa-download")
 
         -# Upload new version
@@ -80,11 +80,14 @@
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
                 { include_blank: "Which emulator is this save from? (optional)" },
                 { class: "select select-bordered w-full" }
-            = f.file_field :file, required: true, class: "file-input file-input-bordered w-full"
+            %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
+              %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
+              %span.text-sm.text-drac-comment.flex-1.px-3.py-3.truncate{ data: { file_picker_target: "filename" } } No file selected
+              = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
             - if @new_save&.errors&.any?
               %p.text-xs.text-error= @new_save.errors.full_messages.to_sentence
             .flex.justify-start
-              = render ::UI::ActionComponent.new(content_text: "Upload", variant: :primary, size: :md, type: "submit") do |a|
+              = render ::UI::ActionComponent.new(content_text: "Upload", variant: :primary, type: "submit") do |a|
                 - a.with_leading_icon(name: "fa-upload")
 
     - else
@@ -98,11 +101,14 @@
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
                 { include_blank: "Which emulator is this save from? (optional)" },
                 { class: "select select-bordered w-full" }
-            = f.file_field :file, required: true, class: "file-input file-input-bordered w-full"
+            %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
+              %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
+              %span.text-sm.text-drac-comment.flex-1.px-3.py-3.truncate{ data: { file_picker_target: "filename" } } No file selected
+              = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
             - if @new_save&.errors&.any?
               %p.text-xs.text-error= @new_save.errors.full_messages.to_sentence
             .flex.justify-start
-              = render ::UI::ActionComponent.new(content_text: "Upload Save", variant: :primary, size: :md, type: "submit") do |a|
+              = render ::UI::ActionComponent.new(content_text: "Upload Save", variant: :primary, type: "submit") do |a|
                 - a.with_leading_icon(name: "fa-upload")
 
     -# History

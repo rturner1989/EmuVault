@@ -227,3 +227,9 @@ summary::marker { display: none; }
 .field_with_errors textarea {
   border-color: var(--color-error) !important;
 }
+
+/* File input — give the browser button a right border to separate it from the filename text */
+.file-input::file-selector-button,
+.file-input::-webkit-file-upload-button {
+  border-right: 1px solid var(--color-base-300);
+}
