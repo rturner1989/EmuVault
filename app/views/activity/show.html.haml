@@ -8,8 +8,8 @@
       = form_with url: activity_path, method: :get, data: { controller: "auto-submit" } do
         .flex.items-center.gap-2.flex-wrap
           - if @games.any?
-            = select_tag :game_id, options_for_select([["All games", ""], *@games.map { |g| [g.title, g.id] }], @selected_game_id), class: "select select-bordered select-sm", data: { action: "change->auto-submit#submit" }
-          = select_tag :sort, options_for_select([["Newest first", "newest"], ["Oldest first", "oldest"]], @selected_sort), class: "select select-bordered select-sm", data: { action: "change->auto-submit#submit" }
+            = select_tag :game_id, options_for_select([["All games", ""], *@games.map { |g| [g.title, g.id] }], @selected_game_id), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
+          = select_tag :sort, options_for_select([["Newest first", "newest"], ["Oldest first", "oldest"]], @selected_sort), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
           - if @selected_game_id.present?
             = link_to activity_path(sort: @selected_sort), class: "text-xs text-drac-comment hover:text-base-content transition-colors inline-flex items-center gap-1" do
               %i.fa-solid.fa-xmark
