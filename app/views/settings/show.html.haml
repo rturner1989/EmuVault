@@ -39,38 +39,19 @@
         = render ::UI::ActionComponent.new(content_text: "Review (#{(result["found"] || []).size} found)", href: review_library_scan_path, variant: :warning) do |a|
           - a.with_leading_icon(name: "fa-eye")
 
-    = turbo_frame_tag "scan_paths" do
-      -# Configured scan paths
-      - if @scan_paths.any?
-        .rounded-lg.border.overflow-hidden.mb-4{ class: "border-base-300" }
-          .divide-y{ class: "divide-base-300" }
-            - @scan_paths.each do |sp|
-              .flex.items-center.gap-3.px-4.py-3
-                .flex-1.min-w-0
-                  %p.text-sm.font-mono.truncate= sp.path
-                  %p.text-xs.text-muted= sp.game_system.text
-                = button_to scan_path_path(sp), method: :patch, params: { scan_path: { auto_scan: !sp.auto_scan } }, class: "shrink-0 btn btn-sm #{sp.auto_scan ? 'btn-primary btn-outline' : 'btn-ghost'}" do
-                  %i.fa-solid.fa-rotate.mr-1
-                  = sp.auto_scan ? "Auto-scan on" : "Auto-scan off"
-                = button_to scan_path_path(sp), method: :delete, class: "shrink-0 btn btn-ghost btn-sm text-muted hover:text-error" do
-                  %i.fa-solid.fa-trash
-
-      -# Add path modal
-      = render "scan_paths/add_modal"
+    .border-t.pt-5{ class: "border-base-300" }
+      = turbo_frame_tag "scan_paths" do
+        = render "shared/scan_paths_list", scan_paths: @scan_paths
+        %details{ class: @scan_paths.any? ? "mt-4" : nil }
+          %summary.text-sm.text-primary.cursor-pointer.font-medium
+            %i.fa-solid.fa-plus.fa-fw.mr-1
+            Add scan path
+          .mt-3
+            = render "scan_paths/form"
 
     -# Auto-scan schedule
     .border-t.mt-5.pt-5{ class: "border-base-300" }
-      %p.text-sm.font-medium.mb-3 Auto-scan schedule
-      = form_with model: @user, url: settings_path, method: :patch, html: { class: "space-y-3" } do |f|
-        .flex.items-center.justify-between
-          .min-w-0
-            %p.text-sm Enable auto-scan
-            %p.text-xs.text-muted Paths marked "auto-scan on" will be scanned automatically
-          = f.check_box :scan_enabled, class: "checkbox checkbox-primary ml-4"
-        .flex.items-center.justify-between.gap-4
-          %label.text-sm.shrink-0{ for: "user_scan_interval" } Interval
-          = f.select :scan_interval, User.scan_interval.values.map { |v| [v.text, v.value] }, {}, class: "select select-bordered select-sm w-auto"
-        %button.btn.btn-primary.btn-sm{ type: "submit" } Save
+      = render "shared/auto_scan_schedule", user: @user, form_url: settings_path, form_id: nil
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300", data: { controller: "push-subscription", "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s } }
     %h2.text-sm.font-semibold.mb-1 Push Notifications

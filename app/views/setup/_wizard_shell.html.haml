@@ -12,11 +12,8 @@
           - active = current_step == i + 1
           - done = current_step > i + 1
           .flex.items-center.gap-2
-            %span.w-7.h-7.rounded-full.flex.items-center.justify-center.text-xs.font-bold{ class: active ? "bg-primary text-primary-content" : done ? "bg-success text-primary-content" : "bg-base-300 text-muted" }
-              - if done
-                %i.fa-solid.fa-check
-              - else
-                = num
+            %span.w-7.h-7.rounded-full.flex.items-center.justify-center.text-xs.font-bold{ class: active ? "bg-primary text-primary-content" : done ? "bg-success text-success-content" : "bg-base-300 text-muted" }
+              = num
             %span.text-xs{ class: active ? "text-base-content" : "text-muted" }= label
           - if i < 3
             .h-px.w-6{ class: "bg-base-300" }

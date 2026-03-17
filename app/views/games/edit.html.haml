@@ -3,5 +3,5 @@
 .p-4.lg:p-6
   = render ::UI::PageHeaderComponent.new(title: "Edit Game")
 
-  .rounded-lg.bg-drac-bg.border.border-drac-current.p-6
+  .rounded-lg.p-6{ class: "bg-base-100 border border-base-300" }
     = render "form", form_url: game_path(@game), submit_label: "Save Changes", cancel_path: game_path(@game)
