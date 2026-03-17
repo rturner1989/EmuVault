@@ -53,10 +53,10 @@ class GameScanJob < ApplicationJob
     return true if user.last_scanned_at.nil?
 
     interval = case user.scan_interval.to_s
-               when "every_6_hours" then 6.hours
-               when "daily"         then 1.day
-               else                      1.hour
-               end
+    when "every_6_hours" then 6.hours
+    when "daily"         then 1.day
+    else                      1.hour
+    end
 
     user.last_scanned_at < interval.ago
   end

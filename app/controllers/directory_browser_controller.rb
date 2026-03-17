@@ -39,7 +39,7 @@ class DirectoryBrowserController < ApplicationController
         "/Users",                          # macOS
         "/mnt",                            # Linux external drives
         "/Volumes",                        # macOS external drives
-        "/media",                          # Linux removable media
+        "/media"                           # Linux removable media
       ]
       paths = candidates.select { |p| Dir.exist?(p) }
     end

@@ -23,7 +23,7 @@ run_check() {
   fi
 }
 
-run_check "RuboCop"       "bundle exec rubocop"
+run_check "RuboCop"       "bundle exec rubocop -A"
 run_check "HAML Lint"     "bundle exec haml-lint app/"
 run_check "Brakeman"      "bundle exec brakeman --no-pager -q"
 run_check "Bundler Audit" "bundle exec bundler-audit check --update"
