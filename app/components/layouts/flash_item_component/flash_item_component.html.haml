@@ -1,0 +1,5 @@
+%div{ role: "alert", class: "alert #{variant[:css]} shadow-lg", data: { controller: "flash", flash_duration_value: "4000" } }
+  %i{ class: "fa-solid #{variant[:icon]} fa-fw shrink-0" }
+  %span.flex-1.text-sm= @message
+  = render ::UI::ActionComponent.new(variant: :ghost, size: :sm, class: "btn-circle shrink-0", "aria-label": "Dismiss", data: { action: "flash#dismiss" }) do |a|
+    - a.with_leading_icon(name: "fa-xmark")

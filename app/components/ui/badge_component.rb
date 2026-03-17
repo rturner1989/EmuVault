@@ -3,23 +3,31 @@
 module UI
   class BadgeComponent < ApplicationComponent
     COLOR_CLASSES = {
-      purple: "bg-drac-purple/20 text-drac-purple",
-      green: "bg-drac-green/20 text-drac-green",
-      cyan: "bg-drac-cyan/20 text-drac-cyan",
-      yellow: "bg-drac-yellow/20 text-drac-yellow",
-      pink: "bg-drac-pink/20 text-drac-pink",
-      orange: "bg-drac-orange/20 text-drac-orange",
-      red: "bg-drac-red/20 text-drac-red",
-      comment: "bg-drac-comment/20 text-drac-comment"
+      purple:  "badge badge-primary",
+      green:   "badge badge-success",
+      cyan:    "badge badge-info",
+      yellow:  "badge badge-warning",
+      pink:    "badge badge-secondary",
+      orange:  "badge badge-accent",
+      red:     "badge badge-error",
+      comment: "badge badge-ghost text-drac-comment"
     }.freeze
 
-    def initialize(label:, color: :comment)
-      @label = label
-      @color = color.to_sym
-    end
+    SIZES = {
+      xs: "badge-xs",
+      sm: "badge-sm",
+      md: "",
+      lg: "badge-lg"
+    }.freeze
 
-    def color_class
-      COLOR_CLASSES.fetch(@color, COLOR_CLASSES[:comment])
+    def initialize(context_text:, color: :comment, size: :sm, **html_options)
+      @content_text = context_text
+      color_cls = COLOR_CLASSES.fetch(color.to_sym, COLOR_CLASSES[:comment])
+      size_cls  = SIZES.fetch(size.to_sym, "badge-sm")
+      base      = [ color_cls, size_cls ].reject(&:empty?).join(" ")
+      extra     = html_options.delete(:class)
+      @class    = extra ? "#{base} #{extra}" : base
+      @html_options = html_options
     end
   end
 end

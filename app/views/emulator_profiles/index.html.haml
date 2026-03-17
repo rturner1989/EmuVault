@@ -6,20 +6,20 @@
   - if @selected_by_name.any?
     .space-y-3
       - @selected_by_name.each do |emulator_name, profiles|
-        .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+        .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
           -# Emulator header row
-          .flex.flex-wrap.items-center.gap-2.px-4.py-3.border-b.border-drac-current
-            %span.font-medium.text-drac-fg= emulator_name
+          .flex.flex-wrap.items-center.gap-2.px-4.py-3{ class: "border-b border-base-300" }
+            %span.font-medium= emulator_name
             %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
             .ml-auto.flex.flex-wrap.items-center.gap-1
               - profiles.each do |p|
-                = render ::UI::BadgeComponent.new(label: p.platform.text, color: platform_badge_color(p.platform))
+                = render ::UI::BadgeComponent.new(context_text: p.platform.text, color: platform_badge_color(p.platform))
 
           -# One row per platform
-          .divide-y.divide-drac-current
+          .divide-y{ class: "divide-base-300" }
             - profiles.each do |profile|
               .flex.items-center.gap-3.px-4.py-2.5
-                = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
+                = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
                 .flex-1.min-w-0
                   - if profile.default_save_path.present?
                     %p.text-xs.text-drac-comment.font-mono.truncate= profile.default_save_path
@@ -28,7 +28,7 @@
                 .flex.items-center.gap-2.shrink-0
                   = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
                     = modal.with_trigger do
-                      %button{ class: "text-xs text-drac-comment px-3 py-1.5 rounded-lg border border-drac-current cursor-pointer hover:border-drac-fg hover:text-drac-fg transition-colors", data: { action: "dialog#open" } } Edit
+                      = render ::UI::ActionComponent.new(content_text: "Edit", variant: :secondary, data: { action: "dialog#open" })
                     = modal.with_body do
                       = render "form", profile: profile, url: emulator_profile_path(profile), method: :patch
                   = render ::UI::ConfirmComponent.new(id: "delete-profile-#{profile.id}",
@@ -37,25 +37,25 @@
                     url: emulator_profile_path(profile),
                     method: :delete)
   - else
-    .rounded-lg.bg-drac-bg.border.border-drac-current.p-8.text-center
+    .rounded-lg.p-8.text-center{ class: "bg-base-100 border border-base-300" }
       %p.text-drac-comment.mb-4 No profiles configured yet.
-      = link_to "Go to setup", profiles_setup_path, class: "text-sm text-drac-purple underline"
+      = link_to "Go to setup", profiles_setup_path, class: "text-sm text-primary underline"
 
   -# Add from library
   - if @library_by_name.any?
-    %details{ class: "rounded-lg bg-drac-bg border border-drac-current overflow-hidden" }
+    %details{ class: "rounded-lg overflow-hidden bg-base-100 border border-base-300" }
       %summary.px-5.py-3.text-sm.font-medium.text-drac-comment.cursor-pointer Add from library
-      .divide-y.divide-drac-current
+      .divide-y{ class: "divide-base-300" }
         - @library_by_name.each do |emulator_name, profiles|
           .px-5.py-3
             .flex.items-center.gap-2.mb-2
-              %span.text-sm.font-medium.text-drac-fg= emulator_name
+              %span.text-sm.font-medium= emulator_name
               %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
             .flex.flex-wrap.gap-2
               - profiles.each do |profile|
-                .flex.items-center.gap-2.rounded-lg.border.border-drac-current.pl-3.pr-2.py-1.5
-                  = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
-                  = button_to emulator_profile_path(profile), method: :patch, params: { emulator_profile: { user_selected: true } }, class: "text-xs text-drac-purple cursor-pointer hover:opacity-80 transition-opacity inline-flex items-center gap-1" do
+                .flex.items-center.gap-2.rounded-lg.border.pl-3.pr-2.py-1.5{ class: "border-base-300" }
+                  = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+                  = button_to emulator_profile_path(profile), method: :patch, params: { emulator_profile: { user_selected: true } }, class: "text-xs text-primary cursor-pointer hover:opacity-80 transition-opacity inline-flex items-center gap-1" do
                     %i.fa-solid.fa-plus
                     Add
 
@@ -63,8 +63,7 @@
   .flex.justify-end
     = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
       = modal.with_trigger do
-        %button{ class: "text-sm text-drac-comment border border-drac-current rounded-lg px-4 py-2 cursor-pointer hover:border-drac-fg hover:text-drac-fg transition-colors inline-flex items-center gap-2", data: { action: "dialog#open" } }
-          %i.fa-solid.fa-plus
-          Add custom profile
+        = render ::UI::ActionComponent.new(content_text: "Add custom profile", variant: :secondary, data: { action: "dialog#open" }) do |a|
+          - a.with_leading_icon(name: "fa-plus")
       = modal.with_body do
         = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post

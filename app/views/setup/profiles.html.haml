@@ -1,29 +1,28 @@
 - content_for :title, "Setup — EmuVault"
 
 = render layout: "setup/wizard_shell", locals: { current_step: 2 } do
-  .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+  .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
 
-    .px-5.py-4.border-b.border-drac-current
-      %h2.text-base.font-semibold.text-drac-fg Which emulators do you use?
+    .px-5.py-4{ class: "border-b border-base-300" }
+      %h2.text-base.font-semibold Which emulators do you use?
       %p.text-sm.text-drac-comment.mt-0.5 Select all that apply — you can add more later.
 
     = form_with url: select_profiles_setup_path, method: :post do |f|
-      .divide-y.divide-drac-current
+      .divide-y{ class: "divide-base-300" }
         - @profiles_by_name.each do |emulator_name, profiles|
           .px-5.py-3
             .flex.items-center.gap-2.mb-2
-              %p.text-sm.font-medium.text-drac-fg= emulator_name
+              %p.text-sm.font-medium= emulator_name
               %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
             .flex.flex-wrap.gap-2
               - profiles.each do |profile|
-                %label.flex.items-center.gap-2.px-3.py-1.5.rounded-lg.border.cursor-pointer{ class: profile.user_selected ? "border-drac-purple bg-drac-surface" : "border-drac-current" }
-                  %input.accent-drac-purple{ type: "checkbox", name: "profile_ids[]", value: profile.id, checked: profile.user_selected }
-                  = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
+                %label.flex.items-center.gap-2.px-3.py-1.5.rounded-lg.border.cursor-pointer{ class: profile.user_selected ? "border-primary bg-base-200" : "border-base-300" }
+                  %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id, checked: profile.user_selected }
+                  = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
 
-      .px-5.py-4.border-t.border-drac-current.flex.gap-3
-        = link_to setup_path, class: "flex-1 py-3 rounded-lg border border-drac-current text-drac-comment text-sm font-medium inline-flex items-center justify-center gap-2" do
+      .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
+        = link_to setup_path, class: "flex-1 py-3 rounded-lg text-drac-comment text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
           %i.fa-solid.fa-arrow-left
           Back
-        %button{ class: "flex-1 py-3 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm inline-flex items-center justify-center gap-2 cursor-pointer hover:opacity-90 transition-opacity", type: "submit" }
-          Next: Configure paths
-          %i.fa-solid.fa-arrow-right
+        = render ::UI::ActionComponent.new(content_text: "Next: Configure paths", variant: :primary, size: :md, class: "flex-1", type: "submit") do |a|
+          - a.with_trailing_icon(name: "fa-arrow-right")

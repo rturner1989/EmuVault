@@ -4,27 +4,27 @@
   = render ::UI::PageHeaderComponent.new(title: "Review Import")
 
   -# Summary banner
-  .rounded-lg.bg-drac-bg.border.border-drac-current.px-5.py-4
+  .rounded-lg.px-5.py-4{ class: "bg-base-100 border border-base-300" }
     .flex.flex-wrap.gap-x-6.gap-y-1
       .flex.items-center.gap-2
-        %i.fa-solid.fa-gamepad.fa-fw.text-drac-purple
-        %span.text-sm.text-drac-fg
+        %i.fa-solid.fa-gamepad.fa-fw.text-primary
+        %span.text-sm
           %strong= @import.manifest["games"].size
           = " #{@import.manifest["games"].size == 1 ? "game" : "games"}"
       .flex.items-center.gap-2
-        %i.fa-solid.fa-floppy-disk.fa-fw.text-drac-purple
-        %span.text-sm.text-drac-fg
+        %i.fa-solid.fa-floppy-disk.fa-fw.text-primary
+        %span.text-sm
           %strong= @total_saves
           = " #{@total_saves == 1 ? "save" : "saves"}"
       .flex.items-center.gap-2
-        %i.fa-solid.fa-microchip.fa-fw.text-drac-purple
-        %span.text-sm.text-drac-fg
+        %i.fa-solid.fa-microchip.fa-fw.text-primary
+        %span.text-sm
           %strong= @profiles.size
           = " #{@profiles.size == 1 ? "profile" : "profiles"}"
       - if @conflicts.any?
         .flex.items-center.gap-2
-          %i.fa-solid.fa-triangle-exclamation.fa-fw.text-drac-orange
-          %span.text-sm.text-drac-orange
+          %i.fa-solid.fa-triangle-exclamation.fa-fw.text-accent
+          %span.text-sm.text-accent
             %strong= @conflicts.size
             = " #{@conflicts.size == 1 ? "conflict" : "conflicts"}"
 
@@ -32,60 +32,60 @@
 
     -# New games
     - if @new_games.any?
-      .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
-        .flex.items-center.gap-2.px-4.py-3.border-b.border-drac-current
-          %i.fa-solid.fa-circle-plus.fa-fw.text-drac-green
-          %h2.text-sm.font-semibold.text-drac-fg= "#{@new_games.size} New #{@new_games.size == 1 ? "Game" : "Games"}"
+      .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
+        .flex.items-center.gap-2.px-4.py-3{ class: "border-b border-base-300" }
+          %i.fa-solid.fa-circle-plus.fa-fw.text-success
+          %h2.text-sm.font-semibold= "#{@new_games.size} New #{@new_games.size == 1 ? "Game" : "Games"}"
           %span.text-xs.text-drac-comment Will be added to your library
-        .divide-y.divide-drac-current
+        .divide-y{ class: "divide-base-300" }
           - @new_games.each do |game|
             .flex.items-center.justify-between.px-4.py-2.5
-              %p.text-sm.text-drac-fg= game["title"]
+              %p.text-sm= game["title"]
               .flex.items-center.gap-3
                 %span.text-xs.text-drac-comment= game["system"].upcase
                 %span.text-xs.text-drac-comment= "#{game["saves"].size} #{game["saves"].size == 1 ? "save" : "saves"}"
 
     -# Conflicts
     - if @conflicts.any?
-      .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
-        .flex.items-center.gap-2.px-4.py-3.border-b.border-drac-current
-          %i.fa-solid.fa-triangle-exclamation.fa-fw.text-drac-orange
-          %h2.text-sm.font-semibold.text-drac-fg= "#{@conflicts.size} #{@conflicts.size == 1 ? "Conflict" : "Conflicts"}"
+      .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
+        .flex.items-center.gap-2.px-4.py-3{ class: "border-b border-base-300" }
+          %i.fa-solid.fa-triangle-exclamation.fa-fw.text-accent
+          %h2.text-sm.font-semibold= "#{@conflicts.size} #{@conflicts.size == 1 ? "Conflict" : "Conflicts"}"
           %span.text-xs.text-drac-comment These games already exist in your library
-        .divide-y.divide-drac-current
+        .divide-y{ class: "divide-base-300" }
           - @conflicts.each do |game|
             .px-4.py-3
               .flex.items-center.justify-between.mb-2.5
                 .min-w-0
-                  %p.text-sm.font-medium.text-drac-fg= game["title"]
+                  %p.text-sm.font-medium= game["title"]
                   %p.text-xs.text-drac-comment.mt-0.5= "#{game["system"].upcase} · #{game["saves"].size} #{game["saves"].size == 1 ? "save" : "saves"}"
-                %span{ class: "ml-3 shrink-0 text-xs px-2 py-0.5 rounded-full bg-drac-orange/10 text-drac-orange" } Exists
+                = render ::UI::BadgeComponent.new(context_text: "Exists", color: :orange, class: "ml-3 shrink-0")
               .flex.gap-6
                 %label.flex.items-center.gap-2.cursor-pointer
-                  %input{ type: "radio", name: "resolutions[#{game["export_id"]}]", value: "skip", checked: true, class: "accent-drac-purple" }
+                  %input{ type: "radio", name: "resolutions[#{game["export_id"]}]", value: "skip", checked: true, class: "accent-primary" }
                   .min-w-0
-                    %p.text-sm.text-drac-fg Keep existing
+                    %p.text-sm Keep existing
                     %p.text-xs.text-drac-comment Imported saves are discarded
                 %label.flex.items-center.gap-2.cursor-pointer
-                  %input{ type: "radio", name: "resolutions[#{game["export_id"]}]", value: "replace", class: "accent-drac-purple" }
+                  %input{ type: "radio", name: "resolutions[#{game["export_id"]}]", value: "replace", class: "accent-primary" }
                   .min-w-0
-                    %p.text-sm.text-drac-fg Replace
+                    %p.text-sm Replace
                     %p.text-xs.text-drac-comment Overwrites all existing saves
 
     -# Emulator profiles
     - if @profiles.any?
-      .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
-        .flex.items-center.gap-2.px-4.py-3.border-b.border-drac-current
-          %i.fa-solid.fa-microchip.fa-fw.text-drac-cyan
-          %h2.text-sm.font-semibold.text-drac-fg= "#{@profiles.size} Emulator #{@profiles.size == 1 ? "Profile" : "Profiles"}"
+      .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
+        .flex.items-center.gap-2.px-4.py-3{ class: "border-b border-base-300" }
+          %i.fa-solid.fa-microchip.fa-fw.text-info
+          %h2.text-sm.font-semibold= "#{@profiles.size} Emulator #{@profiles.size == 1 ? "Profile" : "Profiles"}"
           %span.text-xs.text-drac-comment Existing profiles with the same name will be skipped
-        .divide-y.divide-drac-current
+        .divide-y{ class: "divide-base-300" }
           - @profiles.each do |profile|
             .flex.items-center.justify-between.px-4.py-2.5
-              %p.text-sm.text-drac-fg= profile["name"]
+              %p.text-sm= profile["name"]
               %span.text-xs.text-drac-comment= profile["platform"].to_s.capitalize
 
     -# Actions
     .flex.items-center.justify-between.pt-1
-      = link_to "Cancel", settings_path, class: "text-sm text-drac-comment hover:text-drac-fg transition-colors"
-      = f.submit "Start Import", class: "px-4 py-2 bg-drac-purple text-drac-bg font-medium rounded-lg text-sm hover:opacity-90 transition-opacity cursor-pointer"
+      = render ::UI::ActionComponent.new(content_text: "Cancel", href: settings_path, variant: :ghost)
+      = f.submit "Start Import", class: "btn btn-primary"

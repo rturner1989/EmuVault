@@ -1,26 +1,13 @@
 @import "tailwindcss";
+@plugin "daisyui" {
+  themes: dracula;
+}
 
 @theme {
-  /* Dracula colour palette */
-  --color-drac-bg:      #282a36;
-  --color-drac-surface: #21222c;
-  --color-drac-current: #44475a;
-  --color-drac-fg:      #f8f8f2;
+  /* Not in DaisyUI Dracula — kept as a custom utility */
   --color-drac-comment: #6272a4;
-  --color-drac-cyan:    #8be9fd;
-  --color-drac-green:   #50fa7b;
-  --color-drac-orange:  #ffb86c;
-  --color-drac-pink:    #ff79c6;
-  --color-drac-purple:  #bd93f9;
-  --color-drac-red:     #ff5555;
-  --color-drac-yellow:  #f1fa8c;
 }
 
-html,
-body {
-  background-color: var(--color-drac-surface);
-  color: var(--color-drac-fg);
-}
 
 /* a11y-dialog */
 [data-a11y-dialog-native],
@@ -51,8 +38,8 @@ body {
   max-width: 32rem;
   max-height: calc(100dvh - 2rem);
   overflow-y: auto;
-  background: var(--color-drac-bg);
-  border: 1px solid var(--color-drac-current);
+  background: var(--color-base-100);
+  border: 1px solid var(--color-base-300);
   border-radius: 0.75rem;
   padding: 1.5rem;
 }
@@ -150,8 +137,8 @@ body {
     height: auto;
     max-height: 85dvh;
     border-radius: 0.75rem 0.75rem 0 0;
-    border-left: 1px solid var(--color-drac-current);
-    border-right: 1px solid var(--color-drac-current);
+    border-left: 1px solid var(--color-base-300);
+    border-right: 1px solid var(--color-base-300);
     padding-top: 1.5rem;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
   }
@@ -211,7 +198,7 @@ summary::marker { display: none; }
 /* Turbo progress bar */
 .turbo-progress-bar {
   height: 3px;
-  background: var(--color-drac-purple);
+  background: var(--color-primary);
 }
 
 @media (max-width: 1023px) {
@@ -228,15 +215,15 @@ summary::marker { display: none; }
 }
 
 /* SimpleForm error styles */
-.input span.error {
+.form_field span.error {
   display: block;
   margin-top: 0.25rem;
   font-size: 0.75rem;
-  color: var(--color-drac-red);
+  color: var(--color-error);
 }
 
 .field_with_errors input,
 .field_with_errors select,
 .field_with_errors textarea {
-  border-color: var(--color-drac-red) !important;
+  border-color: var(--color-error) !important;
 }

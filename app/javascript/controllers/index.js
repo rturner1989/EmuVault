@@ -1,6 +1,7 @@
 import { Application } from "@hotwired/stimulus"
 import AutoSubmitController from "./auto_submit_controller"
 import DialogController from "./dialog_controller"
+import FlashController from "./flash_controller"
 import DirectoryBrowserController from "./directory_browser_controller"
 import NotificationsController from "./notifications_controller"
 import OnboardingController from "./onboarding_controller"
@@ -16,4 +17,5 @@ application.register("notifications", NotificationsController)
 application.register("onboarding", OnboardingController)
 application.register("push-subscription", PushSubscriptionController)
 application.register("quick-sync", QuickSyncController)
+application.register("flash", FlashController)
 application.register("save-hint", SaveHintController)

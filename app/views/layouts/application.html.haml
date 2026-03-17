@@ -1,5 +1,5 @@
 !!!
-%html{ lang: "en" }
+%html{ lang: "en", "data-theme": "dracula" }
   %head
     %title= content_for(:title) || "EmuVault"
     %meta{ name: "viewport", content: "width=device-width,initial-scale=1,viewport-fit=cover" }
@@ -17,16 +17,18 @@
     %link{ rel: "apple-touch-icon", href: "/icon.png" }
     %link{ rel: "manifest", href: "/manifest.json" }
     %link{ rel: "stylesheet", href: "/fontawesome/css/all.min.css" }
+
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     - if @show_onboarding
       %link{ rel: "stylesheet", href: "/driver/driver.css" }
+
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
   %body
+    = render ::Layouts::FlashComponent.new(flash: flash)
+
     - if authenticated?
       = render ::Layouts::AppShellComponent.new(current_path: request.path, onboarding: @show_onboarding) do |shell|
         - shell.with_content_body do
-          = render ::Layouts::FlashComponent.new(flash: flash)
           = yield
     - else
-      = render ::Layouts::FlashComponent.new(flash: flash)
       = yield

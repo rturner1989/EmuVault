@@ -1,16 +1,15 @@
 - content_for :title, "Setup — EmuVault"
 
 = render layout: "setup/wizard_shell", locals: { current_step: 1 } do
-  .rounded-lg.bg-drac-bg.border.border-drac-current.p-6
+  .rounded-lg.p-6{ class: "bg-base-100 border border-base-300" }
 
-    %h2.text-base.font-semibold.text-drac-fg.mb-1 Your account
+    %h2.text-base.font-semibold.mb-1 Your account
     %p.text-sm.text-drac-comment.mb-5 Set a personal email and password. You'll use these to log in.
 
     = simple_form_for current_user, url: setup_path, method: :patch, html: { class: "space-y-4" } do |f|
-      = f.input :email_address, as: :email, label: "Email", autocomplete: "email", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
-      = f.input :password, as: :password, label: "New password", autocomplete: "new-password", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
-      = f.input :password_confirmation, as: :password, label: "Confirm password", autocomplete: "new-password", input_html: { class: "w-full bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg" }
+      = f.input :email_address, as: :email, label: "Email", autocomplete: "email", input_html: { class: "input input-bordered w-full" }
+      = f.input :password, as: :password, label: "New password", autocomplete: "new-password", input_html: { class: "input input-bordered w-full" }
+      = f.input :password_confirmation, as: :password, label: "Confirm password", autocomplete: "new-password", input_html: { class: "input input-bordered w-full" }
 
-      %button{ class: "w-full py-3 rounded-lg bg-drac-purple text-drac-bg font-semibold text-sm inline-flex items-center justify-center gap-2 cursor-pointer hover:opacity-90 transition-opacity", type: "submit" }
-        Next: Choose emulators
-        %i.fa-solid.fa-arrow-right
+      = render ::UI::ActionComponent.new(content_text: "Next: Choose emulators", variant: :primary, size: :md, class: "w-full", type: "submit") do |a|
+        - a.with_trailing_icon(name: "fa-arrow-right")

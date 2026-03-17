@@ -1,4 +1,16 @@
 - if @href
-  = link_to @label, @href, **@html_options
+  = link_to @href, **@html_options do
+    - if leading_icon?
+      = leading_icon
+    - if @label
+      = @label
+    - if trailing_icon?
+      = trailing_icon
 - else
-  %button{ **@html_options }= @label
+  %button{ **@html_options }
+    - if leading_icon?
+      = leading_icon
+    - if @label
+      = @label
+    - if trailing_icon?
+      = trailing_icon

@@ -5,58 +5,57 @@
     = header.with_action do
       = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
         = modal.with_trigger do
-          %button{ id: "add-game-btn", class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 active:opacity-70 transition-opacity cursor-pointer inline-flex items-center gap-2", data: { action: "dialog#open" } }
-            %i.fa-solid.fa-plus
-            Add Game
+          = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, id: "add-game-btn", data: { action: "dialog#open" }) do |a|
+            - a.with_leading_icon(name: "fa-plus")
         = modal.with_body do
           = render "games/form", form_url: games_path, submit_label: "Add Game", cancel_path: root_path
 
   -# Now Playing — mobile slim banner (tap to open quick sync sheet)
   - if @quick_sync_game
-    %button.lg:hidden.w-full.flex.items-center.gap-3.rounded-lg.bg-drac-bg.border.border-drac-purple.px-4.py-3.text-left.cursor-pointer{ data: { action: "quick-sync#open" } }
-      %i.fa-solid.fa-rotate.text-drac-purple.shrink-0
+    %button.lg:hidden.w-full.flex.items-center.gap-3.rounded-lg.px-4.py-3.text-left.cursor-pointer{ class: "bg-base-100 border border-primary", data: { action: "quick-sync#open" } }
+      %i.fa-solid.fa-rotate.text-primary.shrink-0
       .min-w-0.flex-1
         %p.text-xs.text-drac-comment.leading-none.mb-0.5 Now Playing
-        %p.text-sm.font-medium.text-drac-fg.truncate= @quick_sync_game.title
+        %p.text-sm.font-medium.truncate= @quick_sync_game.title
       %i.fa-solid.fa-chevron-up.text-drac-comment.text-xs.shrink-0
 
   -# Now Playing — desktop accordion (hidden on mobile, use nav centre button instead)
   - if @quick_sync_game
-    %details.hidden.lg:block.rounded-lg.bg-drac-bg.border.border-drac-purple.overflow-hidden
+    %details.hidden.lg:block.rounded-lg.overflow-hidden{ class: "bg-base-100 border border-primary" }
       %summary.flex.items-center.gap-3.px-4.py-3.cursor-pointer.select-none.list-none
-        %i.fa-solid.fa-rotate.text-drac-purple.shrink-0
+        %i.fa-solid.fa-rotate.text-primary.shrink-0
         .min-w-0.flex-1
           %p.text-xs.text-drac-comment.leading-none.mb-0.5 Now Playing
-          %p.text-sm.font-medium.text-drac-fg.truncate= @quick_sync_game.title
+          %p.text-sm.font-medium.truncate= @quick_sync_game.title
         %i.fa-solid.fa-chevron-down.text-drac-comment.text-xs.shrink-0.details-chevron
-      .border-t.border-drac-current.p-5
+      .border-t.p-5{ class: "border-base-300" }
         = render "shared/quick_sync_content"
 
   -# Stat cards — 2×2 on mobile, 4-col on desktop
   .grid.grid-cols-2.gap-4.lg:grid-cols-4
-    .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+    .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
       .text-sm.text-drac-comment Games
-      .mt-1.text-3xl.font-bold.text-drac-fg= @games_count
+      .mt-1.text-3xl.font-bold= @games_count
       .mt-2.text-xs
-        = link_to games_path, class: "text-drac-purple hover:underline cursor-pointer inline-flex items-center gap-1" do
+        = link_to games_path, class: "text-primary hover:underline cursor-pointer inline-flex items-center gap-1" do
           View all
           %i.fa-solid.fa-arrow-right
 
-    .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+    .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
       .text-sm.text-drac-comment Needs Upload
-      .mt-1.text-3xl.font-bold{ class: @games_without_save > 0 ? "text-drac-orange" : "text-drac-green" }= @games_without_save
+      .mt-1.text-3xl.font-bold{ class: @games_without_save > 0 ? "text-accent" : "text-success" }= @games_without_save
       .mt-2.text-xs.text-drac-comment= @games_without_save == 0 ? "All synced" : "#{@games_without_save} game#{"s" if @games_without_save != 1} with no save"
 
-    .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+    .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
       .text-sm.text-drac-comment Storage Used
-      .mt-1.text-3xl.font-bold.text-drac-fg= @storage_used
+      .mt-1.text-3xl.font-bold= @storage_used
       .mt-2.text-xs.text-drac-comment Save files
 
-    .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+    .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
       .text-sm.text-drac-comment Sync Events
-      .mt-1.text-3xl.font-bold.text-drac-fg= @sync_events_count
+      .mt-1.text-3xl.font-bold= @sync_events_count
       .mt-2.text-xs
-        = link_to activity_path, class: "text-drac-purple hover:underline cursor-pointer inline-flex items-center gap-1" do
+        = link_to activity_path, class: "text-primary hover:underline cursor-pointer inline-flex items-center gap-1" do
           View all
           %i.fa-solid.fa-arrow-right
 
@@ -65,48 +64,48 @@
 
     -# Recent Activity (wider)
     .lg:col-span-2
-      .rounded-lg.bg-drac-bg.border.border-drac-current
-        .px-5.py-4.border-b.border-drac-current.flex.items-center.justify-between
-          %h2.text-sm.font-semibold.text-drac-fg Recent Activity
-          = link_to activity_path, class: "text-xs text-drac-purple hover:underline cursor-pointer inline-flex items-center gap-1" do
+      .rounded-lg{ class: "bg-base-100 border border-base-300" }
+        .px-5.py-4.flex.items-center.justify-between{ class: "border-b border-base-300" }
+          %h2.text-sm.font-semibold Recent Activity
+          = link_to activity_path, class: "text-xs text-primary hover:underline cursor-pointer inline-flex items-center gap-1" do
             View all
             %i.fa-solid.fa-arrow-right
         - if @recent_sync_events.empty?
           .px-5.py-8.text-center.text-sm.text-drac-comment No activity yet.
         - else
-          %ul.divide-y.divide-drac-current
+          %ul.divide-y{ class: "divide-base-300" }
             - @recent_sync_events.each do |event|
               %li.px-5.py-3.flex.items-center.justify-between.gap-4
                 .flex.items-center.gap-2
-                  = render ::UI::BadgeComponent.new(label: event.action_label, color: event.action_badge_color)
-                  = link_to event.game_title, game_path(event.game_id), class: "text-sm text-drac-purple hover:underline truncate cursor-pointer"
+                  = render ::UI::BadgeComponent.new(context_text: event.action_label, color: event.action_badge_color)
+                  = link_to event.game_title, game_path(event.game_id), class: "text-sm text-primary hover:underline truncate cursor-pointer"
                 .text-xs.text-drac-comment= event.performed_at_label
 
     -# Insights sidebar
     .space-y-4
 
       -# Top games
-      .rounded-lg.bg-drac-bg.border.border-drac-current
-        .px-5.py-4.border-b.border-drac-current
-          %h2.text-sm.font-semibold.text-drac-fg Most Active Games
+      .rounded-lg{ class: "bg-base-100 border border-base-300" }
+        .px-5.py-4{ class: "border-b border-base-300" }
+          %h2.text-sm.font-semibold Most Active Games
         - if @top_games.empty?
           .px-5.py-6.text-center.text-sm.text-drac-comment No syncs yet.
         - else
-          %ul.divide-y.divide-drac-current
+          %ul.divide-y{ class: "divide-base-300" }
             - @top_games.each do |game|
               %li.px-5.py-3.flex.items-center.justify-between.gap-2
-                = link_to game[:title], game_path(game[:id]), class: "text-sm text-drac-purple hover:underline truncate cursor-pointer"
+                = link_to game[:title], game_path(game[:id]), class: "text-sm text-primary hover:underline truncate cursor-pointer"
                 .text-xs.text-drac-comment.shrink-0= "#{game[:count]} sync#{"s" if game[:count] != 1}"
 
       -# Systems breakdown
-      .rounded-lg.bg-drac-bg.border.border-drac-current
-        .px-5.py-4.border-b.border-drac-current
-          %h2.text-sm.font-semibold.text-drac-fg Systems
+      .rounded-lg{ class: "bg-base-100 border border-base-300" }
+        .px-5.py-4{ class: "border-b border-base-300" }
+          %h2.text-sm.font-semibold Systems
         - if @system_counts.empty?
           .px-5.py-6.text-center.text-sm.text-drac-comment No games yet.
         - else
-          %ul.divide-y.divide-drac-current
+          %ul.divide-y{ class: "divide-base-300" }
             - @system_counts.sort_by { |_, count| -count }.each do |system, count|
               %li.px-5.py-3.flex.items-center.justify-between.gap-2
-                .text-sm.text-drac-fg= system.to_s.upcase
+                .text-sm= system.to_s.upcase
                 .text-xs.text-drac-comment= "#{count} game#{"s" if count != 1}"
