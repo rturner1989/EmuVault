@@ -5,7 +5,9 @@
     .flex.items-center.h-16.px-6{ class: "border-b border-base-300" }
       = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
         %img{ src: "/icon.svg", alt: "", width: "28", height: "28", class: "rounded-md" }
-        %span.text-xl.font-bold.text-primary EmuVault
+        %span.text-xl
+          %span.text-drac-comment> Emu
+          %span.font-bold.text-primary> Vault
 
     .flex-1.overflow-y-auto.px-3.py-4.space-y-1
       = link_to root_path, class: nav_link_class("/") do
@@ -24,10 +26,10 @@
     .p-3.space-y-1{ class: "border-t border-base-300" }
       .px-3.py-1.text-xs.text-drac-comment.truncate= Current.user.email_address
       %button#nav-notifications.flex.items-center.gap-2.w-full.px-3.py-2.rounded-lg.text-sm.text-drac-comment{ class: "hover:bg-base-300 hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
-        .relative.inline-flex.items-center.justify-center
-          %i.fa-solid.fa-bell.fa-fw
-          = render "shared/notification_badge", count: unread_count
+        %i.fa-solid.fa-bell.fa-fw
         %span Notifications
+        - if unread_count > 0
+          %span.ml-auto.min-w-5.h-5.bg-error.text-white.text-xs.rounded-full.flex.items-center.justify-center.leading-none{ "data-notification-badge": "" }= unread_count
       = link_to settings_path, id: "nav-settings", class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-base-300 hover:text-base-content transition-colors" do
         %i.fa-solid.fa-gear.fa-fw
         %span Settings
@@ -39,7 +41,9 @@
     .lg:hidden.flex.items-center.pb-2.mobile-top-bar{ class: "bg-base-100 border-b border-base-300" }
       = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
         %img{ src: "/icon.svg", alt: "", width: "24", height: "24", class: "rounded-md" }
-        %span.text-lg.font-bold.text-primary EmuVault
+        %span.text-lg
+          %span.text-drac-comment> Emu
+          %span.font-bold.text-primary> Vault
       .ml-auto
         %button#mobile-nav-notifications.relative.inline-flex.items-center.justify-center.w-8.h-8.text-drac-comment{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
           %i.fas.fa-bell

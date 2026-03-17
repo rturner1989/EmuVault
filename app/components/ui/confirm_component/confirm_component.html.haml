@@ -5,4 +5,4 @@
     %p.text-sm.opacity-70.mb-5= @message
     .flex.items-center.gap-3
       = button_to @confirm_label, @url, method: @method, class: "btn btn-error btn-sm"
-      = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, type: "button", data: { action: "dialog#close" })
+      %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "dialog#close" } } Cancel

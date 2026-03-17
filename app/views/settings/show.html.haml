@@ -109,8 +109,11 @@
               %p.text-sm.font-medium Import library
               %p.text-xs.text-drac-comment Restore from a previous EmuVault export ZIP
           .flex.items-center.gap-3.min-w-0
-            = f.file_field :file, accept: ".zip", class: "file-input file-input-bordered file-input-sm w-0 flex-1 min-w-0"
-            = f.submit "Import", class: "btn btn-info btn-sm shrink-0"
+            %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer.flex-1.min-w-0{ class: "border-base-content/20", data: { controller: "file-picker" } }
+              %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
+              %span.text-sm.text-drac-comment.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
+              = f.file_field :file, accept: ".zip", class: "hidden", data: { file_picker_target: "input", action: "change->file-picker#update" }
+            %button.btn.btn-info.btn-sm.shrink-0{ type: "submit" } Import
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300", data: { controller: "push-subscription", "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s } }
     %h2.text-sm.font-semibold.mb-1 Push Notifications

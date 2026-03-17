@@ -1,8 +1,8 @@
-= simple_form_for @form, url: form_url, html: { class: "space-y-5" } do |f|
+= simple_form_for @form, url: form_url, html: { class: "space-y-4" } do |f|
   = f.input :title,
       label: "Title",
       input_html: { class: "input input-bordered w-full" },
-      label_html: { class: "label-text font-medium" }
+      label_html: { class: "label-text text-xs font-medium" }
 
   = f.input :system,
       label: "System",
@@ -12,15 +12,15 @@
       label_method: :text,
       include_blank: "— select a system —",
       input_html: { class: "select select-bordered w-full" },
-      label_html: { class: "label-text font-medium" }
+      label_html: { class: "label-text text-xs font-medium" }
 
   = f.input :rom_hash,
       label: "ROM Hash (optional)",
       hint: "SHA-256 or MD5 of the ROM file — used to uniquely identify the game.",
       input_html: { class: "input input-bordered w-full font-mono" },
-      label_html: { class: "label-text font-medium" },
+      label_html: { class: "label-text text-xs font-medium" },
       hint_html: { class: "mt-1 text-xs text-drac-comment" }
 
-  .flex.items-center.gap-3.pt-2
-    = f.button :submit, submit_label, class: "btn btn-primary btn-sm"
-    = render ::UI::ActionComponent.new(content_text: "Cancel", href: cancel_path, variant: :ghost)
+  .flex.items-center.gap-3.pt-1
+    %button.btn.btn-primary.btn-sm{ type: "submit" }= submit_label
+    %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "dialog#close" } } Cancel

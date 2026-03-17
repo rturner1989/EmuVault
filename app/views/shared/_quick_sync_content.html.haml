@@ -4,7 +4,7 @@
     .flex.items-center.justify-between.gap-3
       .min-w-0
         %p.text-base.font-semibold.truncate= @quick_sync_game.title
-        = render ::UI::BadgeComponent.new(context_text: @quick_sync_game.system.text, color: :comment)
+        = render ::UI::BadgeComponent.new(context_text: @quick_sync_game.system_label, color: @quick_sync_game.system_badge_color)
       .flex.items-center.gap-2.shrink-0
         = render ::UI::ActionComponent.new(content_text: "View →", href: game_path(@quick_sync_game), variant: :ghost)
         = button_to current_game_path, method: :delete, class: "btn btn-error btn-outline btn-sm" do
