@@ -5,9 +5,9 @@
     %div{ class: content_classes }
       %div
         .flex.items-center.justify-between.mb-4
-          %h2.text-base.font-semibold.text-drac-fg= @title
-          %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "dialog#close" }, "aria-label": "Close" }
-            %i.fa-solid.fa-xmark
+          %h2.text-base.font-semibold= @title
+          = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { action: "dialog#close" }, "aria-label": "Close") do |a|
+            - a.with_leading_icon(name: "fa-xmark")
         = body
   - if page_content?
     = page_content

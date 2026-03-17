@@ -11,6 +11,7 @@
 #  scan_enabled     :boolean          default(FALSE), not null
 #  scan_interval    :string           default("hourly"), not null
 #  setup_completed  :boolean          default(FALSE), not null
+#  theme            :string           default("dracula"), not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  current_game_id  :bigint
@@ -28,7 +29,17 @@
 class User < ApplicationRecord
   extend Enumerize
 
+  THEMES = {
+    "Dark" => %w[dracula night dark business luxury coffee dim sunset],
+    "Light" => %w[light cupcake emerald corporate retro cyberpunk valentine
+                  garden aqua pastel wireframe nord lemonade caramellatte]
+  }.freeze
+
+  ALL_THEMES = THEMES.values.flatten.freeze
+
   enumerize :scan_interval, in: %i[hourly every_6_hours daily], default: :hourly
+
+  validates :theme, inclusion: { in: ALL_THEMES }
 
   has_secure_password
   belongs_to :current_game, class_name: "Game", optional: true

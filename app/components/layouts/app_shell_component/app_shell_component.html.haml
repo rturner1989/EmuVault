@@ -1,11 +1,13 @@
 = helpers.turbo_stream_from "notifications_#{Current.user.id}"
 
-.flex.min-h-screen.bg-drac-surface{ data: { controller: "notifications onboarding quick-sync", "onboarding-active-value": @onboarding.to_s } }
-  %nav.hidden.lg:flex.lg:flex-col.lg:w-64.lg:fixed.lg:inset-y-0.bg-drac-bg.border-r.border-drac-current
-    .flex.items-center.h-16.px-6.border-b.border-drac-current
+.flex.min-h-screen{ class: "bg-base-200", data: { controller: "notifications onboarding quick-sync", "onboarding-active-value": @onboarding.to_s } }
+  %nav{ class: "hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-base-100 border-r border-base-300" }
+    .flex.items-center.h-16.px-6{ class: "border-b border-base-300" }
       = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
         %img{ src: "/icon.svg", alt: "", width: "28", height: "28", class: "rounded-md" }
-        %span.text-xl.font-bold.text-drac-purple EmuVault
+        %span.text-xl
+          %span.text-muted> Emu
+          %span.font-bold.text-primary> Vault
 
     .flex-1.overflow-y-auto.px-3.py-4.space-y-1
       = link_to root_path, class: nav_link_class("/") do
@@ -21,34 +23,36 @@
         %i.fa-solid.fa-microchip.fa-fw
         %span Emulator Profiles
 
-    .border-t.border-drac-current.p-3.space-y-1
-      .px-3.py-1.text-xs.text-drac-comment.truncate= Current.user.email_address
-      %button#nav-notifications.flex.items-center.gap-2.w-full.px-3.py-2.rounded-lg.text-sm.text-drac-comment.hover:bg-drac-current.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "notifications#open" } }
-        .relative.inline-flex.items-center.justify-center
-          %i.fa-solid.fa-bell.fa-fw
-          = render "shared/notification_badge", count: unread_count
+    .p-3.space-y-1{ class: "border-t border-base-300" }
+      .px-3.py-1.text-xs.text-muted.truncate= Current.user.email_address
+      %button#nav-notifications.flex.items-center.gap-2.w-full.px-3.py-2.rounded-lg.text-sm.text-muted{ class: "hover:bg-base-300 hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
+        %i.fa-solid.fa-bell.fa-fw
         %span Notifications
-      = link_to settings_path, id: "nav-settings", class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-fg transition-colors" do
+        - if unread_count > 0
+          %span.ml-auto.min-w-5.h-5.bg-error.text-white.text-xs.rounded-full.flex.items-center.justify-center.leading-none{ "data-notification-badge": "" }= unread_count
+      = link_to settings_path, id: "nav-settings", class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-base-content transition-colors" do
         %i.fa-solid.fa-gear.fa-fw
         %span Settings
-      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-drac-current hover:text-drac-red transition-colors" do
+      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-error transition-colors" do
         %i.fa-solid.fa-right-from-bracket.fa-fw
         %span Sign Out
 
-  .lg:pl-64.flex-1.min-w-0.flex.flex-col.min-h-screen.mobile-bottom-content-pad.lg:pt-0.lg:pb-0
-    .lg:hidden.flex.items-center.pb-2.bg-drac-bg.border-b.border-drac-current.mobile-top-bar
+  .flex-1.min-w-0.flex.flex-col.min-h-screen.mobile-bottom-content-pad{ class: "lg:pl-64 lg:pt-0 lg:pb-0" }
+    .lg:hidden.flex.items-center.pb-2.mobile-top-bar{ class: "bg-base-100 border-b border-base-300" }
       = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
         %img{ src: "/icon.svg", alt: "", width: "24", height: "24", class: "rounded-md" }
-        %span.text-lg.font-bold.text-drac-purple EmuVault
+        %span.text-lg
+          %span.text-muted> Emu
+          %span.font-bold.text-primary> Vault
       .ml-auto
-        %button#mobile-nav-notifications.relative.inline-flex.items-center.justify-center.w-8.h-8.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "notifications#open" } }
+        %button#mobile-nav-notifications.relative.inline-flex.items-center.justify-center.w-8.h-8.text-muted{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
           %i.fas.fa-bell
           = render "shared/notification_badge", count: unread_count
 
     .w-full.max-w-4xl.mx-auto.min-w-0
       = content_body
 
-  %nav.fixed.bottom-0.left-0.right-0.z-50.lg:hidden.bg-drac-bg.border-t.border-drac-current.mobile-bottom-nav
+  %nav{ class: "fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-base-100 border-t border-base-300 mobile-bottom-nav" }
     .flex
       = link_to root_path, class: mobile_nav_class("/"), aria: { label: "Dashboard" } do
         %i.fa-solid.fa-house.fa-fw
@@ -56,8 +60,8 @@
         %i.fa-solid.fa-gamepad.fa-fw
       -# Centre Quick Sync button — prominent, always accessible
       %button#mobile-nav-quick-sync.flex-1.flex.flex-col.items-center.justify-center.py-2.cursor-pointer{ aria: { label: "Quick Sync" }, data: { action: "quick-sync#open" } }
-        .relative.flex.items-center.justify-center{ class: "w-10 h-10 rounded-full bg-drac-purple -mt-5 shadow-lg" }
-          %i.fa-solid.fa-rotate.text-drac-bg
+        .relative.flex.items-center.justify-center{ class: "w-10 h-10 rounded-full bg-primary -mt-5 shadow-lg" }
+          %i.fa-solid.fa-rotate.text-primary-content
       = link_to activity_path, id: "mobile-nav-activity", class: mobile_nav_class("/activity"), aria: { label: "Activity" } do
         %i.fa-solid.fa-clock-rotate-left.fa-fw
       = link_to settings_path, id: "mobile-nav-settings", class: mobile_nav_class("/settings"), aria: { label: "Settings" } do
@@ -70,22 +74,22 @@
       %div
         .flex.items-center.justify-between.mb-5
           .flex.items-center.gap-2
-            %i.fa-solid.fa-rotate.text-drac-purple
-            %h2.text-base.font-semibold.text-drac-fg Quick Sync
-          %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ data: { action: "quick-sync#close" }, "aria-label": "Close" }
-            %i.fa-solid.fa-xmark
+            %i.fa-solid.fa-rotate.text-primary
+            %h2.text-base.font-semibold Quick Sync
+          = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { action: "quick-sync#close" }, "aria-label": "Close") do |a|
+            - a.with_leading_icon(name: "fa-xmark")
         = render "shared/quick_sync_content"
 
   -# Notification panel overlay
   %div{ data: { notifications_target: "backdrop" }, class: "fixed inset-0 z-50 pointer-events-none" }
-    %div.absolute.inset-0.opacity-0.transition-opacity.duration-300{ class: "bg-black/40", data: { notifications_target: "overlay", action: "click->notifications#close" } }
-    .absolute.right-0.top-0.h-full.w-full.lg:max-w-sm.bg-drac-bg.border-l.border-drac-current.flex.flex-col.translate-x-full.transition-transform.duration-300.ease-out{ data: { notifications_target: "panel" } }
-      .flex.items-center.justify-between.px-4.py-3.border-b.border-drac-current.notification-panel-top
-        %h2.font-semibold.text-drac-fg Notifications
-        %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer.p-1{ data: { action: "click->notifications#close" } }
-          %i.fas.fa-times
+    %div{ class: "absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/40", data: { notifications_target: "overlay", action: "click->notifications#close" } }
+    .absolute.right-0.top-0.h-full.w-full.flex.flex-col.translate-x-full.transition-transform.duration-300.ease-out{ class: "lg:max-w-sm bg-base-100 border-l border-base-300", data: { notifications_target: "panel" } }
+      .flex.items-center.justify-between.px-4.py-3.notification-panel-top{ class: "border-b border-base-300" }
+        %h2.font-semibold Notifications
+        = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { action: "click->notifications#close" }) do |a|
+          - a.with_leading_icon(name: "fa-times", style: "fas", fw: false)
       .flex-1.overflow-y-auto
         = helpers.turbo_frame_tag :notifications_panel, src: notifications_path, loading: :lazy, data: { notifications_target: "frame" }
-      .px-4.py-2.border-t.border-drac-current.notification-panel-bottom
-        %button.text-xs.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer.w-full.text-left.py-1{ data: { action: "click->notifications#markAllRead" } }
+      .px-4.py-2.notification-panel-bottom{ class: "border-t border-base-300" }
+        %button.text-xs.text-muted.w-full.text-left.py-1{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "click->notifications#markAllRead" } }
           Mark all as read

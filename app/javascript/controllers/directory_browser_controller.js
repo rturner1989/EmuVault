@@ -27,6 +27,12 @@ export default class extends Controller {
     this.browserTarget.hidden = true
   }
 
+  // Clear the path input
+  clearInput() {
+    this.inputTarget.value = ""
+    this.inputTarget.focus()
+  }
+
   // ── private ──────────────────────────────────────────────────────────────
 
   loadPath(path) {
@@ -58,7 +64,7 @@ export default class extends Controller {
     this.shortcutsTarget.innerHTML = shortcuts.map(p => `
       <button
         type="button"
-        class="text-xs px-2 py-0.5 rounded border border-drac-current text-drac-comment hover:border-drac-fg hover:text-drac-fg transition-colors cursor-pointer"
+        class="text-xs px-2 py-0.5 rounded border border-base-300 text-muted hover:border-base-content hover:text-base-content transition-colors cursor-pointer"
         data-action="click->directory-browser#navigate"
         data-path="${this.escapeAttr(p)}">${this.escapeHTML(p)}</button>
     `).join("")
@@ -67,19 +73,19 @@ export default class extends Controller {
   renderEntries(entries) {
     if (entries.length === 0) {
       this.listTarget.innerHTML =
-        '<p class="text-xs text-drac-comment px-3 py-3 italic">No subdirectories</p>'
+        '<p class="text-xs text-muted px-3 py-3 italic">No subdirectories</p>'
       return
     }
 
     this.listTarget.innerHTML = entries.map(entry => `
       <button
         type="button"
-        class="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-drac-fg hover:bg-drac-current transition-colors"
+        class="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-base-content hover:bg-base-200 transition-colors"
         data-action="click->directory-browser#navigate"
         data-path="${this.escapeAttr(entry.path)}">
-        <i class="fa-solid fa-folder text-drac-yellow fa-fw shrink-0"></i>
+        <i class="fa-solid fa-folder text-warning fa-fw shrink-0"></i>
         <span class="truncate min-w-0 flex-1">${this.escapeHTML(entry.name)}</span>
-        <i class="fa-solid fa-chevron-right text-drac-comment shrink-0 text-xs"></i>
+        <i class="fa-solid fa-chevron-right text-muted shrink-0 text-xs"></i>
       </button>
     `).join("")
   }
@@ -92,7 +98,7 @@ export default class extends Controller {
   }
 
   errorHTML(msg) {
-    return `<p class="text-xs text-drac-red px-3 py-3">${this.escapeHTML(msg)}</p>`
+    return `<p class="text-xs text-error px-3 py-3">${this.escapeHTML(msg)}</p>`
   }
 
   escapeHTML(str) {

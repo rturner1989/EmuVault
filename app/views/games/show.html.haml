@@ -2,27 +2,27 @@
 
 .p-4.lg:p-6.space-y-4
   -# Back breadcrumb
-  = link_to games_path, class: "text-xs text-drac-comment hover:text-drac-fg transition-colors cursor-pointer inline-flex items-center gap-1" do
+  = link_to games_path, class: "text-xs text-muted hover:text-base-content transition-colors cursor-pointer inline-flex items-center gap-1" do
     %i.fa-solid.fa-arrow-left
     = "Games"
 
   -# Title + actions
-  .flex.items-start.justify-between.gap-3
+  .flex.flex-wrap.items-start.justify-between.gap-3
     .min-w-0
-      %h1.text-xl.font-bold.text-drac-fg.truncate= @game.title
-      = render ::UI::BadgeComponent.new(label: @game.system.text, color: :comment)
-    .flex.gap-2.shrink-0.mt-0.5
+      %h1.text-xl.font-bold= @game.title
+      = render ::UI::BadgeComponent.new(context_text: @game.system_label, color: @game.system_badge_color)
+    .flex.gap-2.shrink-0
       - if current_user.current_game_id == @game.id
-        = button_to current_game_path, method: :delete, class: "rounded-lg border border-drac-purple px-3 py-1.5 text-xs text-drac-purple hover:opacity-70 transition-opacity cursor-pointer inline-flex items-center gap-1.5" do
+        = button_to current_game_path, method: :delete, class: "btn btn-outline btn-primary btn-sm" do
           %i.fa-solid.fa-rotate.fa-fw
           Now Playing
       - else
-        = button_to current_game_path, method: :patch, params: { game_id: @game.id }, class: "rounded-lg border border-drac-current px-3 py-1.5 text-xs text-drac-comment hover:border-drac-purple hover:text-drac-purple transition-colors cursor-pointer inline-flex items-center gap-1.5" do
+        = button_to current_game_path, method: :patch, params: { game_id: @game.id }, class: "btn btn-outline btn-sm" do
           %i.fa-solid.fa-rotate.fa-fw
           Set as current
       = render ::UI::ModalComponent.new(id: "edit-game-dialog", title: "Edit Game") do |modal|
         = modal.with_trigger do
-          %button{ class: "rounded-lg border border-drac-current px-3 py-1.5 text-xs text-drac-comment hover:border-drac-fg hover:text-drac-fg transition-colors cursor-pointer", data: { action: "dialog#open" } } Edit
+          = render ::UI::ActionComponent.new(content_text: "Edit", variant: :secondary, data: { action: "dialog#open" })
         = modal.with_body do
           = render "games/form", form_url: game_path(@game), submit_label: "Save Changes", cancel_path: game_path(@game)
 
@@ -38,15 +38,15 @@
   = turbo_frame_tag :save_panel do
     -# Latest save
     - if @latest_save
-      .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden.mb-5
+      .rounded-lg.overflow-hidden.mb-5{ class: "bg-base-100 border border-base-300" }
         -# Current Save header + metadata subtitle
-        .px-4.py-3.border-b.border-drac-current
+        .px-4.py-3{ class: "border-b border-base-300" }
           .flex.items-center.justify-between
-            %h2.text-sm.font-semibold.text-drac-fg Current Save
-            .text-xs.text-drac-comment= @latest_save.uploaded_at_label
-          .flex.items-center.gap-2.mt-1.text-xs.text-drac-comment
+            %h2.text-sm.font-semibold Current Save
+            .text-xs.text-muted= @latest_save.uploaded_at_label
+          .flex.items-center.gap-2.mt-1.text-xs.text-muted
             - if @latest_save.emulator_profile
-              = render ::UI::BadgeComponent.new(label: @latest_save.emulator_profile.platform.text, color: platform_badge_color(@latest_save.emulator_profile.platform))
+              = render ::UI::BadgeComponent.new(context_text: @latest_save.emulator_profile.platform.text, color: platform_badge_color(@latest_save.emulator_profile.platform))
               %span= @latest_save.emulator_label
             - else
               %span Unknown source
@@ -59,114 +59,115 @@
               = f.select :target_profile_id,
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @latest_save.save_path_hint(p) } }] },
                 { include_blank: "Select emulator to download for…" },
-                { class: "block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-cyan", data: { action: "change->save-hint#update", save_hint_target: "select" } }
+                { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
               .hidden{ data: { save_hint_target: "note" } }
-                %p.text-xs.text-drac-comment.mb-2 Place the downloaded file at:
+                %p.text-xs.text-muted.mb-2 Place the downloaded file at:
                 .flex.items-center.gap-2.mb-2
-                  %p.text-xs.text-drac-fg.font-mono.flex-1{ data: { save_hint_target: "hint" } }
-                  %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
+                  %p.text-xs.font-mono.flex-1{ data: { save_hint_target: "hint" } }
+                  %button.text-muted.hover:text-base-content.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
                     %i.fa-regular.fa-clipboard.fa-fw
-                %p.text-xs.text-drac-comment Your browser will save it to Downloads — move it to the path above.
+                %p.text-xs.text-muted Your browser will save it to Downloads — move it to the path above.
               .flex.justify-start
-                %button{ type: "submit", class: "rounded-lg bg-drac-cyan px-5 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-drac-cyan focus:ring-offset-2 focus:ring-offset-drac-bg inline-flex items-center gap-2" }
-                  %i.fa-solid.fa-download
-                  Download
+                = render ::UI::ActionComponent.new(content_text: "Download", variant: :info, type: "submit") do |a|
+                  - a.with_leading_icon(name: "fa-download")
 
         -# Upload new version
-        .px-4.py-3.border-t.border-drac-current
-          %h2.text-sm.font-semibold.text-drac-fg Upload New Version
+        .px-4.py-3{ class: "border-t border-base-300" }
+          %h2.text-sm.font-semibold Upload New Version
         .px-4.pb-4
           = simple_form_for :game_save, url: game_game_saves_path(@game), method: :post, html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
             = f.select :emulator_profile_id,
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
                 { include_blank: "Which emulator is this save from? (optional)" },
-                { class: "block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-purple" }
-            = f.file_field :file, required: true, class: "block w-full text-sm text-drac-comment cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg file:cursor-pointer hover:file:bg-drac-fg hover:file:text-drac-bg file:transition-colors"
+                { class: "select select-bordered w-full" }
+            %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
+              %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
+              %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
+              = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
             - if @new_save&.errors&.any?
-              %p.text-xs.text-drac-red= @new_save.errors.full_messages.to_sentence
+              %p.text-xs.text-error= @new_save.errors.full_messages.to_sentence
             .flex.justify-start
-              %button{ type: "submit", class: "rounded-lg bg-drac-purple px-5 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-drac-purple focus:ring-offset-2 focus:ring-offset-drac-bg inline-flex items-center gap-2" }
-                %i.fa-solid.fa-upload
-                Upload
+              = render ::UI::ActionComponent.new(content_text: "Upload", variant: :primary, type: "submit") do |a|
+                - a.with_leading_icon(name: "fa-upload")
 
     - else
       -# No save yet — full upload card
-      .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
-        .px-4.py-3.border-b.border-drac-current
-          %h2.text-sm.font-semibold.text-drac-fg Upload Save File
+      .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
+        .px-4.py-3{ class: "border-b border-base-300" }
+          %h2.text-sm.font-semibold Upload Save File
         .p-4
           = simple_form_for :game_save, url: game_game_saves_path(@game), method: :post, html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
             = f.select :emulator_profile_id,
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
                 { include_blank: "Which emulator is this save from? (optional)" },
-                { class: "block w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-2 cursor-pointer focus:outline-none focus:border-drac-purple" }
-            = f.file_field :file, required: true, class: "block w-full text-sm text-drac-comment cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-drac-current file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-drac-fg file:cursor-pointer hover:file:bg-drac-fg hover:file:text-drac-bg file:transition-colors"
+                { class: "select select-bordered w-full" }
+            %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
+              %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
+              %span.text-sm.text-muted.flex-1.px-3.py-3.truncate{ data: { file_picker_target: "filename" } } No file selected
+              = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
             - if @new_save&.errors&.any?
-              %p.text-xs.text-drac-red= @new_save.errors.full_messages.to_sentence
+              %p.text-xs.text-error= @new_save.errors.full_messages.to_sentence
             .flex.justify-start
-              %button{ type: "submit", class: "rounded-lg bg-drac-purple px-5 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-drac-purple focus:ring-offset-2 focus:ring-offset-drac-bg inline-flex items-center gap-2" }
-                %i.fa-solid.fa-upload
-                Upload Save
+              = render ::UI::ActionComponent.new(content_text: "Upload Save", variant: :primary, type: "submit") do |a|
+                - a.with_leading_icon(name: "fa-upload")
 
     -# History
     - if @history.exists?
       - history_all = @history.to_a
       - history_preview = history_all.first(5)
-      .rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
+      .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
         - if history_all.size > 5
           = render ::UI::ModalComponent.new(id: "save-history-dialog", title: "Save History") do |modal|
             = modal.with_trigger do
-              .px-4.py-3.border-b.border-drac-current.flex.items-center.justify-between
-                %h2.text-sm.font-semibold.text-drac-fg Previous Versions
-                %button{ class: "text-xs text-drac-purple hover:opacity-80 transition-opacity cursor-pointer", data: { action: "dialog#open" } }
-                  View all #{history_all.size}
+              .px-4.py-3.flex.items-center.justify-between{ class: "border-b border-base-300" }
+                %h2.text-sm.font-semibold Previous Versions
+                = render ::UI::ActionComponent.new(content_text: "View all #{history_all.size}", variant: :ghost, data: { action: "dialog#open" })
             = modal.with_body do
               .max-h-80.overflow-y-auto.-mx-6.-mb-6
-                .divide-y.divide-drac-current
+                .divide-y{ class: "divide-base-300" }
                   - history_all.each do |save|
                     - decorated = GameSaveDecorator.new(save)
                     .flex.items-center.gap-3.px-6.py-3
                       .flex-1.min-w-0
-                        .text-sm.text-drac-fg= decorated.uploaded_at_label
-                        .text-xs.text-drac-comment= "#{decorated.emulator_label} · #{decorated.file_size_label}"
-                      = link_to download_game_game_save_path(@game, save), class: "text-xs text-drac-cyan px-3 py-1.5 rounded-lg border border-drac-cyan shrink-0 cursor-pointer hover:bg-drac-cyan hover:text-drac-bg transition-colors", data: { turbo: false } do
+                        .text-sm= decorated.uploaded_at_label
+                        .text-xs.text-muted= "#{decorated.emulator_label} · #{decorated.file_size_label}"
+                      = link_to download_game_game_save_path(@game, save), class: "btn btn-info btn-outline btn-sm shrink-0", data: { turbo: false } do
                         %i.fa-solid.fa-download
         - else
-          .px-4.py-3.border-b.border-drac-current
-            %h2.text-sm.font-semibold.text-drac-fg Previous Versions
-        .divide-y.divide-drac-current
+          .px-4.py-3{ class: "border-b border-base-300" }
+            %h2.text-sm.font-semibold Previous Versions
+        .divide-y{ class: "divide-base-300" }
           - history_preview.each do |save|
             - decorated = GameSaveDecorator.new(save)
             .flex.items-center.gap-3.px-4.py-3
               .flex-1.min-w-0
-                .text-sm.text-drac-fg= decorated.uploaded_at_label
-                .text-xs.text-drac-comment= "#{decorated.emulator_label} · #{decorated.file_size_label}"
-              = link_to download_game_game_save_path(@game, save), class: "text-xs text-drac-cyan px-3 py-1.5 rounded-lg border border-drac-cyan shrink-0 cursor-pointer hover:bg-drac-cyan hover:text-drac-bg transition-colors", data: { turbo: false } do
+                .text-sm= decorated.uploaded_at_label
+                .text-xs.text-muted= "#{decorated.emulator_label} · #{decorated.file_size_label}"
+              = link_to download_game_game_save_path(@game, save), class: "btn btn-info btn-outline btn-sm shrink-0", data: { turbo: false } do
                 %i.fa-solid.fa-download
 
   -# Emulator save filenames
-  .mt-4.rounded-lg.bg-drac-bg.border.border-drac-current.overflow-hidden
-    .px-4.py-3.border-b.border-drac-current
-      %h2.text-sm.font-semibold.text-drac-fg Emulator Save Filenames
-      %p.text-xs.text-drac-comment.mt-1 Set the filename each emulator expects for this game. Leave blank to use a default based on the game title.
+  .mt-4.rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
+    .px-4.py-3{ class: "border-b border-base-300" }
+      %h2.text-sm.font-semibold Emulator Save Filenames
+      %p.text-xs.text-muted.mt-1 Set the filename each emulator expects for this game. Leave blank to use a default based on the game title.
     - if @user_profiles.any?
       = form_with url: game_emulator_configs_path(@game), method: :patch, data: { turbo: false } do |f|
-        .divide-y.divide-drac-current
+        .divide-y{ class: "divide-base-300" }
           - @user_profiles.each do |profile|
             - config = @emulator_configs[profile.id]
             .flex.items-center.gap-3.px-4.py-3
               .flex-1.min-w-0
                 .flex.items-center.gap-2.mb-1.5
-                  = render ::UI::BadgeComponent.new(label: profile.platform.text, color: platform_badge_color(profile.platform))
-                  %span.text-sm.text-drac-fg= profile.name
+                  = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+                  %span.text-sm= profile.name
                 .flex.items-center.gap-1
                   = f.text_field "emulator_configs[#{profile.id}]",
                       value: config&.save_filename,
                       placeholder: @game.title.gsub(/[^0-9A-Za-z\-_ ]/, "").strip.gsub(/\s+/, "_"),
-                      class: "flex-1 rounded-lg bg-drac-surface border border-drac-current text-drac-fg text-sm px-3 py-1.5 focus:outline-none focus:border-drac-purple placeholder:text-drac-comment min-w-0"
-                  %span.text-xs.text-drac-comment.shrink-0.font-mono= ".#{profile.save_extension}"
-        .px-4.py-3.flex.justify-start.border-t.border-drac-current
-          %button{ type: "submit", class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-semibold text-drac-bg cursor-pointer hover:opacity-80 active:opacity-70 transition-opacity" }
-            Save Filenames
+                      class: "input input-bordered input-sm flex-1 font-mono min-w-0"
+                  %span.text-xs.text-muted.shrink-0.font-mono= ".#{profile.save_extension}"
+        .px-4.py-3.flex.justify-start{ class: "border-t border-base-300" }
+          = render ::UI::ActionComponent.new(content_text: "Save Filenames", variant: :primary, type: "submit")
     - else
-      .px-4.py-4.text-sm.text-drac-comment No emulators selected. Add emulators from the Profiles page.
+      .px-4.py-4.text-sm.text-muted No emulators selected. Add emulators from the Profiles page.

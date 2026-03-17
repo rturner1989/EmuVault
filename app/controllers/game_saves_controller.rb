@@ -32,6 +32,7 @@ class GameSavesController < ApplicationController
       @history = @game.game_saves.latest_first.offset(1).includes(:emulator_profile).limit(19)
       @new_save = @game_save
       @user_profiles = EmulatorProfile.where(user_selected: true).ordered
+      @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)
       @form = GameForm.from(@game)
       render "games/show", status: :unprocessable_entity
     end

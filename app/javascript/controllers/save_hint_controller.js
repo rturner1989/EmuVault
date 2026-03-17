@@ -24,12 +24,12 @@ export default class extends Controller {
       const icon = this.copyBtnTarget.querySelector('i')
       if (!icon) return
       icon.className = 'fa-solid fa-check fa-fw'
-      this.copyBtnTarget.classList.add("text-drac-green")
-      this.copyBtnTarget.classList.remove("text-drac-comment")
+      this.copyBtnTarget.classList.add("text-success")
+      this.copyBtnTarget.classList.remove("text-muted")
       setTimeout(() => {
         icon.className = 'fa-regular fa-clipboard fa-fw'
-        this.copyBtnTarget.classList.remove("text-drac-green")
-        this.copyBtnTarget.classList.add("text-drac-comment")
+        this.copyBtnTarget.classList.remove("text-success")
+        this.copyBtnTarget.classList.add("text-muted")
       }, 1500)
     })
   }

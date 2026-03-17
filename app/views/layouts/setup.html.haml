@@ -1,5 +1,5 @@
 !!!
-%html{ lang: "en" }
+%html{ lang: "en", "data-theme": "dracula" }
   %head
     %title= content_for(:title) || "EmuVault"
     %meta{ name: "viewport", content: "width=device-width,initial-scale=1" }
@@ -9,8 +9,9 @@
     = csp_meta_tag
     %link{ rel: "icon", href: "/icon.png", type: "image/png" }
     %link{ rel: "manifest", href: "/manifest.json" }
+    %link{ rel: "stylesheet", href: "/fontawesome/css/all.min.css" }
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
-  %body.bg-drac-surface.text-drac-fg
+  %body
     = render ::Layouts::FlashComponent.new(flash: flash)
     = yield

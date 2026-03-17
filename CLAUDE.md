@@ -8,7 +8,7 @@ A cross-platform emulator save file manager. Allows users to sync game saves bet
 - **Hotwire** (Turbo + Stimulus) for reactive UI — bundled via esbuild (npm packages `@hotwired/turbo`, `@hotwired/stimulus`)
 - **a11y-dialog** for accessible modal dialogs (Stimulus `dialog` controller in `app/javascript/controllers/dialog_controller.js`)
 - **esbuild** for JavaScript bundling
-- **Tailwind CSS v4** for styling
+- **Tailwind CSS v4** + **DaisyUI 5** for styling and UI components
 - **HAML** for templates (not ERB)
 - **ViewComponent** for reusable UI components
 - **SimpleForm** for form building — use `simple_form_for` for model-backed forms. For non-model forms (e.g. filters), use `form_with url: ..., method: :get`
@@ -63,6 +63,7 @@ docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/bui
 - Use Enumerize for model enum fields — gives i18n support
 - Use ActionPolicy for any authorization logic — all policies in `app/policies/`
 - Use `ApplicationDecorator < SimpleDelegator` for view-layer decoration — `app/decorators/`
+- Decorate in controllers, never in views
 - Use form objects (`ApplicationForm` with `ActiveModel::API`) for non-trivial form handling — `app/forms/`
 - Controllers are thin — logic lives in models, decorators, or form objects
 - Prefer Turbo Frames for partial page updates — wrap sections that change independently (e.g. form results, filtered lists) in `turbo_frame_tag`. Controllers need no changes; Turbo follows redirects and extracts the matching frame from the response.
@@ -73,17 +74,74 @@ docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/bui
 - DatabaseCleaner handles test DB state — truncation for system/feature specs, transaction for unit specs
 - Run RuboCop before committing — currently passing with 0 offences
 
+## DaisyUI + theming
+
+DaisyUI 5 provides component classes (`btn`, `input`, `select`, `badge`, `card`, etc.) and a multi-theme system. Themes are configured in `_application.tailwind.css`:
+
+```css
+@plugin "daisyui" {
+  themes: dracula, night, dark, business, luxury, coffee, dim, sunset,
+          light, cupcake, emerald, corporate, retro, cyberpunk, valentine,
+          garden, aqua, pastel, wireframe, nord, lemonade, caramellatte;
+}
+```
+
+### Theme selection
+
+- Users select a theme on the Settings page (`/settings`). Stored as `User#theme` (default: `"dracula"`).
+- Applied via `data-theme` attribute on `<html>` in `application.html.haml`.
+- The `theme` Stimulus controller provides instant preview, revert on navigation without saving, and an a11y-dialog confirmation prompt for unsaved changes.
+- Available themes are defined in `User::THEMES` (grouped into Dark and Light).
+
+### Semantic colour classes
+
+Use DaisyUI semantic classes instead of hardcoded Dracula colours so themes work correctly:
+
+| Instead of (old)       | Use (new)                | Purpose                       |
+|------------------------|--------------------------|-------------------------------|
+| `bg-drac-bg`           | `bg-base-100`            | Card/panel backgrounds        |
+| `bg-drac-surface`      | `bg-base-200`            | Page background               |
+| `border-drac-current`  | `border-base-300`        | Borders, dividers             |
+| `text-drac-fg`         | `text-base-content`      | Primary text                  |
+| `text-drac-comment`    | `text-muted`             | Muted/secondary text          |
+| `bg-drac-purple`       | `btn-primary`            | Primary actions               |
+| `text-drac-red`        | `text-error`             | Error text                    |
+| `bg-drac-green`        | `btn-success`            | Success actions                |
+
+`text-muted` is a custom utility defined in `_application.tailwind.css` that uses `color-mix()` to derive 60% opacity from the current theme's `base-content` colour. This avoids HAML's `/` gotcha with Tailwind opacity modifiers.
+
+### DaisyUI component classes used
+
+- **Buttons**: `btn btn-primary`, `btn btn-error`, `btn btn-info`, `btn btn-ghost`, `btn btn-outline`, `btn-sm`, `btn-xs`
+- **Inputs**: `input input-bordered`, `select select-bordered`, `checkbox checkbox-primary`
+- **Cards/containers**: `bg-base-100 border border-base-300 rounded-lg`
+- **File inputs**: Custom file picker with hidden `file_field` + styled `<label>` + `file-picker` Stimulus controller (DaisyUI `file-input` class doesn't render consistently on iOS Safari)
+
+### SimpleForm + DaisyUI gotcha
+
+SimpleForm's `config.button_class = 'btn'` prepends `btn` to submit buttons. To ensure consistent sizing, prefer plain `<button>` tags over `f.button :submit` inside modals:
+
+```haml
+-# Prefer this for consistent btn-sm sizing
+%button.btn.btn-primary.btn-sm{ type: "submit" } Save
+
+-# Avoid — SimpleForm may interfere with size classes
+= f.button :submit, "Save", class: "btn btn-primary btn-sm"
+```
+
 ## HAML gotchas
 
-### Tailwind opacity modifiers (`/10`, `/20`, etc.)
-HAML dot-notation interprets `/` as a self-closing tag marker. **Never** use opacity modifier classes in dot-notation:
+### Tailwind opacity modifiers and fractions (`/10`, `w-3/4`, etc.)
+HAML dot-notation interprets `/` as a self-closing tag marker. **Never** use classes containing `/` in dot-notation:
 
 ```haml
 -# WRONG — HAML syntax error
-.bg-drac-green/10.text-drac-green
+.bg-base-content/10
+.w-3/4
 
 -# CORRECT — use class: string attribute
-%div{ class: "bg-drac-green/10 text-drac-green" }
+%div{ class: "bg-base-content/10" }
+%div{ class: "w-3/4" }
 ```
 
 ### Namespaced ViewComponents
@@ -94,24 +152,19 @@ Inside view context, `Layouts::Foo` resolves as `ActionView::Layouts::Foo`. Alwa
 = render ::UI::BadgeComponent.new(...)
 ```
 
-## Dracula theme
+## Mobile UI
 
-Tailwind CSS v4 custom properties defined in `app/assets/stylesheets/application.tailwind.css`:
+### Bottom sheet modals
+On mobile (`max-width: 1023px`), all modals render as bottom sheets that slide up from the bottom, not full-screen takeovers. This is handled purely in CSS — the mobile media query overrides `.dialog-content` to use `align-items: flex-end` with slide-up animation (`translateY(100%)` → `translateY(0)`). No component changes needed. Desktop keeps centred modals.
 
-| Token              | Hex       | Usage                        |
-|--------------------|-----------|------------------------------|
-| `drac-bg`          | `#282a36` | Card/panel backgrounds       |
-| `drac-surface`     | `#21222c` | Page background              |
-| `drac-current`     | `#44475a` | Borders, dividers            |
-| `drac-fg`          | `#f8f8f2` | Primary text                 |
-| `drac-comment`     | `#6272a4` | Muted/secondary text         |
-| `drac-cyan`        | `#8be9fd` | Accent, windows platform     |
-| `drac-green`       | `#50fa7b` | Success, macOS platform      |
-| `drac-orange`      | `#ffb86c` | Warning, Android platform    |
-| `drac-pink`        | `#ff79c6` | iOS platform                 |
-| `drac-purple`      | `#bd93f9` | Primary action, Linux        |
-| `drac-red`         | `#ff5555` | Error/destructive            |
-| `drac-yellow`      | `#f1fa8c` | Highlight                    |
+### Quick sync
+The Quick Sync bottom sheet is triggered from the mobile nav's centre button. Uses its own Stimulus controller (`quick-sync`) with a11y-dialog, separate from the generic `dialog` controller, because the trigger lives outside the dialog markup (in the app shell nav).
+
+### Scroll lock
+`app/javascript/controllers/scroll_lock.js` provides `lockScroll()`/`unlockScroll()` for dialogs and panels. Uses `overflow: hidden` on html+body with `touch-action: none` and `overscroll-behavior: none`. Supports nested locks via a counter.
+
+### Bottom nav
+Fixed bottom nav on mobile with 5 items: Dashboard, Games, Quick Sync (centre floating button), Activity, Settings. Safe-area padding via `env(safe-area-inset-bottom)`.
 
 ## ViewComponent structure
 
@@ -121,15 +174,33 @@ Base classes in `app/components/`:
 
 Component namespaces:
 - `app/components/layouts/` — layout-level components (`AppShellComponent`, `FlashComponent`)
-- `app/components/ui/` — reusable UI primitives (`BadgeComponent`, `PageHeaderComponent`, `EmptyStateComponent`)
+- `app/components/ui/` — reusable UI primitives (`BadgeComponent`, `PageHeaderComponent`, `EmptyStateComponent`, `ModalComponent`, `ConfirmComponent`, `ActionComponent`)
+
+### ModalComponent
+
+Wraps a11y-dialog. Accepts `id:` and `title:`. Renders trigger (slot), overlay, close button, and body (slot). Used for all CRUD modals.
+
+### ConfirmComponent
+
+Wraps ModalComponent for destructive confirmations. Accepts `id:`, `title:`, `message:`, `url:`, `method:`, `trigger_label:`, `confirm_label:`. Cancel button uses `dialog#close` action.
+
+### ActionComponent
+
+Renders a `<button>` or `<a>` with DaisyUI button classes. Accepts `content_text:`, `href:`, `variant:`, `size:`. Supports `leading_icon` and `trailing_icon` slots.
 
 ## Stimulus controllers
 
 All controllers in `app/javascript/controllers/`:
-- `auto-submit` — submits the parent form. Use on a `<form>` with `data-controller="auto-submit"` and on the triggering element with `data-action="change->auto-submit#submit"`. Used for filter selects that should apply immediately on change.
+- `auto-submit` — submits the parent form on change events.
 - `dialog` — wraps a11y-dialog for CRUD modals. Targets: `container`. Actions: `open`, `close`.
-- `save-hint` — shows the suggested save file path when a download profile is selected. Targets: `select`, `hint`.
+- `file-picker` — custom file input display. Hidden `<input type="file">` inside a styled `<label>`. Targets: `input`, `filename`. Actions: `update`.
+- `flash` — auto-dismiss flash notifications.
 - `notifications` — slide-in notification panel with backdrop. Targets: `backdrop`, `overlay`, `panel`, `frame`. Actions: `open`, `close`, `markAllRead`.
+- `onboarding` — first-run guided tour.
+- `push-subscription` — web push notification subscription.
+- `quick-sync` — bottom sheet for quick sync (mobile nav centre button).
+- `save-hint` — shows suggested save file path on download profile selection. Targets: `select`, `hint`, `note`, `copyBtn`.
+- `theme` — live theme preview with revert on navigation. Targets: `dialog`. Values: `current`.
 
 ## Decorator pattern
 
@@ -143,7 +214,7 @@ class ApplicationDecorator < SimpleDelegator
 end
 ```
 
-Decorators live in `app/decorators/`. Use `DecoratorClass.decorate(@record)` in controllers.
+Decorators live in `app/decorators/`. Use `DecoratorClass.decorate(@record)` in controllers. Never decorate in views.
 
 ## Form object pattern
 
@@ -166,7 +237,7 @@ Form objects live in `app/forms/`. Views use `url:` explicitly (don't rely on po
 - `Game` — a game in the user's library. Has `system` enum via Enumerize.
 - `GameSave` — a save file version, linked to a game and optional emulator profile. Latest = most recent by `created_at`. No slot concept. File stored via Active Storage. Fields: `game_id`, `emulator_profile_id` (optional), `checksum`, `saved_at`.
 - `SyncEvent` — passive audit log of uploads/downloads. Auto-created on every upload/download. Fields: `game_save_id`, `action` (push/pull), `status` (success/failed), `performed_at`, `ip_address`, `user_agent`. No manual device registration — device type is inferred from `user_agent` in `SyncEventDecorator`.
-- `User` — has `setup_completed` boolean (false until wizard is finished).
+- `User` — has `setup_completed` boolean (false until wizard is finished), `theme` string (default `"dracula"`), `current_game_id` for quick sync.
 
 ## Activity log
 
@@ -205,8 +276,9 @@ Managed at `/emulator_profiles`. Index shows only `user_selected` profiles. Edit
 
 - **Current save** — latest `GameSave` by `created_at`. Shows upload date, source emulator badge, download form with profile selector.
 - **Save path hint** — when a profile is selected for download, the `save-hint` Stimulus controller reads `data-path` from the option and shows the full suggested path (e.g. `~/.config/retroarch/saves/Pokemon_Emerald.srm`).
-- **Upload new version** — behind a `<details>` toggle, optional source profile.
-- **Previous versions** — collapsible `<details>` panel listing older saves, each downloadable.
+- **Upload new version** — inline form with custom file picker and optional source profile.
+- **Previous versions** — list of older saves, "View all" opens a modal if more than 5.
+- **Emulator save filenames** — per-profile filename configuration for downloads.
 
 ## Environment variables
 
@@ -223,6 +295,7 @@ See `.env.example` for all required vars. Key ones:
 - `config/initializers/better_errors.rb` — allows BetterErrors from any IP (needed for Docker)
 - `config/initializers/rack_attack.rb` — rate limiting (300 req/5min, 30 uploads/5min)
 - `config/initializers/content_security_policy.rb` — CSP enabled, frame-ancestors :none
+- `config/initializers/simple_form.rb` — `generate_additional_classes_for = []` prevents type-based classes conflicting with DaisyUI
 - `config/environments/production.rb` — SSL controlled via `FORCE_SSL` env var (off by default for Tailscale)
 - `Procfile.dev` — Puma binds to `0.0.0.0` so it's reachable inside Docker
 - `scripts/install.sh` — one-command setup, generates secure DB password via openssl
@@ -288,7 +361,7 @@ The app command runs `rails db:prepare` before starting Puma, which creates the 
   - Admin credentials seeded from `ADMIN_EMAIL` / `ADMIN_PASSWORD` env vars
   - All routes protected by default via `ApplicationController`
   - Sidekiq Web protected by HTTP Basic Auth using admin credentials
-  - Password change available via Settings → `/password/edit` (no email reset — self-hosted)
+  - Password change available via Settings modal (no email reset — self-hosted)
   - `simple_form_for :session` nests params under `session[field]` — controller uses `params.require(:session).permit(...)`
 
 ## Architecture intent
@@ -322,11 +395,11 @@ checksum = Digest::SHA256.hexdigest(record.file.download)
 
 ## SimpleForm error styling
 
-SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrapper. Tailwind won't include these classes via scanning. Add explicit rules in `application.tailwind.css`:
+SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrapper. Tailwind won't include these classes via scanning. Add explicit rules in `_application.tailwind.css`:
 
 ```css
-.input span.error { @apply text-xs text-drac-red mt-1 block; }
-.field_with_errors input, .field_with_errors select { @apply border-drac-red; }
+.input span.error { @apply text-xs text-error mt-1 block; }
+.field_with_errors input, .field_with_errors select { @apply border-error; }
 ```
 
 ## Progress
@@ -347,6 +420,10 @@ SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrappe
 - [x] Game show redesign — current save card, save path hint, upload toggle, history panel
 - [x] Emulator profiles CRUD — index shows selected only, edit/new via a11y-dialog modals
 - [x] Activity log — auto-tracked SyncEvents (ip_address + user_agent), Device model removed, UA-based device type inference in SyncEventDecorator, /activity page
-- [x] Nav/settings cleanup — removed duplicate Change Password nav link, password form restyled to Dracula theme
+- [x] Nav/settings cleanup — removed duplicate Change Password nav link, password form restyled
 - [x] Notifications — real-time badge via ActionCable, slide-in panel, click-to-read, mark all read, web push (VAPID)
 - [x] Production deployment — Dockerfile.prod, docker-compose.prod.yml, Docker Hub image, TrueNAS Scale support
+- [x] DaisyUI migration — replaced custom Dracula CSS with DaisyUI 5 component classes and semantic theme colours
+- [x] Theme system — user-selectable themes (22 DaisyUI themes), persisted to DB, live preview with revert
+- [x] Mobile bottom sheets — all modals render as slide-up bottom sheets on mobile instead of full-screen
+- [x] Custom file picker — hidden file input + styled label + Stimulus controller for cross-platform consistency (iOS Safari)

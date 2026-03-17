@@ -3,18 +3,18 @@
 .p-4.lg:p-6
   = render ::UI::PageHeaderComponent.new(title: "Change Password")
 
-  .rounded-lg.bg-drac-bg.border.border-drac-current.p-5
+  .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
     = simple_form_for :password, url: password_path, method: :patch do |f|
       = f.input :current_password, as: :password, label: "Current password",
-          input_html: { autocomplete: "current-password", class: "w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg px-3 py-2 text-sm focus:outline-none focus:border-drac-purple" },
-          label_html: { class: "block text-sm font-medium text-drac-fg mb-1" },
+          input_html: { autocomplete: "current-password", class: "input input-bordered w-full" },
+          label_html: { class: "label-text font-medium" },
           wrapper_html: { class: "mb-4" }
       = f.input :password, as: :password, label: "New password",
-          input_html: { autocomplete: "new-password", class: "w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg px-3 py-2 text-sm focus:outline-none focus:border-drac-purple" },
-          label_html: { class: "block text-sm font-medium text-drac-fg mb-1" },
+          input_html: { autocomplete: "new-password", class: "input input-bordered w-full" },
+          label_html: { class: "label-text font-medium" },
           wrapper_html: { class: "mb-4" }
       = f.input :password_confirmation, as: :password, label: "Confirm new password",
-          input_html: { autocomplete: "new-password", class: "w-full rounded-lg bg-drac-surface border border-drac-current text-drac-fg px-3 py-2 text-sm focus:outline-none focus:border-drac-purple" },
-          label_html: { class: "block text-sm font-medium text-drac-fg mb-1" },
+          input_html: { autocomplete: "new-password", class: "input input-bordered w-full" },
+          label_html: { class: "label-text font-medium" },
           wrapper_html: { class: "mb-6" }
-      = f.button :submit, "Update password", class: "rounded-lg bg-drac-purple px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity"
+      = f.button :submit, "Update password", class: "btn btn-primary"

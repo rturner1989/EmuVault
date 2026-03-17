@@ -1,8 +1,8 @@
 = render ::UI::ModalComponent.new(id: @id, title: @title) do |modal|
   = modal.with_trigger do
-    %button{ class: "text-xs text-drac-red px-3 py-1.5 rounded-lg border border-drac-red/40 bg-transparent cursor-pointer hover:bg-drac-red hover:text-drac-bg transition-colors", data: { action: "dialog#open" } }= @trigger_label
+    = render ::UI::ActionComponent.new(content_text: @trigger_label, variant: :danger, data: { action: "dialog#open" })
   = modal.with_body do
-    %p.text-sm.text-drac-comment.mb-5= @message
+    %p.text-sm.opacity-70.mb-5= @message
     .flex.items-center.gap-3
-      = button_to @confirm_label, @url, method: @method, class: "rounded-lg bg-drac-red px-4 py-2 text-sm font-medium text-drac-bg hover:opacity-90 transition-opacity cursor-pointer"
-      %button.text-sm.text-drac-comment.hover:text-drac-fg.transition-colors{ type: "button", data: { action: "dialog#close" } } Cancel
+      = button_to @confirm_label, @url, method: @method, class: "btn btn-error btn-sm"
+      %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "dialog#close" } } Cancel

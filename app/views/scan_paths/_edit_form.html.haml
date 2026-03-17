@@ -1,0 +1,21 @@
+= form_with model: sp, url: scan_path_path(sp), method: :patch, html: { class: "space-y-4", data: { controller: "directory-browser" } } do |f|
+  = f.label :path, "Directory path", class: "block text-sm mb-1"
+  .flex.items-center.gap-2
+    = f.text_field :path, required: true, class: "input input-bordered input-sm flex-1 min-w-0 font-mono", data: { "directory-browser-target": "input" }
+    = render ::UI::ActionComponent.new(content_text: "Browse", variant: :ghost, class: "shrink-0", type: "button", data: { action: "click->directory-browser#toggle" }) do |a|
+      - a.with_leading_icon(name: "fa-folder-open")
+  %div{ hidden: "", data: { "directory-browser-target": "browser" }, class: "rounded-lg border border-base-300 overflow-hidden" }
+    .flex.items-center.gap-2.px-3.py-2{ class: "bg-base-200 border-b border-base-300" }
+      %button.text-muted.hover:text-base-content.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
+        %i.fa-solid.fa-arrow-up.fa-fw
+      %span.text-xs.font-mono.text-muted.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
+      = render ::UI::ActionComponent.new(content_text: "Select folder", variant: :primary, size: :xs, class: "shrink-0", type: "button", data: { action: "click->directory-browser#select" })
+    .flex.items-center.flex-wrap.gap-1.px-3.py-2{ class: "border-b border-base-300" }
+      %span.text-xs.text-muted.shrink-0 Jump to:
+      .flex.items-center.flex-wrap.gap-1{ data: { "directory-browser-target": "shortcuts" } }
+    .max-h-48.overflow-y-auto{ data: { "directory-browser-target": "list" } }
+      %p.text-xs.text-muted.px-3.py-3 Click Browse to explore
+  = f.label :game_system, "Game system", class: "block text-sm mb-1"
+  = f.select :game_system, ScanPath.game_system.values.map { |v| [v.text, v.value] }, {}, class: "select select-bordered w-full", required: true
+  .pt-1
+    %button.btn.btn-primary.btn-sm{ type: "submit" } Save changes

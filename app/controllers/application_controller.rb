@@ -22,8 +22,10 @@ class ApplicationController < ActionController::Base
 
   def load_quick_sync_data
     return unless current_user
-    @quick_sync_game = current_user.current_game
-    return unless @quick_sync_game
+    game = current_user.current_game
+    return unless game
+
+    @quick_sync_game = GameDecorator.new(game)
 
     latest = @quick_sync_game.game_saves.latest_first.first
     @quick_sync_save = latest ? GameSaveDecorator.new(latest) : nil
