@@ -2,7 +2,7 @@
   .min-w-0
     %h1.text-2xl.font-bold.truncate= @title
     - if @subtitle
-      %p.mt-1.text-sm.text-drac-comment.opacity-70= @subtitle
+      %p.mt-1.text-sm.text-muted.opacity-70= @subtitle
   - if actions.any?
     .flex.items-center.gap-2.shrink-0
       - actions.each do |action|

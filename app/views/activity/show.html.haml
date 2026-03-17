@@ -11,7 +11,7 @@
             = select_tag :game_id, options_for_select([["All games", ""], *@games.map { |g| [g.title, g.id] }], @selected_game_id), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
           = select_tag :sort, options_for_select([["Newest first", "newest"], ["Oldest first", "oldest"]], @selected_sort), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
           - if @selected_game_id.present?
-            = link_to activity_path(sort: @selected_sort), class: "text-xs text-drac-comment hover:text-base-content transition-colors inline-flex items-center gap-1" do
+            = link_to activity_path(sort: @selected_sort), class: "text-xs text-muted hover:text-base-content transition-colors inline-flex items-center gap-1" do
               %i.fa-solid.fa-xmark
               Clear
 
@@ -27,9 +27,9 @@
             .flex.items-center.gap-2.mb-1
               = render ::UI::BadgeComponent.new(context_text: event.action_label, color: event.action_badge_color)
               = render ::UI::BadgeComponent.new(context_text: event.device_label, color: event.device_badge_color)
-            %p.text-xs.text-drac-comment= event.performed_at_label
+            %p.text-xs.text-muted= event.performed_at_label
           - if event.ip_address.present?
-            %span.text-xs.text-drac-comment.font-mono.hidden.lg:block= event.ip_address
+            %span.text-xs.text-muted.font-mono.hidden.lg:block= event.ip_address
 
   - else
     -# Unfiltered: grouped by game
@@ -45,6 +45,6 @@
                   .flex.items-center.gap-2
                     = render ::UI::BadgeComponent.new(context_text: event.action_label, color: event.action_badge_color)
                     = render ::UI::BadgeComponent.new(context_text: event.device_label, color: event.device_badge_color)
-                    %span.text-xs.text-drac-comment= event.performed_at_label
+                    %span.text-xs.text-muted= event.performed_at_label
                 - if event.ip_address.present?
-                  %span.text-xs.text-drac-comment.font-mono.hidden.lg:block= event.ip_address
+                  %span.text-xs.text-muted.font-mono.hidden.lg:block= event.ip_address

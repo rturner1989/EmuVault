@@ -15,14 +15,14 @@ module Layouts
       if active
         "#{base} bg-base-300 text-primary"
       else
-        "#{base} text-drac-comment hover:bg-base-300 hover:text-base-content"
+        "#{base} text-muted hover:bg-base-300 hover:text-base-content"
       end
     end
 
     def mobile_nav_class(path)
       active = active_path?(path)
       base = "flex items-center justify-center flex-1 py-4 text-lg transition-colors"
-      active ? "#{base} text-primary" : "#{base} text-drac-comment hover:text-base-content"
+      active ? "#{base} text-primary" : "#{base} text-muted hover:text-base-content"
     end
 
     def unread_count

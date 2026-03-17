@@ -5,7 +5,7 @@
 
     .px-5.py-4{ class: "border-b border-base-300" }
       %h2.text-base.font-semibold Which emulators do you use?
-      %p.text-sm.text-drac-comment.mt-0.5 Select all that apply — you can add more later.
+      %p.text-sm.text-muted.mt-0.5 Select all that apply — you can add more later.
 
     = form_with url: select_profiles_setup_path, method: :post do |f|
       .divide-y{ class: "divide-base-300" }
@@ -13,7 +13,7 @@
           .px-5.py-3
             .flex.items-center.gap-2.mb-2
               %p.text-sm.font-medium= emulator_name
-              %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
+              %span.text-xs.text-muted.font-mono .#{profiles.first.save_extension}
             .flex.flex-wrap.gap-2
               - profiles.each do |profile|
                 %label.flex.items-center.gap-2.px-3.py-1.5.rounded-lg.border.cursor-pointer{ class: profile.user_selected ? "border-primary bg-base-200" : "border-base-300" }
@@ -21,7 +21,7 @@
                   = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
 
       .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
-        = link_to setup_path, class: "flex-1 py-3 rounded-lg text-drac-comment text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
+        = link_to setup_path, class: "flex-1 py-3 rounded-lg text-muted text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
           %i.fa-solid.fa-arrow-left
           Back
         = render ::UI::ActionComponent.new(content_text: "Next: Configure paths", variant: :primary, size: :md, class: "flex-1", type: "submit") do |a|

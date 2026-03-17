@@ -10,7 +10,7 @@ module UI
       pink:    "badge badge-secondary",
       orange:  "badge badge-accent",
       red:     "badge badge-error",
-      comment: "badge badge-ghost text-drac-comment"
+      comment: "badge badge-ghost text-muted"
     }.freeze
 
     SIZES = {

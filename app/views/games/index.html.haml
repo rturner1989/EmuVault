@@ -18,7 +18,7 @@
                 = select_tag :system, options_for_select([["All systems", ""], *@system_options], @selected_system), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
               = select_tag :sort, options_for_select([["Title A→Z", "title_asc"], ["Title Z→A", "title_desc"], ["Newest first", "newest"], ["Oldest first", "oldest"], ["By system", "system"]], @selected_sort), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
               - if @selected_system.present?
-                = link_to games_path(sort: @selected_sort), class: "text-xs text-drac-comment hover:text-base-content transition-colors inline-flex items-center gap-1" do
+                = link_to games_path(sort: @selected_sort), class: "text-xs text-muted hover:text-base-content transition-colors inline-flex items-center gap-1" do
                   %i.fa-solid.fa-xmark
                   Clear
       - if @games.empty?
@@ -36,11 +36,11 @@
                   .text-base.font-semibold.truncate= game.title
                   .mt-1
                     = render ::UI::BadgeComponent.new(context_text: game.system_label, color: game.system_badge_color)
-                %i.fa-solid.fa-chevron-right.text-drac-comment.shrink-0
+                %i.fa-solid.fa-chevron-right.text-muted.shrink-0
               .border-l.flex.items-center{ class: "border-base-300" }
                 - if is_current
                   = button_to current_game_path, method: :delete, title: "Clear current game", class: "h-full px-4 flex items-center text-primary hover:opacity-70 transition-opacity cursor-pointer" do
                     %i.fa-solid.fa-rotate.fa-fw
                 - else
-                  = button_to current_game_path, method: :patch, params: { game_id: game.id }, title: "Set as current game", class: "h-full px-4 flex items-center text-drac-comment hover:text-primary transition-colors cursor-pointer" do
+                  = button_to current_game_path, method: :patch, params: { game_id: game.id }, title: "Set as current game", class: "h-full px-4 flex items-center text-muted hover:text-primary transition-colors cursor-pointer" do
                     %i.fa-solid.fa-rotate.fa-fw

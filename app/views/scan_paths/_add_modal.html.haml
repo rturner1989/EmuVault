@@ -16,21 +16,21 @@
       %div{ hidden: "", data: { "directory-browser-target": "browser" }, class: "rounded-lg border border-base-300 overflow-hidden" }
         -# Toolbar: up + current path + select
         .flex.items-center.gap-2.px-3.py-2{ class: "bg-base-200 border-b border-base-300" }
-          %button.text-drac-comment.hover:text-base-content.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
+          %button.text-muted.hover:text-base-content.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
             %i.fa-solid.fa-arrow-up.fa-fw
-          %span.text-xs.font-mono.text-drac-comment.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
+          %span.text-xs.font-mono.text-muted.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
           = render ::UI::ActionComponent.new(content_text: "Select folder", variant: :primary, size: :xs, class: "shrink-0", type: "button", data: { action: "click->directory-browser#select" })
 
         -# Quick-jump shortcuts (populated dynamically from server mount points)
         .flex.items-center.flex-wrap.gap-1.px-3.py-2{ class: "border-b border-base-300" }
-          %span.text-xs.text-drac-comment.shrink-0 Jump to:
+          %span.text-xs.text-muted.shrink-0 Jump to:
           .flex.items-center.flex-wrap.gap-1{ data: { "directory-browser-target": "shortcuts" } }
 
         -# Directory listing
         .max-h-48.overflow-y-auto{ data: { "directory-browser-target": "list" } }
-          %p.text-xs.text-drac-comment.px-3.py-3 Click Browse to explore
+          %p.text-xs.text-muted.px-3.py-3 Click Browse to explore
 
-      %p.text-xs.text-drac-comment
+      %p.text-xs.text-muted
         Enter the path to your games directory.
         On a NAS or Docker setup, mount the directory as a volume first (e.g.
         %span.font-mono /saves

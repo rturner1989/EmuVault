@@ -16,6 +16,6 @@ class SettingsController < ApplicationController
   private
 
   def scan_params
-    params.require(:user).permit(:scan_enabled, :scan_interval)
+    params.require(:user).permit(:scan_enabled, :scan_interval, :theme)
   end
 end

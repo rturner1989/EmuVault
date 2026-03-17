@@ -5,7 +5,7 @@
 
     .px-5.py-4.border-b.border-drac-current
       %h2.text-base.font-semibold.text-drac-fg Set up your games library
-      %p.text-sm.text-drac-comment.mt-0.5
+      %p.text-sm.text-muted.mt-0.5
         Add paths to your game directories. EmuVault will scan them to discover games and save files.
         You can skip this and configure it later in Settings.
 
@@ -20,32 +20,32 @@
               .flex.items-center.gap-3.px-4.py-3
                 .flex-1.min-w-0
                   %p.text-sm.text-drac-fg.font-mono.truncate= sp.path
-                  %p.text-xs.text-drac-comment= sp.game_system.text
-                = button_to scan_path_path(sp), method: :delete, class: "shrink-0 text-xs px-2 py-1 rounded border border-drac-current text-drac-comment hover:border-drac-red hover:text-drac-red transition-colors cursor-pointer" do
+                  %p.text-xs.text-muted= sp.game_system.text
+                = button_to scan_path_path(sp), method: :delete, class: "shrink-0 text-xs px-2 py-1 rounded border border-drac-current text-muted hover:border-drac-red hover:text-drac-red transition-colors cursor-pointer" do
                   Remove
               %details
-                %summary{ class: "text-xs text-drac-comment px-4 py-1.5 cursor-pointer hover:text-drac-fg transition-colors" }
+                %summary{ class: "text-xs text-muted px-4 py-1.5 cursor-pointer hover:text-drac-fg transition-colors" }
                   %i.fa-solid.fa-pencil.fa-fw.mr-1
                   Edit path
                 %div{ class: "px-4 py-3 border-t border-drac-current bg-drac-surface space-y-3" }
                   = form_with model: sp, url: scan_path_path(sp), method: :patch, html: { class: "space-y-3", data: { controller: "directory-browser" } } do |f|
                     .flex.items-center.gap-2
                       = f.text_field :path, required: true, class: "flex-1 min-w-0 bg-drac-bg border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg font-mono", data: { "directory-browser-target": "input" }
-                      %button.shrink-0.px-3.py-2.rounded-lg.border.border-drac-current.text-sm.text-drac-comment.hover:border-drac-fg.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "button", data: { action: "click->directory-browser#toggle" } }
+                      %button.shrink-0.px-3.py-2.rounded-lg.border.border-drac-current.text-sm.text-muted.hover:border-drac-fg.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "button", data: { action: "click->directory-browser#toggle" } }
                         %i.fa-solid.fa-folder-open.mr-1
                         Browse
                     %div{ hidden: "", data: { "directory-browser-target": "browser" }, class: "rounded-lg border border-drac-current overflow-hidden" }
                       .flex.items-center.gap-2.px-3.py-2.border-b.border-drac-current{ class: "bg-drac-bg" }
-                        %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
+                        %button.text-muted.hover:text-drac-fg.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
                           %i.fa-solid.fa-arrow-up.fa-fw
-                        %span.text-xs.font-mono.text-drac-comment.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
+                        %span.text-xs.font-mono.text-muted.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
                         %button.shrink-0.text-xs.px-2.py-1.rounded.bg-drac-purple.text-drac-bg.font-medium.cursor-pointer.hover:opacity-90.transition-opacity{ type: "button", data: { action: "click->directory-browser#select" } }
                           Select folder
                       .flex.items-center.flex-wrap.gap-1.px-3.py-2.border-b.border-drac-current
-                        %span.text-xs.text-drac-comment.shrink-0 Jump to:
+                        %span.text-xs.text-muted.shrink-0 Jump to:
                         .flex.items-center.flex-wrap.gap-1{ data: { "directory-browser-target": "shortcuts" } }
                       .max-h-48.overflow-y-auto{ data: { "directory-browser-target": "list" } }
-                        %p.text-xs.text-drac-comment.px-3.py-3 Click Browse to explore
+                        %p.text-xs.text-muted.px-3.py-3 Click Browse to explore
                     = f.select :game_system, ScanPath.game_system.values.map { |v| [v.text, v.value] }, {}, class: "w-full bg-drac-bg border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg", required: true
                     = f.submit "Save changes", class: "px-3 py-1.5 rounded-lg bg-drac-purple text-drac-bg text-sm font-medium cursor-pointer hover:opacity-90 transition-opacity"
 
@@ -56,23 +56,23 @@
         = f.label :path, "Directory path", class: "block text-sm text-drac-fg mb-1"
         .flex.items-center.gap-2
           = f.text_field :path, placeholder: "/saves/gba/", required: true, class: "flex-1 min-w-0 bg-drac-surface border border-drac-current rounded-lg px-3 py-2 text-sm text-drac-fg font-mono", data: { "directory-browser-target": "input" }
-          %button.shrink-0.px-3.py-2.rounded-lg.border.border-drac-current.text-sm.text-drac-comment.hover:border-drac-fg.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "button", data: { action: "click->directory-browser#toggle" } }
+          %button.shrink-0.px-3.py-2.rounded-lg.border.border-drac-current.text-sm.text-muted.hover:border-drac-fg.hover:text-drac-fg.transition-colors.cursor-pointer{ type: "button", data: { action: "click->directory-browser#toggle" } }
             %i.fa-solid.fa-folder-open.mr-1
             Browse
 
         -# File browser panel (hidden until Browse clicked)
         %div{ hidden: "", data: { "directory-browser-target": "browser" }, class: "rounded-lg border border-drac-current overflow-hidden" }
           .flex.items-center.gap-2.px-3.py-2.border-b.border-drac-current{ class: "bg-drac-surface" }
-            %button.text-drac-comment.hover:text-drac-fg.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
+            %button.text-muted.hover:text-drac-fg.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
               %i.fa-solid.fa-arrow-up.fa-fw
-            %span.text-xs.font-mono.text-drac-comment.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
+            %span.text-xs.font-mono.text-muted.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
             %button.shrink-0.text-xs.px-2.py-1.rounded.bg-drac-purple.text-drac-bg.font-medium.cursor-pointer.hover:opacity-90.transition-opacity{ type: "button", data: { action: "click->directory-browser#select" } }
               Select folder
           .flex.items-center.flex-wrap.gap-1.px-3.py-2.border-b.border-drac-current
-            %span.text-xs.text-drac-comment.shrink-0 Jump to:
+            %span.text-xs.text-muted.shrink-0 Jump to:
             .flex.items-center.flex-wrap.gap-1{ data: { "directory-browser-target": "shortcuts" } }
           .max-h-48.overflow-y-auto{ data: { "directory-browser-target": "list" } }
-            %p.text-xs.text-drac-comment.px-3.py-3 Click Browse to explore
+            %p.text-xs.text-muted.px-3.py-3 Click Browse to explore
 
         -# Game system
         = f.label :game_system, "Game system", class: "block text-sm text-drac-fg mb-1"
@@ -91,14 +91,14 @@
       .flex.items-center.justify-between
         .min-w-0
           %p.text-sm.text-drac-fg Enable auto-scan
-          %p.text-xs.text-drac-comment Automatically check for new games at regular intervals
+          %p.text-xs.text-muted Automatically check for new games at regular intervals
         = f.check_box :scan_enabled, class: "accent-drac-purple w-4 h-4 cursor-pointer shrink-0 ml-4"
       .flex.items-center.justify-between
         %label.text-sm.text-drac-fg{ for: "user_scan_interval" } Interval
         = f.select :scan_interval, User.scan_interval.values.map { |v| [v.text, v.value] }, {}, class: "bg-drac-surface border border-drac-current rounded-lg px-3 py-1.5 text-sm text-drac-fg"
 
     .px-5.py-4.flex.gap-3
-      = link_to configure_setup_path, class: "flex-1 py-3 rounded-lg border border-drac-current text-drac-comment text-sm font-medium inline-flex items-center justify-center gap-2" do
+      = link_to configure_setup_path, class: "flex-1 py-3 rounded-lg border border-drac-current text-muted text-sm font-medium inline-flex items-center justify-center gap-2" do
         %i.fa-solid.fa-arrow-left
         Back
       %button.flex-1.py-3.rounded-lg.bg-drac-purple.text-drac-bg.font-semibold.text-sm.cursor-pointer.hover:opacity-90.transition-opacity{ type: "submit", form: "library-form" }

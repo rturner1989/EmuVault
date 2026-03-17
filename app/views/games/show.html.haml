@@ -2,7 +2,7 @@
 
 .p-4.lg:p-6.space-y-4
   -# Back breadcrumb
-  = link_to games_path, class: "text-xs text-drac-comment hover:text-base-content transition-colors cursor-pointer inline-flex items-center gap-1" do
+  = link_to games_path, class: "text-xs text-muted hover:text-base-content transition-colors cursor-pointer inline-flex items-center gap-1" do
     %i.fa-solid.fa-arrow-left
     = "Games"
 
@@ -43,8 +43,8 @@
         .px-4.py-3{ class: "border-b border-base-300" }
           .flex.items-center.justify-between
             %h2.text-sm.font-semibold Current Save
-            .text-xs.text-drac-comment= @latest_save.uploaded_at_label
-          .flex.items-center.gap-2.mt-1.text-xs.text-drac-comment
+            .text-xs.text-muted= @latest_save.uploaded_at_label
+          .flex.items-center.gap-2.mt-1.text-xs.text-muted
             - if @latest_save.emulator_profile
               = render ::UI::BadgeComponent.new(context_text: @latest_save.emulator_profile.platform.text, color: platform_badge_color(@latest_save.emulator_profile.platform))
               %span= @latest_save.emulator_label
@@ -61,12 +61,12 @@
                 { include_blank: "Select emulator to download for…" },
                 { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
               .hidden{ data: { save_hint_target: "note" } }
-                %p.text-xs.text-drac-comment.mb-2 Place the downloaded file at:
+                %p.text-xs.text-muted.mb-2 Place the downloaded file at:
                 .flex.items-center.gap-2.mb-2
                   %p.text-xs.font-mono.flex-1{ data: { save_hint_target: "hint" } }
-                  %button.text-drac-comment.hover:text-base-content.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
+                  %button.text-muted.hover:text-base-content.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
                     %i.fa-regular.fa-clipboard.fa-fw
-                %p.text-xs.text-drac-comment Your browser will save it to Downloads — move it to the path above.
+                %p.text-xs.text-muted Your browser will save it to Downloads — move it to the path above.
               .flex.justify-start
                 = render ::UI::ActionComponent.new(content_text: "Download", variant: :info, type: "submit") do |a|
                   - a.with_leading_icon(name: "fa-download")
@@ -82,7 +82,7 @@
                 { class: "select select-bordered w-full" }
             %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
               %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
-              %span.text-sm.text-drac-comment.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
+              %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
               = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
             - if @new_save&.errors&.any?
               %p.text-xs.text-error= @new_save.errors.full_messages.to_sentence
@@ -103,7 +103,7 @@
                 { class: "select select-bordered w-full" }
             %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
               %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
-              %span.text-sm.text-drac-comment.flex-1.px-3.py-3.truncate{ data: { file_picker_target: "filename" } } No file selected
+              %span.text-sm.text-muted.flex-1.px-3.py-3.truncate{ data: { file_picker_target: "filename" } } No file selected
               = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
             - if @new_save&.errors&.any?
               %p.text-xs.text-error= @new_save.errors.full_messages.to_sentence
@@ -130,7 +130,7 @@
                     .flex.items-center.gap-3.px-6.py-3
                       .flex-1.min-w-0
                         .text-sm= decorated.uploaded_at_label
-                        .text-xs.text-drac-comment= "#{decorated.emulator_label} · #{decorated.file_size_label}"
+                        .text-xs.text-muted= "#{decorated.emulator_label} · #{decorated.file_size_label}"
                       = link_to download_game_game_save_path(@game, save), class: "btn btn-info btn-outline btn-sm shrink-0", data: { turbo: false } do
                         %i.fa-solid.fa-download
         - else
@@ -142,7 +142,7 @@
             .flex.items-center.gap-3.px-4.py-3
               .flex-1.min-w-0
                 .text-sm= decorated.uploaded_at_label
-                .text-xs.text-drac-comment= "#{decorated.emulator_label} · #{decorated.file_size_label}"
+                .text-xs.text-muted= "#{decorated.emulator_label} · #{decorated.file_size_label}"
               = link_to download_game_game_save_path(@game, save), class: "btn btn-info btn-outline btn-sm shrink-0", data: { turbo: false } do
                 %i.fa-solid.fa-download
 
@@ -150,7 +150,7 @@
   .mt-4.rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
     .px-4.py-3{ class: "border-b border-base-300" }
       %h2.text-sm.font-semibold Emulator Save Filenames
-      %p.text-xs.text-drac-comment.mt-1 Set the filename each emulator expects for this game. Leave blank to use a default based on the game title.
+      %p.text-xs.text-muted.mt-1 Set the filename each emulator expects for this game. Leave blank to use a default based on the game title.
     - if @user_profiles.any?
       = form_with url: game_emulator_configs_path(@game), method: :patch, data: { turbo: false } do |f|
         .divide-y{ class: "divide-base-300" }
@@ -166,8 +166,8 @@
                       value: config&.save_filename,
                       placeholder: @game.title.gsub(/[^0-9A-Za-z\-_ ]/, "").strip.gsub(/\s+/, "_"),
                       class: "input input-bordered input-sm flex-1 font-mono min-w-0"
-                  %span.text-xs.text-drac-comment.shrink-0.font-mono= ".#{profile.save_extension}"
+                  %span.text-xs.text-muted.shrink-0.font-mono= ".#{profile.save_extension}"
         .px-4.py-3.flex.justify-start{ class: "border-t border-base-300" }
           = render ::UI::ActionComponent.new(content_text: "Save Filenames", variant: :primary, type: "submit")
     - else
-      .px-4.py-4.text-sm.text-drac-comment No emulators selected. Add emulators from the Profiles page.
+      .px-4.py-4.text-sm.text-muted No emulators selected. Add emulators from the Profiles page.

@@ -4,7 +4,7 @@
   .rounded-lg.p-6{ class: "bg-base-100 border border-base-300" }
 
     %h2.text-base.font-semibold.mb-1 Your account
-    %p.text-sm.text-drac-comment.mb-5 Set a personal email and password. You'll use these to log in.
+    %p.text-sm.text-muted.mb-5 Set a personal email and password. You'll use these to log in.
 
     = simple_form_for current_user, url: setup_path, method: :patch, html: { class: "space-y-4" } do |f|
       = f.input :email_address, as: :email, label: "Email", autocomplete: "email", input_html: { class: "input input-bordered w-full" }

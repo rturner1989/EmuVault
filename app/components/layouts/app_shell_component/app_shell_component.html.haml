@@ -6,7 +6,7 @@
       = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
         %img{ src: "/icon.svg", alt: "", width: "28", height: "28", class: "rounded-md" }
         %span.text-xl
-          %span.text-drac-comment> Emu
+          %span.text-muted> Emu
           %span.font-bold.text-primary> Vault
 
     .flex-1.overflow-y-auto.px-3.py-4.space-y-1
@@ -24,16 +24,16 @@
         %span Emulator Profiles
 
     .p-3.space-y-1{ class: "border-t border-base-300" }
-      .px-3.py-1.text-xs.text-drac-comment.truncate= Current.user.email_address
-      %button#nav-notifications.flex.items-center.gap-2.w-full.px-3.py-2.rounded-lg.text-sm.text-drac-comment{ class: "hover:bg-base-300 hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
+      .px-3.py-1.text-xs.text-muted.truncate= Current.user.email_address
+      %button#nav-notifications.flex.items-center.gap-2.w-full.px-3.py-2.rounded-lg.text-sm.text-muted{ class: "hover:bg-base-300 hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
         %i.fa-solid.fa-bell.fa-fw
         %span Notifications
         - if unread_count > 0
           %span.ml-auto.min-w-5.h-5.bg-error.text-white.text-xs.rounded-full.flex.items-center.justify-center.leading-none{ "data-notification-badge": "" }= unread_count
-      = link_to settings_path, id: "nav-settings", class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-base-300 hover:text-base-content transition-colors" do
+      = link_to settings_path, id: "nav-settings", class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-base-content transition-colors" do
         %i.fa-solid.fa-gear.fa-fw
         %span Settings
-      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-drac-comment hover:bg-base-300 hover:text-error transition-colors" do
+      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-error transition-colors" do
         %i.fa-solid.fa-right-from-bracket.fa-fw
         %span Sign Out
 
@@ -42,10 +42,10 @@
       = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
         %img{ src: "/icon.svg", alt: "", width: "24", height: "24", class: "rounded-md" }
         %span.text-lg
-          %span.text-drac-comment> Emu
+          %span.text-muted> Emu
           %span.font-bold.text-primary> Vault
       .ml-auto
-        %button#mobile-nav-notifications.relative.inline-flex.items-center.justify-center.w-8.h-8.text-drac-comment{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
+        %button#mobile-nav-notifications.relative.inline-flex.items-center.justify-center.w-8.h-8.text-muted{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
           %i.fas.fa-bell
           = render "shared/notification_badge", count: unread_count
 
@@ -91,5 +91,5 @@
       .flex-1.overflow-y-auto
         = helpers.turbo_frame_tag :notifications_panel, src: notifications_path, loading: :lazy, data: { notifications_target: "frame" }
       .px-4.py-2.notification-panel-bottom{ class: "border-t border-base-300" }
-        %button.text-xs.text-drac-comment.w-full.text-left.py-1{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "click->notifications#markAllRead" } }
+        %button.text-xs.text-muted.w-full.text-left.py-1{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "click->notifications#markAllRead" } }
           Mark all as read

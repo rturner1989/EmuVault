@@ -25,11 +25,11 @@ export default class extends Controller {
       if (!icon) return
       icon.className = 'fa-solid fa-check fa-fw'
       this.copyBtnTarget.classList.add("text-drac-green")
-      this.copyBtnTarget.classList.remove("text-drac-comment")
+      this.copyBtnTarget.classList.remove("text-muted")
       setTimeout(() => {
         icon.className = 'fa-regular fa-clipboard fa-fw'
         this.copyBtnTarget.classList.remove("text-drac-green")
-        this.copyBtnTarget.classList.add("text-drac-comment")
+        this.copyBtnTarget.classList.add("text-muted")
       }, 1500)
     })
   }

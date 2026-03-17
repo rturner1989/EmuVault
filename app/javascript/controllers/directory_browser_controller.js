@@ -58,7 +58,7 @@ export default class extends Controller {
     this.shortcutsTarget.innerHTML = shortcuts.map(p => `
       <button
         type="button"
-        class="text-xs px-2 py-0.5 rounded border border-drac-current text-drac-comment hover:border-drac-fg hover:text-drac-fg transition-colors cursor-pointer"
+        class="text-xs px-2 py-0.5 rounded border border-drac-current text-muted hover:border-drac-fg hover:text-drac-fg transition-colors cursor-pointer"
         data-action="click->directory-browser#navigate"
         data-path="${this.escapeAttr(p)}">${this.escapeHTML(p)}</button>
     `).join("")
@@ -67,7 +67,7 @@ export default class extends Controller {
   renderEntries(entries) {
     if (entries.length === 0) {
       this.listTarget.innerHTML =
-        '<p class="text-xs text-drac-comment px-3 py-3 italic">No subdirectories</p>'
+        '<p class="text-xs text-muted px-3 py-3 italic">No subdirectories</p>'
       return
     }
 
@@ -79,7 +79,7 @@ export default class extends Controller {
         data-path="${this.escapeAttr(entry.path)}">
         <i class="fa-solid fa-folder text-drac-yellow fa-fw shrink-0"></i>
         <span class="truncate min-w-0 flex-1">${this.escapeHTML(entry.name)}</span>
-        <i class="fa-solid fa-chevron-right text-drac-comment shrink-0 text-xs"></i>
+        <i class="fa-solid fa-chevron-right text-muted shrink-0 text-xs"></i>
       </button>
     `).join("")
   }

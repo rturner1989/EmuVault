@@ -11,8 +11,8 @@
         %strong= @found.size
         new #{pluralize(@found.size, "game")} found
     .flex.items-center.gap-2
-      %i.fa-solid.fa-circle-check.text-drac-comment
-      %span.text-sm.text-drac-comment= "#{@already_in_lib} already in library"
+      %i.fa-solid.fa-circle-check.text-muted
+      %span.text-sm.text-muted= "#{@already_in_lib} already in library"
 
   -# Warning: paths that couldn't be read
   - if @skipped_paths.any?
@@ -22,14 +22,14 @@
         #{@skipped_paths.size} #{pluralize(@skipped_paths.size, "path")} could not be read
       %ul.mt-2.space-y-1
         - @skipped_paths.each do |sp|
-          %li.text-xs.font-mono.text-drac-comment= sp["path"]
-      %p.text-xs.mt-2.text-drac-comment Make sure the directory is mounted into the container.
+          %li.text-xs.font-mono.text-muted= sp["path"]
+      %p.text-xs.mt-2.text-muted Make sure the directory is mounted into the container.
 
   - if @found.empty?
     .rounded-lg.p-8.text-center{ class: "bg-base-100 border border-base-300" }
-      %i.fa-solid.fa-box-open.text-2xl.text-drac-comment.mb-3
-      %p.text-drac-comment.mb-1 No new games found
-      %p.text-xs.text-drac-comment Add scan paths in Settings and make sure the directories are mounted.
+      %i.fa-solid.fa-box-open.text-2xl.text-muted.mb-3
+      %p.text-muted.mb-1 No new games found
+      %p.text-xs.text-muted Add scan paths in Settings and make sure the directories are mounted.
       = link_to "Back to Settings", settings_path, class: "text-sm text-primary underline mt-4 inline-block"
 
   - else
@@ -40,14 +40,14 @@
           .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
             .flex.items-center.justify-between.px-4.py-3{ class: "border-b border-base-300" }
               %h3.text-sm.font-semibold= system_label
-              %span.text-xs.text-drac-comment= "#{items.size} #{pluralize(items.size, "game")}"
+              %span.text-xs.text-muted= "#{items.size} #{pluralize(items.size, "game")}"
             .divide-y{ class: "divide-base-300" }
               - items.each do |item|
                 .flex.items-start.gap-3.px-4.py-3
                   %input.mt-0.5.accent-primary.shrink-0{ type: "checkbox", name: "selected_roms[]", value: item["rom_path"], checked: true }
                   .min-w-0.flex-1
                     %p.text-sm= item["title"]
-                    %p.text-xs.text-drac-comment.font-mono.truncate= item["rom_path"]
+                    %p.text-xs.text-muted.font-mono.truncate= item["rom_path"]
                     - if item["save_files"]&.any?
                       %p.text-xs.mt-1.text-success
                         %i.fa-solid.fa-floppy-disk.mr-1

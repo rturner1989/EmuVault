@@ -10,7 +10,7 @@
           -# Emulator header row
           .flex.flex-wrap.items-center.gap-2.px-4.py-3{ class: "border-b border-base-300" }
             %span.font-medium= emulator_name
-            %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
+            %span.text-xs.text-muted.font-mono .#{profiles.first.save_extension}
             .ml-auto.flex.flex-wrap.items-center.gap-1
               - profiles.each do |p|
                 = render ::UI::BadgeComponent.new(context_text: p.platform.text, color: platform_badge_color(p.platform))
@@ -22,9 +22,9 @@
                 = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
                 .flex-1.min-w-0
                   - if profile.default_save_path.present?
-                    %p.text-xs.text-drac-comment.font-mono.truncate= profile.default_save_path
+                    %p.text-xs.text-muted.font-mono.truncate= profile.default_save_path
                   - else
-                    %p.text-xs.text-drac-comment No save path set
+                    %p.text-xs.text-muted No save path set
                 .flex.items-center.gap-2.shrink-0
                   = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
                     = modal.with_trigger do
@@ -38,19 +38,19 @@
                     method: :delete)
   - else
     .rounded-lg.p-8.text-center{ class: "bg-base-100 border border-base-300" }
-      %p.text-drac-comment.mb-4 No profiles configured yet.
+      %p.text-muted.mb-4 No profiles configured yet.
       = link_to "Go to setup", profiles_setup_path, class: "text-sm text-primary underline"
 
   -# Add from library
   - if @library_by_name.any?
     %details{ class: "rounded-lg overflow-hidden bg-base-100 border border-base-300" }
-      %summary.px-5.py-3.text-sm.font-medium.text-drac-comment.cursor-pointer Add from library
+      %summary.px-5.py-3.text-sm.font-medium.text-muted.cursor-pointer Add from library
       .divide-y{ class: "divide-base-300" }
         - @library_by_name.each do |emulator_name, profiles|
           .px-5.py-3
             .flex.items-center.gap-2.mb-2
               %span.text-sm.font-medium= emulator_name
-              %span.text-xs.text-drac-comment.font-mono .#{profiles.first.save_extension}
+              %span.text-xs.text-muted.font-mono .#{profiles.first.save_extension}
             .flex.flex-wrap.gap-2
               - profiles.each do |profile|
                 .flex.items-center.gap-2.rounded-lg.border.pl-3.pr-2.py-1.5{ class: "border-base-300" }

@@ -5,7 +5,7 @@
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
     %h2.text-sm.font-semibold.mb-1 Account
-    %p.text-sm.text-drac-comment.mb-4= @user.email_address
+    %p.text-sm.text-muted.mb-4= @user.email_address
     .flex.items-center.gap-3
       = render ::UI::ModalComponent.new(id: "change-password-dialog", title: "Change Password") do |modal|
         = modal.with_trigger do
@@ -15,41 +15,20 @@
       = render ::UI::ActionComponent.new(content_text: "Sign Out", href: session_path, variant: :danger, data: { turbo_method: :delete, turbo: false })
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
-    %h2.text-sm.font-semibold.mb-1 Monitoring
-    %p.text-sm.text-drac-comment.mb-4 Internal dashboards — admin credentials required.
-    .space-y-2
-      = link_to "/pghero", target: "_blank", class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300" do
-        .min-w-0
-          %p.text-sm.font-medium PgHero
-          %p.text-xs.text-drac-comment Database performance — slow queries, index usage, table sizes
-        %i.fa-solid.fa-arrow-up-right-from-square.text-drac-comment.group-hover:text-primary.transition-colors.shrink-0.ml-3
-      = link_to "/sidekiq", target: "_blank", class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300" do
-        .min-w-0
-          %p.text-sm.font-medium Sidekiq
-          %p.text-xs.text-drac-comment Background job queues, failures, and throughput
-        %i.fa-solid.fa-arrow-up-right-from-square.text-drac-comment.group-hover:text-primary.transition-colors.shrink-0.ml-3
-      .flex.items-center.justify-between.rounded-lg.border.px-4.py-3{ class: "border-base-300" }
-        .min-w-0
-          %p.text-sm.font-medium Uptime Kuma
-          %p.text-xs.text-drac-comment
-            Run as a standalone app on your server. Monitor EmuVault at
-            %span.font-mono.break-all= "#{request.host}/up"
-
-  .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
     %h2.text-sm.font-semibold.mb-1 Library Scan
-    %p.text-sm.text-drac-comment.mb-4 Point EmuVault at your games directories. It will discover new games and any save files alongside them.
+    %p.text-sm.text-muted.mb-4 Point EmuVault at your games directories. It will discover new games and any save files alongside them.
 
     -# Last scan result
     - result = @user.last_scan_result
     - if result.present? && result["status"] == "completed"
       .rounded-lg.border.px-4.py-3.mb-4{ class: "border-base-300" }
-        %p.text-xs.text-drac-comment.mb-1 Last scan
+        %p.text-xs.text-muted.mb-1 Last scan
         %p.text-sm
           Added #{result["added"]} #{pluralize(result["added"].to_i, "game")}
           — #{result["skipped"] || 0} already in library
         - if result["errors"]&.any?
           %p.text-xs.mt-1.text-error= "#{result["errors"].size} errors"
-        %p.text-xs.text-drac-comment.mt-1= @user.last_scanned_at&.strftime("%d %b %Y at %H:%M")
+        %p.text-xs.text-muted.mt-1= @user.last_scanned_at&.strftime("%d %b %Y at %H:%M")
 
     -# Scan actions
     .flex.items-center.gap-3.mb-5
@@ -69,11 +48,11 @@
               .flex.items-center.gap-3.px-4.py-3
                 .flex-1.min-w-0
                   %p.text-sm.font-mono.truncate= sp.path
-                  %p.text-xs.text-drac-comment= sp.game_system.text
+                  %p.text-xs.text-muted= sp.game_system.text
                 = button_to scan_path_path(sp), method: :patch, params: { scan_path: { auto_scan: !sp.auto_scan } }, class: "shrink-0 btn btn-sm #{sp.auto_scan ? 'btn-primary btn-outline' : 'btn-ghost'}" do
                   %i.fa-solid.fa-rotate.mr-1
                   = sp.auto_scan ? "Auto-scan on" : "Auto-scan off"
-                = button_to scan_path_path(sp), method: :delete, class: "shrink-0 btn btn-ghost btn-sm text-drac-comment hover:text-error" do
+                = button_to scan_path_path(sp), method: :delete, class: "shrink-0 btn btn-ghost btn-sm text-muted hover:text-error" do
                   %i.fa-solid.fa-trash
 
       -# Add path modal
@@ -86,37 +65,91 @@
         .flex.items-center.justify-between
           .min-w-0
             %p.text-sm Enable auto-scan
-            %p.text-xs.text-drac-comment Paths marked "auto-scan on" will be scanned automatically
+            %p.text-xs.text-muted Paths marked "auto-scan on" will be scanned automatically
           = f.check_box :scan_enabled, class: "checkbox checkbox-primary ml-4"
-        .flex.items-center.justify-between
-          %label.text-sm{ for: "user_scan_interval" } Interval
-          = f.select :scan_interval, User.scan_interval.values.map { |v| [v.text, v.value] }, {}, class: "select select-bordered select-sm"
-        = f.submit "Save", class: "btn btn-ghost btn-sm"
+        .flex.items-center.justify-between.gap-4
+          %label.text-sm.shrink-0{ for: "user_scan_interval" } Interval
+          = f.select :scan_interval, User.scan_interval.values.map { |v| [v.text, v.value] }, {}, class: "select select-bordered select-sm w-auto"
+        %button.btn.btn-primary.btn-sm{ type: "submit" } Save
+
+  .rounded-lg.p-5{ class: "bg-base-100 border border-base-300", data: { controller: "push-subscription", "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s } }
+    %h2.text-sm.font-semibold.mb-1 Push Notifications
+    %p.text-sm.text-muted.mb-4 Get notified on this device when a new save is uploaded. Works when EmuVault is installed as a home screen app.
+    = render ::UI::ActionComponent.new(content_text: "Enable push notifications", variant: :primary, data: { action: "push-subscription#subscribe", "push-subscription-target": "button" })
+    %p.text-xs.text-muted.mt-2{ data: { "push-subscription-target": "status" } }
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
     %h2.text-sm.font-semibold.mb-1 Data
-    %p.text-sm.text-drac-comment.mb-4 Export your games and save files, or restore from a previous export.
+    %p.text-sm.text-muted.mb-4 Export your games and save files, or restore from a previous export.
     .space-y-4
       .flex.items-center.justify-between
         .min-w-0
           %p.text-sm.font-medium Export library
-          %p.text-xs.text-drac-comment Downloads all games and save files as a ZIP archive
+          %p.text-xs.text-muted Downloads all games and save files as a ZIP archive
         = button_to "Export", data_exports_path, method: :post, form: { data: { turbo: false } }, class: "btn btn-primary btn-sm ml-4 shrink-0"
       .border-t.pt-4{ class: "border-base-300" }
         = form_with url: data_imports_path, multipart: true do |f|
           .flex.items-center.justify-between.mb-3
             .min-w-0
               %p.text-sm.font-medium Import library
-              %p.text-xs.text-drac-comment Restore from a previous EmuVault export ZIP
+              %p.text-xs.text-muted Restore from a previous EmuVault export ZIP
           .flex.items-center.gap-3.min-w-0
             %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer.flex-1.min-w-0{ class: "border-base-content/20", data: { controller: "file-picker" } }
               %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
-              %span.text-sm.text-drac-comment.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
+              %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
               = f.file_field :file, accept: ".zip", class: "hidden", data: { file_picker_target: "input", action: "change->file-picker#update" }
             %button.btn.btn-info.btn-sm.shrink-0{ type: "submit" } Import
 
-  .rounded-lg.p-5{ class: "bg-base-100 border border-base-300", data: { controller: "push-subscription", "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s } }
-    %h2.text-sm.font-semibold.mb-1 Push Notifications
-    %p.text-sm.text-drac-comment.mb-4 Get notified on this device when a new save is uploaded. Works when EmuVault is installed as a home screen app.
-    = render ::UI::ActionComponent.new(content_text: "Enable push notifications", variant: :primary, data: { action: "push-subscription#subscribe", "push-subscription-target": "button" })
-    %p.text-xs.text-drac-comment.mt-2{ data: { "push-subscription-target": "status" } }
+  .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
+    %h2.text-sm.font-semibold.mb-1 Monitoring
+    %p.text-sm.text-muted.mb-4 Internal dashboards — admin credentials required.
+    .space-y-2
+      = link_to "/pghero", target: "_blank", class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300" do
+        .min-w-0
+          %p.text-sm.font-medium PgHero
+          %p.text-xs.text-muted Database performance — slow queries, index usage, table sizes
+        %i.fa-solid.fa-arrow-up-right-from-square.text-muted.group-hover:text-primary.transition-colors.shrink-0.ml-3
+      = link_to "/sidekiq", target: "_blank", class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300" do
+        .min-w-0
+          %p.text-sm.font-medium Sidekiq
+          %p.text-xs.text-muted Background job queues, failures, and throughput
+        %i.fa-solid.fa-arrow-up-right-from-square.text-muted.group-hover:text-primary.transition-colors.shrink-0.ml-3
+      .flex.items-center.justify-between.rounded-lg.border.px-4.py-3{ class: "border-base-300" }
+        .min-w-0
+          %p.text-sm.font-medium Uptime Kuma
+          %p.text-xs.text-muted
+            Run as a standalone app on your server. Monitor EmuVault at
+            %span.font-mono.break-all= "#{request.host}/up"
+
+  .rounded-lg.p-5{ class: "bg-base-100 border border-base-300", data: { controller: "theme", "theme-current-value": @user.theme } }
+    %h2.text-sm.font-semibold.mb-1 Theme
+    %p.text-sm.text-muted.mb-4 Choose the look and feel of EmuVault.
+    = form_with model: @user, url: settings_path, method: :patch do |f|
+      .grid.grid-cols-2.gap-3{ class: "sm:grid-cols-3 lg:grid-cols-4" }
+        - User::THEMES.each do |group, themes|
+          - themes.each do |theme|
+            %label.cursor-pointer.group
+              = f.radio_button :theme, theme, class: "hidden peer", data: { action: "change->theme#preview" }
+              .rounded-lg.border-2.overflow-hidden.transition-colors{ class: "border-base-300 peer-checked:border-primary" }
+                .p-3{ "data-theme": theme }
+                  .flex.gap-1.mb-2
+                    %div{ class: "rounded-full w-3 h-3 bg-primary" }
+                    %div{ class: "rounded-full w-3 h-3 bg-secondary" }
+                    %div{ class: "rounded-full w-3 h-3 bg-accent" }
+                  %div{ class: "rounded h-2 w-full mb-1 bg-base-content/20" }
+                  %div{ class: "rounded h-2 w-3/4 bg-base-content/10" }
+              %p.text-xs.text-center.mt-1.capitalize= theme
+      .mt-4
+        %button.btn.btn-primary.btn-sm{ type: "submit", data: { action: "click->theme#save" } } Save theme
+
+    -# Unsaved theme confirmation dialog
+    %div{ id: "unsaved-theme-dialog", aria: { hidden: "true" }, data: { theme_target: "dialog" }, class: "dialog-container" }
+      .dialog-overlay
+      .dialog-content
+        %div
+          .flex.items-center.justify-between.mb-4
+            %h2.text-base.font-semibold Unsaved changes
+          %p.text-sm.opacity-70.mb-5 You have unsaved theme changes. Would you like to leave without saving?
+          .flex.items-center.gap-3
+            %button.btn.btn-error.btn-sm{ type: "button", data: { action: "theme#confirmLeave" } } Leave
+            %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "theme#cancelLeave" } } Stay

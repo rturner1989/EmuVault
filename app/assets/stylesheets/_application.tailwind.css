@@ -1,11 +1,16 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: dracula;
+  themes: dracula, night, dark, business, luxury, coffee, dim, sunset,
+          light, cupcake, emerald, corporate, retro, cyberpunk, valentine,
+          garden, aqua, pastel, wireframe, nord, lemonade, caramellatte;
 }
 
 @theme {
-  /* Not in DaisyUI Dracula — kept as a custom utility */
-  --color-drac-comment: #6272a4;
+  --color-muted: initial;
+}
+
+@utility text-muted {
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
 }
 
 

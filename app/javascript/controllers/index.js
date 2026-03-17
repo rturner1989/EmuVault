@@ -9,6 +9,7 @@ import OnboardingController from "./onboarding_controller"
 import PushSubscriptionController from "./push_subscription_controller"
 import QuickSyncController from "./quick_sync_controller"
 import SaveHintController from "./save_hint_controller"
+import ThemeController from "./theme_controller"
 
 const application = Application.start()
 application.register("auto-submit", AutoSubmitController)
@@ -21,3 +22,4 @@ application.register("push-subscription", PushSubscriptionController)
 application.register("quick-sync", QuickSyncController)
 application.register("flash", FlashController)
 application.register("save-hint", SaveHintController)
+application.register("theme", ThemeController)

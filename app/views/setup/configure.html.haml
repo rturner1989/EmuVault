@@ -5,7 +5,7 @@
 
     .px-5.py-4{ class: "border-b border-base-300" }
       %h2.text-base.font-semibold Where do your emulators store saves?
-      %p.text-sm.text-drac-comment.mt-0.5 Used to show you where to put downloaded files. Leave blank for mobile-only emulators.
+      %p.text-sm.text-muted.mt-0.5 Used to show you where to put downloaded files. Leave blank for mobile-only emulators.
 
     = form_with url: save_configuration_setup_path, method: :patch do |f|
       .divide-y{ class: "divide-base-300" }
@@ -14,11 +14,11 @@
             .flex.items-center.gap-2.mb-2
               %span.text-sm.font-medium= profile.name
               = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
-              %span.text-xs.text-drac-comment.font-mono .#{profile.save_extension}
+              %span.text-xs.text-muted.font-mono .#{profile.save_extension}
             %input.input.input-bordered.w-full.font-mono{ type: "text", name: "profiles[#{profile.id}][default_save_path]", value: profile.default_save_path, placeholder: "e.g. ~/.config/retroarch/saves/" }
 
       .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
-        = link_to profiles_setup_path, class: "flex-1 py-3 rounded-lg text-drac-comment text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
+        = link_to profiles_setup_path, class: "flex-1 py-3 rounded-lg text-muted text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
           %i.fa-solid.fa-arrow-left
           Back
         = render ::UI::ActionComponent.new(content_text: "Next: Game library", variant: :primary, size: :md, class: "flex-1", type: "submit") do |a|

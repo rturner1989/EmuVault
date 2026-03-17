@@ -11,7 +11,7 @@
           Clear
 
     - if @quick_sync_save
-      .text-xs.text-drac-comment
+      .text-xs.text-muted
         Last save:
         %span= @quick_sync_save.uploaded_at_label
 
@@ -26,16 +26,16 @@
                 { include_blank: "Select emulator…" },
                 { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
             .hidden{ data: { save_hint_target: "note" } }
-              %p.text-xs.text-drac-comment.mb-1 Place file at:
+              %p.text-xs.text-muted.mb-1 Place file at:
               .flex.items-center.gap-2.mb-2
                 %p.text-xs.font-mono.flex-1{ data: { save_hint_target: "hint" } }
-                %button.text-drac-comment.hover:text-base-content.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
+                %button.text-muted.hover:text-base-content.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
                   %i.fa-regular.fa-clipboard.fa-fw
             = render ::UI::ActionComponent.new(content_text: "Download", variant: :info, type: "submit") do |a|
               - a.with_leading_icon(name: "fa-download")
     - else
       .rounded-lg.p-4.text-center{ class: "bg-base-200 border border-base-300" }
-        %p.text-xs.text-drac-comment No save uploaded yet. Upload one below.
+        %p.text-xs.text-muted No save uploaded yet. Upload one below.
 
     -# Upload
     .rounded-lg.p-4{ class: "bg-base-200 border border-base-300" }
@@ -47,13 +47,13 @@
             { class: "select select-bordered w-full" }
         %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
           %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
-          %span.text-sm.text-drac-comment.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
+          %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
           = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
         = render ::UI::ActionComponent.new(content_text: "Upload", variant: :primary, type: "submit") do |a|
           - a.with_leading_icon(name: "fa-upload")
 
 - else
   .text-center.py-6.space-y-2
-    %i.fa-solid.fa-rotate.text-2xl.text-drac-comment
-    %p.text-sm.text-drac-comment No game set as Now Playing.
-    %p.text-xs.text-drac-comment Open a game and tap "Set as current" to enable quick sync.
+    %i.fa-solid.fa-rotate.text-2xl.text-muted
+    %p.text-sm.text-muted No game set as Now Playing.
+    %p.text-xs.text-muted Open a game and tap "Set as current" to enable quick sync.
