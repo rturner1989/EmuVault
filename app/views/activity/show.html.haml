@@ -25,7 +25,8 @@
         .flex.items-center.gap-4.px-5.py-4
           .flex-1.min-w-0
             .flex.items-center.gap-2.mb-1
-              = render ::UI::BadgeComponent.new(context_text: event.action_label, color: event.action_badge_color)
+              = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
+                - badge.with_icon(name: event.action_icon)
               = render ::UI::BadgeComponent.new(context_text: event.device_label, color: event.device_badge_color)
             %p.text-xs.text-muted= event.performed_at_label
           - if event.ip_address.present?
@@ -43,7 +44,8 @@
               .flex.items-center.gap-4.px-5.py-3
                 .flex-1.min-w-0
                   .flex.items-center.gap-2
-                    = render ::UI::BadgeComponent.new(context_text: event.action_label, color: event.action_badge_color)
+                    = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
+                      - badge.with_icon(name: event.action_icon)
                     = render ::UI::BadgeComponent.new(context_text: event.device_label, color: event.device_badge_color)
                     %span.text-xs.text-muted= event.performed_at_label
                 - if event.ip_address.present?

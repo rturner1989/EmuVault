@@ -77,7 +77,8 @@
             - @recent_sync_events.each do |event|
               %li.px-5.py-3.flex.items-center.justify-between.gap-4
                 .flex.items-center.gap-2
-                  = render ::UI::BadgeComponent.new(context_text: event.action_label, color: event.action_badge_color)
+                  = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
+                    - badge.with_icon(name: event.action_icon)
                   = link_to event.game_title, game_path(event.game_id), class: "text-sm text-primary hover:underline truncate cursor-pointer"
                 .text-xs.text-muted= event.performed_at_label
 

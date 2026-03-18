@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SyncEventDecorator < ApplicationDecorator
-  DEVICE_BADGE_COLORS = { phone: :cyan, tablet: :green, desktop: :purple }.freeze
+  DEVICE_BADGE_COLORS = { phone: :orange, tablet: :yellow, desktop: :purple }.freeze
 
   def device_type
     ua = user_agent.to_s
@@ -26,8 +26,12 @@ class SyncEventDecorator < ApplicationDecorator
     object.action.to_s == "push" ? "Upload" : "Download"
   end
 
+  def action_icon
+    object.action.to_s == "push" ? "fa-arrow-up" : "fa-arrow-down"
+  end
+
   def action_badge_color
-    object.action.to_s == "push" ? :pink : :cyan
+    object.action.to_s == "push" ? :green : :cyan
   end
 
   def performed_at_label

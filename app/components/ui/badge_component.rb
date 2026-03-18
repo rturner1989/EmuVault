@@ -20,7 +20,9 @@ module UI
       lg: "badge-lg"
     }.freeze
 
-    def initialize(context_text:, color: :comment, size: :sm, **html_options)
+    renders_one :icon, "UI::IconComponent"
+
+    def initialize(context_text: nil, color: :comment, size: :sm, **html_options)
       @content_text = context_text
       color_cls = COLOR_CLASSES.fetch(color.to_sym, COLOR_CLASSES[:comment])
       size_cls  = SIZES.fetch(size.to_sym, "badge-sm")
