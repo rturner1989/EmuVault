@@ -59,6 +59,17 @@
     = render ::UI::ActionComponent.new(content_text: "Enable push notifications", variant: :primary, data: { action: "push-subscription#subscribe", "push-subscription-target": "button" })
     %p.text-xs.text-muted.mt-2{ data: { "push-subscription-target": "status" } }
 
+    -# Push notification error/info dialog
+    %div{ id: "push-notification-dialog", aria: { hidden: "true" }, data: { "push-subscription-target": "dialog" }, class: "dialog-container" }
+      .dialog-overlay
+      .dialog-content
+        %div
+          .flex.items-center.justify-between.mb-4
+            %h2.text-base.font-semibold Push Notifications
+          %p.text-sm.text-muted.mb-5{ data: { "push-subscription-target": "dialogMessage" } }
+          .flex.justify-end
+            %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "push-subscription#closeDialog" } } OK
+
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
     %h2.text-sm.font-semibold.mb-1 Data
     %p.text-sm.text-muted.mb-4 Export your games and save files, or restore from a previous export.

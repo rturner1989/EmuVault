@@ -1,18 +1,32 @@
 import { Controller } from "@hotwired/stimulus"
+import A11yDialog from "a11y-dialog"
+import { lockScroll, unlockScroll } from "./scroll_lock"
 
 export default class extends Controller {
   static values = { vapidPublicKey: String }
-  static targets = ["button", "status"]
+  static targets = ["button", "status", "dialog", "dialogMessage"]
+
+  dialogTargetConnected() {
+    this.a11yDialog = new A11yDialog(this.dialogTarget)
+    this.a11yDialog.on("show", () => {
+      lockScroll()
+      requestAnimationFrame(() => this.dialogTarget.classList.add("dialog--open"))
+    })
+    this.a11yDialog.on("hide", () => {
+      this.dialogTarget.classList.remove("dialog--open")
+      setTimeout(() => unlockScroll(), 250)
+    })
+  }
 
   async subscribe() {
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      this.setStatus("Push notifications are not supported on this browser.")
+      this.showDialog("Push notifications are not supported on this browser.")
       return
     }
 
     const permission = await Notification.requestPermission()
     if (permission !== "granted") {
-      this.setStatus("Permission denied.")
+      this.showDialog("Notification permission was denied. You can enable it in your browser settings.")
       return
     }
 
@@ -43,8 +57,17 @@ export default class extends Controller {
         if (this.hasButtonTarget) this.buttonTarget.disabled = true
       }
     } catch (err) {
-      this.setStatus("Could not subscribe: " + err.message)
+      this.showDialog("Could not subscribe: " + err.message)
     }
+  }
+
+  showDialog(message) {
+    if (this.hasDialogMessageTarget) this.dialogMessageTarget.textContent = message
+    if (this.a11yDialog) this.a11yDialog.show()
+  }
+
+  closeDialog() {
+    if (this.a11yDialog) this.a11yDialog.hide()
   }
 
   setStatus(message) {
@@ -56,5 +79,9 @@ export default class extends Controller {
     const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/")
     const rawData = window.atob(base64)
     return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)))
+  }
+
+  disconnect() {
+    if (this.a11yDialog) this.a11yDialog.destroy()
   }
 }
