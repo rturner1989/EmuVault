@@ -66,7 +66,7 @@
             html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
             .space-y-2
               = f.select :target_profile_id,
-                @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @latest_save.save_path_hint(p) } }] },
+                @user_profiles.map { |p| ["#{p.name} (#{p.platform.text}) — .#{p.save_extension}", p.id, { data: { path: @latest_save.save_path_hint(p) } }] },
                 { include_blank: "Select emulator to download for…" },
                 { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
               .hidden{ data: { save_hint_target: "note" } }

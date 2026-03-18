@@ -15,30 +15,43 @@ class SetupController < ApplicationController
     end
   end
 
-  # Step 2 — pick which emulators you use
-  def profiles
-    @profiles_by_name = EmulatorProfile.where(is_default: true).ordered.group_by(&:name)
-  end
+  # Step 2 — system picker (or emulator picker when ?system= is present, handled in view)
+  def profiles; end
 
-  # Step 2 POST
+  # Step 2 POST — save emulator selections for a specific system, stay in wizard
   def select_profiles
+    system_key = params[:redirect_system].presence
     selected_ids = (params[:profile_ids] || []).map(&:to_i)
-    EmulatorProfile.where(is_default: true).update_all(user_selected: false)
-    EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true)
-    redirect_to configure_setup_path
+
+    # Deselect all profiles for this system, then re-select chosen ones
+    if system_key
+      system_profiles = EmulatorProfile.where(is_default: true, game_system: system_key)
+      system_profiles.update_all(user_selected: false)
+      EmulatorProfile.where(id: selected_ids, is_default: true, game_system: system_key)
+                     .update_all(user_selected: true)
+      redirect_to profiles_setup_path(system: system_key)
+    else
+      redirect_to configure_setup_path
+    end
   end
 
-  # Step 3 — configure save directories
+  # Step 3 — configure save directories (one row per emulator+platform, not per system)
   def configure
-    @profiles = EmulatorProfile.where(user_selected: true).ordered
-    redirect_to profiles_setup_path if @profiles.empty?
+    # Group selected profiles by name+platform so the user sets one path per
+    # emulator installation, not one per system (e.g. RetroArch Linux shows once)
+    @profiles_by_emulator = EmulatorProfile.where(user_selected: true)
+                                           .ordered
+                                           .group_by { |p| [p.name, p.platform.to_sym] }
+    redirect_to profiles_setup_path if @profiles_by_emulator.empty?
   end
 
-  # Step 3 POST — save paths, continue to library step
+  # Step 3 POST — save paths (apply to all profiles for the same emulator+platform)
   def save_configuration
-    params[:profiles]&.each do |id, attrs|
-      profile = EmulatorProfile.find_by(id: id, user_selected: true)
-      profile&.update(default_save_path: attrs[:default_save_path].presence)
+    params[:emulators]&.each do |key, attrs|
+      name, platform = key.split("|")
+      path = attrs[:default_save_path].presence
+      EmulatorProfile.where(name: name, platform: platform, user_selected: true)
+                     .update_all(default_save_path: path)
     end
 
     redirect_to library_setup_path

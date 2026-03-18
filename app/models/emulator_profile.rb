@@ -15,7 +15,7 @@
 #
 # Indexes
 #
-#  index_emulator_profiles_on_name_and_platform  (name,platform) UNIQUE
+#  index_emulator_profiles_on_name_and_platform_and_game_system  (name,platform,game_system) UNIQUE
 #
 class EmulatorProfile < ApplicationRecord
   extend Enumerize
@@ -35,9 +35,11 @@ class EmulatorProfile < ApplicationRecord
   validates :name, presence: true
   validates :platform, presence: true
   validates :save_extension, presence: true
-  validates :name, uniqueness: { scope: :platform }
+  validates :name, uniqueness: { scope: [:platform, :game_system] }
 
-  scope :ordered, -> { order(:name, :platform) }
+  scope :ordered, -> { order(:game_system, :name, :platform) }
+  scope :for_system, ->(system) { where(game_system: system) }
+  scope :selected_for_system, ->(system) { where(user_selected: true, game_system: system) }
 
   def deletable?
     !is_default

@@ -3,17 +3,59 @@ class EmulatorProfilesController < ApplicationController
 
   def index
     authorize! EmulatorProfile
-    @selected_by_name = EmulatorProfile.where(user_selected: true).ordered.group_by(&:name)
-    @library_by_name = EmulatorProfile.where(is_default: true, user_selected: false).ordered.group_by(&:name)
+    @selected_by_system = EmulatorProfile.where(user_selected: true)
+      .ordered
+      .group_by { |p| p.game_system.to_sym }
+  end
+
+  # GET /emulator_profiles/library — step 1: system picker
+  def library
+    authorize! EmulatorProfile, to: :index?
+
+    selected_systems = EmulatorProfile.where(user_selected: true)
+      .distinct
+      .pluck(:game_system)
+      .compact
+      .map(&:to_sym)
+    available_systems = EmulatorProfile.where(is_default: true, user_selected: false)
+      .distinct
+      .pluck(:game_system)
+      .compact
+      .map(&:to_sym)
+    @systems = EmulatorProfile.game_system
+      .values
+      .select { |v| available_systems.include?(v.value.to_sym) }
+    @selected_systems = selected_systems
+  end
+
+  # GET /emulator_profiles/library_system?system=gba — step 2: emulators for a system
+  def library_system
+    authorize! EmulatorProfile, to: :index?
+
+    @system = params[:system]
+    @system_label = EmulatorProfile.game_system.find_value(@system)&.text || @system.upcase
+    @profiles = EmulatorProfile.where(is_default: true, user_selected: false, game_system: @system).ordered
+    redirect_to library_emulator_profiles_path if @profiles.empty?
+  end
+
+  # POST /emulator_profiles/add_from_library
+  def add_from_library
+    authorize! EmulatorProfile, to: :create?
+
+    selected_ids = (params[:profile_ids] || []).map(&:to_i)
+    EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true)
+    redirect_to emulator_profiles_path, notice: "Emulators added."
   end
 
   def new
     authorize! EmulatorProfile
+
     @profile = EmulatorProfile.new
   end
 
   def create
     authorize! EmulatorProfile
+
     @profile = EmulatorProfile.new(profile_params)
     if @profile.save
       redirect_to emulator_profiles_path, notice: "Profile added."
@@ -30,6 +72,7 @@ class EmulatorProfilesController < ApplicationController
 
   def update
     authorize! @profile
+
     if @profile.update(profile_params)
       redirect_to emulator_profiles_path, notice: "Profile updated."
     else
@@ -41,6 +84,7 @@ class EmulatorProfilesController < ApplicationController
 
   def destroy
     authorize! @profile
+
     if @profile.deletable?
       @profile.destroy
       redirect_to emulator_profiles_path, notice: "Profile removed."
@@ -58,6 +102,6 @@ class EmulatorProfilesController < ApplicationController
   end
 
   def profile_params
-    params.require(:emulator_profile).permit(:name, :platform, :save_extension, :default_save_path, :user_selected)
+    params.require(:emulator_profile).permit(:name, :platform, :game_system, :save_extension, :default_save_path, :user_selected)
   end
 end

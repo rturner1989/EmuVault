@@ -9,13 +9,15 @@
 
     = form_with url: save_configuration_setup_path, method: :patch do |f|
       .divide-y{ class: "divide-base-300" }
-        - @profiles.each do |profile|
+        - @profiles_by_emulator.each do |(emulator_name, platform), profiles|
+          - key = "#{emulator_name}|#{platform}"
+          - systems_text = profiles.map { |p| p.game_system.text }.join(", ")
           .px-5.py-4
-            .flex.items-center.gap-2.mb-2
-              %span.text-sm.font-medium= profile.name
-              = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
-              %span.text-xs.text-muted.font-mono .#{profile.save_extension}
-            %input.input.input-bordered.w-full.font-mono{ type: "text", name: "profiles[#{profile.id}][default_save_path]", value: profile.default_save_path, placeholder: "e.g. ~/.config/retroarch/saves/" }
+            .flex.items-center.gap-2.mb-1
+              %span.text-sm.font-medium= emulator_name
+              = render ::UI::BadgeComponent.new(context_text: profiles.first.platform.text, color: platform_badge_color(platform))
+            %p.text-xs.text-muted.mb-2= systems_text
+            %input.input.input-bordered.w-full.font-mono{ type: "text", name: "emulators[#{key}][default_save_path]", value: profiles.first.default_save_path, placeholder: "e.g. ~/.config/retroarch/saves/" }
 
       .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
         = link_to profiles_setup_path, class: "flex-1 py-3 rounded-lg text-muted text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do

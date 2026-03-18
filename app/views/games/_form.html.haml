@@ -5,10 +5,12 @@
         input_html: { class: "input input-bordered w-full" },
         label_html: { class: "label-text text-xs font-medium" }
 
+    - allowed = (@available_systems + [@form.system.to_s]).uniq.compact
+    - system_collection = allowed.any? ? Game.system.values.select { |v| allowed.include?(v.value) } : Game.system.values
     = f.input :system,
         label: "System",
         as: :select,
-        collection: Game.system.values,
+        collection: system_collection,
         value_method: :value,
         label_method: :text,
         include_blank: "— select a system —",

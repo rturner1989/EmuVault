@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_17_142500) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -62,7 +62,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_142500) do
     t.string "save_extension", null: false
     t.datetime "updated_at", null: false
     t.boolean "user_selected", default: false, null: false
-    t.index ["name", "platform"], name: "index_emulator_profiles_on_name_and_platform", unique: true
+    t.index ["name", "platform", "game_system"], name: "index_emulator_profiles_on_name_and_platform_and_game_system", unique: true
   end
 
   create_table "game_emulator_configs", force: :cascade do |t|

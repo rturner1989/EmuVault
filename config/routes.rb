@@ -37,7 +37,13 @@ Rails.application.routes.draw do
     end
   end
   resource :activity, only: [:show], controller: "activity"
-  resources :emulator_profiles
+  resources :emulator_profiles do
+    collection do
+      get  :library
+      get  :library_system
+      post :add_from_library
+    end
+  end
 
   resources :notifications, only: %i[index show] do
     collection do

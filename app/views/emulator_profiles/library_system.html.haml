@@ -1,0 +1,25 @@
+= turbo_frame_tag :library_modal_frame do
+  = form_with url: add_from_library_emulator_profiles_path, method: :post, data: { turbo_frame: "_top" } do |f|
+    .space-y-4
+      .flex.items-center.gap-3
+        = link_to library_emulator_profiles_path,
+            data: { turbo_frame: :library_modal_frame },
+            class: "text-muted hover:text-base-content transition-colors" do
+          %i.fa-solid.fa-arrow-left
+        %p.text-sm.font-semibold= @system_label
+
+      - if @profiles.any?
+        .space-y-2
+          - @profiles.each do |profile|
+            %label.flex.items-center.gap-3.px-3.py-2.5.rounded-lg.border.cursor-pointer{ class: "border-base-300 hover:border-primary hover:bg-base-200 transition-colors" }
+              %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id }
+              .flex-1.min-w-0
+                %p.text-sm.font-medium= profile.name
+                = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+              %span.text-xs.text-muted.font-mono.shrink-0 .#{profile.save_extension}
+
+        .pt-2
+          = render ::UI::ActionComponent.new(content_text: "Add selected", variant: :primary, type: :submit) do |a|
+            - a.with_leading_icon(name: "fa-plus")
+      - else
+        %p.text-sm.text-muted All emulators for this system are already added.

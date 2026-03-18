@@ -1,28 +1,65 @@
 - content_for :title, "Setup — EmuVault"
 
 = render layout: "setup/wizard_shell", locals: { current_step: 2 } do
-  .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
+  - if params[:system].present?
+    -# Step 2b — emulator picker for a specific system
+    - system_key = params[:system]
+    - system_label = EmulatorProfile.game_system.find_value(system_key)&.text || system_key.upcase
+    - profiles = EmulatorProfile.where(is_default: true, game_system: system_key).ordered
 
-    .px-5.py-4{ class: "border-b border-base-300" }
-      %h2.text-base.font-semibold Which emulators do you use?
-      %p.text-sm.text-muted.mt-0.5 Select all that apply — you can add more later.
+    .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
+      .px-5.py-4{ class: "border-b border-base-300" }
+        .flex.items-center.gap-3.mb-1
+          = link_to profiles_setup_path, class: "text-muted hover:text-base-content transition-colors" do
+            %i.fa-solid.fa-arrow-left
+          %h2.text-base.font-semibold= system_label
+        %p.text-sm.text-muted.mt-0.5 Select the emulators you have installed for this system.
 
-    = form_with url: select_profiles_setup_path, method: :post do |f|
-      .divide-y{ class: "divide-base-300" }
-        - @profiles_by_name.each do |emulator_name, profiles|
-          .px-5.py-3
-            .flex.items-center.gap-2.mb-2
-              %p.text-sm.font-medium= emulator_name
-              %span.text-xs.text-muted.font-mono .#{profiles.first.save_extension}
-            .flex.flex-wrap.gap-2
-              - profiles.each do |profile|
-                %label.flex.items-center.gap-2.px-3.py-1.5.rounded-lg.border.cursor-pointer{ class: profile.user_selected ? "border-primary bg-base-200" : "border-base-300" }
-                  %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id, checked: profile.user_selected }
-                  = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+      = form_with url: select_profiles_setup_path, method: :post do |f|
+        = hidden_field_tag :redirect_system, system_key
+        .divide-y{ class: "divide-base-300" }
+          - profiles.each do |profile|
+            %label.flex.items-center.gap-3.px-5.py-3.cursor-pointer{ class: "hover:bg-base-200" }
+              %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id, checked: profile.user_selected }
+              .flex-1.min-w-0
+                %p.text-sm.font-medium= profile.name
+                = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+              %span.text-xs.text-muted.font-mono.shrink-0 .#{profile.save_extension}
+
+        .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
+          = link_to profiles_setup_path, class: "flex-1 py-3 rounded-lg text-muted text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
+            %i.fa-solid.fa-arrow-left
+            Back
+          = render ::UI::ActionComponent.new(content_text: "Save & pick another", variant: :secondary, size: :md, class: "flex-1", type: "submit") do |a|
+            - a.with_trailing_icon(name: "fa-rotate")
+          = link_to configure_setup_path, class: "btn btn-primary flex-1" do
+            Next: Configure paths
+            %i.fa-solid.fa-arrow-right
+
+  - else
+    -# Step 2a — system picker
+    - selected_systems = EmulatorProfile.where(user_selected: true).distinct.pluck(:game_system).compact.map(&:to_sym)
+    - all_systems = EmulatorProfile.game_system.values
+
+    .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
+      .px-5.py-4{ class: "border-b border-base-300" }
+        %h2.text-base.font-semibold Which systems do you use?
+        %p.text-sm.text-muted.mt-0.5 Pick a system to select your emulators for it.
+
+      .p-4
+        .grid.gap-2{ style: "grid-template-columns: repeat(auto-fill, minmax(130px, 1fr))" }
+          - all_systems.each do |system|
+            - has_selection = selected_systems.include?(system.value.to_sym)
+            = link_to profiles_setup_path(system: system.value),
+                class: "flex flex-col items-center gap-1.5 px-3 py-4 rounded-lg border text-center transition-colors #{ has_selection ? 'border-primary bg-base-200' : 'border-base-300 hover:border-primary hover:bg-base-200' }" do
+              %span.text-sm.font-medium= system.text
+              - if has_selection
+                %i.fa-solid.fa-check.text-xs.text-primary
 
       .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
         = link_to setup_path, class: "flex-1 py-3 rounded-lg text-muted text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
           %i.fa-solid.fa-arrow-left
           Back
-        = render ::UI::ActionComponent.new(content_text: "Next: Configure paths", variant: :primary, size: :md, class: "flex-1", type: "submit") do |a|
-          - a.with_trailing_icon(name: "fa-arrow-right")
+        = link_to configure_setup_path, class: "btn btn-primary flex-1" do
+          Next: Configure paths
+          %i.fa-solid.fa-arrow-right

@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   before_action :require_setup_complete
   before_action :load_onboarding_flag
   before_action :load_quick_sync_data
+  before_action :load_available_systems
 
   private
 
@@ -18,6 +19,11 @@ class ApplicationController < ActionController::Base
 
   def load_onboarding_flag
     @show_onboarding = session.delete(:show_onboarding).present?
+  end
+
+  def load_available_systems
+    return unless current_user
+    @available_systems = EmulatorProfile.where(user_selected: true).distinct.pluck(:game_system).compact
   end
 
   def load_quick_sync_data
