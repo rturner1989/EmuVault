@@ -19,7 +19,7 @@
     - if @quick_sync_save
       .rounded-lg.p-4{ class: "bg-base-200 border border-base-300" }
         %p.text-xs.font-medium.mb-3 Download to device
-        = simple_form_for :game_save, url: download_game_game_save_path(@quick_sync_game, @quick_sync_save), method: :get, html: { data: { controller: "save-hint", turbo: false } } do |f|
+        = simple_form_for :game_save, url: download_game_game_save_path(@quick_sync_game, @quick_sync_save), method: :get, html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
           .space-y-3
             = f.select :target_profile_id,
                 @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @quick_sync_save.save_path_hint(p) } }] },

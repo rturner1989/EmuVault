@@ -60,8 +60,6 @@ class GameSavesController < ApplicationController
       user_agent: request.user_agent
     )
 
-    flash[:notice] = "Save downloaded."
-
     send_data @game_save.file.download,
               filename: decorated.download_filename(target_profile),
               type: "application/octet-stream",

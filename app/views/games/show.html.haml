@@ -63,7 +63,7 @@
           = simple_form_for :game_save,
             url: download_game_game_save_path(@game, @latest_save),
             method: :get,
-            html: { data: { controller: "save-hint", turbo: false } } do |f|
+            html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
             .space-y-2
               = f.select :target_profile_id,
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @latest_save.save_path_hint(p) } }] },
@@ -144,7 +144,7 @@
     - if @history.exists?
       - history_all = @history.to_a
       - history_preview = history_all.first(5)
-      %div{ class: "rounded-lg overflow-hidden bg-base-100 border border-base-300" }
+      %div{ class: "rounded-lg overflow-hidden bg-base-100 border border-base-300", data: { controller: "iframe-download" } }
         - if history_all.size > 5
           = render ::UI::ModalComponent.new(id: "save-history-dialog", title: "Save History") do |modal|
             = modal.with_trigger do
@@ -163,7 +163,7 @@
                           = decorated.uploaded_at_label
                         .text-xs.text-muted
                           = "#{decorated.emulator_label} · #{decorated.file_size_label}"
-                      = render ::UI::ActionComponent.new(href: download_game_game_save_path(@game, save), variant: :info, size: :sm, class: "btn-outline", data: { turbo: false }) do |a|
+                      = render ::UI::ActionComponent.new(href: download_game_game_save_path(@game, save), variant: :info, size: :sm, class: "btn-outline", data: { turbo: false, action: "click->iframe-download#click" }) do |a|
                         - a.with_leading_icon(name: "fa-download")
         - else
           %div{ class: "px-4 py-3 border-b border-base-300" }
@@ -179,7 +179,7 @@
                   = decorated.uploaded_at_label
                 .text-xs.text-muted
                   = "#{decorated.emulator_label} · #{decorated.file_size_label}"
-              = render ::UI::ActionComponent.new(href: download_game_game_save_path(@game, save), variant: :info, size: :sm, class: "btn-outline", data: { turbo: false }) do |a|
+              = render ::UI::ActionComponent.new(href: download_game_game_save_path(@game, save), variant: :info, size: :sm, class: "btn-outline", data: { turbo: false, action: "click->iframe-download#click" }) do |a|
                 - a.with_leading_icon(name: "fa-download")
 
   -# Emulator save filenames
