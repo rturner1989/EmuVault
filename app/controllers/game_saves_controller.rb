@@ -5,32 +5,15 @@ class GameSavesController < ApplicationController
   def create
     authorize! GameSave, to: :create?
 
-    uploaded = params.dig(:game_save, :file)
-    emulator_profile_id = params.dig(:game_save, :emulator_profile_id).presence
+    @game_save_form = GameSaveForm.new(game_save_params)
 
-    @game_save = @game.game_saves.build(game_save_params)
-    @game_save.saved_at = Time.current
-
-    if uploaded.present?
-      uploaded.rewind
-      @game_save.checksum = Digest::SHA256.hexdigest(uploaded.read)
-    end
-
-    if @game_save.save
-      SyncEvent.create!(
-        game_save: @game_save,
-        action: :push,
-        status: :success,
-        performed_at: Time.current,
-        ip_address: request.remote_ip,
-        user_agent: request.user_agent
-      )
+    if @game_save_form.save(game: @game, request: request)
       redirect_back_or_to game_path(@game), notice: "Save uploaded."
     else
       @game = GameDecorator.new(@game)
       @latest_save = GameSaveDecorator.decorate(@game.game_saves.latest_first.first) if @game.game_saves.exists?
       @history = @game.game_saves.latest_first.offset(1).includes(:emulator_profile).limit(19)
-      @new_save = @game_save
+      @new_save = @game_save_form
       @user_profiles = EmulatorProfile.where(user_selected: true).ordered
       @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)
       @form = GameForm.from(@game)

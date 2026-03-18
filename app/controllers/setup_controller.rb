@@ -6,31 +6,12 @@ class SetupController < ApplicationController
 
   # Step 1 POST
   def update
-    user = current_user
-    errors = []
+    @form = SetupAccountForm.new(setup_account_params)
 
-    new_email = params.dig(:user, :email_address).presence
-    new_password = params.dig(:user, :password).presence
-    password_confirmation = params.dig(:user, :password_confirmation).presence
-
-    if new_email
-      user.email_address = new_email
-    end
-
-    if new_password.present?
-      if new_password != password_confirmation
-        errors << "Password confirmation doesn't match"
-      else
-        user.password = new_password
-        user.password_confirmation = password_confirmation
-      end
-    end
-
-    if errors.any? || !user.save
-      @errors = errors + user.errors.full_messages
-      render :show, status: :unprocessable_entity
-    else
+    if @form.save(current_user)
       redirect_to profiles_setup_path
+    else
+      render :show, status: :unprocessable_entity
     end
   end
 
@@ -76,5 +57,11 @@ class SetupController < ApplicationController
     current_user.update!(setup_completed: true)
     session[:show_onboarding] = true
     redirect_to root_path
+  end
+
+  private
+
+  def setup_account_params
+    params.require(:user).permit(:email_address, :password, :password_confirmation)
   end
 end

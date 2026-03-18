@@ -1,26 +1,27 @@
-= simple_form_for @form, url: form_url, html: { class: "space-y-4" } do |f|
-  = f.input :title,
-      label: "Title",
-      input_html: { class: "input input-bordered w-full" },
-      label_html: { class: "label-text text-xs font-medium" }
+= turbo_frame_tag :game_form do
+  = simple_form_for @form, url: form_url, html: { class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
+    = f.input :title,
+        label: "Title",
+        input_html: { class: "input input-bordered w-full" },
+        label_html: { class: "label-text text-xs font-medium" }
 
-  = f.input :system,
-      label: "System",
-      as: :select,
-      collection: Game.system.values,
-      value_method: :value,
-      label_method: :text,
-      include_blank: "— select a system —",
-      input_html: { class: "select select-bordered w-full" },
-      label_html: { class: "label-text text-xs font-medium" }
+    = f.input :system,
+        label: "System",
+        as: :select,
+        collection: Game.system.values,
+        value_method: :value,
+        label_method: :text,
+        include_blank: "— select a system —",
+        input_html: { class: "select select-bordered w-full" },
+        label_html: { class: "label-text text-xs font-medium" }
 
-  = f.input :rom_hash,
-      label: "ROM Hash (optional)",
-      hint: "SHA-256 or MD5 of the ROM file — used to uniquely identify the game.",
-      input_html: { class: "input input-bordered w-full font-mono" },
-      label_html: { class: "label-text text-xs font-medium" },
-      hint_html: { class: "mt-1 text-xs text-muted" }
+    = f.input :rom_hash,
+        label: "ROM Hash (optional)",
+        hint: "SHA-256 or MD5 of the ROM file — used to uniquely identify the game.",
+        input_html: { class: "input input-bordered w-full font-mono" },
+        label_html: { class: "label-text text-xs font-medium" },
+        hint_html: { class: "mt-1 text-xs text-muted" }
 
-  .flex.items-center.gap-3.pt-1
-    = render ::UI::ActionComponent.new(content_text: submit_label, variant: :primary, size: :sm, type: :submit)
-    = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })
+    .flex.items-center.gap-3.pt-1
+      = render ::UI::ActionComponent.new(content_text: submit_label, variant: :primary, size: :sm, type: :submit)
+      = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })

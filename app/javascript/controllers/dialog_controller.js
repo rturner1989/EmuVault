@@ -25,6 +25,7 @@ export default class extends Controller {
     })
     this.dialog.on("hide", () => {
       this.containerTarget.classList.remove("dialog--open")
+      this._resetForms()
       setTimeout(() => unlockScroll(), 250)
     })
     // Belt-and-suspenders: a11y-dialog's keydown listener is scoped to the
@@ -56,5 +57,17 @@ export default class extends Controller {
   // Called by Turbo Stream after a successful form submit to close the dialog
   closeOnSuccess() {
     this.dialog.hide()
+  }
+
+  _resetForms() {
+    this.containerTarget.querySelectorAll("form").forEach(form => {
+      form.reset()
+      form.querySelectorAll("input:not([type=hidden])").forEach(input => { input.value = "" })
+      form.querySelectorAll("select").forEach(select => { select.selectedIndex = 0 })
+      form.querySelectorAll(".field_with_errors").forEach(wrapper => {
+        wrapper.replaceWith(...wrapper.childNodes)
+      })
+      form.querySelectorAll("span.error").forEach(el => el.remove())
+    })
   }
 }

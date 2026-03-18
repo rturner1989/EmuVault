@@ -6,7 +6,8 @@
     %h2.text-base.font-semibold.mb-1 Your account
     %p.text-sm.text-muted.mb-5 Set a personal email and password. You'll use these to log in.
 
-    = simple_form_for current_user, url: setup_path, method: :patch, html: { class: "space-y-4" } do |f|
+    - @form ||= SetupAccountForm.from(current_user)
+    = simple_form_for @form, url: setup_path, method: :patch, html: { class: "space-y-4" } do |f|
       = f.input :email_address, as: :email, label: "Email", autocomplete: "email", input_html: { class: "input input-bordered w-full" }
       = f.input :password, as: :password, label: "New password", autocomplete: "new-password", input_html: { class: "input input-bordered w-full" }
       = f.input :password_confirmation, as: :password, label: "Confirm password", autocomplete: "new-password", input_html: { class: "input input-bordered w-full" }

@@ -3,14 +3,19 @@ class PasswordsController < ApplicationController
   end
 
   def update
-    if Current.user.authenticate(params[:current_password])
-      if Current.user.update(params.permit(:password, :password_confirmation))
-        redirect_to settings_path, notice: "Password updated."
-      else
-        redirect_to settings_path, alert: "New passwords did not match."
-      end
+    @form = PasswordChangeForm.new(password_params)
+
+    if @form.save(Current.user)
+      redirect_to settings_path, notice: "Password updated."
     else
-      redirect_to settings_path, alert: "Current password is incorrect."
+      render turbo_stream: turbo_stream.replace(:password_form,
+        partial: "passwords/form"), status: :unprocessable_entity
     end
+  end
+
+  private
+
+  def password_params
+    params.require(:password).permit(:current_password, :password, :password_confirmation)
   end
 end

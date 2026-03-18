@@ -1,13 +1,14 @@
-= simple_form_for :password, url: password_path, method: :patch, html: { class: "space-y-4" } do |f|
-  = f.input :current_password, as: :password, label: "Current password",
-      input_html: { autocomplete: "current-password", class: "input input-bordered w-full" },
-      label_html: { class: "label-text text-xs font-medium" }
-  = f.input :password, as: :password, label: "New password",
-      input_html: { autocomplete: "new-password", class: "input input-bordered w-full" },
-      label_html: { class: "label-text text-xs font-medium" }
-  = f.input :password_confirmation, as: :password, label: "Confirm new password",
-      input_html: { autocomplete: "new-password", class: "input input-bordered w-full" },
-      label_html: { class: "label-text text-xs font-medium" }
-  .flex.items-center.gap-3.pt-1
-    %button.btn.btn-primary.btn-sm{ type: "submit" } Update password
-    %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "dialog#close" } } Cancel
+= turbo_frame_tag :password_form do
+  = simple_form_for @form || PasswordChangeForm.new, url: password_path, method: :patch, html: { class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
+    = f.input :current_password, as: :password, label: "Current password",
+        input_html: { autocomplete: "current-password", class: "input input-bordered w-full" },
+        label_html: { class: "label-text text-xs font-medium" }
+    = f.input :password, as: :password, label: "New password",
+        input_html: { autocomplete: "new-password", class: "input input-bordered w-full" },
+        label_html: { class: "label-text text-xs font-medium" }
+    = f.input :password_confirmation, as: :password, label: "Confirm new password",
+        input_html: { autocomplete: "new-password", class: "input input-bordered w-full" },
+        label_html: { class: "label-text text-xs font-medium" }
+    .flex.items-center.gap-3.pt-1
+      %button.btn.btn-primary.btn-sm{ type: "submit" } Update password
+      %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "dialog#close" } } Cancel
