@@ -14,6 +14,24 @@
 }
 
 
+/* Flash progress bar */
+.flash-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: currentColor;
+  opacity: 0.35;
+  transform-origin: left;
+  animation: flash-countdown linear forwards;
+}
+
+@keyframes flash-countdown {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
 /* a11y-dialog */
 [data-a11y-dialog-native],
 .dialog-overlay {
@@ -165,6 +183,17 @@
 
 .notification-panel-bottom {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+/* Flash messages — below the mobile top bar, top-right on desktop */
+.flash-container {
+  top: calc(2.5rem + env(safe-area-inset-top) + 0.5rem);
+}
+
+@media (min-width: 1024px) {
+  .flash-container {
+    top: 1rem;
+  }
 }
 
 .mobile-bottom-nav {

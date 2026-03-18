@@ -3,5 +3,5 @@
 .p-4.lg:p-6
   = render ::UI::PageHeaderComponent.new(title: "Add Game")
 
-  .rounded-lg.p-6{ class: "bg-base-100 border border-base-300" }
+  %div{ class: "rounded-lg p-6 bg-base-100 border border-base-300" }
     = render "form", form_url: games_path, submit_label: "Add Game", cancel_path: games_path

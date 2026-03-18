@@ -15,12 +15,22 @@
           = form_with url: games_path, method: :get, data: { controller: "auto-submit" } do
             .flex.items-center.gap-2.flex-wrap
               - if @system_options.size > 1
-                = select_tag :system, options_for_select([["All systems", ""], *@system_options], @selected_system), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
-              = select_tag :sort, options_for_select([["Title A→Z", "title_asc"], ["Title Z→A", "title_desc"], ["Newest first", "newest"], ["Oldest first", "oldest"], ["By system", "system"]], @selected_sort), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
+                = select_tag :system,
+                  options_for_select([["All systems", ""], *@system_options], @selected_system),
+                  class: "select select-bordered select-sm w-44",
+                  data: { action: "change->auto-submit#submit" }
+
+              = select_tag :sort,
+                options_for_select(game_sort_options, @selected_sort),
+                class: "select select-bordered select-sm w-44",
+                data: { action: "change->auto-submit#submit" }
+
               - if @selected_system.present?
-                = link_to games_path(sort: @selected_sort), class: "text-xs text-muted hover:text-base-content transition-colors inline-flex items-center gap-1" do
-                  %i.fa-solid.fa-xmark
-                  Clear
+                = link_to games_path(sort: @selected_sort),
+                  class: "text-xs text-muted hover:text-base-content transition-colors inline-flex items-center gap-1" do
+                  = render ::UI::IconComponent.new(name: "fa-xmark")
+                  = "Clear"
+
       - if @games.empty?
         = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
           - c.with_action do
@@ -30,17 +40,26 @@
         .space-y-3
           - @games.each do |game|
             - is_current = current_user.current_game_id == game.id
-            .rounded-lg.border.transition-colors.flex.overflow-hidden{ class: is_current ? "bg-base-100 border-primary" : "bg-base-100 border-base-300" }
+            %div{ class: "rounded-lg border transition-colors flex overflow-hidden bg-base-100 #{is_current ? 'border-primary' : 'border-base-300'}" }
               = link_to game_path(game), class: "flex-1 min-w-0 p-4 flex items-center justify-between gap-3 hover:bg-base-200 transition-colors" do
                 .min-w-0
-                  .text-base.font-semibold.truncate= game.title
+                  .text-base.font-semibold.truncate
+                    = game.title
                   .mt-1
                     = render ::UI::BadgeComponent.new(context_text: game.system_label, color: game.system_badge_color)
-                %i.fa-solid.fa-chevron-right.text-muted.shrink-0
-              .border-l.flex.items-center{ class: "border-base-300" }
+                = render ::UI::IconComponent.new(name: "fa-chevron-right", classes: "text-muted shrink-0")
+
+              %div{ class: "border-l flex items-center border-base-300" }
                 - if is_current
-                  = button_to current_game_path, method: :delete, title: "Clear current game", class: "h-full px-4 flex items-center text-primary hover:opacity-70 transition-opacity cursor-pointer" do
-                    %i.fa-solid.fa-rotate.fa-fw
+                  = button_to current_game_path,
+                    method: :delete,
+                    title: "Clear current game",
+                    class: "h-full px-4 flex items-center text-primary hover:opacity-70 transition-opacity cursor-pointer" do
+                    = render ::UI::IconComponent.new(name: "fa-rotate")
                 - else
-                  = button_to current_game_path, method: :patch, params: { game_id: game.id }, title: "Set as current game", class: "h-full px-4 flex items-center text-muted hover:text-primary transition-colors cursor-pointer" do
-                    %i.fa-solid.fa-rotate.fa-fw
+                  = button_to current_game_path,
+                    method: :patch,
+                    params: { game_id: game.id },
+                    title: "Set as current game",
+                    class: "h-full px-4 flex items-center text-muted hover:text-primary transition-colors cursor-pointer" do
+                    = render ::UI::IconComponent.new(name: "fa-rotate")

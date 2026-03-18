@@ -2,8 +2,12 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static values = { duration: { type: Number, default: 4000 } }
+  static targets = ["progress"]
 
   connect() {
+    if (this.hasProgressTarget) {
+      this.progressTarget.style.animationDuration = `${this.durationValue}ms`
+    }
     this.autoTimer = setTimeout(() => this.dismiss(), this.durationValue)
   }
 

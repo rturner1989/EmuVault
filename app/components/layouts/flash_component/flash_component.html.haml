@@ -1,4 +1,4 @@
 - if @flash.any?
-  .fixed.z-50.space-y-2{ class: "bottom-4 left-4 right-4 lg:bottom-auto lg:top-4 lg:left-auto lg:right-4 lg:w-80" }
+  .fixed.space-y-2.flash-container{ class: "z-[60] left-4 right-4 lg:top-4 lg:left-auto lg:right-4 lg:w-80" }
     - @flash.each do |type, message|
       = render ::Layouts::FlashItemComponent.new(type: type, message: message)

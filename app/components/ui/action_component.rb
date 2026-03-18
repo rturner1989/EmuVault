@@ -11,7 +11,8 @@ module UI
       ghost:     "btn btn-ghost",
       danger:    "btn btn-error btn-outline",
       info:      "btn btn-info",
-      warning:   "btn btn-warning btn-outline"
+      warning:   "btn btn-warning btn-outline",
+      default:   ""
     }.freeze
 
     SIZES = {
@@ -22,10 +23,10 @@ module UI
     }.freeze
 
     def initialize(content_text: nil, href: nil, variant: :secondary, size: :sm, **html_options)
-      @label = content_text
+      @content_text = content_text
       @href  = href
       size_class    = SIZES.fetch(size.to_sym, "btn-sm")
-      variant_class = VARIANTS.fetch(variant.to_sym, VARIANTS[:secondary])
+      variant_class = VARIANTS.fetch(variant.to_sym, VARIANTS[:default])
       base_class    = [ variant_class, size_class ].reject(&:empty?).join(" ")
       extra_class   = html_options.delete(:class)
       final_class   = [ base_class, extra_class ].compact.join(" ")
