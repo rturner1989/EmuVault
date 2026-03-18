@@ -67,7 +67,10 @@ class GamesController < ApplicationController
     @form = GameForm.new(game_params)
     @form.id = @game.id
     if @form.persist(@game)
-      redirect_to @game, notice: "Game updated."
+      @form = GameForm.from(@game)
+      render turbo_stream: turbo_stream.replace("game_header",
+        partial: "games/header",
+        locals: { game: GameDecorator.new(@game) })
     else
       render turbo_stream: turbo_stream.replace(:game_form,
         partial: "games/form",

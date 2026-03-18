@@ -1,0 +1,28 @@
+.flex.flex-wrap.items-start.justify-between.gap-3{ id: "game_header" }
+  .min-w-0
+    %h1.text-xl.font-bold
+      = game.title
+    = render ::UI::BadgeComponent.new(context_text: game.system_label, color: game.system_badge_color)
+  .flex.gap-2.shrink-0
+    - if current_user.current_game_id == game.id
+      = button_to current_game_path, method: :delete, params: { game_id: game.id, inline: true }, class: "btn btn-outline btn-primary btn-sm" do
+        %i.fa-solid.fa-rotate.fa-fw
+        = "Now Playing"
+    - else
+      = button_to current_game_path, method: :patch, params: { game_id: game.id, inline: true }, class: "btn btn-outline btn-sm" do
+        %i.fa-solid.fa-rotate.fa-fw
+        = "Set as current"
+
+    = render ::UI::ModalComponent.new(id: "edit-game-dialog", title: "Edit Game") do |modal|
+      = modal.with_trigger do
+        = render ::UI::ActionComponent.new(content_text: "Edit", variant: :secondary, data: { action: "dialog#open" })
+      = modal.with_body do
+        = render "games/form", form_url: game_path(game), submit_label: "Save Changes", cancel_path: game_path(game)
+
+    = render ::UI::ConfirmComponent.new(id: "remove-game-dialog",
+      title: "Remove game?",
+      message: "Remove #{game.title} from your library? This will also delete all saved versions.",
+      url: game_path(game),
+      method: :delete,
+      trigger_label: "Remove",
+      confirm_label: "Remove")
