@@ -15,21 +15,45 @@ class SetupController < ApplicationController
     end
   end
 
-  # Step 2 — system picker (or emulator picker when ?system= is present, handled in view)
-  def profiles; end
+  # Step 2a — system picker (or emulator picker when ?system= is present, handled in view)
+  def profiles
+    session.delete(:pending_systems) unless params[:system].present?
+  end
 
-  # Step 2 POST — save emulator selections for a specific system, stay in wizard
+  # Step 2a POST — save selected systems, auto-select their profiles, begin per-system emulator config
+  def select_systems
+    @form = SetupSystemsForm.new(system_keys: params[:system_keys])
+
+    if @form.save
+      session[:pending_systems] = @form.system_keys
+      redirect_to profiles_setup_path(system: @form.system_keys.first)
+    else
+      redirect_to profiles_setup_path, alert: @form.errors.full_messages.first
+    end
+  end
+
+  # Step 2b POST — save emulator selections for a specific system, advance to next system or step 3
   def select_profiles
     system_key = params[:redirect_system].presence
     selected_ids = (params[:profile_ids] || []).map(&:to_i)
 
-    # Deselect all profiles for this system, then re-select chosen ones
     if system_key
       system_profiles = EmulatorProfile.where(is_default: true, game_system: system_key)
       system_profiles.update_all(user_selected: false)
       EmulatorProfile.where(id: selected_ids, is_default: true, game_system: system_key)
                      .update_all(user_selected: true)
-      redirect_to profiles_setup_path(system: system_key)
+
+      # Advance to next system in queue, or step 3
+      pending = Array(session[:pending_systems])
+      current_index = pending.index(system_key)
+      next_system = current_index ? pending[current_index + 1] : nil
+
+      if next_system
+        redirect_to profiles_setup_path(system: next_system)
+      else
+        session.delete(:pending_systems)
+        redirect_to configure_setup_path
+      end
     else
       redirect_to configure_setup_path
     end

@@ -6,6 +6,8 @@
     - system_key = params[:system]
     - system_label = EmulatorProfile.game_system.find_value(system_key)&.text || system_key.upcase
     - profiles = EmulatorProfile.where(is_default: true, game_system: system_key).ordered
+    - pending = Array(session[:pending_systems])
+    - current_pos = pending.index(system_key)
 
     .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
       .px-5.py-4{ class: "border-b border-base-300" }
@@ -13,6 +15,8 @@
           = link_to profiles_setup_path, class: "text-muted hover:text-base-content transition-colors" do
             %i.fa-solid.fa-arrow-left
           %h2.text-base.font-semibold= system_label
+          - if pending.size > 1 && current_pos
+            %span.text-xs.text-muted (#{current_pos + 1}/#{pending.size})
         %p.text-sm.text-muted.mt-0.5 Select the emulators you have installed for this system.
 
       = form_with url: select_profiles_setup_path, method: :post do |f|
@@ -27,39 +31,37 @@
               %span.text-xs.text-muted.font-mono.shrink-0 .#{profile.save_extension}
 
         .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
-          = link_to profiles_setup_path, class: "flex-1 py-3 rounded-lg text-muted text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
+          = link_to profiles_setup_path, class: "btn btn-ghost flex-1" do
             %i.fa-solid.fa-arrow-left
             Back
-          = render ::UI::ActionComponent.new(content_text: "Save & pick another", variant: :secondary, size: :md, class: "flex-1", type: "submit") do |a|
-            - a.with_trailing_icon(name: "fa-rotate")
-          = link_to configure_setup_path, class: "btn btn-primary flex-1" do
-            Next: Configure paths
+          %button.btn.btn-primary.flex-1{ type: "submit" }
+            Continue
             %i.fa-solid.fa-arrow-right
 
   - else
-    -# Step 2a — system picker
-    - selected_systems = EmulatorProfile.where(user_selected: true).distinct.pluck(:game_system).compact.map(&:to_sym)
+    -# Step 2a — system picker (multi-select)
+    - selected_systems = EmulatorProfile.where(user_selected: true).distinct.pluck(:game_system).compact
     - all_systems = EmulatorProfile.game_system.values
 
     .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
       .px-5.py-4{ class: "border-b border-base-300" }
         %h2.text-base.font-semibold Which systems do you use?
-        %p.text-sm.text-muted.mt-0.5 Pick a system to select your emulators for it.
+        %p.text-sm.text-muted.mt-0.5 Select all the systems you want to set up.
 
-      .p-4
-        .grid.gap-2{ style: "grid-template-columns: repeat(auto-fill, minmax(130px, 1fr))" }
-          - all_systems.each do |system|
-            - has_selection = selected_systems.include?(system.value.to_sym)
-            = link_to profiles_setup_path(system: system.value),
-                class: "flex flex-col items-center gap-1.5 px-3 py-4 rounded-lg border text-center transition-colors #{ has_selection ? 'border-primary bg-base-200' : 'border-base-300 hover:border-primary hover:bg-base-200' }" do
-              %span.text-sm.font-medium= system.text
-              - if has_selection
-                %i.fa-solid.fa-check.text-xs.text-primary
+      = form_with url: select_systems_setup_path, method: :post do |f|
+        .p-4
+          .grid.gap-2{ style: "grid-template-columns: repeat(auto-fill, minmax(130px, 1fr))" }
+            - all_systems.each do |system|
+              - checked = selected_systems.include?(system.value)
+              %label{ class: "flex flex-col items-center gap-1.5 px-3 py-4 rounded-lg border text-center cursor-pointer transition-all border-base-300 hover:border-primary hover:bg-base-200 has-[:checked]:border-primary has-[:checked]:bg-base-200" }
+                %input{ type: "checkbox", name: "system_keys[]", value: system.value, checked: checked, class: "peer sr-only" }
+                %span.text-sm.font-medium= system.text
+                %i.fa-solid.fa-check.text-xs.text-primary{ class: "invisible peer-checked:visible" }
 
-      .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
-        = link_to setup_path, class: "flex-1 py-3 rounded-lg text-muted text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
-          %i.fa-solid.fa-arrow-left
-          Back
-        = link_to configure_setup_path, class: "btn btn-primary flex-1" do
-          Next: Configure paths
-          %i.fa-solid.fa-arrow-right
+        .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
+          = link_to setup_path, class: "btn btn-ghost flex-1" do
+            %i.fa-solid.fa-arrow-left
+            Back
+          %button.btn.btn-primary.flex-1{ type: "submit" }
+            Next
+            %i.fa-solid.fa-arrow-right

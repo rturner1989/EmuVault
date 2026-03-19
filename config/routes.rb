@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   resource :password, only: %i[edit update]
   resource :setup, only: %i[show update], controller: "setup" do
     get :profiles
+    post :select_systems
     post :select_profiles
     get :configure
     patch :save_configuration

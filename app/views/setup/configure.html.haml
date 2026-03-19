@@ -20,8 +20,9 @@
             %input.input.input-bordered.w-full.font-mono{ type: "text", name: "emulators[#{key}][default_save_path]", value: profiles.first.default_save_path, placeholder: "e.g. ~/.config/retroarch/saves/" }
 
       .px-5.py-4.flex.gap-3{ class: "border-t border-base-300" }
-        = link_to profiles_setup_path, class: "flex-1 py-3 rounded-lg text-muted text-sm font-medium inline-flex items-center justify-center gap-2 border border-base-300" do
+        = link_to profiles_setup_path, class: "btn btn-ghost flex-1" do
           %i.fa-solid.fa-arrow-left
           Back
-        = render ::UI::ActionComponent.new(content_text: "Next: Game library", variant: :primary, size: :md, class: "flex-1", type: "submit") do |a|
-          - a.with_trailing_icon(name: "fa-arrow-right")
+        %button.btn.btn-primary.flex-1{ type: "submit" }
+          Next
+          %i.fa-solid.fa-arrow-right

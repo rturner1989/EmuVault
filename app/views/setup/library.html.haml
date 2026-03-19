@@ -23,7 +23,7 @@
       = render "shared/auto_scan_schedule", user: current_user, form_url: save_library_setup_path, form_id: "library-form", show_submit: false
 
     .px-5.py-4.flex.gap-3
-      = link_to configure_setup_path, class: "btn btn-outline flex-1" do
+      = link_to configure_setup_path, class: "btn btn-ghost flex-1" do
         %i.fa-solid.fa-arrow-left
         Back
       %button.btn.btn-primary.flex-1{ type: "submit", form: "library-form" }
