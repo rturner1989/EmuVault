@@ -1,0 +1,14 @@
+%div{ class: "stat bg-base-100 border border-base-300 rounded-lg" }
+  - if icon?
+    %div{ class: "stat-figure" }
+      = icon
+  %div{ class: "stat-title" }
+    = @title
+  %div{ class: "stat-value text-2xl #{@value_color}" }
+    = @value
+  - if @description || action?
+    %div{ class: "stat-desc" }
+      - if action?
+        = action
+      - else
+        = @description

@@ -7,7 +7,7 @@ module UI
 
     VARIANTS = {
       primary: "btn btn-primary",
-      secondary: "btn btn-outline",
+      secondary: "btn btn-soft",
       ghost: "btn btn-ghost",
       danger: "btn btn-error btn-outline",
       info: "btn btn-info",

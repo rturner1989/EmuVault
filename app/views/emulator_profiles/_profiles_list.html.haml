@@ -22,7 +22,7 @@
                 .flex.items-center.gap-2.shrink-0
                   = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
                     = modal.with_trigger do
-                      = render ::UI::ActionComponent.new(content_text: "Edit", variant: :ghost, size: :xs, class: "btn-outline", data: { action: "dialog#open" })
+                      = render ::UI::ActionComponent.new(content_text: "Edit", variant: :secondary, size: :xs, data: { action: "dialog#open" })
                     = modal.with_body do
                       = render "form", profile: profile, url: emulator_profile_path(profile), method: :patch, form_id: "edit-profile-#{profile.id}-form"
                     = modal.with_footer do
