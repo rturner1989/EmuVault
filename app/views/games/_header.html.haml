@@ -19,9 +19,7 @@
       = modal.with_body do
         = render "games/form", form_url: game_path(game), form_id: "edit-game-form"
       = modal.with_footer do
-        .flex.items-center.gap-3
-          = render ::UI::ActionComponent.new(content_text: "Save Changes", variant: :primary, size: :sm, type: :submit, form: "edit-game-form")
-          = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })
+        = render ::UI::ActionComponent.new(content_text: "Save Changes", variant: :primary, size: :sm, type: :submit, form: "edit-game-form")
 
     = render ::UI::ConfirmComponent.new(id: "remove-game-dialog",
       title: "Remove game?",

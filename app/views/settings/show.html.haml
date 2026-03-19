@@ -13,9 +13,7 @@
         = modal.with_body do
           = render "passwords/form"
         = modal.with_footer do
-          .flex.items-center.gap-3
-            = render ::UI::ActionComponent.new(content_text: "Update password", variant: :primary, size: :sm, type: :submit, form: "password-form")
-            = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })
+          = render ::UI::ActionComponent.new(content_text: "Update password", variant: :primary, size: :sm, type: :submit, form: "password-form")
       = render ::UI::ActionComponent.new(content_text: "Sign Out", href: session_path, variant: :danger, data: { turbo_method: :delete })
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }

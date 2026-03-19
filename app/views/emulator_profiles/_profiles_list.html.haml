@@ -26,9 +26,7 @@
                     = modal.with_body do
                       = render "form", profile: profile, url: emulator_profile_path(profile), method: :patch, form_id: "edit-profile-#{profile.id}-form"
                     = modal.with_footer do
-                      .flex.items-center.gap-3
-                        = render ::UI::ActionComponent.new(content_text: "Save", variant: :primary, size: :sm, type: :submit, form: "edit-profile-#{profile.id}-form")
-                        = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })
+                      = render ::UI::ActionComponent.new(content_text: "Save", variant: :primary, size: :sm, type: :submit, form: "edit-profile-#{profile.id}-form")
                   = render ::UI::ConfirmComponent.new(id: "delete-profile-#{profile.id}",
                     title: profile.is_default ? "Remove profile?" : "Delete profile?",
                     message: profile.is_default ? "Remove this profile from your list? You can add it back later." : "Delete this profile permanently?",

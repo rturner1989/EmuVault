@@ -10,9 +10,7 @@
         = modal.with_body do
           = render "games/form", form_url: games_path, form_id: "add-game-form"
         = modal.with_footer do
-          .flex.items-center.gap-3
-            = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, size: :sm, type: :submit, form: "add-game-form")
-            = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })
+          = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, size: :sm, type: :submit, form: "add-game-form")
 
   -# Now Playing — mobile slim banner (tap to open quick sync sheet)
   - if @quick_sync_game

@@ -22,12 +22,15 @@
 
           - if footer?
             - c.with_footer do
-              = footer
+              .flex.items-center.gap-3
+                = footer
+                = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })
           - elsif footer_actions?
             - c.with_footer do
-              .flex.gap-3
+              .flex.items-center.gap-3
                 - footer_actions.each do |action|
                   = action
+                = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })
     - if page_content?
       = page_content
 - else
