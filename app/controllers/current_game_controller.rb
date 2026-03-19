@@ -4,9 +4,13 @@ class CurrentGameController < ApplicationController
     current_user.update!(current_game: game)
     if params[:inline]
       @form = GameForm.from(game)
-      render turbo_stream: turbo_stream.replace("game_header",
-        partial: "games/header",
-        locals: { game: GameDecorator.new(game) })
+      render turbo_stream: [
+        turbo_stream.replace("game_header",
+          partial: "games/header",
+          locals: { game: GameDecorator.new(game) }),
+        turbo_stream.append("flash-container",
+          ::Layouts::FlashItemComponent.new(type: :notice, message: "Now playing: #{game.title}"))
+      ]
     else
       redirect_back_or_to root_path, notice: "Now playing: #{game.title}"
     end
@@ -17,9 +21,13 @@ class CurrentGameController < ApplicationController
     if params[:inline] && params[:game_id]
       game = Game.find(params[:game_id])
       @form = GameForm.from(game)
-      render turbo_stream: turbo_stream.replace("game_header",
-        partial: "games/header",
-        locals: { game: GameDecorator.new(game) })
+      render turbo_stream: [
+        turbo_stream.replace("game_header",
+          partial: "games/header",
+          locals: { game: GameDecorator.new(game) }),
+        turbo_stream.append("flash-container",
+          ::Layouts::FlashItemComponent.new(type: :notice, message: "Cleared current game"))
+      ]
     else
       redirect_back_or_to root_path
     end
