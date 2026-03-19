@@ -1,5 +1,6 @@
 class SetupController < ApplicationController
   layout "setup"
+  before_action :redirect_if_setup_complete
 
   # Step 1 — account setup (email + password)
   def show
@@ -95,6 +96,10 @@ class SetupController < ApplicationController
     current_user.update!(setup_completed: true)
     session[:show_onboarding] = true
     redirect_to root_path
+  end
+
+  private def redirect_if_setup_complete
+    redirect_to root_path, notice: "Setup is already complete." if current_user&.setup_completed?
   end
 
   private def setup_account_params
