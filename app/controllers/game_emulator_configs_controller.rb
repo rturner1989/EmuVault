@@ -19,13 +19,11 @@ class GameEmulatorConfigsController < ApplicationController
     redirect_to @game, notice: "Emulator filenames saved."
   end
 
-  private
-
-  def set_game
+  private def set_game
     @game = Game.find(params[:game_id])
   end
 
-  def configs_params
+  private def configs_params
     params.permit(emulator_configs: {}).fetch(:emulator_configs, {})
   end
 end

@@ -29,9 +29,7 @@ module Layouts
       Current.user.notifications.where(read_at: nil).count
     end
 
-    private
-
-    def active_path?(path)
+    private def active_path?(path)
       return @current_path == "/" if path == "/"
 
       @current_path.start_with?(path)

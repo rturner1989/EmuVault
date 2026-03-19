@@ -43,9 +43,7 @@ class DataImportsController < ApplicationController
     redirect_to settings_path, notice: "Import started — your library will be restored shortly."
   end
 
-  private
-
-  def analyze_zip(uploaded_file)
+  private def analyze_zip(uploaded_file)
     Zip::File.open(uploaded_file.tempfile.path) do |zip|
       entry = zip.find_entry("manifest.json")
       return [ nil, [] ] unless entry

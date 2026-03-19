@@ -68,9 +68,13 @@ class GamesController < ApplicationController
     @form.id = @game.id
     if @form.persist(@game)
       @form = GameForm.from(@game)
-      render turbo_stream: turbo_stream.replace("game_header",
-        partial: "games/header",
-        locals: { game: GameDecorator.new(@game) })
+      render turbo_stream: [
+        turbo_stream.replace("game_header",
+          partial: "games/header",
+          locals: { game: GameDecorator.new(@game) }),
+        turbo_stream.append("flash-container",
+          ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} updated."))
+      ]
     else
       render turbo_stream: turbo_stream.replace(:game_form,
         partial: "games/form",
@@ -81,17 +85,16 @@ class GamesController < ApplicationController
   def destroy
     authorize! @game
 
+    notice = "#{@game.title} removed."
     @game.destroy
-    redirect_to games_path, notice: "Game removed.", status: :see_other
+    redirect_to games_path, notice: notice, status: :see_other
   end
 
-  private
-
-  def set_game
+  private def set_game
     @game = Game.find(params[:id])
   end
 
-  def game_params
+  private def game_params
     params.require(:game).permit(:title, :system, :rom_hash)
   end
 end

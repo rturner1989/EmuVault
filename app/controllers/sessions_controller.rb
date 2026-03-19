@@ -19,9 +19,7 @@ class SessionsController < ApplicationController
     redirect_to new_session_path, status: :see_other
   end
 
-  private
-
-  def session_params
+  private def session_params
     params.require(:session).permit(:email_address, :password)
   end
 end

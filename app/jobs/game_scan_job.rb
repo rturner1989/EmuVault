@@ -47,9 +47,7 @@ class GameScanJob < ApplicationJob
     end
   end
 
-  private
-
-  def scan_due?(user)
+  private def scan_due?(user)
     return true if user.last_scanned_at.nil?
 
     interval = case user.scan_interval.to_s
@@ -62,7 +60,7 @@ class GameScanJob < ApplicationJob
   end
 
   # Walk scan paths and collect ROM discoveries without touching the DB.
-  def collect_roms(scan_paths)
+  private def collect_roms(scan_paths)
     found           = []
     already_in_lib  = 0
     skipped_paths   = []
@@ -112,7 +110,7 @@ class GameScanJob < ApplicationJob
   end
 
   # Import a specific list of items confirmed by the user.
-  def import_items(items)
+  private def import_items(items)
     added  = 0
     errors = []
 
@@ -129,7 +127,7 @@ class GameScanJob < ApplicationJob
   end
 
   # Walk auto_scan paths and import all newly discovered ROMs.
-  def import_roms(scan_paths)
+  private def import_roms(scan_paths)
     added   = 0
     skipped = 0
     errors  = []
@@ -173,7 +171,7 @@ class GameScanJob < ApplicationJob
     { "added" => added, "skipped" => skipped, "errors" => errors }
   end
 
-  def import_rom(item)
+  private def import_rom(item)
     game = Game.create!(title: item["title"], system: item["game_system"])
 
     (item["save_files"] || []).each do |save_file|
@@ -199,7 +197,7 @@ class GameScanJob < ApplicationJob
   end
 
   # Look for save files alongside a ROM with matching base name.
-  def find_save_files(rom_path, save_extensions)
+  private def find_save_files(rom_path, save_extensions)
     dir       = File.dirname(rom_path)
     base_name = File.basename(rom_path, ".*")
     found     = []
@@ -218,11 +216,11 @@ class GameScanJob < ApplicationJob
     found
   end
 
-  def active_save_extensions
+  private def active_save_extensions
     EmulatorProfile.where(user_selected: true).pluck(:save_extension).uniq
   end
 
-  def titleize(file_path)
+  private def titleize(file_path)
     File.basename(file_path, ".*")
         .gsub(/[_\-]/, " ")
         .gsub(/\s+/, " ")

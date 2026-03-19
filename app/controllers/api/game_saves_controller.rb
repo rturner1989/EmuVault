@@ -26,9 +26,7 @@ class Api::GameSavesController < Api::ApplicationController
               disposition: "attachment"
   end
 
-  private
-
-  def serialize_save(save)
+  private def serialize_save(save)
     {
       id: save.id,
       game_id: save.game_id,

@@ -11,22 +11,20 @@ class ApplicationController < ActionController::Base
   before_action :load_quick_sync_data
   before_action :load_available_systems
 
-  private
-
-  def current_user
+  private def current_user
     Current.user
   end
 
-  def load_onboarding_flag
+  private def load_onboarding_flag
     @show_onboarding = session.delete(:show_onboarding).present?
   end
 
-  def load_available_systems
+  private def load_available_systems
     return unless current_user
     @available_systems = EmulatorProfile.where(user_selected: true).distinct.pluck(:game_system).compact
   end
 
-  def load_quick_sync_data
+  private def load_quick_sync_data
     return unless current_user
     game = current_user.current_game
     return unless game
@@ -38,7 +36,7 @@ class ApplicationController < ActionController::Base
     @quick_sync_profiles = EmulatorProfile.where(user_selected: true).ordered
   end
 
-  def require_setup_complete
+  private def require_setup_complete
     return unless current_user
     return if current_user.setup_completed?
     return if controller_name == "setup" || controller_name == "sessions" || controller_name == "passwords" || controller_name == "directory_browser" || controller_name == "scan_paths"

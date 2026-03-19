@@ -19,9 +19,7 @@ class DashboardController < ApplicationController
     @system_counts = Game.group(:system).count
   end
 
-  private
-
-  def storage_label(bytes)
+  private def storage_label(bytes)
     if bytes >= 1_048_576
       format("%.1f MB", bytes.to_f / 1_048_576)
     elsif bytes >= 1_024

@@ -55,9 +55,7 @@ class User < ApplicationRecord
     update!(api_token: SecureRandom.hex(32))
   end
 
-  private
-
-  def generate_api_token
+  private def generate_api_token
     self.api_token ||= SecureRandom.hex(32)
   end
 end

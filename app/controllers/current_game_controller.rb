@@ -9,7 +9,7 @@ class CurrentGameController < ApplicationController
           partial: "games/header",
           locals: { game: GameDecorator.new(game) }),
         turbo_stream.append("flash-container",
-          ::Layouts::FlashItemComponent.new(type: :notice, message: "Now playing: #{game.title}"))
+          ::Layouts::FlashComponent::Item.new(type: :notice, message: "Now playing: #{game.title}"))
       ]
     else
       redirect_back_or_to root_path, notice: "Now playing: #{game.title}"
@@ -26,7 +26,7 @@ class CurrentGameController < ApplicationController
           partial: "games/header",
           locals: { game: GameDecorator.new(game) }),
         turbo_stream.append("flash-container",
-          ::Layouts::FlashItemComponent.new(type: :notice, message: "Cleared current game"))
+          ::Layouts::FlashComponent::Item.new(type: :notice, message: "Cleared current game"))
       ]
     else
       redirect_back_or_to root_path

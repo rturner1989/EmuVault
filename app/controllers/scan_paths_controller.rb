@@ -23,17 +23,15 @@ class ScanPathsController < ApplicationController
     redirect_to fallback_path
   end
 
-  private
-
-  def fallback_path
+  private def fallback_path
     current_user.setup_completed? ? settings_path : library_setup_path
   end
 
-  def set_scan_path
+  private def set_scan_path
     @scan_path = ScanPath.find(params[:id])
   end
 
-  def scan_path_params
+  private def scan_path_params
     params.require(:scan_path).permit(:path, :game_system, :auto_scan)
   end
 end

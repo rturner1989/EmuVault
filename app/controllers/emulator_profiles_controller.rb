@@ -104,13 +104,11 @@ class EmulatorProfilesController < ApplicationController
     end
   end
 
-  private
-
-  def set_profile
+  private def set_profile
     @profile = EmulatorProfile.find(params[:id])
   end
 
-  def profile_params
+  private def profile_params
     params.require(:emulator_profile).permit(:name, :platform, :game_system, :save_extension, :default_save_path, :user_selected)
   end
 end

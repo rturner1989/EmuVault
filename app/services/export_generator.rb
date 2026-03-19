@@ -26,9 +26,7 @@ class ExportGenerator
     buffer.string
   end
 
-  private
-
-  def build_manifest
+  private def build_manifest
     {
       exported_at: Time.current.iso8601,
       app_version: File.read(Rails.root.join("VERSION")).strip,
@@ -37,7 +35,7 @@ class ExportGenerator
     }
   end
 
-  def serialize_game(game)
+  private def serialize_game(game)
     {
       export_id: game.id.to_s,
       title: game.title,
@@ -47,7 +45,7 @@ class ExportGenerator
     }
   end
 
-  def serialize_save(game, save)
+  private def serialize_save(game, save)
     ext = save.file.attached? ? save.file.filename.extension_without_delimiter : "sav"
     {
       export_id: save.id.to_s,
@@ -58,14 +56,14 @@ class ExportGenerator
     }
   end
 
-  def serialize_emulator_config(config)
+  private def serialize_emulator_config(config)
     {
       emulator_profile_name: config.emulator_profile.name,
       save_filename: config.save_filename
     }
   end
 
-  def serialize_profile(profile)
+  private def serialize_profile(profile)
     {
       name: profile.name,
       platform: profile.platform,

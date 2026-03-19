@@ -96,9 +96,7 @@ class SetupController < ApplicationController
     redirect_to root_path
   end
 
-  private
-
-  def setup_account_params
+  private def setup_account_params
     params.require(:user).permit(:email_address, :password, :password_confirmation)
   end
 end

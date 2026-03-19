@@ -49,17 +49,15 @@ class GameSavesController < ApplicationController
               disposition: "attachment"
   end
 
-  private
-
-  def set_game
+  private def set_game
     @game = Game.find(params[:game_id])
   end
 
-  def set_game_save
+  private def set_game_save
     @game_save = @game.game_saves.find(params[:id])
   end
 
-  def game_save_params
+  private def game_save_params
     params.require(:game_save).permit(:emulator_profile_id, :file)
   end
 end

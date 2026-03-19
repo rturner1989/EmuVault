@@ -27,9 +27,7 @@ class DataImportJob < ApplicationJob
     raise
   end
 
-  private
-
-  def import_game(zip, game_data, resolutions, result)
+  private def import_game(zip, game_data, resolutions, result)
     existing = Game.find_by(title: game_data["title"], system: game_data["system"])
     resolution = resolutions[game_data["export_id"]]
 
@@ -54,7 +52,7 @@ class DataImportJob < ApplicationJob
     result[:failed] += 1
   end
 
-  def restore_emulator_config(game, config_data)
+  private def restore_emulator_config(game, config_data)
     profile = EmulatorProfile.find_by(name: config_data["emulator_profile_name"])
     return unless profile
 
@@ -64,7 +62,7 @@ class DataImportJob < ApplicationJob
     end
   end
 
-  def restore_save(zip, game, save_data)
+  private def restore_save(zip, game, save_data)
     entry = zip.find_entry(save_data["file_path"])
     return unless entry
 

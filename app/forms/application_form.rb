@@ -34,9 +34,7 @@ class ApplicationForm
     record.save
   end
 
-  private
-
-  def form_attributes
+  private def form_attributes
     self.class.attribute_names.each_with_object({}) do |name, hash|
       hash[name] = public_send(name)
     end

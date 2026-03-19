@@ -45,13 +45,11 @@ class GameSaveDecorator < ApplicationDecorator
     "#{dir}/#{download_filename(target_profile)}"
   end
 
-  private
-
-  def emulator_configs_map
+  private def emulator_configs_map
     @emulator_configs_map ||= object.game.game_emulator_configs.index_by(&:emulator_profile_id)
   end
 
-  def default_base_name
+  private def default_base_name
     object.game.title.gsub(/[^0-9A-Za-z\-_ ]/, "").strip.gsub(/\s+/, "_")
   end
 end

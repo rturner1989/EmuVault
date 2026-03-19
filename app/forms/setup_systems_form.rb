@@ -25,9 +25,7 @@ class SetupSystemsForm < ApplicationForm
     true
   end
 
-  private
-
-  def at_least_one_system
+  private def at_least_one_system
     errors.add(:base, "Please select at least one system") if system_keys.empty?
   end
 end

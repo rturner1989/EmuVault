@@ -30,16 +30,14 @@ class SetupAccountForm < ApplicationForm
     end
   end
 
-  private
-
-  def assign_password(user)
+  private def assign_password(user)
     return if password.blank?
 
     user.password = password
     user.password_confirmation = password_confirmation
   end
 
-  def passwords_match
+  private def passwords_match
     return if password.blank?
 
     errors.add(:password_confirmation, "doesn't match password") if password != password_confirmation

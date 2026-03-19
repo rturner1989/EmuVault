@@ -13,8 +13,6 @@ class ApplicationComponent < ViewComponent::Base
     self.class.name.underscore.dasherize.gsub("/", "--")
   end
 
-  private
-
   TARGET_MAPPINGS = {
     blank: "_blank",
     self: "_self",
@@ -22,7 +20,7 @@ class ApplicationComponent < ViewComponent::Base
     top: "_top"
   }.freeze
 
-  def target_for(target)
+  private def target_for(target)
     return nil if target.nil?
     return target if TARGET_MAPPINGS.value?(target)
 

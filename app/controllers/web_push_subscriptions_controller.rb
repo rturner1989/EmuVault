@@ -20,9 +20,7 @@ class WebPushSubscriptionsController < ApplicationController
     head :no_content
   end
 
-  private
-
-  def subscription_params
+  private def subscription_params
     params.require(:web_push_subscription).permit(:endpoint, :p256dh, :auth)
   end
 end

@@ -29,9 +29,7 @@ class PasswordChangeForm < ApplicationForm
     end
   end
 
-  private
-
-  def passwords_match
+  private def passwords_match
     return if password.blank?
 
     errors.add(:password_confirmation, "doesn't match password") if password != password_confirmation

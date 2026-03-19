@@ -34,16 +34,14 @@ class GameSaveForm < ApplicationForm
     @game_save
   end
 
-  private
-
-  def compute_checksum
+  private def compute_checksum
     return nil unless file.respond_to?(:rewind)
 
     file.rewind
     Digest::SHA256.hexdigest(file.read)
   end
 
-  def record_sync_event(game_save, request)
+  private def record_sync_event(game_save, request)
     SyncEvent.create!(
       game_save: game_save,
       action: :push,

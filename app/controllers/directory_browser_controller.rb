@@ -15,9 +15,7 @@ class DirectoryBrowserController < ApplicationController
     render json: { error: "Permission denied" }, status: :unprocessable_entity
   end
 
-  private
-
-  def shortcuts
+  private def shortcuts
     paths = []
 
     # Parse /proc/mounts to find Docker bind-mounts and named volumes

@@ -33,9 +33,7 @@ class GameSave < ApplicationRecord
 
   after_create_commit :notify_new_save, if: -> { Current.user.present? }
 
-  private
-
-  def notify_new_save
+  private def notify_new_save
     user = Current.user
     NewSaveNotifier.with(game_save: self).deliver(user)
     count = user.notifications.where(read_at: nil).count
