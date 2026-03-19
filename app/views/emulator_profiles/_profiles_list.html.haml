@@ -3,35 +3,34 @@
     .space-y-4
       - selected_by_system.each do |system_key, profiles|
         - system_label = EmulatorProfile.game_system.find_value(system_key)&.text || system_key.to_s.upcase
-        .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
-          -# System header
-          .px-4.py-3{ class: "border-b border-base-300" }
+        = render ::UI::CardComponent.new(padding: :sm) do |c|
+          - c.with_header do
             %span.font-medium.text-sm= system_label
 
-          -# One row per profile
           .divide-y{ class: "divide-base-300" }
             - profiles.each do |profile|
-              .flex.items-center.gap-3.px-4.py-2.5
-                %span.text-sm.font-medium.w-28.shrink-0= profile.name
-                = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+              .flex.items-center.gap-3.px-4.py-3
                 .flex-1.min-w-0
+                  .flex.items-center.gap-2.mb-1
+                    %span.text-sm.font-medium= profile.name
+                    = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+                    %span.text-xs.text-muted.font-mono .#{profile.save_extension}
                   - if profile.default_save_path.present?
                     %p.text-xs.text-muted.font-mono.truncate= profile.default_save_path
                   - else
                     %p.text-xs.text-muted No save path set
-                %span.text-xs.text-muted.font-mono.shrink-0 .#{profile.save_extension}
                 .flex.items-center.gap-2.shrink-0
                   = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
                     = modal.with_trigger do
-                      = render ::UI::ActionComponent.new(content_text: "Edit", variant: :secondary, data: { action: "dialog#open" })
+                      = render ::UI::ActionComponent.new(content_text: "Edit", variant: :ghost, size: :xs, class: "btn-outline", data: { action: "dialog#open" })
                     = modal.with_body do
                       = render "form", profile: profile, url: emulator_profile_path(profile), method: :patch
                   = render ::UI::ConfirmComponent.new(id: "delete-profile-#{profile.id}",
                     title: profile.is_default ? "Remove profile?" : "Delete profile?",
                     message: profile.is_default ? "Remove this profile from your list? You can add it back later." : "Delete this profile permanently?",
                     url: emulator_profile_path(profile),
-                    method: :delete)
+                    method: :delete,
+                    trigger_label: "Remove",
+                    size: :xs)
   - else
-    .rounded-lg.p-8.text-center{ class: "bg-base-100 border border-base-300" }
-      %p.text-muted.mb-4 No emulators configured yet.
-      %p.text-sm.text-muted Use the button below to add emulators from the library.
+    = render ::UI::EmptyStateComponent.new(title: "No emulators configured yet", description: "Use the button below to add emulators from the library.")

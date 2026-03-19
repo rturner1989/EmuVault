@@ -1,5 +1,9 @@
 = turbo_frame_tag :library_modal_frame do
-  = form_with url: add_from_library_emulator_profiles_path, method: :post, data: { turbo_frame: "_top" } do |f|
+  - total = @remaining.size + 1
+  - current_pos = total - @remaining.size
+  = form_with url: add_from_library_emulator_profiles_path, method: :post do |f|
+    - @remaining.each do |sys|
+      %input{ type: "hidden", name: "remaining[]", value: sys }
     .space-y-4
       .flex.items-center.gap-3
         = link_to library_emulator_profiles_path,
@@ -7,6 +11,8 @@
             class: "text-muted hover:text-base-content transition-colors" do
           %i.fa-solid.fa-arrow-left
         %p.text-sm.font-semibold= @system_label
+        - if total > 1
+          %span.text-xs.text-muted (#{current_pos}/#{total})
 
       - if @profiles.any?
         .space-y-2
@@ -18,8 +24,18 @@
                 = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
               %span.text-xs.text-muted.font-mono.shrink-0 .#{profile.save_extension}
 
-        .pt-2
-          = render ::UI::ActionComponent.new(content_text: "Add selected", variant: :primary, type: :submit) do |a|
-            - a.with_leading_icon(name: "fa-plus")
+        %button.btn.btn-primary.w-full{ type: "submit" }
+          - if @remaining.any?
+            Continue
+            %i.fa-solid.fa-arrow-right
+          - else
+            Add selected
+            %i.fa-solid.fa-check
       - else
         %p.text-sm.text-muted All emulators for this system are already added.
+        - if @remaining.any?
+          = link_to library_system_emulator_profiles_path(system: @remaining.first, remaining: @remaining.drop(1)),
+              data: { turbo_frame: :library_modal_frame },
+              class: "btn btn-primary w-full" do
+            Skip & continue
+            %i.fa-solid.fa-arrow-right

@@ -1,6 +1,6 @@
 = render ::UI::ModalComponent.new(id: @id, title: @title) do |modal|
   = modal.with_trigger do
-    = render ::UI::ActionComponent.new(content_text: @trigger_label, variant: :danger, data: { action: "dialog#open" })
+    = render ::UI::ActionComponent.new(content_text: @trigger_label, variant: :danger, size: @size, data: { action: "dialog#open" })
   = modal.with_body do
     %p.text-sm.opacity-70.mb-5= @message
     .flex.items-center.gap-3

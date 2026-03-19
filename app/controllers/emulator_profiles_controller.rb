@@ -28,14 +28,16 @@ class EmulatorProfilesController < ApplicationController
     @selected_systems = selected_systems
   end
 
-  # GET /emulator_profiles/library_system?system=gba — step 2: emulators for a system
+  # GET /emulator_profiles/library_system?system=gba&remaining[]=nds — step 2: emulators for a system
   def library_system
     authorize! EmulatorProfile, to: :index?
 
-    @system = params[:system]
-    @system_label = EmulatorProfile.game_system.find_value(@system)&.text || @system.upcase
+    systems = Array(params[:systems]).reject(&:blank?)
+    @system = params[:system] || systems.first
+    @remaining = (systems - [@system])
+    @system_label = EmulatorProfile.game_system.find_value(@system)&.text || @system.to_s.upcase
     @profiles = EmulatorProfile.where(is_default: true, user_selected: false, game_system: @system).ordered
-    redirect_to library_emulator_profiles_path if @profiles.empty?
+    redirect_to library_emulator_profiles_path if @system.blank?
   end
 
   # POST /emulator_profiles/add_from_library
@@ -44,7 +46,14 @@ class EmulatorProfilesController < ApplicationController
 
     selected_ids = (params[:profile_ids] || []).map(&:to_i)
     EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true)
-    redirect_to emulator_profiles_path, notice: "Emulators added."
+
+    remaining = Array(params[:remaining]).reject(&:blank?)
+
+    if remaining.any?
+      redirect_to library_system_emulator_profiles_path(system: remaining.first, remaining: remaining.drop(1))
+    else
+      redirect_to emulator_profiles_path, notice: "Emulators added."
+    end
   end
 
   def new

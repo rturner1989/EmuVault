@@ -1,12 +1,12 @@
 - content_for :title, "Emulator Profiles — EmuVault"
 
-.p-4.lg:p-6.space-y-6
+.p-4.space-y-6
   = render ::UI::PageHeaderComponent.new(title: "Emulator Profiles", subtitle: "Your configured emulators by game system")
 
   = render "profiles_list", selected_by_system: @selected_by_system
 
   -# Actions row
-  .flex.items-center.justify-between.flex-wrap.gap-3
+  .flex.items-center.gap-3.flex-wrap
     = render ::UI::ModalComponent.new(id: "library-modal", title: "Add from library") do |modal|
       = modal.with_trigger do
         = render ::UI::ActionComponent.new(content_text: "Add from library", variant: :secondary, data: { action: "dialog#open" }) do |a|
