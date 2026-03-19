@@ -9,7 +9,7 @@ class DashboardController < ApplicationController
         .where(record_type: "GameSave", name: "file")
         .sum("active_storage_blobs.byte_size")
     )
-    @recent_sync_events = SyncEventDecorator.decorate(SyncEvent.includes(game_save: :game).recent.limit(10))
+    @recent_sync_events = SyncEventDecorator.decorate(SyncEvent.includes(game_save: :game).recent.limit(5))
     @top_games = SyncEvent.joins(game_save: :game)
                           .group("games.id", "games.title")
                           .order(Arel.sql("COUNT(*) DESC"))

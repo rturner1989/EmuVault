@@ -64,15 +64,13 @@
     %p.text-xs.text-muted.mt-2{ data: { "push-subscription-target": "status" } }
 
     -# Push notification error/info dialog
-    %div{ id: "push-notification-dialog", aria: { hidden: "true" }, data: { "push-subscription-target": "dialog" }, class: "dialog-container" }
-      .dialog-overlay
-      .dialog-content
-        %div
-          .flex.items-center.justify-between.mb-4
-            %h2.text-base.font-semibold Push Notifications
-          %p.text-sm.text-muted.mb-5{ data: { "push-subscription-target": "dialogMessage" } }
-          .flex.justify-end
-            %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "push-subscription#closeDialog" } } OK
+    = render ::UI::ModalComponent.new(id: "push-notification-dialog", title: "Push Notifications",
+      container_data: { "push-subscription-target": "dialog" }) do |modal|
+      = modal.with_body do
+        %p.text-sm.text-muted{ data: { "push-subscription-target": "dialogMessage" } }
+      = modal.with_footer do
+        .flex.justify-end
+          %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "push-subscription#closeDialog" } } OK
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
     %h2.text-sm.font-semibold.mb-1 Data
@@ -139,13 +137,11 @@
         %button.btn.btn-primary.btn-sm{ type: "submit", data: { action: "click->theme#save" } } Save theme
 
     -# Unsaved theme confirmation dialog
-    %div{ id: "unsaved-theme-dialog", aria: { hidden: "true" }, data: { theme_target: "dialog" }, class: "dialog-container" }
-      .dialog-overlay
-      .dialog-content
-        %div
-          .flex.items-center.justify-between.mb-4
-            %h2.text-base.font-semibold Unsaved changes
-          %p.text-sm.opacity-70.mb-5 You have unsaved theme changes. Would you like to leave without saving?
-          .flex.items-center.gap-3
-            %button.btn.btn-error.btn-sm{ type: "button", data: { action: "theme#confirmLeave" } } Leave
-            %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "theme#cancelLeave" } } Stay
+    = render ::UI::ModalComponent.new(id: "unsaved-theme-dialog", title: "Unsaved changes",
+      container_data: { theme_target: "dialog" }) do |modal|
+      = modal.with_body do
+        %p.text-sm.text-muted You have unsaved theme changes. Would you like to leave without saving?
+      = modal.with_footer do
+        .flex.items-center.gap-3
+          %button.btn.btn-error.btn-sm{ type: "button", data: { action: "theme#confirmLeave" } } Leave
+          %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "theme#cancelLeave" } } Stay

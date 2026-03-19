@@ -1,15 +1,41 @@
-%div{ data: { controller: "dialog" } }
-  = trigger
+- if managed?
+  %div{ data: { controller: "dialog" } }
+    = trigger
 
-  %div{ id: @id, aria: { hidden: "true" }, data: { dialog_target: "container" }, class: "dialog-container" }
-    .dialog-overlay{ data: { action: "click->dialog#close" } }
+    %div{ id: @id, aria: { hidden: "true" }, data: { dialog_target: "container" }, class: "dialog-container" }
+      .dialog-overlay{ data: { action: "click->dialog#close" } }
+      %div{ class: content_classes }
+        = render ::UI::CardComponent.new(scrollable: true, padding: :sm, class: "dialog-card") do |c|
+          - c.with_header do
+            .flex.items-center.justify-between
+              %h2.text-base.font-semibold
+                = @title
+              = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { action: "dialog#close" }, "aria-label": "Close") do |a|
+                - a.with_leading_icon(name: "fa-xmark")
+
+          - c.with_body do
+            = body
+
+          - if footer?
+            - c.with_footer do
+              = footer
+          - elsif footer_actions?
+            - c.with_footer do
+              .flex.gap-3
+                - footer_actions.each do |action|
+                  = action
+    - if page_content?
+      = page_content
+- else
+  %div{ id: @id, aria: { hidden: "true" }, data: @container_data, class: "dialog-container" }
+    .dialog-overlay{ data: { "a11y-dialog-hide": "" } }
     %div{ class: content_classes }
       = render ::UI::CardComponent.new(scrollable: true, padding: :sm, class: "dialog-card") do |c|
         - c.with_header do
           .flex.items-center.justify-between
             %h2.text-base.font-semibold
               = @title
-            = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { action: "dialog#close" }, "aria-label": "Close") do |a|
+            = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { "a11y-dialog-hide": "" }, "aria-label": "Close") do |a|
               - a.with_leading_icon(name: "fa-xmark")
 
         - c.with_body do
@@ -23,5 +49,3 @@
             .flex.gap-3
               - footer_actions.each do |action|
                 = action
-  - if page_content?
-    = page_content
