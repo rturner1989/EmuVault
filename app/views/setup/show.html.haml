@@ -1,16 +1,18 @@
 - content_for :title, "Setup — EmuVault"
 
 = render layout: "setup/wizard_shell", locals: { current_step: 1 } do
-  .rounded-lg.p-6{ class: "bg-base-100 border border-base-300" }
-
-    %h2.text-base.font-semibold.mb-1 Your account
-    %p.text-sm.text-muted.mb-5 Set a personal email and password. You'll use these to log in.
-
-    - @form ||= SetupAccountForm.from(current_user)
-    = simple_form_for @form, url: setup_path, method: :patch, html: { class: "space-y-4" } do |f|
-      = f.input :email_address, as: :email, label: "Email", autocomplete: "email", input_html: { class: "input input-bordered w-full" }
-      = f.input :password, as: :password, label: "New password", autocomplete: "new-password", input_html: { class: "input input-bordered w-full" }
-      = f.input :password_confirmation, as: :password, label: "Confirm password", autocomplete: "new-password", input_html: { class: "input input-bordered w-full" }
-
-      = render ::UI::ActionComponent.new(content_text: "Next: Choose emulators", variant: :primary, size: :md, class: "w-full", type: "submit") do |a|
-        - a.with_trailing_icon(name: "fa-arrow-right")
+  - @form ||= SetupAccountForm.from(current_user)
+  = simple_form_for @form, url: setup_path, method: :patch, html: { class: "flex-1 flex flex-col min-h-0" } do |f|
+    = render ::UI::CardComponent.new(class: "flex-1 flex flex-col") do |c|
+      - c.with_header do
+        %h2.text-base.font-semibold Your account
+        %p.text-sm.text-muted.mt-0.5 Set a personal email and password. You'll use these to log in.
+      - c.with_footer do
+        %button.btn.btn-primary.w-full{ type: "submit" }
+          Next
+          %i.fa-solid.fa-arrow-right
+      - c.with_body do
+        .space-y-4
+          = f.input :email_address, as: :email, label: "Email", autocomplete: "email", input_html: { class: "input input-bordered w-full" }
+          = f.input :password, as: :password, label: "New password", autocomplete: "new-password", input_html: { class: "input input-bordered w-full" }
+          = f.input :password_confirmation, as: :password, label: "Confirm password", autocomplete: "new-password", input_html: { class: "input input-bordered w-full" }

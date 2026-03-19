@@ -12,15 +12,16 @@
     - if alert
       %div{ class: "mb-4 alert alert-error" }= alert
 
-    .rounded-lg.p-6{ class: "bg-base-100 border border-base-300" }
-      = simple_form_for :session, url: session_path, method: :post, html: { class: "space-y-4" } do |f|
-        = f.input :email_address,
-            label: "Email",
-            input_html: { autocomplete: "email", class: "input input-bordered w-full" },
-            label_html: { class: "label-text font-medium" }
-        = f.input :password,
-            as: :password,
-            label: "Password",
-            input_html: { autocomplete: "current-password", class: "input input-bordered w-full" },
-            label_html: { class: "label-text font-medium" }
-        = f.button :submit, "Sign in", class: "btn btn-primary w-full mt-2"
+    = render ::UI::CardComponent.new do |c|
+      - c.with_body do
+        = simple_form_for :session, url: session_path, method: :post, html: { class: "space-y-4" } do |f|
+          = f.input :email_address,
+              label: "Email",
+              input_html: { autocomplete: "email", class: "input input-bordered w-full" },
+              label_html: { class: "label-text font-medium" }
+          = f.input :password,
+              as: :password,
+              label: "Password",
+              input_html: { autocomplete: "current-password", class: "input input-bordered w-full" },
+              label_html: { class: "label-text font-medium" }
+          = f.button :submit, "Sign in", class: "btn btn-primary w-full mt-2"

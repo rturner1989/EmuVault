@@ -1,13 +1,15 @@
 - content_for :title, "Setup — EmuVault"
 
 = render layout: "setup/wizard_shell", locals: { current_step: 4 } do
-  .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
-
-    .px-5.py-4{ class: "border-b border-base-300" }
+  = render ::UI::CardComponent.new(scrollable: true, class: "flex-1") do |c|
+    - c.with_header do
       %h2.text-base.font-semibold Set up your games library
       %p.text-sm.text-muted.mt-0.5
         Add paths to your game directories. EmuVault will scan them to discover games and save files.
         You can skip this and configure it later in Settings.
+    - c.with_footer_action(content_text: "Back", variant: :ghost, size: :md, href: configure_setup_path, class: "flex-1") do |a|
+      - a.with_leading_icon(name: "fa-arrow-left")
+    - c.with_footer_action(content_text: "Finish setup", variant: :primary, size: :md, class: "flex-1", type: "submit", form: "library-form")
 
     -# Add path form (inline, no modal)
     .px-5.py-4{ class: "border-b border-base-300" }
@@ -19,12 +21,5 @@
         = render "shared/scan_paths_list", scan_paths: @scan_paths
 
     -# Auto-scan schedule
-    .px-5.py-4{ class: "border-b border-base-300" }
+    .px-5.py-4
       = render "shared/auto_scan_schedule", user: current_user, form_url: save_library_setup_path, form_id: "library-form", show_submit: false
-
-    .px-5.py-4.flex.gap-3
-      = link_to configure_setup_path, class: "btn btn-ghost flex-1" do
-        %i.fa-solid.fa-arrow-left
-        Back
-      %button.btn.btn-primary.flex-1{ type: "submit", form: "library-form" }
-        Finish setup

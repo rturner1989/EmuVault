@@ -2,7 +2,7 @@
 %html{ lang: "en", "data-theme": "dracula" }
   %head
     %title= content_for(:title) || "EmuVault"
-    %meta{ name: "viewport", content: "width=device-width,initial-scale=1" }
+    %meta{ name: "viewport", content: "width=device-width,initial-scale=1,viewport-fit=cover" }
     %meta{ name: "apple-mobile-web-app-capable", content: "yes" }
     %meta{ name: "theme-color", content: "#282a36" }
     = csrf_meta_tags
@@ -12,6 +12,6 @@
     %link{ rel: "stylesheet", href: "/fontawesome/css/all.min.css" }
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
-  %body
+  %body.flex.flex-col.overflow-hidden{ class: "bg-base-200", style: "height: 100dvh" }
     = render ::Layouts::FlashComponent.new(flash: flash)
     = yield
