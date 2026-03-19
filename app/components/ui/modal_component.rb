@@ -8,9 +8,10 @@ module UI
     renders_many :footer_actions, "UI::ActionComponent"
     renders_one :page_content
 
-    def initialize(id:, title:, variant: :default, container_data: {})
+    def initialize(id:, title:, subtitle: nil, variant: :default, container_data: {})
       @id = id
       @title = title
+      @subtitle = subtitle
       @variant = variant
       @container_data = container_data
     end

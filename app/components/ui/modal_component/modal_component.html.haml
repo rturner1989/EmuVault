@@ -8,8 +8,12 @@
         = render ::UI::CardComponent.new(scrollable: true, padding: :sm, class: "dialog-card") do |c|
           - c.with_header do
             .flex.items-center.justify-between
-              %h2.text-base.font-semibold
-                = @title
+              %div
+                %h2.text-base.font-semibold
+                  = @title
+                - if @subtitle
+                  %p.text-sm.text-muted.mt-1
+                    = @subtitle
               = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { action: "dialog#close" }, "aria-label": "Close") do |a|
                 - a.with_leading_icon(name: "fa-xmark")
 

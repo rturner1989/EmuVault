@@ -1,9 +1,14 @@
 = render ::UI::ModalComponent.new(id: @id, title: @title) do |modal|
   = modal.with_trigger do
-    = render ::UI::ActionComponent.new(content_text: @trigger_label, variant: :danger, size: @size, data: { action: "dialog#open" })
+    - if @trigger_icon
+      = render ::UI::ActionComponent.new(variant: @trigger_variant, size: @size, class: @trigger_class, data: { action: "dialog#open" }, "aria-label": @trigger_label) do |a|
+        - a.with_leading_icon(name: @trigger_icon)
+    - else
+      = render ::UI::ActionComponent.new(content_text: @trigger_label, variant: @trigger_variant, size: @size, class: @trigger_class, data: { action: "dialog#open" })
   = modal.with_body do
     %p.text-sm.opacity-70= @message
   = modal.with_footer do
     .flex.items-center.gap-3
-      = button_to @confirm_label, @url, method: @method, class: "btn btn-error btn-sm"
-      %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "dialog#close" } } Cancel
+      = button_to @confirm_label, @url, method: @method, params: @params, class: "btn btn-error btn-sm"
+      %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "dialog#close" } }
+        = "Cancel"

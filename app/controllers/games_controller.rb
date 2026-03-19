@@ -69,9 +69,7 @@ class GamesController < ApplicationController
     if @form.persist(@game)
       @form = GameForm.from(@game)
       render turbo_stream: [
-        turbo_stream.replace("game_header",
-          partial: "games/header",
-          locals: { game: GameDecorator.new(@game) }),
+        turbo_stream.replace("game_header", partial: "games/header", locals: { game: GameDecorator.new(@game) }),
         turbo_stream.append("flash-container",
           ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} updated."))
       ]
@@ -85,9 +83,29 @@ class GamesController < ApplicationController
   def destroy
     authorize! @game
 
-    notice = "#{@game.title} removed."
-    @game.destroy
-    redirect_to games_path, notice: notice, status: :see_other
+    title = @game.title
+    was_current = current_user.current_game_id == @game.id
+
+    if @game.destroy
+      current_user.update!(current_game: nil) if was_current
+      notice_text = "#{title} removed."
+
+      if params[:source] == "index"
+        load_quick_sync_data if was_current
+        games = GameDecorator.decorate(Game.order(:title))
+        streams = [
+          turbo_stream.update("games-list", partial: "games/game_list", locals: { games: games }),
+          turbo_stream.append("flash-container",
+            ::Layouts::FlashComponent::Item.new(type: :notice, message: notice_text))
+        ]
+        streams << turbo_stream.update(:quick_sync_content, partial: "shared/quick_sync_content") if was_current
+        render turbo_stream: streams
+      else
+        redirect_to games_path, notice: notice_text, status: :see_other
+      end
+    else
+      redirect_back_or_to game_path(@game), alert: "Could not remove #{title}."
+    end
   end
 
   private def set_game

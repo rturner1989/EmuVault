@@ -7,14 +7,17 @@
         - header.with_action do
           = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
+
     = modal.with_body do
       = render "games/form", form_url: games_path, form_id: "add-game-form"
+
     = modal.with_footer do
       .flex.items-center.gap-3
         = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, size: :sm, type: :submit, form: "add-game-form")
         = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })
+
     = modal.with_page_content do
-      - if @games.any? || @selected_system.present?
+      - if @games.size > 1 || @selected_system.present?
         .mb-4
           = form_with url: games_path, method: :get, data: { controller: "auto-submit" } do
             .flex.items-center.gap-2.flex-wrap
@@ -41,5 +44,5 @@
             = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, data: { action: "dialog#open" }) do |a|
               - a.with_leading_icon(name: "fa-plus")
       - else
-        %div{ id: "games-list", class: "space-y-3" }
+        = turbo_frame_tag "games-list", class: "space-y-3" do
           = render "games/game_list", games: @games

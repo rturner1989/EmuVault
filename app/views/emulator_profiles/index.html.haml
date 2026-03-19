@@ -7,7 +7,7 @@
 
   -# Actions row
   .flex.items-center.gap-3.flex-wrap
-    = render ::UI::ModalComponent.new(id: "library-modal", title: "Add from library") do |modal|
+    = render ::UI::ModalComponent.new(id: "library-modal", title: "Add from library", subtitle: "Select the systems you want to add emulators for.") do |modal|
       = modal.with_trigger do
         = render ::UI::ActionComponent.new(content_text: "Add from library", variant: :secondary, data: { action: "dialog#open" }) do |a|
           - a.with_leading_icon(name: "fa-plus")

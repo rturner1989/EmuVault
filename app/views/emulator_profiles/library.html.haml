@@ -1,7 +1,6 @@
 = turbo_frame_tag :library_modal_frame do
   - if @systems.any?
     = form_with url: library_system_emulator_profiles_path, method: :get, data: { turbo_frame: :library_modal_frame } do |f|
-      %p.text-sm.text-muted.mb-3 Select the systems you want to add emulators for.
       .grid.gap-2.mb-4{ style: "grid-template-columns: repeat(auto-fill, minmax(120px, 1fr))" }
         - @systems.each do |system|
           - already_has = @selected_systems.include?(system.value.to_sym)

@@ -6,13 +6,13 @@ module UI
     renders_one :trailing_icon, "UI::IconComponent"
 
     VARIANTS = {
-      primary:   "btn btn-primary",
-      secondary: "btn btn-outline",
-      ghost:     "btn btn-ghost",
-      danger:    "btn btn-error btn-outline",
-      info:      "btn btn-info",
-      warning:   "btn btn-warning btn-outline",
-      default:   ""
+      primary:           "btn btn-primary",
+      secondary:         "btn btn-outline",
+      ghost:             "btn btn-ghost",
+      danger:            "btn btn-error btn-outline",
+      info:              "btn btn-info",
+      warning:           "btn btn-warning btn-outline",
+      default:           ""
     }.freeze
 
     SIZES = {
