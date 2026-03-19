@@ -126,18 +126,17 @@
                   = "Previous Versions"
                 = render ::UI::ActionComponent.new(content_text: "View all #{history_all.size}", variant: :ghost, data: { action: "dialog#open" })
             = modal.with_body do
-              .max-h-80.overflow-y-auto.-mx-6.-mb-6
-                %div{ class: "divide-y divide-base-300" }
-                  - history_all.each do |save|
-                    - decorated = GameSaveDecorator.new(save)
-                    .flex.items-center.gap-3.px-6.py-3
-                      .flex-1.min-w-0
-                        .text-sm
-                          = decorated.uploaded_at_label
-                        .text-xs.text-muted
-                          = "#{decorated.emulator_label} · #{decorated.file_size_label}"
-                      = render ::UI::ActionComponent.new(href: download_game_game_save_path(@game, save), variant: :info, size: :sm, class: "btn-outline", data: { turbo: false, action: "click->iframe-download#click" }) do |a|
-                        - a.with_leading_icon(name: "fa-download")
+              %div{ class: "divide-y divide-base-300" }
+                - history_all.each do |save|
+                  - decorated = GameSaveDecorator.new(save)
+                  .flex.items-center.gap-3.px-4.py-3
+                    .flex-1.min-w-0
+                      .text-sm
+                        = decorated.uploaded_at_label
+                      .text-xs.text-muted
+                        = "#{decorated.emulator_label} · #{decorated.file_size_label}"
+                    = render ::UI::ActionComponent.new(href: download_game_game_save_path(@game, save), variant: :info, size: :sm, class: "btn-outline", data: { turbo: false, action: "click->iframe-download#click" }) do |a|
+                      - a.with_leading_icon(name: "fa-download")
         - else
           %div{ class: "px-4 py-3 border-b border-base-300" }
             %h2.text-sm.font-semibold

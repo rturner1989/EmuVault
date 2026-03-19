@@ -1,6 +1,6 @@
 %div{ class: @class, **@html_options }
   - if header?
-    %div{ class: "border-b shrink-0 border-base-300 #{@padding}" }
+    %div{ class: "shrink-0 #{@padding}" }
       = header
 
   - if body?
@@ -13,9 +13,9 @@
     = content
 
   - if footer?
-    %div{ class: "border-t shrink-0 border-base-300 #{@padding}" }
+    %div{ class: "shrink-0 #{@padding}" }
       = footer
   - elsif footer_actions?
-    %div{ class: "border-t shrink-0 flex gap-3 border-base-300 #{@padding}" }
+    %div{ class: "shrink-0 flex gap-3 #{@padding}" }
       - footer_actions.each do |action|
         = action

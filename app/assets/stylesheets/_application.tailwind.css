@@ -44,6 +44,7 @@
   background: rgba(0, 0, 0, 0.65);
 }
 
+/* --- Dialog positioning layer --- */
 .dialog-content {
   position: fixed;
   inset: 0;
@@ -55,12 +56,19 @@
   pointer-events: none;
 }
 
+/* Sizing wrapper — shared by all dialogs */
 .dialog-content > * {
   pointer-events: all;
   width: 100%;
   max-width: 32rem;
   max-height: calc(100dvh - 2rem);
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Non-card dialogs (e.g. Quick Sync) get visual styling on the wrapper */
+.dialog-content > *:not(.dialog-card) {
   background: var(--color-base-100);
   border: 1px solid var(--color-base-300);
   border-radius: 0.75rem;
@@ -71,7 +79,7 @@
   display: none;
 }
 
-/* Mobile: bottom sheet layout */
+/* Mobile: all dialogs become bottom sheets */
 @media (max-width: 1023px) {
   .dialog-content {
     padding: 0;
@@ -80,17 +88,45 @@
 
   .dialog-content > * {
     max-width: 100%;
-    height: auto;
     max-height: 85dvh;
+  }
+
+  .dialog-content > *:not(.dialog-card) {
     border-radius: 0.75rem 0.75rem 0 0;
     border-bottom: none;
-    padding: 1.5rem;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+
+  .dialog-content .dialog-card {
+    border-radius: 0.75rem 0.75rem 0 0;
+    border-bottom: none;
   }
 }
 
-/* Animated dialog containers
-   Overrides [aria-hidden="true"] { display: none } so we can transition instead */
+/* Desktop: explicit bottom sheet variant (e.g. Quick Sync) */
+.dialog-content.dialog-content--bottom {
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+
+.dialog-content.dialog-content--bottom > * {
+  max-width: 32rem;
+  max-height: 85dvh;
+}
+
+.dialog-content.dialog-content--bottom > *:not(.dialog-card) {
+  border-radius: 0.75rem 0.75rem 0 0;
+  border-bottom: none;
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.dialog-content.dialog-content--bottom .dialog-card {
+  border-radius: 0.75rem 0.75rem 0 0;
+  border-bottom: none;
+}
+
+/* --- Animations --- */
 .dialog-container {
   display: flex !important;
 }
@@ -112,12 +148,10 @@
   pointer-events: none;
 }
 
-/* Bottom sheet enters from below */
 .dialog-container .dialog-content--bottom > * {
   transform: translateY(100%);
 }
 
-/* Open state */
 .dialog-container.dialog--open .dialog-overlay {
   opacity: 1;
   pointer-events: auto;
@@ -131,23 +165,6 @@
 
 .dialog-container.dialog--open .dialog-content--bottom > * {
   transform: translateY(0);
-}
-
-/* Bottom sheet variant — overrides centred modal and mobile full-screen styles */
-.dialog-content.dialog-content--bottom {
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0;
-}
-
-.dialog-content.dialog-content--bottom > * {
-  width: 100%;
-  max-width: 32rem;
-  height: auto;
-  max-height: 85dvh;
-  border-radius: 0.75rem 0.75rem 0 0;
-  border-bottom: none;
-  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
 }
 
 

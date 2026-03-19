@@ -51,7 +51,7 @@ class GamesController < ApplicationController
     else
       render turbo_stream: turbo_stream.replace(:game_form,
         partial: "games/form",
-        locals: { form_url: games_path, submit_label: "Add Game" }), status: :unprocessable_entity
+        locals: { form_url: games_path, form_id: "add-game-form" }), status: :unprocessable_entity
     end
   end
 
@@ -74,7 +74,7 @@ class GamesController < ApplicationController
     else
       render turbo_stream: turbo_stream.replace(:game_form,
         partial: "games/form",
-        locals: { form_url: game_path(@game), submit_label: "Save Changes" }), status: :unprocessable_entity
+        locals: { form_url: game_path(@game), form_id: "edit-game-form" }), status: :unprocessable_entity
     end
   end
 

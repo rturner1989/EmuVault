@@ -1,5 +1,5 @@
 = turbo_frame_tag :game_form do
-  = simple_form_for @form, url: form_url, html: { class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
+  = simple_form_for @form, url: form_url, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
     = f.input :title,
         label: "Title",
         input_html: { class: "input input-bordered w-full" },
@@ -23,7 +23,3 @@
         input_html: { class: "input input-bordered w-full font-mono" },
         label_html: { class: "label-text text-xs font-medium" },
         hint_html: { class: "mt-1 text-xs text-muted" }
-
-    .flex.items-center.gap-3.pt-1
-      = render ::UI::ActionComponent.new(content_text: submit_label, variant: :primary, size: :sm, type: :submit)
-      = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })

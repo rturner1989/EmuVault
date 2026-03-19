@@ -3,11 +3,9 @@
 module UI
   class ModalComponent < ApplicationComponent
     renders_one :trigger
-    # renders_one :trigger, lambda { |label: nil, **kwargs|
-    #   args = kwargs.merge({ label: label, data: { action: "dialog#open" }})
-    #   UI::ActionComponent.new(**args)
-    # }
     renders_one :body
+    renders_one :footer
+    renders_many :footer_actions, "UI::ActionComponent"
     renders_one :page_content
 
     def initialize(id:, title:, variant: :default)

@@ -4,38 +4,38 @@
   = form_with url: add_from_library_emulator_profiles_path, method: :post do |f|
     - @remaining.each do |sys|
       %input{ type: "hidden", name: "remaining[]", value: sys }
-    .space-y-4
-      .flex.items-center.gap-3
-        = link_to library_emulator_profiles_path,
-            data: { turbo_frame: :library_modal_frame },
-            class: "text-muted hover:text-base-content transition-colors" do
-          %i.fa-solid.fa-arrow-left
-        %p.text-sm.font-semibold= @system_label
-        - if total > 1
-          %span.text-xs.text-muted (#{current_pos}/#{total})
 
-      - if @profiles.any?
-        .space-y-2
-          - @profiles.each do |profile|
-            %label.flex.items-center.gap-3.px-3.py-2.5.rounded-lg.border.cursor-pointer{ class: "border-base-300 hover:border-primary hover:bg-base-200 transition-colors" }
-              %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id }
-              .flex-1.min-w-0
-                %p.text-sm.font-medium= profile.name
-                = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
-              %span.text-xs.text-muted.font-mono.shrink-0 .#{profile.save_extension}
+    .flex.items-center.gap-3.mb-4
+      = link_to library_emulator_profiles_path,
+          data: { turbo_frame: :library_modal_frame },
+          class: "text-muted hover:text-base-content transition-colors" do
+        %i.fa-solid.fa-arrow-left
+      %p.text-sm.font-semibold= @system_label
+      - if total > 1
+        %span.text-xs.text-muted (#{current_pos}/#{total})
 
-        %button.btn.btn-primary.w-full{ type: "submit" }
-          - if @remaining.any?
-            Continue
-            %i.fa-solid.fa-arrow-right
-          - else
-            Add selected
-            %i.fa-solid.fa-check
-      - else
-        %p.text-sm.text-muted All emulators for this system are already added.
+    - if @profiles.any?
+      .space-y-2.mb-4
+        - @profiles.each do |profile|
+          %label.flex.items-center.gap-3.px-3.py-2.5.rounded-lg.border.cursor-pointer{ class: "border-base-300 hover:border-primary hover:bg-base-200 transition-colors" }
+            %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id }
+            .flex-1.min-w-0
+              %p.text-sm.font-medium= profile.name
+              = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+            %span.text-xs.text-muted.font-mono.shrink-0 .#{profile.save_extension}
+
+      %button.btn.btn-primary.w-full{ type: "submit" }
         - if @remaining.any?
-          = link_to library_system_emulator_profiles_path(system: @remaining.first, remaining: @remaining.drop(1)),
-              data: { turbo_frame: :library_modal_frame },
-              class: "btn btn-primary w-full" do
-            Skip & continue
-            %i.fa-solid.fa-arrow-right
+          Continue
+          %i.fa-solid.fa-arrow-right
+        - else
+          Add selected
+          %i.fa-solid.fa-check
+    - else
+      %p.text-sm.text-muted.mb-4 All emulators for this system are already added.
+      - if @remaining.any?
+        = link_to library_system_emulator_profiles_path(system: @remaining.first, remaining: @remaining.drop(1)),
+            data: { turbo_frame: :library_modal_frame },
+            class: "btn btn-primary w-full" do
+          Skip & continue
+          %i.fa-solid.fa-arrow-right

@@ -21,4 +21,8 @@
         = render ::UI::ActionComponent.new(content_text: "Add custom profile", variant: :secondary, data: { action: "dialog#open" }) do |a|
           - a.with_leading_icon(name: "fa-plus")
       = modal.with_body do
-        = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post
+        = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post, form_id: "new-profile-form"
+      = modal.with_footer do
+        .flex.items-center.gap-3
+          = render ::UI::ActionComponent.new(content_text: "Save", variant: :primary, size: :sm, type: :submit, form: "new-profile-form")
+          = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: { action: "dialog#close" })

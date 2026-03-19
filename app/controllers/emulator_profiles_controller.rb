@@ -71,7 +71,7 @@ class EmulatorProfilesController < ApplicationController
     else
       render turbo_stream: turbo_stream.replace(dom_id(@profile, :form),
         partial: "emulator_profiles/form",
-        locals: { profile: @profile, url: emulator_profiles_path, method: :post }), status: :unprocessable_entity
+        locals: { profile: @profile, url: emulator_profiles_path, method: :post, form_id: "new-profile-form" }), status: :unprocessable_entity
     end
   end
 
@@ -87,7 +87,7 @@ class EmulatorProfilesController < ApplicationController
     else
       render turbo_stream: turbo_stream.replace(dom_id(@profile, :form),
         partial: "emulator_profiles/form",
-        locals: { profile: @profile, url: emulator_profile_path(@profile), method: :patch }), status: :unprocessable_entity
+        locals: { profile: @profile, url: emulator_profile_path(@profile), method: :patch, form_id: "edit-profile-#{@profile.id}-form" }), status: :unprocessable_entity
     end
   end
 
