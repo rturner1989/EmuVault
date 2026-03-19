@@ -3,9 +3,9 @@
 module UI
   class IconComponent < ApplicationComponent
     def initialize(name:, style: "fa-solid", fw: true, classes: nil)
-      @name  = name
+      @name = name
       @style = style
-      @fw    = fw
+      @fw = fw
       @classes = classes
     end
 

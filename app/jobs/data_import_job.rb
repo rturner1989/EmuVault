@@ -9,9 +9,9 @@ class DataImportJob < ApplicationJob
     import = DataImport.find(data_import_id)
     import.update!(status: :importing)
 
-    manifest   = import.manifest
+    manifest = import.manifest
     resolutions = import.resolutions || {}
-    result     = { imported: 0, skipped: 0, failed: 0 }
+    result = { imported: 0, skipped: 0, failed: 0 }
 
     import.file.open do |tmp|
       Zip::File.open(tmp.path) do |zip|

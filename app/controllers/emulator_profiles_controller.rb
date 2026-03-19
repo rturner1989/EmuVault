@@ -8,7 +8,7 @@ class EmulatorProfilesController < ApplicationController
       .group_by { |p| p.game_system.to_sym }
   end
 
-  # GET /emulator_profiles/library — step 1: system picker
+  # step 1: system picker
   def library
     authorize! EmulatorProfile, to: :index?
 
@@ -28,7 +28,7 @@ class EmulatorProfilesController < ApplicationController
     @selected_systems = selected_systems
   end
 
-  # GET /emulator_profiles/library_system?system=gba&remaining[]=nds — step 2: emulators for a system
+  # step 2: emulators for a system
   def library_system
     authorize! EmulatorProfile, to: :index?
 
@@ -40,7 +40,6 @@ class EmulatorProfilesController < ApplicationController
     redirect_to library_emulator_profiles_path if @system.blank?
   end
 
-  # POST /emulator_profiles/add_from_library
   def add_from_library
     authorize! EmulatorProfile, to: :create?
 
@@ -94,13 +93,13 @@ class EmulatorProfilesController < ApplicationController
   def destroy
     authorize! @profile
 
-    if @profile.deletable?
-      @profile.destroy
+    if @profile.deletable? && @profile.destroy
       redirect_to emulator_profiles_path, notice: "Profile removed."
-    else
-      # Default profiles can be deselected but not deleted
+    elsif !@profile.deletable?
       @profile.update!(user_selected: false)
       redirect_to emulator_profiles_path, notice: "Profile removed from your list."
+    else
+      redirect_back_or_to emulator_profiles_path, alert: "Could not remove profile."
     end
   end
 

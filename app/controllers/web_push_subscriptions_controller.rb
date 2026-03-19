@@ -8,7 +8,7 @@ class WebPushSubscriptionsController < ApplicationController
       endpoint: subscription_params[:endpoint]
     ) do |sub|
       sub.p256dh = subscription_params[:p256dh]
-      sub.auth   = subscription_params[:auth]
+      sub.auth = subscription_params[:auth]
     end
 
     head :created

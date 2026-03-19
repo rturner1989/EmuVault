@@ -2,7 +2,7 @@ class SettingsController < ApplicationController
   def show
     authorize! current_user
 
-    @user       = Current.user
+    @user = Current.user
     @scan_paths = ScanPath.ordered
   end
 

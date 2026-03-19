@@ -9,19 +9,19 @@ class LibraryScansController < ApplicationController
   def review
     authorize! current_user
 
-    result          = Current.user.last_scan_result || {}
-    @found          = result["found"] || []
+    result = Current.user.last_scan_result || {}
+    @found = result["found"] || []
     @already_in_lib = result["already_in_lib"] || 0
-    @skipped_paths  = result["skipped_paths"] || []
-    @grouped        = @found.group_by { |item| item["game_system"] }
+    @skipped_paths = result["skipped_paths"] || []
+    @grouped = @found.group_by { |item| item["game_system"] }
   end
 
   def confirm
     authorize! current_user
 
     selected_roms = Set.new(params[:selected_roms] || [])
-    stored        = Current.user.last_scan_result&.dig("found") || []
-    items         = stored.select { |item| selected_roms.include?(item["rom_path"]) }
+    stored = Current.user.last_scan_result&.dig("found") || []
+    items = stored.select { |item| selected_roms.include?(item["rom_path"]) }
 
     if items.any?
       GameScanJob.perform_later("confirm", items)

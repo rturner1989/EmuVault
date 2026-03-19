@@ -25,8 +25,11 @@ class ScanPathsController < ApplicationController
   def destroy
     authorize! @scan_path
 
-    @scan_path.destroy
-    redirect_to fallback_path
+    if @scan_path.destroy
+      redirect_to fallback_path
+    else
+      redirect_to fallback_path, alert: "Could not remove scan path."
+    end
   end
 
   private def fallback_path

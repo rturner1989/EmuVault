@@ -2,7 +2,8 @@ class SetupController < ApplicationController
   layout "setup"
 
   # Step 1 — account setup (email + password)
-  def show; end
+  def show
+  end
 
   # Step 1 POST
   def update

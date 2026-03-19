@@ -7,7 +7,6 @@ class PasswordsController < ApplicationController
     authorize! current_user
 
     @form = PasswordChangeForm.new(password_params)
-
     if @form.save(Current.user)
       redirect_to settings_path, notice: "Password updated."
     else

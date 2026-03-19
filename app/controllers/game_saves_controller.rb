@@ -6,7 +6,6 @@ class GameSavesController < ApplicationController
     authorize! GameSave, to: :create?
 
     @game_save_form = GameSaveForm.new(game_save_params)
-
     if @game_save_form.save(game: @game, request: request)
       redirect_back_or_to game_path(@game), notice: "Save uploaded."
     else
@@ -17,14 +16,19 @@ class GameSavesController < ApplicationController
       @user_profiles = EmulatorProfile.where(user_selected: true).ordered
       @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)
       @form = GameForm.from(@game)
+
       render "games/show", status: :unprocessable_entity
     end
   end
 
   def destroy
     authorize! @game_save
-    @game_save.destroy
-    redirect_to @game, notice: "Save removed.", status: :see_other
+
+    if @game_save.destroy
+      redirect_to @game, notice: "Save removed.", status: :see_other
+    else
+      redirect_back_or_to game_path(@game), alert: "Could not remove save."
+    end
   end
 
   def download

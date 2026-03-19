@@ -61,9 +61,9 @@ class GameScanJob < ApplicationJob
 
   # Walk scan paths and collect ROM discoveries without touching the DB.
   private def collect_roms(scan_paths)
-    found           = []
-    already_in_lib  = 0
-    skipped_paths   = []
+    found = []
+    already_in_lib = 0
+    skipped_paths = []
 
     save_extensions = active_save_extensions
 
@@ -111,7 +111,7 @@ class GameScanJob < ApplicationJob
 
   # Import a specific list of items confirmed by the user.
   private def import_items(items)
-    added  = 0
+    added = 0
     errors = []
 
     items.each do |item|
@@ -128,9 +128,9 @@ class GameScanJob < ApplicationJob
 
   # Walk auto_scan paths and import all newly discovered ROMs.
   private def import_roms(scan_paths)
-    added   = 0
+    added = 0
     skipped = 0
-    errors  = []
+    errors = []
 
     save_extensions = active_save_extensions
 
@@ -198,9 +198,9 @@ class GameScanJob < ApplicationJob
 
   # Look for save files alongside a ROM with matching base name.
   private def find_save_files(rom_path, save_extensions)
-    dir       = File.dirname(rom_path)
+    dir = File.dirname(rom_path)
     base_name = File.basename(rom_path, ".*")
-    found     = []
+    found = []
 
     save_extensions.each do |ext|
       candidate = File.join(dir, "#{base_name}.#{ext}")

@@ -19,9 +19,9 @@ class DataImportsController < ApplicationController
       return redirect_to settings_path, alert: "Invalid export file — could not read manifest."
     end
 
-    import.manifest  = manifest
+    import.manifest = manifest
     import.conflicts = conflicts
-    import.status    = conflicts.any? ? :conflicts_pending : :pending
+    import.status = conflicts.any? ? :conflicts_pending : :pending
     import.save!
 
     redirect_to review_data_import_path(import)
@@ -34,10 +34,10 @@ class DataImportsController < ApplicationController
     manifest = @import.manifest
     conflict_ids = @import.conflicts.map { _1["export_id"] }.to_set
 
-    @new_games       = manifest["games"].reject { conflict_ids.include?(_1["export_id"]) }
-    @conflicts       = @import.conflicts
-    @profiles        = manifest.fetch("emulator_profiles", [])
-    @total_saves     = manifest["games"].sum { _1["saves"].size }
+    @new_games = manifest["games"].reject { conflict_ids.include?(_1["export_id"]) }
+    @conflicts = @import.conflicts
+    @profiles = manifest.fetch("emulator_profiles", [])
+    @total_saves = manifest["games"].sum { _1["saves"].size }
   end
 
   def resolve
@@ -54,7 +54,7 @@ class DataImportsController < ApplicationController
       entry = zip.find_entry("manifest.json")
       return [ nil, [] ] unless entry
 
-      manifest  = JSON.parse(entry.get_input_stream.read)
+      manifest = JSON.parse(entry.get_input_stream.read)
       conflicts = manifest["games"].select do |g|
         Game.exists?(title: g["title"], system: g["system"])
       end

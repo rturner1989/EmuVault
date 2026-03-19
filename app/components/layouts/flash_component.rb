@@ -8,14 +8,14 @@ module Layouts
 
     class Item < ApplicationComponent
       VARIANTS = {
-        notice:  { css: "alert-success", icon: "fa-circle-check" },
-        alert:   { css: "alert-error",   icon: "fa-circle-xmark" },
-        info:    { css: "alert-info",    icon: "fa-circle-info" },
+        notice: { css: "alert-success", icon: "fa-circle-check" },
+        alert: { css: "alert-error",   icon: "fa-circle-xmark" },
+        info: { css: "alert-info",    icon: "fa-circle-info" },
         warning: { css: "alert-warning", icon: "fa-triangle-exclamation" }
       }.freeze
 
       def initialize(type:, message:)
-        @type    = type.to_sym
+        @type = type.to_sym
         @message = message
       end
 
