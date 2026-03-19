@@ -2,7 +2,7 @@
 
 class NotificationsController < ApplicationController
   def index
-    authorize! Notification
+    authorize! current_user
 
     @notifications = Current.user.notifications
                             .where(read_at: nil)
@@ -13,7 +13,7 @@ class NotificationsController < ApplicationController
 
   def show
     notification = Current.user.notifications.find(params[:id])
-    authorize! notification
+    authorize! current_user
 
     notification.update!(read_at: Time.current) unless notification.read_at
 
@@ -29,7 +29,7 @@ class NotificationsController < ApplicationController
   end
 
   def mark_all_read
-    authorize! Notification
+    authorize! current_user
 
     Current.user.notifications.where(read_at: nil).update_all(read_at: Time.current)
 

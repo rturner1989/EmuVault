@@ -5,7 +5,7 @@ class EmulatorProfilesController < ApplicationController
     authorize! EmulatorProfile
     @selected_by_system = EmulatorProfile.where(user_selected: true)
       .ordered
-      .group_by { |p| p.game_system.to_sym }
+      .group_by { |p| p.game_system&.to_sym }
   end
 
   # step 1: system picker
