@@ -12,26 +12,8 @@
         = modal.with_footer do
           = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, size: :sm, type: :submit, form: "add-game-form")
 
-  -# Now Playing — mobile slim banner (tap to open quick sync sheet)
-  - if @quick_sync_game
-    %button.lg:hidden.w-full.flex.items-center.gap-3.rounded-lg.px-4.py-3.text-left.cursor-pointer{ class: "bg-base-100 border border-primary", data: { action: "quick-sync#open" } }
-      %i.fa-solid.fa-rotate.text-primary.shrink-0
-      .min-w-0.flex-1
-        %p.text-xs.text-muted.leading-none.mb-0.5 Now Playing
-        %p.text-sm.font-medium.truncate= @quick_sync_game.title
-      %i.fa-solid.fa-chevron-up.text-muted.text-xs.shrink-0
-
-  -# Now Playing — desktop accordion (hidden on mobile, use nav centre button instead)
-  - if @quick_sync_game
-    %details.hidden.lg:block.rounded-lg.overflow-hidden{ class: "bg-base-100 border border-primary" }
-      %summary.flex.items-center.gap-3.px-4.py-3.cursor-pointer.select-none.list-none
-        %i.fa-solid.fa-rotate.text-primary.shrink-0
-        .min-w-0.flex-1
-          %p.text-xs.text-muted.leading-none.mb-0.5 Now Playing
-          %p.text-sm.font-medium.truncate= @quick_sync_game.title
-        %i.fa-solid.fa-chevron-down.text-muted.text-xs.shrink-0.details-chevron
-      .border-t.p-5{ class: "border-base-300" }
-        = render "shared/quick_sync_content"
+  = turbo_frame_tag :now_playing, class: "block space-y-4" do
+    = render "shared/now_playing"
 
   -# Stat cards — 2×2 on mobile, 4-col on desktop
   .grid.grid-cols-2.gap-4.lg:grid-cols-4

@@ -12,7 +12,7 @@ module Authentication
     end
   end
 
-    private def authenticated?
+  private def authenticated?
     resume_session
   end
 

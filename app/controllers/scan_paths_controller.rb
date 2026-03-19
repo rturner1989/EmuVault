@@ -2,6 +2,8 @@ class ScanPathsController < ApplicationController
   before_action :set_scan_path, only: %i[update destroy]
 
   def create
+    authorize! ScanPath
+
     @scan_path = ScanPath.new(scan_path_params)
     if @scan_path.save
       redirect_to fallback_path
@@ -11,6 +13,8 @@ class ScanPathsController < ApplicationController
   end
 
   def update
+    authorize! @scan_path
+
     if @scan_path.update(scan_path_params)
       redirect_to fallback_path
     else
@@ -19,6 +23,8 @@ class ScanPathsController < ApplicationController
   end
 
   def destroy
+    authorize! @scan_path
+
     @scan_path.destroy
     redirect_to fallback_path
   end

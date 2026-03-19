@@ -4,6 +4,8 @@ require "zip"
 
 class DataImportsController < ApplicationController
   def create
+    authorize! current_user
+
     unless params[:file].present?
       return redirect_to settings_path, alert: "Please select an export file."
     end
@@ -26,6 +28,8 @@ class DataImportsController < ApplicationController
   end
 
   def review
+    authorize! current_user
+
     @import = DataImport.find(params[:id])
     manifest = @import.manifest
     conflict_ids = @import.conflicts.map { _1["export_id"] }.to_set
@@ -37,6 +41,8 @@ class DataImportsController < ApplicationController
   end
 
   def resolve
+    authorize! current_user
+
     @import = DataImport.find(params[:id])
     @import.update!(resolutions: params.fetch(:resolutions, {}).to_unsafe_h, status: :importing)
     DataImportJob.perform_later(@import.id)

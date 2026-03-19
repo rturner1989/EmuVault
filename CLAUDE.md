@@ -66,9 +66,11 @@ docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/bui
 - Decorate in controllers, never in views
 - Use form objects (`ApplicationForm` with `ActiveModel::API`) for non-trivial form handling — `app/forms/`
 - Controllers are thin — logic lives in models, decorators, or form objects
-- Prefer Turbo Frames for partial page updates — wrap sections that change independently (e.g. form results, filtered lists) in `turbo_frame_tag`. Controllers need no changes; Turbo follows redirects and extracts the matching frame from the response.
+- Use `private def method_name` (inline) instead of a standalone `private` keyword with methods below
+- Prefer Turbo Frames for partial page updates — wrap sections that change independently (e.g. form results, filtered lists) in `turbo_frame_tag`. Use `turbo_frame_tag` (not plain `%div` with `id:`) when the element is a target for `turbo_stream.update` or `turbo_stream.replace`
+- For turbo_stream flash messages, append a `::Layouts::FlashComponent::Item` to `flash-container` — see FlashComponent below
 - Avoid inline event handlers (`onchange="..."`, `onclick="..."`) — use Stimulus data-actions instead. Never add `unsafe-inline` to CSP.
-- Use a11y-dialog via the Stimulus `dialog` controller for CRUD modals
+- Use a11y-dialog via the Stimulus `dialog` controller for CRUD modals, wrapped in `ModalComponent`
 - RSpec request specs for API/controller behaviour, system specs (Capybara) for feature flows
 - FactoryBot for test data, Faker for fake values
 - DatabaseCleaner handles test DB state — truncation for system/feature specs, transaction for unit specs
@@ -155,10 +157,10 @@ Inside view context, `Layouts::Foo` resolves as `ActionView::Layouts::Foo`. Alwa
 ## Mobile UI
 
 ### Bottom sheet modals
-On mobile (`max-width: 1023px`), all modals render as bottom sheets that slide up from the bottom, not full-screen takeovers. This is handled purely in CSS — the mobile media query overrides `.dialog-content` to use `align-items: flex-end` with slide-up animation (`translateY(100%)` → `translateY(0)`). No component changes needed. Desktop keeps centred modals.
+On mobile (`max-width: 1023px`), all modals render as bottom sheets that slide up from the bottom, not full-screen takeovers. This is handled purely in CSS — the mobile media query overrides `.dialog-content` to use `align-items: flex-end` with slide-up animation (`translateY(100%)` → `translateY(0)`). No component changes needed. Desktop keeps centred modals. Dialog card footers include `padding-bottom: max(1.5rem, env(safe-area-inset-bottom))` for iPhone safe-area clearance.
 
 ### Quick sync
-The Quick Sync bottom sheet is triggered from the mobile nav's centre button. Uses its own Stimulus controller (`quick-sync`) with a11y-dialog, separate from the generic `dialog` controller, because the trigger lives outside the dialog markup (in the app shell nav).
+The Quick Sync bottom sheet uses `ModalComponent` with `variant: :bottom_sheet` and `container_data: { "quick-sync-target": "container" }`. Triggered from the mobile nav's centre button via the `quick-sync` Stimulus controller. The quick sync content is wrapped in `turbo_frame_tag :quick_sync_content` so it can be updated via `turbo_stream.update(:quick_sync_content)` when the current game changes.
 
 ### Scroll lock
 `app/javascript/controllers/scroll_lock.js` provides `lockScroll()`/`unlockScroll()` for dialogs and panels. Uses `overflow: hidden` on html+body with `touch-action: none` and `overscroll-behavior: none`. Supports nested locks via a counter.
@@ -174,19 +176,31 @@ Base classes in `app/components/`:
 
 Component namespaces:
 - `app/components/layouts/` — layout-level components (`AppShellComponent`, `FlashComponent`)
-- `app/components/ui/` — reusable UI primitives (`BadgeComponent`, `PageHeaderComponent`, `EmptyStateComponent`, `ModalComponent`, `ConfirmComponent`, `ActionComponent`)
+- `app/components/ui/` — reusable UI primitives (`BadgeComponent`, `PageHeaderComponent`, `EmptyStateComponent`, `ModalComponent`, `ConfirmComponent`, `ActionComponent`, `CardComponent`, `IconComponent`, `LogoComponent`)
+
+### FlashComponent
+
+Container for flash messages. Always renders `#flash-container` (even when empty) so turbo_stream can target it. Inner class `FlashComponent::Item` renders individual flash alerts with auto-dismiss. Used in two ways:
+- **Page load**: `FlashComponent.new(flash: flash)` in the layout iterates `@flash` and renders Items
+- **Turbo stream**: `turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "..."))` to show flashes without a page reload
 
 ### ModalComponent
 
-Wraps a11y-dialog. Accepts `id:` and `title:`. Renders trigger (slot), overlay, close button, and body (slot). Used for all CRUD modals.
+Wraps a11y-dialog. Accepts `id:`, `title:`, `subtitle:`, `variant:` (`:default` or `:bottom_sheet`), `container_data:`. Renders trigger (slot), overlay, close button, body (slot), and footer (slot). Slots: `trigger`, `body`, `footer`, `footer_actions`, `page_content`.
+
+**Auto Cancel button**: When a footer is provided, ModalComponent automatically appends a Cancel button. Views should only render their primary action(s) in the footer slot — no need for manual Cancel buttons.
+
+**Two modes**:
+- **Managed** (default, `container_data` empty): wraps in `data-controller="dialog"`, Cancel uses `dialog#close`
+- **Unmanaged** (`container_data` provided): no dialog controller wrapper, overlay/close use `data-a11y-dialog-hide`. Used when an external Stimulus controller manages the dialog (e.g. `push-subscription`, `theme`, `quick-sync`). No auto Cancel in this mode — the view provides its own close buttons.
 
 ### ConfirmComponent
 
-Wraps ModalComponent for destructive confirmations. Accepts `id:`, `title:`, `message:`, `url:`, `method:`, `trigger_label:`, `confirm_label:`. Cancel button uses `dialog#close` action.
+Wraps ModalComponent for destructive confirmations. Accepts `id:`, `title:`, `message:`, `url:`, `method:`, `trigger_label:`, `confirm_label:`, `size:`, `params:`, `trigger_variant:`, `trigger_icon:`, `trigger_class:`. Cancel button is auto-added by ModalComponent.
 
 ### ActionComponent
 
-Renders a `<button>` or `<a>` with DaisyUI button classes. Accepts `content_text:`, `href:`, `variant:`, `size:`. Supports `leading_icon` and `trailing_icon` slots.
+Renders a `<button>` or `<a>` with DaisyUI button classes. Accepts `content_text:`, `href:`, `variant:`, `size:`, plus any HTML options. Supports `leading_icon` and `trailing_icon` slots.
 
 ## Stimulus controllers
 
@@ -272,8 +286,17 @@ Extra actions defined inside a singular resource block (no `on: :collection`) ge
 
 Managed at `/emulator_profiles`. Index shows only `user_selected` profiles. Edit/new via a11y-dialog modals. "Add from library" expander for unselected defaults. Seeded defaults use `is_default: true` — destroy action deselects rather than deletes them.
 
-## Game show page
+## Games
 
+### Index page
+- Game list rendered via `_game_list` partial inside `turbo_frame_tag "games-list"`
+- Each card has: link to show page (`data-turbo-frame: "_top"` to break out of frame), set-as-current button (rotate icon), and delete button (trash icon with ConfirmComponent)
+- Set/clear current game uses `turbo_stream.update` on both the games list and quick sync content, with flash message
+- Delete uses `turbo_stream.update` to remove the game from the list inline (when `source: "index"`)
+- Filters (system, sort) hidden when only 1 game
+
+### Show page
+- **Header** — title, system badge, "Set as current"/"Now Playing" toggle, Edit modal, Remove confirm. Header is replaced via `turbo_stream.replace("game_header")` on edit/current-game changes
 - **Current save** — latest `GameSave` by `created_at`. Shows upload date, source emulator badge, download form with profile selector.
 - **Save path hint** — when a profile is selected for download, the `save-hint` Stimulus controller reads `data-path` from the option and shows the full suggested path (e.g. `~/.config/retroarch/saves/Pokemon_Emerald.srm`).
 - **Upload new version** — inline form with custom file picker and optional source profile.

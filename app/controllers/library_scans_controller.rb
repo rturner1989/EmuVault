@@ -1,10 +1,14 @@
 class LibraryScansController < ApplicationController
   def create
+    authorize! current_user
+
     GameScanJob.perform_now("dry_run")
     redirect_to review_library_scan_path
   end
 
   def review
+    authorize! current_user
+
     result          = Current.user.last_scan_result || {}
     @found          = result["found"] || []
     @already_in_lib = result["already_in_lib"] || 0
@@ -13,6 +17,8 @@ class LibraryScansController < ApplicationController
   end
 
   def confirm
+    authorize! current_user
+
     selected_roms = Set.new(params[:selected_roms] || [])
     stored        = Current.user.last_scan_result&.dig("found") || []
     items         = stored.select { |item| selected_roms.include?(item["rom_path"]) }

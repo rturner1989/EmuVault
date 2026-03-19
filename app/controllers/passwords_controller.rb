@@ -1,8 +1,11 @@
 class PasswordsController < ApplicationController
   def edit
+    authorize! current_user
   end
 
   def update
+    authorize! current_user
+
     @form = PasswordChangeForm.new(password_params)
 
     if @form.save(Current.user)

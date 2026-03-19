@@ -1,5 +1,7 @@
 class DirectoryBrowserController < ApplicationController
   def show
+    authorize! current_user
+
     path = File.expand_path(params[:path].presence || "/")
 
     entries = Dir.entries(path)

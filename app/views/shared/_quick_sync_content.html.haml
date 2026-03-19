@@ -7,7 +7,7 @@
         = render ::UI::BadgeComponent.new(context_text: @quick_sync_game.system_label, color: @quick_sync_game.system_badge_color)
       .flex.items-center.gap-2.shrink-0
         = render ::UI::ActionComponent.new(content_text: "View →", href: game_path(@quick_sync_game), variant: :ghost)
-        = button_to current_game_path, method: :delete, class: "btn btn-error btn-outline btn-sm" do
+        = button_to current_game_path, method: :delete, params: { game_id: @quick_sync_game.id, inline: true }, class: "btn btn-error btn-outline btn-sm", form: { data: { action: "turbo:submit-end->quick-sync#close" } } do
           Clear
 
     - if @quick_sync_save

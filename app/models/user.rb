@@ -42,6 +42,7 @@ class User < ApplicationRecord
   validates :theme, inclusion: { in: ALL_THEMES }
 
   has_secure_password
+
   belongs_to :current_game, class_name: "Game", optional: true
   has_many :sessions, dependent: :destroy
   has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"

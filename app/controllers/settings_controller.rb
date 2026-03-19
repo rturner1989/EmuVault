@@ -1,10 +1,14 @@
 class SettingsController < ApplicationController
   def show
+    authorize! current_user
+
     @user       = Current.user
     @scan_paths = ScanPath.ordered
   end
 
   def update
+    authorize! current_user
+
     @user = Current.user
     if @user.update(scan_params)
       redirect_to settings_path, notice: "Settings saved."

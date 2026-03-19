@@ -13,7 +13,7 @@
       - if is_current
         = button_to current_game_path,
           method: :delete,
-          params: { inline: true, source: "index" },
+          params: { game_id: game.id, inline: true, source: "index" },
           title: "Clear current game",
           class: "h-full px-4 flex items-center text-primary hover:opacity-70 transition-opacity cursor-pointer" do
           = render ::UI::IconComponent.new(name: "fa-rotate")

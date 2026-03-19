@@ -1,48 +1,39 @@
 class CurrentGameController < ApplicationController
+  before_action :set_game
+
   def update
-    game = Game.find(params[:game_id])
-    current_user.update!(current_game: game)
-    if params[:inline]
-      load_quick_sync_data
-      streams = source_streams(game)
-      streams << turbo_stream.update(:quick_sync_content,
-        partial: "shared/quick_sync_content")
-      streams << turbo_stream.append("flash-container",
-        ::Layouts::FlashComponent::Item.new(type: :notice, message: "Now playing: #{game.title}"))
-      render turbo_stream: streams
-    else
-      redirect_back_or_to root_path, notice: "Now playing: #{game.title}"
-    end
+    authorize! @game, to: :update?
+
+    current_user.update!(current_game: @game)
+    respond_with_game("Now playing: #{@game.title}")
   end
 
   def destroy
+    authorize! @game
+
     current_user.update!(current_game: nil)
-    if params[:inline]
-      load_quick_sync_data
-      streams = source_streams(params[:game_id] ? Game.find(params[:game_id]) : nil)
-      streams << turbo_stream.update(:quick_sync_content,
-        partial: "shared/quick_sync_content")
-      streams << turbo_stream.append("flash-container",
-        ::Layouts::FlashComponent::Item.new(type: :notice, message: "Cleared current game"))
-      render turbo_stream: streams
-    else
-      redirect_back_or_to root_path
-    end
+    respond_with_game("Cleared current game")
   end
 
-  private def source_streams(game)
-    case params[:source]
-    when "index"
+  private def set_game
+    @game = Game.find(params[:game_id])
+  end
+
+  private def respond_with_game(notice)
+    if params[:inline]
+      load_quick_sync_data
+      @form = GameForm.from(@game)
       games = GameDecorator.decorate(Game.order(:title))
-      [turbo_stream.update("games-list",
-        partial: "games/game_list",
-        locals: { games: games })]
+
+      render turbo_stream: [
+        turbo_stream.update("games-list", partial: "games/game_list", locals: { games: games }),
+        turbo_stream.replace("game_header", partial: "games/header", locals: { game: GameDecorator.new(@game) }),
+        turbo_stream.update(:quick_sync_content, partial: "shared/quick_sync_content"),
+        turbo_stream.update(:now_playing, partial: "shared/now_playing"),
+        turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: notice))
+      ]
     else
-      return [] unless game
-      @form = GameForm.from(game)
-      [turbo_stream.replace("game_header",
-        partial: "games/header",
-        locals: { game: GameDecorator.new(game) })]
+      redirect_back_or_to root_path, notice: notice
     end
   end
 end

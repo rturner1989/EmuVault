@@ -2,6 +2,8 @@
 
 class NotificationsController < ApplicationController
   def index
+    authorize! Notification
+
     @notifications = Current.user.notifications
                             .where(read_at: nil)
                             .includes(event: {})
@@ -11,6 +13,8 @@ class NotificationsController < ApplicationController
 
   def show
     notification = Current.user.notifications.find(params[:id])
+    authorize! notification
+
     notification.update!(read_at: Time.current) unless notification.read_at
 
     count = Current.user.notifications.where(read_at: nil).count
@@ -25,6 +29,8 @@ class NotificationsController < ApplicationController
   end
 
   def mark_all_read
+    authorize! Notification
+
     Current.user.notifications.where(read_at: nil).update_all(read_at: Time.current)
 
     Turbo::StreamsChannel.broadcast_replace_to(

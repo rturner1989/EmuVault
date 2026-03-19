@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
 
   private def load_available_systems
     return unless current_user
+
     @available_systems = EmulatorProfile.where(user_selected: true).distinct.pluck(:game_system).compact
   end
 
