@@ -16,8 +16,10 @@ Designed to run on your own PC or home server and be accessed from any device vi
 - **Auto-scan** — optionally run library scans automatically in the background (hourly, every 6 hours, or daily)
 - **Multi-emulator support** — ships with profiles for RetroArch, Delta, mGBA, Dolphin, PPSSPP, melonDS, Snes9x, OpenEmu, DuckStation and more (28 profiles across Linux, Windows, macOS, iOS, Android)
 - **Export / Import** — export your entire library (games, saves, emulator configs) as a ZIP archive; restore from a previous export with conflict resolution
+- **Quick Sync** — set a game as "Now Playing" for one-tap upload and download from the mobile nav
 - **Activity log** — every upload and download is recorded with timestamp, device type (inferred from user agent), and IP address
-- **First-run setup wizard** — guided 3-step flow: account setup → choose your emulators → configure save directories
+- **Themes** — 22 selectable themes (dark and light), applied instantly with live preview
+- **First-run setup wizard** — guided 4-step flow: account setup → choose your emulators → configure save directories → library scan paths
 - **Notifications** — in-app notification panel with live badge updates; web push to iPhone (when installed as a home screen app) via the Web Push API
 - **Mobile-first UI** — works on iPhone with safe-area insets, installable as a home screen app (PWA)
 - **Single-user** — self-hosted, no accounts or cloud services
@@ -34,7 +36,8 @@ Designed to run on your own PC or home server and be accessed from any device vi
 | melonDS | Linux, Windows, macOS | `.sav` |
 | Snes9x | Linux, Windows, macOS | `.srm` |
 | OpenEmu | macOS | `.sav` |
-| DuckStation | Linux, Windows, macOS | `.mcr` |
+| DuckStation | Linux, Windows, macOS, Android | `.mcd` |
+| PCSX2 | Linux, Windows, macOS | `.ps2` |
 
 ---
 
@@ -219,6 +222,7 @@ On first login you'll be walked through:
 1. **Account** — set your email and password
 2. **Emulators** — pick which emulators you use from the built-in library
 3. **Save paths** — configure where each emulator stores saves on your system (used for download path hints)
+4. **Library scan** — configure scan paths and auto-scan settings
 
 After completing setup you'll be taken to your games library.
 
@@ -291,76 +295,16 @@ The `/activity` page shows a full history of all uploads and downloads, includin
 
 ---
 
-## Development
-
-### Running tests
-
-```bash
-docker compose run app bundle exec rspec
-```
-
-### Linting
-
-```bash
-docker compose run --rm app bundle exec rubocop        # check
-docker compose run --rm app bundle exec rubocop -A     # auto-fix
-```
-
-### Rebuilding assets after changes
-
-```bash
-docker compose run --rm app npm run build              # JavaScript
-docker compose run --rm app npm run build:css          # CSS
-docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/builds
-```
-
-### Running migrations
-
-```bash
-docker compose run --rm app bundle exec rails db:migrate
-```
-
-### Useful scripts
-
-Scripts in `scripts/` wrap common Docker commands:
-
-| Script | Description |
-|---|---|
-| `scripts/console` | Rails console |
-| `scripts/migrate` | Run pending migrations |
-| `scripts/rollback` | Rollback last migration |
-| `scripts/bash` | Shell inside the app container |
-| `scripts/run_tests` | Run the full test suite |
-| `scripts/deploy.sh <version>` | Tag and release a new version |
-
-### Releasing a new version
-
-```bash
-./scripts/deploy.sh          # auto-increments patch (1.0.0 → 1.0.1)
-./scripts/deploy.sh 1.2.0   # explicit version
-```
-
-This bumps the `VERSION` file, commits, creates a git tag, and pushes. GitHub Actions builds and pushes the Docker image automatically.
-
-### Tech stack
+## Tech stack
 
 - **Ruby on Rails 8.1** + PostgreSQL 17
 - **Hotwire** (Turbo + Stimulus) for reactive UI
-- **Tailwind CSS v4** with Dracula theme
+- **Tailwind CSS v4** + **DaisyUI 5** for styling and theming (22 selectable themes)
 - **HAML** templates, **ViewComponent** for UI components
-- **SimpleForm**, **Enumerize**, **ActionPolicy**
 - **Active Storage** for save file storage
 - **Sidekiq** + Redis for background jobs
-- **PgHero** for database performance monitoring
-- **Rack::Attack** for rate limiting
-- **RSpec** + FactoryBot + Capybara + Selenium for tests
+- **Docker** for deployment
 
-### Docker services
+## Contributing
 
-| Service | Description |
-|---|---|
-| `app` | Rails app + esbuild + Tailwind (port 3000) |
-| `postgres` | PostgreSQL 17 |
-| `redis` | Redis (port 6379) |
-| `sidekiq` | Background job worker |
-| `selenium-hub` + browsers | For system tests |
+EmuVault is a personal project and not accepting external contributions. If you run into a problem or have a feature idea, feel free to open an issue.
