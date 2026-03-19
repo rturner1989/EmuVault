@@ -64,16 +64,10 @@
         %i.fa-solid.fa-microchip.fa-fw
 
   -# Quick sync bottom sheet
-  %div{ id: "quick-sync-sheet", aria: { hidden: "true" }, data: { "quick-sync-target": "container" }, class: "dialog-container" }
-    .dialog-overlay{ data: { action: "click->quick-sync#close" } }
-    %div{ class: "dialog-content dialog-content--bottom" }
-      %div
-        .flex.items-center.justify-between.mb-5
-          .flex.items-center.gap-2
-            %i.fa-solid.fa-rotate.text-primary
-            %h2.text-base.font-semibold Quick Sync
-          = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { action: "quick-sync#close" }, "aria-label": "Close") do |a|
-            - a.with_leading_icon(name: "fa-xmark")
+  = render ::UI::ModalComponent.new(id: "quick-sync-sheet", title: "Quick Sync", variant: :bottom_sheet,
+    container_data: { "quick-sync-target": "container" }) do |modal|
+    = modal.with_body do
+      = helpers.turbo_frame_tag :quick_sync_content do
         = render "shared/quick_sync_content"
 
   -# Notification panel overlay

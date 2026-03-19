@@ -26,6 +26,11 @@ class ApplicationController < ActionController::Base
 
   private def load_quick_sync_data
     return unless current_user
+
+    @quick_sync_game = nil
+    @quick_sync_save = nil
+    @quick_sync_profiles = nil
+
     game = current_user.current_game
     return unless game
 
