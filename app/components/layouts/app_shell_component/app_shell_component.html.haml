@@ -3,11 +3,8 @@
 .flex.min-h-screen{ class: "bg-base-200", data: { controller: "notifications onboarding quick-sync", "onboarding-active-value": @onboarding.to_s } }
   %nav{ class: "hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-base-100 border-r border-base-300" }
     .flex.items-center.h-16.px-6{ class: "border-b border-base-300" }
-      = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
-        %img{ src: "/icon.svg", alt: "", width: "28", height: "28", class: "rounded-md" }
-        %span.text-xl
-          %span.text-muted> Emu
-          %span.font-bold.text-primary> Vault
+      = link_to root_path, class: "hover:opacity-80 transition-opacity" do
+        = render ::UI::LogoComponent.new(size: :md)
 
     .flex-1.overflow-y-auto.px-3.py-4.space-y-1
       = link_to root_path, class: nav_link_class("/") do
@@ -33,18 +30,17 @@
       = link_to settings_path, id: "nav-settings", class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-base-content transition-colors" do
         %i.fa-solid.fa-gear.fa-fw
         %span Settings
-      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-error transition-colors" do
+      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-error transition-colors cursor-pointer" do
         %i.fa-solid.fa-right-from-bracket.fa-fw
         %span Sign Out
 
   .flex-1.min-w-0.flex.flex-col.min-h-screen.mobile-bottom-content-pad{ class: "lg:pl-64 lg:pt-0 lg:pb-0" }
     .lg:hidden.flex.items-center.pb-2.mobile-top-bar{ class: "bg-base-100 border-b border-base-300" }
-      = link_to root_path, class: "flex items-center gap-2 hover:opacity-80 transition-opacity" do
-        %img{ src: "/icon.svg", alt: "", width: "24", height: "24", class: "rounded-md" }
-        %span.text-lg
-          %span.text-muted> Emu
-          %span.font-bold.text-primary> Vault
-      .ml-auto
+      = link_to root_path, class: "hover:opacity-80 transition-opacity" do
+        = render ::UI::LogoComponent.new(size: :sm)
+      .ml-auto.flex.items-center.gap-1
+        = link_to settings_path, id: "mobile-nav-settings", class: "relative inline-flex items-center justify-center w-8 h-8 text-muted hover:text-base-content transition-colors", aria: { label: "Settings" } do
+          %i.fas.fa-gear
         %button#mobile-nav-notifications.relative.inline-flex.items-center.justify-center.w-8.h-8.text-muted{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
           %i.fas.fa-bell
           = render "shared/notification_badge", count: unread_count
@@ -64,8 +60,8 @@
           %i.fa-solid.fa-rotate.text-primary-content
       = link_to activity_path, id: "mobile-nav-activity", class: mobile_nav_class("/activity"), aria: { label: "Activity" } do
         %i.fa-solid.fa-clock-rotate-left.fa-fw
-      = link_to settings_path, id: "mobile-nav-settings", class: mobile_nav_class("/settings"), aria: { label: "Settings" } do
-        %i.fa-solid.fa-gear.fa-fw
+      = link_to emulator_profiles_path, id: "mobile-nav-profiles", class: mobile_nav_class("/emulator_profiles"), aria: { label: "Emulator Profiles" } do
+        %i.fa-solid.fa-microchip.fa-fw
 
   -# Quick sync bottom sheet
   %div{ id: "quick-sync-sheet", aria: { hidden: "true" }, data: { "quick-sync-target": "container" }, class: "dialog-container" }

@@ -70,7 +70,7 @@ export default class extends Controller {
           popover: {
             title: "Settings",
             description: "Configure scan paths to auto-discover games, set up the auto-scan schedule, and manage your account.",
-            side: mobile ? "top" : "right",
+            side: mobile ? "bottom" : "right",
           },
         },
       ],

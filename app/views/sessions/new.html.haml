@@ -1,9 +1,10 @@
 - content_for :title, "Sign in — EmuVault"
 
-.min-h-screen.flex.items-center.justify-center{ class: "bg-base-200" }
+.h-screen.flex.items-center.justify-center.overflow-hidden{ class: "bg-base-200" }
   .w-full.max-w-sm.px-4
     .text-center.mb-8
-      %h1.text-3xl.font-bold.text-primary EmuVault
+      .flex.justify-center
+        = render ::UI::LogoComponent.new(size: :lg)
       %p.mt-2.text-sm.text-muted Sign in to your vault
 
     - if notice

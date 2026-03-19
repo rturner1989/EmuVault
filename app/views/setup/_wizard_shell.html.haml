@@ -4,7 +4,8 @@
 .min-h-screen.flex.items-start.justify-center.p-6.pt-10{ class: "bg-base-200" }
   .w-full{ style: "max-width: 560px" }
     .text-center.mb-8
-      %h1.text-2xl.font-bold.text-primary.mb-4 EmuVault
+      .flex.justify-center.mb-4
+        = render ::UI::LogoComponent.new(size: :lg)
 
       -# Step indicator
       .flex.items-center.justify-center.gap-2
