@@ -1,0 +1,11 @@
+- if @systems.any?
+  = form_with url: library_system_emulator_profiles_path, method: :get, id: "library-step-form", data: { turbo_frame: :library_modal_frame } do |f|
+    .grid.gap-2{ style: "grid-template-columns: repeat(auto-fill, minmax(120px, 1fr))" }
+      - @systems.each do |system|
+        - already_has = @selected_systems.include?(system.value.to_sym)
+        %label{ class: "flex flex-col items-center gap-1.5 px-3 py-4 rounded-lg border text-center cursor-pointer transition-all border-base-300 hover:border-primary hover:bg-base-200 has-[:checked]:border-primary has-[:checked]:bg-base-200" }
+          %input{ type: "checkbox", name: "systems[]", value: system.value, class: "peer sr-only", checked: already_has }
+          %span.text-sm.font-medium= system.text
+          %i.fa-solid.fa-check.text-xs.text-primary{ class: "invisible peer-checked:visible" }
+- else
+  %p.text-sm.text-muted All available emulators from the library are already added.

@@ -54,6 +54,9 @@
           = turbo_frame_tag :library_modal_frame, src: library_emulator_profiles_path do
             .py-4.text-center
               %span.loading.loading-spinner.loading-sm
+        = modal.with_footer do
+          = turbo_frame_tag "library-next-btn" do
+            = render "library_next_btn", is_last: false
       = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
         = modal.with_trigger do
           = render ::UI::ActionComponent.new(content_text: "Add custom profile", variant: :secondary, data: { action: "dialog#open" }) do |a|
@@ -69,6 +72,9 @@
         = turbo_frame_tag :library_modal_frame, src: library_emulator_profiles_path do
           .py-4.text-center
             %span.loading.loading-spinner.loading-sm
+      = modal.with_footer do
+        = render ::UI::ActionComponent.new(content_text: "Next", variant: :primary, size: :sm, type: :submit, form: "library-step-form", data: { turbo_frame: "library_modal_frame" }) do |a|
+          - a.with_trailing_icon(name: "fa-arrow-right")
     = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
       = modal.with_body do
         = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post, form_id: "new-profile-form"

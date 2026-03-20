@@ -26,18 +26,47 @@ class EmulatorProfilesController < ApplicationController
       .values
       .select { |v| available_systems.include?(v.value.to_sym) }
     @selected_systems = selected_systems
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update(:library_modal_frame, partial: "emulator_profiles/library_step"),
+          turbo_stream.update("library-next-btn", partial: "emulator_profiles/library_next_btn", locals: { is_last: false })
+        ]
+      end
+      format.html
+    end
   end
 
   # step 2: emulators for a system
   def library_system
     authorize! EmulatorProfile, to: :index?
 
-    systems = Array(params[:systems]).reject(&:blank?)
-    @system = params[:system] || systems.first
-    @remaining = (systems - [@system])
+    if params[:system].present?
+      @system = params[:system]
+      @remaining = Array(params[:remaining]).reject(&:blank?)
+      @total = params[:total].to_i
+    else
+      systems = Array(params[:systems]).reject(&:blank?)
+      @system = systems.first
+      @remaining = systems.drop(1)
+      @total = systems.size
+    end
+    @current_pos = @total - @remaining.size
     @system_label = EmulatorProfile.game_system.find_value(@system)&.text || @system.to_s.upcase
     @profiles = EmulatorProfile.where(is_default: true, user_selected: false, game_system: @system).ordered
-    redirect_to library_emulator_profiles_path if @system.blank?
+
+    return redirect_to library_emulator_profiles_path if @system.blank?
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update(:library_modal_frame, partial: "emulator_profiles/library_system_step"),
+          turbo_stream.update("library-next-btn", partial: "emulator_profiles/library_next_btn", locals: { is_last: @remaining.empty? })
+        ]
+      end
+      format.html
+    end
   end
 
   def add_from_library
@@ -49,7 +78,7 @@ class EmulatorProfilesController < ApplicationController
     remaining = Array(params[:remaining]).reject(&:blank?)
 
     if remaining.any?
-      redirect_to library_system_emulator_profiles_path(system: remaining.first, remaining: remaining.drop(1))
+      redirect_to library_system_emulator_profiles_path(system: remaining.first, remaining: remaining.drop(1), total: params[:total])
     else
       render turbo_stream: [
         turbo_stream.action(:close_dialog, "library-modal"),
