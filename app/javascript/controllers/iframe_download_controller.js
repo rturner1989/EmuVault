@@ -7,12 +7,16 @@ export default class extends Controller {
   submit(event) {
     event.preventDefault()
     const form = event.currentTarget
-    const url = new URL(form.action, window.location.origin)
-    const formData = new FormData(form)
-    for (const [key, value] of formData.entries()) {
-      url.searchParams.append(key, value)
+    const triggerEl = form.querySelector('[type="submit"]')
+    const method = (form.method || "GET").toUpperCase()
+
+    if (method === "POST") {
+      this._download(form.action, triggerEl, "POST", new FormData(form))
+    } else {
+      const url = new URL(form.action, window.location.origin)
+      new FormData(form).forEach((value, key) => url.searchParams.append(key, value))
+      this._download(url.toString(), triggerEl)
     }
-    this._download(url.toString(), form.querySelector('[type="submit"]'))
   }
 
   click(event) {
@@ -22,11 +26,17 @@ export default class extends Controller {
     if (url) this._download(url, anchor)
   }
 
-  async _download(url, triggerEl) {
+  async _download(url, triggerEl, method = "GET", body = null) {
     if (triggerEl) triggerEl.classList.add("btn-disabled")
 
+    const options = { credentials: "same-origin", method }
+    if (method === "POST") {
+      options.body = body
+      options.headers = { "X-CSRF-Token": document.querySelector('[name="csrf-token"]')?.content || "" }
+    }
+
     try {
-      const response = await fetch(url, { credentials: "same-origin" })
+      const response = await fetch(url, options)
       if (!response.ok) throw new Error(`Download failed: ${response.status}`)
 
       const blob = await response.blob()

@@ -271,6 +271,14 @@ summary::marker { display: none; }
   transition: none;
 }
 
+/* SimpleForm hint styles */
+.form_field span.hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: color-mix(in oklch, var(--color-base-content) 60%, transparent);
+}
+
 /* SimpleForm error styles */
 .form_field span.error {
   display: block;

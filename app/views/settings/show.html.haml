@@ -78,7 +78,7 @@
         .min-w-0
           %p.text-sm.font-medium Export library
           %p.text-xs.text-muted Downloads all games and save files as a ZIP archive
-        = button_to "Export", data_exports_path, method: :post, form: { data: { turbo: false } }, class: "btn btn-primary btn-sm ml-4 shrink-0"
+        = button_to "Export", data_exports_path, method: :post, form: { data: { turbo: false, controller: "iframe-download", action: "submit->iframe-download#submit" } }, class: "btn btn-primary btn-sm ml-4 shrink-0"
       .border-t.pt-4{ class: "border-base-300" }
         = form_with url: data_imports_path, multipart: true do |f|
           .flex.items-center.justify-between.mb-3

@@ -5,22 +5,3 @@
 
   = render "profiles_list", selected_by_system: @selected_by_system
 
-  -# Actions row
-  .flex.items-center.gap-3.flex-wrap
-    = render ::UI::ModalComponent.new(id: "library-modal", title: "Add from library", subtitle: "Select the systems you want to add emulators for.") do |modal|
-      = modal.with_trigger do
-        = render ::UI::ActionComponent.new(content_text: "Add from library", variant: :secondary, data: { action: "dialog#open" }) do |a|
-          - a.with_leading_icon(name: "fa-plus")
-      = modal.with_body do
-        = turbo_frame_tag :library_modal_frame, src: library_emulator_profiles_path do
-          .py-4.text-center
-            %span.loading.loading-spinner.loading-sm
-
-    = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
-      = modal.with_trigger do
-        = render ::UI::ActionComponent.new(content_text: "Add custom profile", variant: :secondary, data: { action: "dialog#open" }) do |a|
-          - a.with_leading_icon(name: "fa-plus")
-      = modal.with_body do
-        = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post, form_id: "new-profile-form"
-      = modal.with_footer do
-        = render ::UI::ActionComponent.new(content_text: "Save", variant: :primary, size: :sm, type: :submit, form: "new-profile-form")

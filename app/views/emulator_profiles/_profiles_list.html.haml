@@ -35,4 +35,42 @@
                     trigger_label: "Remove",
                     size: :xs)
   - else
-    = render ::UI::EmptyStateComponent.new(title: "No emulators configured yet", description: "Use the button below to add emulators from the library.")
+    = render ::UI::EmptyStateComponent.new(title: "No emulators configured yet", description: "Add emulators from the library or create a custom profile.") do |c|
+      - c.with_action do
+        .flex.items-center.gap-3.flex-wrap.justify-center
+          = render ::UI::ActionComponent.new(content_text: "Add from library", variant: :primary, data: { "a11y-dialog-show": "library-modal" }) do |a|
+            - a.with_leading_icon(name: "fa-plus")
+          = render ::UI::ActionComponent.new(content_text: "Add custom profile", variant: :secondary, data: { "a11y-dialog-show": "new-profile-dialog" }) do |a|
+            - a.with_leading_icon(name: "fa-plus")
+
+  -# Actions row and modal containers — inside the frame so turbo_stream updates keep them in sync
+  - if selected_by_system.any?
+    .flex.items-center.gap-3.flex-wrap.mt-2
+      = render ::UI::ModalComponent.new(id: "library-modal", title: "Add from library", subtitle: "Select the systems you want to add emulators for.") do |modal|
+        = modal.with_trigger do
+          = render ::UI::ActionComponent.new(content_text: "Add from library", variant: :secondary, data: { action: "dialog#open" }) do |a|
+            - a.with_leading_icon(name: "fa-plus")
+        = modal.with_body do
+          = turbo_frame_tag :library_modal_frame, src: library_emulator_profiles_path do
+            .py-4.text-center
+              %span.loading.loading-spinner.loading-sm
+      = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
+        = modal.with_trigger do
+          = render ::UI::ActionComponent.new(content_text: "Add custom profile", variant: :secondary, data: { action: "dialog#open" }) do |a|
+            - a.with_leading_icon(name: "fa-plus")
+        = modal.with_body do
+          = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post, form_id: "new-profile-form"
+        = modal.with_footer do
+          = render ::UI::ActionComponent.new(content_text: "Save", variant: :primary, size: :sm, type: :submit, form: "new-profile-form")
+  - else
+    -# Render modal containers without triggers so a11y-dialog-show works from the empty state
+    = render ::UI::ModalComponent.new(id: "library-modal", title: "Add from library", subtitle: "Select the systems you want to add emulators for.") do |modal|
+      = modal.with_body do
+        = turbo_frame_tag :library_modal_frame, src: library_emulator_profiles_path do
+          .py-4.text-center
+            %span.loading.loading-spinner.loading-sm
+    = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
+      = modal.with_body do
+        = render "form", profile: EmulatorProfile.new, url: emulator_profiles_path, method: :post, form_id: "new-profile-form"
+      = modal.with_footer do
+        = render ::UI::ActionComponent.new(content_text: "Save", variant: :primary, size: :sm, type: :submit, form: "new-profile-form")
