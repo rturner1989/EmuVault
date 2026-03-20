@@ -36,7 +36,7 @@ class EmulatorProfile < ApplicationRecord
   validates :platform, presence: true
   validates :game_system, presence: true
   validates :save_extension, presence: true
-  validates :name, uniqueness: { scope: [:platform, :game_system] }
+  validates :name, uniqueness: { scope: [ :platform, :game_system ] }
 
   scope :ordered, -> { order(:game_system, :name, :platform) }
   scope :for_system, ->(system) { where(game_system: system) }

@@ -67,7 +67,7 @@ class SetupController < ApplicationController
     # emulator installation, not one per system (e.g. RetroArch Linux shows once)
     @profiles_by_emulator = EmulatorProfile.where(user_selected: true)
                                            .ordered
-                                           .group_by { |p| [p.name, p.platform.to_sym] }
+                                           .group_by { |p| [ p.name, p.platform.to_sym ] }
     redirect_to profiles_setup_path if @profiles_by_emulator.empty?
   end
 

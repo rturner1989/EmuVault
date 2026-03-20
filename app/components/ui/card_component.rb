@@ -27,7 +27,7 @@ module UI
     end
 
     def body_class
-      classes = [@padding]
+      classes = [ @padding ]
       classes << "overflow-y-auto flex-1 min-h-0" if @scrollable
       classes.join(" ")
     end
