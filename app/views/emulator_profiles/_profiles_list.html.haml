@@ -1,4 +1,4 @@
-%div{ id: "profiles_list" }
+= turbo_frame_tag "profiles_list" do
   - if selected_by_system.any?
     .space-y-4
       - selected_by_system.each do |system_key, profiles|

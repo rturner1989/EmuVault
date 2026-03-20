@@ -51,7 +51,11 @@ class EmulatorProfilesController < ApplicationController
     if remaining.any?
       redirect_to library_system_emulator_profiles_path(system: remaining.first, remaining: remaining.drop(1))
     else
-      redirect_to emulator_profiles_path, notice: "Emulators added."
+      render turbo_stream: [
+        turbo_stream.action(:close_dialog, "library-modal"),
+        profiles_list_stream,
+        turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Emulators added."))
+      ]
     end
   end
 
@@ -66,7 +70,11 @@ class EmulatorProfilesController < ApplicationController
 
     @profile = EmulatorProfile.new(profile_params)
     if @profile.save
-      redirect_to emulator_profiles_path, notice: "Profile added."
+      render turbo_stream: [
+        turbo_stream.action(:close_dialog, "new-profile-dialog"),
+        profiles_list_stream,
+        turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Profile added."))
+      ]
     else
       render turbo_stream: turbo_stream.replace(dom_id(@profile, :form),
         partial: "emulator_profiles/form",
@@ -82,7 +90,11 @@ class EmulatorProfilesController < ApplicationController
     authorize! @profile
 
     if @profile.update(profile_params)
-      redirect_to emulator_profiles_path, notice: "Profile updated."
+      render turbo_stream: [
+        turbo_stream.action(:close_dialog, "edit-profile-#{@profile.id}"),
+        profiles_list_stream,
+        turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Profile updated."))
+      ]
     else
       render turbo_stream: turbo_stream.replace(dom_id(@profile, :form),
         partial: "emulator_profiles/form",
@@ -93,14 +105,33 @@ class EmulatorProfilesController < ApplicationController
   def destroy
     authorize! @profile
 
-    if @profile.deletable? && @profile.destroy
-      redirect_to emulator_profiles_path, notice: "Profile removed."
-    elsif !@profile.deletable?
-      @profile.update!(user_selected: false)
-      redirect_to emulator_profiles_path, notice: "Profile removed from your list."
-    else
-      redirect_back_or_to emulator_profiles_path, alert: "Could not remove profile."
+    if @profile.deletable? && !@profile.destroy
+      render turbo_stream: [
+        turbo_stream.action(:close_dialog, "delete-profile-#{@profile.id}"),
+        turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :alert, message: "Could not remove profile."))
+      ]
+      return
     end
+
+    unless @profile.deletable?
+      @profile.update!(user_selected: false)
+    end
+
+    notice_text = @profile.deletable? ? "Profile removed." : "Profile removed from your list."
+
+    render turbo_stream: [
+      turbo_stream.action(:close_dialog, "delete-profile-#{@profile.id}"),
+      profiles_list_stream,
+      turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: notice_text))
+    ]
+  end
+
+  private def profiles_list_stream
+    selected_by_system = EmulatorProfile.where(user_selected: true)
+      .ordered
+      .group_by { |p| p.game_system&.to_sym }
+
+    turbo_stream.replace("profiles_list", partial: "emulator_profiles/profiles_list", locals: { selected_by_system: selected_by_system })
   end
 
   private def set_profile

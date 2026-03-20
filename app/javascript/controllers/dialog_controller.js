@@ -17,11 +17,13 @@ export default class extends Controller {
 
   connect() {
     this.dialog = new A11yDialog(this.containerTarget)
+    this.containerTarget.addEventListener("dialog:close", () => this.dialog.hide())
     // Hook into a11y-dialog events so Escape key, backdrop click, and button
     // close all go through the same animation path.
     this.dialog.on("show", () => {
       lockScroll()
       requestAnimationFrame(() => this.containerTarget.classList.add("dialog--open"))
+      this.containerTarget.querySelectorAll("turbo-frame[src]").forEach(frame => frame.reload())
     })
     this.dialog.on("hide", () => {
       this.containerTarget.classList.remove("dialog--open")
