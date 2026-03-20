@@ -105,7 +105,7 @@ class EmulatorProfilesController < ApplicationController
         turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Profile added."))
       ]
     else
-      render turbo_stream: turbo_stream.replace(dom_id(@profile, :form),
+      render turbo_stream: turbo_stream.replace(ActionView::RecordIdentifier.dom_id(@profile, :form),
         partial: "emulator_profiles/form",
         locals: { profile: @profile, url: emulator_profiles_path, method: :post, form_id: "new-profile-form" }), status: :unprocessable_entity
     end
@@ -125,7 +125,7 @@ class EmulatorProfilesController < ApplicationController
         turbo_stream.append("flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Profile updated."))
       ]
     else
-      render turbo_stream: turbo_stream.replace(dom_id(@profile, :form),
+      render turbo_stream: turbo_stream.replace(ActionView::RecordIdentifier.dom_id(@profile, :form),
         partial: "emulator_profiles/form",
         locals: { profile: @profile, url: emulator_profile_path(@profile), method: :patch, form_id: "edit-profile-#{@profile.id}-form" }), status: :unprocessable_entity
     end
