@@ -49,11 +49,12 @@ export default class extends Controller {
     }
   }
 
-  confirmLeave() {
+  confirmLeaveAndSave() {
     this.a11yDialog.hide()
+    this.saved = true
     this.changed = false
-    document.documentElement.setAttribute("data-theme", this.currentValue)
-    setTimeout(() => Turbo.visit(this.pendingUrl), 250)
+    this.element.querySelector("form").requestSubmit()
+    setTimeout(() => Turbo.visit(this.pendingUrl), 300)
   }
 
   cancelLeave() {

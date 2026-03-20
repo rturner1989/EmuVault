@@ -40,9 +40,10 @@ Rails.application.routes.draw do
   resource :activity, only: [:show], controller: "activity"
   resources :emulator_profiles do
     collection do
-      get  :library
-      get  :library_system
-      post :add_from_library
+      get    :library
+      get    :library_system
+      post   :add_from_library
+      delete :bulk_destroy
     end
   end
 

@@ -22,15 +22,16 @@ module UI
       full: "btn-sm w-full"
     }.freeze
 
-    def initialize(content_text: nil, href: nil, variant: :secondary, size: :sm, **html_options)
+    def initialize(content_text: nil, href: nil, variant: :secondary, size: :sm, disabled: false, **html_options)
       @content_text = content_text
       @href = href
       size_class = SIZES.fetch(size.to_sym, "btn-sm")
       variant_class = VARIANTS.fetch(variant.to_sym, VARIANTS[:default])
       base_class = [ variant_class, size_class ].reject(&:empty?).join(" ")
       extra_class = html_options.delete(:class)
-      final_class = [ base_class, extra_class ].compact.join(" ")
+      final_class = [ base_class, extra_class, ("cursor-not-allowed opacity-60" if disabled) ].compact.join(" ")
       @html_options = html_options.merge(class: final_class)
+      @html_options[:disabled] = true if disabled
     end
   end
 end

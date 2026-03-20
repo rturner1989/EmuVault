@@ -1,0 +1,20 @@
+- if games_count > 1 || selected_system.present?
+  .mb-4
+    = form_with url: games_path, method: :get, data: { controller: "auto-submit" } do
+      .flex.items-center.gap-2.flex-wrap
+        - if system_options.size > 1
+          = select_tag :system,
+            options_for_select([["All systems", ""], *system_options], selected_system),
+            class: "select select-bordered select-sm w-44",
+            data: { action: "change->auto-submit#submit" }
+
+        = select_tag :sort,
+          options_for_select(game_sort_options, selected_sort),
+          class: "select select-bordered select-sm w-44",
+          data: { action: "change->auto-submit#submit" }
+
+        - if selected_system.present?
+          = link_to games_path(sort: selected_sort),
+            class: "text-xs text-muted hover:text-base-content transition-colors inline-flex items-center gap-1" do
+            = render ::UI::IconComponent.new(name: "fa-xmark")
+            = "Clear"

@@ -51,6 +51,8 @@ class GamesController < ApplicationController
       @games = GameDecorator.decorate(Game.order(:title))
       @games_count = Game.count
       @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count
+      @system_options = Game.system.options.select { |_text, value| Game.distinct.pluck(:system).compact.include?(value) }
+      @selected_sort = "title_asc"
     else
       render :new, status: :unprocessable_entity
     end
@@ -88,6 +90,9 @@ class GamesController < ApplicationController
       if params[:source] == "index"
         load_quick_sync_data if @was_current
         @games = GameDecorator.decorate(Game.order(:title))
+        @games_count = Game.count
+        @system_options = Game.system.options.select { |_text, value| Game.distinct.pluck(:system).compact.include?(value) }
+        @selected_sort = "title_asc"
       else
         redirect_to games_path, notice: @notice_text, status: :see_other
       end

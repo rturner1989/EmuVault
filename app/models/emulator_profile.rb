@@ -45,4 +45,8 @@ class EmulatorProfile < ApplicationRecord
   def deletable?
     !is_default
   end
+
+  def in_use?
+    game_system.present? && Game.where(system: game_system).exists?
+  end
 end

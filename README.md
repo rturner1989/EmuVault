@@ -6,6 +6,36 @@ Designed to run on your own PC or home server and be accessed from any device vi
 
 ---
 
+## Contents
+
+- [Features](#features)
+- [Supported emulators](#supported-emulators-built-in-profiles)
+- [Requirements](#requirements)
+- [Quick start](#quick-start)
+- [Accessing from other devices](#accessing-from-other-devices)
+- [Deploying to a NAS or home server](#deploying-to-a-nas-or-home-server)
+  - [TrueNAS Scale](#truenas-scale)
+  - [SSL](#ssl)
+  - [Updating](#updating)
+- [Installing as a home screen app](#installing-as-a-home-screen-app-iphone)
+- [Push notifications](#push-notifications)
+- [Monitoring](#monitoring)
+- [Configuration](#configuration)
+- [First-run setup wizard](#first-run-setup-wizard)
+- [Usage](#usage)
+  - [Adding a game](#adding-a-game)
+  - [Uploading a save](#uploading-a-save)
+  - [Configuring emulator filenames](#configuring-emulator-filenames)
+  - [Downloading a save](#downloading-a-save)
+  - [Emulator profiles](#emulator-profiles)
+  - [Library scan](#library-scan)
+  - [Export and Import](#export-and-import)
+  - [Activity log](#activity-log)
+- [Tech stack](#tech-stack)
+- [Contributing](#contributing)
+
+---
+
 ## Features
 
 - **Save sync** — upload a save file from any device, download it to any other

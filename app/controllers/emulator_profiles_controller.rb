@@ -65,6 +65,31 @@ class EmulatorProfilesController < ApplicationController
     end
   end
 
+  def bulk_destroy
+    authorize! EmulatorProfile, to: :destroy?
+
+    ids = Array(params[:profile_ids]).map(&:to_i)
+    profiles = EmulatorProfile.where(id: ids)
+
+    removed = 0
+    deselected = 0
+    skipped = 0
+
+    profiles.each do |profile|
+      if profile.in_use?
+        skipped += 1
+      elsif profile.deletable?
+        profile.destroy ? removed += 1 : skipped += 1
+      else
+        profile.update!(user_selected: false)
+        deselected += 1
+      end
+    end
+
+    @bulk_notice = build_bulk_notice(removed, deselected, skipped)
+    load_profiles_list
+  end
+
   def new
     authorize! EmulatorProfile
 
@@ -99,6 +124,12 @@ class EmulatorProfilesController < ApplicationController
   def destroy
     authorize! @profile
 
+    if @profile.in_use?
+      @destroy_failed = true
+      @destroy_error = :in_use
+      return
+    end
+
     if @profile.deletable? && !@profile.destroy
       @destroy_failed = true
       return
@@ -110,6 +141,14 @@ class EmulatorProfilesController < ApplicationController
 
     @notice_text = @profile.deletable? ? "Profile removed." : "Profile removed from your list."
     load_profiles_list
+  end
+
+  private def build_bulk_notice(removed, deselected, skipped)
+    parts = []
+    parts << "#{removed} #{"profile".pluralize(removed)} removed" if removed > 0
+    parts << "#{deselected} #{"profile".pluralize(deselected)} deselected" if deselected > 0
+    parts << "#{skipped} skipped (in use by games)" if skipped > 0
+    parts.join(", ").capitalize + "."
   end
 
   private def load_profiles_list

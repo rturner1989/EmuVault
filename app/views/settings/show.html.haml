@@ -129,11 +129,11 @@
         %button.btn.btn-primary.btn-sm{ type: "submit", data: { action: "click->theme#save" } } Save theme
 
     -# Unsaved theme confirmation dialog
-    = render ::UI::ModalComponent.new(id: "unsaved-theme-dialog", title: "Unsaved changes",
+    = render ::UI::ModalComponent.new(id: "unsaved-theme-dialog", title: "Unsaved theme change",
       container_data: { theme_target: "dialog" }) do |modal|
       = modal.with_body do
-        %p.text-sm.text-muted You have unsaved theme changes. Would you like to leave without saving?
+        %p.text-sm.text-muted You have an unsaved theme change. Leave and save it, or stay to continue editing.
       = modal.with_footer do
         .flex.items-center.gap-3
-          %button.btn.btn-error.btn-sm{ type: "button", data: { action: "theme#confirmLeave" } } Leave
+          %button.btn.btn-primary.btn-sm{ type: "button", data: { action: "theme#confirmLeaveAndSave" } } Leave and save
           %button.btn.btn-ghost.btn-sm{ type: "button", data: { action: "theme#cancelLeave" } } Stay

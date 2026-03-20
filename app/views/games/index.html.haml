@@ -15,32 +15,28 @@
       = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, size: :sm, type: :submit, form: "add-game-form")
 
     = modal.with_page_content do
-      - if @games.size > 1 || @selected_system.present?
-        .mb-4
-          = form_with url: games_path, method: :get, data: { controller: "auto-submit" } do
-            .flex.items-center.gap-2.flex-wrap
-              - if @system_options.size > 1
-                = select_tag :system,
-                  options_for_select([["All systems", ""], *@system_options], @selected_system),
-                  class: "select select-bordered select-sm w-44",
-                  data: { action: "change->auto-submit#submit" }
+      = turbo_frame_tag "games-filters", style: "display: contents", target: "_top" do
+        = render "games/filters", games_count: @games.size, system_options: @system_options, selected_system: @selected_system, selected_sort: @selected_sort
 
-              = select_tag :sort,
-                options_for_select(game_sort_options, @selected_sort),
-                class: "select select-bordered select-sm w-44",
-                data: { action: "change->auto-submit#submit" }
-
-              - if @selected_system.present?
-                = link_to games_path(sort: @selected_sort),
-                  class: "text-xs text-muted hover:text-base-content transition-colors inline-flex items-center gap-1" do
-                  = render ::UI::IconComponent.new(name: "fa-xmark")
-                  = "Clear"
-
-      = turbo_frame_tag "games-list", class: "space-y-3" do
+      = turbo_frame_tag "games-list", class: "space-y-3 block" do
         - if @games.empty?
           = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
             - c.with_action do
               = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, data: { action: "dialog#open" }) do |a|
                 - a.with_leading_icon(name: "fa-plus")
+        - elsif @selected_sort == "system"
+          .space-y-6
+            - @games.group_by(&:system).each do |system_key, system_games|
+              - system_label = Game.system.find_value(system_key)&.text || system_key.to_s.upcase
+              %div
+                %p.text-sm.font-medium.mb-2= system_label
+                .space-y-3
+                  = render "games/game_list", games: system_games
+        - elsif @selected_system.present?
+          - system_label = Game.system.find_value(@selected_system)&.text || @selected_system.upcase
+          %div
+            %p.text-sm.font-medium.mb-2= system_label
+            .space-y-3
+              = render "games/game_list", games: @games
         - else
           = render "games/game_list", games: @games
