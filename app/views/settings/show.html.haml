@@ -43,13 +43,7 @@
 
     .border-t.pt-5{ class: "border-base-300" }
       = turbo_frame_tag "scan_paths" do
-        = render "shared/scan_paths_list", scan_paths: @scan_paths
-        %details{ class: @scan_paths.any? ? "mt-4" : nil }
-          %summary.text-sm.text-primary.cursor-pointer.font-medium
-            %i.fa-solid.fa-plus.fa-fw.mr-1
-            Add scan path
-          .mt-3
-            = render "scan_paths/form"
+        = render "scan_paths/section", scan_paths: @scan_paths
 
     -# Auto-scan schedule
     .border-t.mt-5.pt-5{ class: "border-base-300" }

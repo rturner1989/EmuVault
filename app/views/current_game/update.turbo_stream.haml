@@ -1,0 +1,5 @@
+= turbo_stream.update "games-list", partial: "games/game_list", locals: { games: @games }
+= turbo_stream.replace "game_header", partial: "games/header", locals: { game: @decorated_game }
+= turbo_stream.update :quick_sync_content, partial: "shared/quick_sync_content"
+= turbo_stream.update :now_playing, partial: "shared/now_playing"
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: @notice)

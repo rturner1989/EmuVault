@@ -34,6 +34,7 @@ class EmulatorProfile < ApplicationRecord
 
   validates :name, presence: true
   validates :platform, presence: true
+  validates :game_system, presence: true
   validates :save_extension, presence: true
   validates :name, uniqueness: { scope: [:platform, :game_system] }
 

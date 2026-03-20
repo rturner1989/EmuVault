@@ -6,7 +6,10 @@ class ScanPathsController < ApplicationController
 
     @scan_path = ScanPath.new(scan_path_params)
     if @scan_path.save
-      redirect_to fallback_path
+      return redirect_to fallback_path unless turbo_frame_request?
+
+      @scan_paths = ScanPath.ordered
+      @notice_text = "Scan path added."
     else
       redirect_to fallback_path, alert: @scan_path.errors.full_messages.to_sentence
     end
@@ -16,7 +19,10 @@ class ScanPathsController < ApplicationController
     authorize! @scan_path
 
     if @scan_path.update(scan_path_params)
-      redirect_to fallback_path
+      return redirect_to fallback_path unless turbo_frame_request?
+
+      @scan_paths = ScanPath.ordered
+      @notice_text = "Scan path updated."
     else
       redirect_to fallback_path, alert: @scan_path.errors.full_messages.to_sentence
     end
@@ -26,7 +32,10 @@ class ScanPathsController < ApplicationController
     authorize! @scan_path
 
     if @scan_path.destroy
-      redirect_to fallback_path
+      return redirect_to fallback_path unless turbo_frame_request?
+
+      @scan_paths = ScanPath.ordered
+      @notice_text = "Scan path removed."
     else
       redirect_to fallback_path, alert: "Could not remove scan path."
     end

@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
 
     latest = @quick_sync_game.game_saves.latest_first.first
     @quick_sync_save = latest ? GameSaveDecorator.new(latest) : nil
-    @quick_sync_profiles = EmulatorProfile.where(user_selected: true).ordered
+    @quick_sync_profiles = EmulatorProfile.selected_for_system(game.system).ordered
   end
 
   private def require_setup_complete

@@ -2,7 +2,7 @@
   - if selected_by_system.any?
     .space-y-4
       - selected_by_system.each do |system_key, profiles|
-        - system_label = EmulatorProfile.game_system.find_value(system_key)&.text || system_key.to_s.upcase
+        - system_label = EmulatorProfile.game_system.find_value(system_key)&.text || (system_key.present? ? system_key.to_s.upcase : "Unknown System")
         = render ::UI::CardComponent.new(padding: :sm) do |c|
           - c.with_header do
             %span.font-medium.text-sm= system_label

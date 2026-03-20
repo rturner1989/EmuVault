@@ -15,8 +15,6 @@ class GameEmulatorConfigsController < ApplicationController
         config.save!
       end
     end
-
-    redirect_to @game, notice: "Emulator filenames saved."
   end
 
   private def set_game

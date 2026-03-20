@@ -163,7 +163,7 @@
         = "Set the filename each emulator expects for this game. Leave blank to use a default based on the game title."
 
     - if @user_profiles.any?
-      = form_with url: game_emulator_configs_path(@game), method: :patch, data: { turbo: false } do |f|
+      = form_with url: game_emulator_configs_path(@game), method: :patch do |f|
         %div{ class: "divide-y divide-base-300" }
           - @user_profiles.each do |profile|
             - config = @emulator_configs[profile.id]

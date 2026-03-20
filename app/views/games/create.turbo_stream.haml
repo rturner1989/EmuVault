@@ -1,0 +1,4 @@
+= turbo_stream.action :close_dialog, "add-game-dialog"
+= turbo_stream.update "games-list", partial: "games/game_list", locals: { games: @games }
+= turbo_stream.update "game_stats", partial: "shared/game_stats", locals: { games_count: @games_count, games_without_save: @games_without_save }
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} added.")

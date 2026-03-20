@@ -1,0 +1,3 @@
+= turbo_stream.action :close_dialog, "edit-profile-#{@profile.id}"
+= turbo_stream.replace "profiles_list", partial: "emulator_profiles/profiles_list", locals: { selected_by_system: @selected_by_system }
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Profile updated.")

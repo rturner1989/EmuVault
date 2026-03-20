@@ -1,0 +1,6 @@
+= turbo_stream.action :close_dialog, "delete-profile-#{@profile.id}"
+- if @destroy_failed
+  = turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :alert, message: "Could not remove profile.")
+- else
+  = turbo_stream.replace "profiles_list", partial: "emulator_profiles/profiles_list", locals: { selected_by_system: @selected_by_system }
+  = turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: @notice_text)

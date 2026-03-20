@@ -11,7 +11,6 @@ class SettingsController < ApplicationController
 
     @user = Current.user
     if @user.update(scan_params)
-      redirect_to settings_path, notice: "Settings saved."
     else
       render :show, status: :unprocessable_entity
     end

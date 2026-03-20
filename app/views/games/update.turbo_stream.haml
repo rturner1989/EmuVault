@@ -1,0 +1,2 @@
+= turbo_stream.replace "game_header", partial: "games/header", locals: { game: @decorated_game }
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} updated.")

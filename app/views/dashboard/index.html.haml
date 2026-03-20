@@ -17,17 +17,8 @@
 
   -# Stat cards — 2×2 on mobile, 4-col on desktop
   .grid.grid-cols-2.gap-4.lg:grid-cols-4
-    = render ::UI::StatComponent.new(title: "Games", value: @games_count) do |stat|
-      - stat.with_icon(name: "fa-gamepad", classes: "text-primary fa-lg", fw: false)
-      - stat.with_action do
-        = link_to games_path, class: "text-primary hover:underline cursor-pointer inline-flex items-center gap-1" do
-          = "View all"
-          %i.fa-solid.fa-arrow-right
-
-    = render ::UI::StatComponent.new(title: "Needs Upload", value: @games_without_save,
-      value_color: @games_without_save > 0 ? "text-warning" : "text-success",
-      description: @games_without_save == 0 ? "All synced" : "#{@games_without_save} #{"game".pluralize(@games_without_save)} with no save") do |stat|
-      - stat.with_icon(name: "fa-cloud-arrow-up", classes: "#{@games_without_save > 0 ? 'text-warning' : 'text-success'} fa-lg", fw: false)
+    = turbo_frame_tag "game_stats", style: "display: contents" do
+      = render "shared/game_stats", games_count: @games_count, games_without_save: @games_without_save
 
     = render ::UI::StatComponent.new(title: "Storage Used", value: @storage_used, description: "Save files") do |stat|
       - stat.with_icon(name: "fa-hard-drive", classes: "text-info fa-lg", fw: false)

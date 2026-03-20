@@ -36,11 +36,11 @@
                   = render ::UI::IconComponent.new(name: "fa-xmark")
                   = "Clear"
 
-      - if @games.empty?
-        = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
-          - c.with_action do
-            = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, data: { action: "dialog#open" }) do |a|
-              - a.with_leading_icon(name: "fa-plus")
-      - else
-        = turbo_frame_tag "games-list", class: "space-y-3" do
+      = turbo_frame_tag "games-list", class: "space-y-3" do
+        - if @games.empty?
+          = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
+            - c.with_action do
+              = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, data: { action: "dialog#open" }) do |a|
+                - a.with_leading_icon(name: "fa-plus")
+        - else
           = render "games/game_list", games: @games

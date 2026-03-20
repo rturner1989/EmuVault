@@ -1,0 +1,12 @@
+= render ::UI::StatComponent.new(title: "Games", value: games_count) do |stat|
+  - stat.with_icon(name: "fa-gamepad", classes: "text-primary fa-lg", fw: false)
+  - stat.with_action do
+    = link_to games_path, class: "text-primary hover:underline cursor-pointer inline-flex items-center gap-1", data: { turbo_frame: "_top" } do
+      = "View all"
+      %i.fa-solid.fa-arrow-right
+
+= render ::UI::StatComponent.new(title: "Needs Upload",
+  value: games_without_save,
+  value_color: games_without_save > 0 ? "text-warning" : "text-success",
+  description: games_without_save == 0 ? "All synced" : "#{games_without_save} #{"game".pluralize(games_without_save)} with no save") do |stat|
+  - stat.with_icon(name: "fa-cloud-arrow-up", classes: "#{games_without_save > 0 ? 'text-warning' : 'text-success'} fa-lg", fw: false)

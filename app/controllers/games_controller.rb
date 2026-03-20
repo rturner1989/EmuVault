@@ -47,11 +47,12 @@ class GamesController < ApplicationController
     @form = GameForm.new(game_params)
     game = Game.new
     if @form.persist(game)
-      redirect_to game, notice: "Game added."
+      @game = game
+      @games = GameDecorator.decorate(Game.order(:title))
+      @games_count = Game.count
+      @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count
     else
-      render turbo_stream: turbo_stream.replace(:game_form,
-        partial: "games/form",
-        locals: { form_url: games_path, form_id: "add-game-form" }), status: :unprocessable_entity
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -68,15 +69,9 @@ class GamesController < ApplicationController
     @form.id = @game.id
     if @form.persist(@game)
       @form = GameForm.from(@game)
-      render turbo_stream: [
-        turbo_stream.replace("game_header", partial: "games/header", locals: { game: GameDecorator.new(@game) }),
-        turbo_stream.append("flash-container",
-          ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} updated."))
-      ]
+      @decorated_game = GameDecorator.new(@game)
     else
-      render turbo_stream: turbo_stream.replace(:game_form,
-        partial: "games/form",
-        locals: { form_url: game_path(@game), form_id: "edit-game-form" }), status: :unprocessable_entity
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -84,24 +79,17 @@ class GamesController < ApplicationController
     authorize! @game
 
     title = @game.title
-    was_current = current_user.current_game_id == @game.id
+    @was_current = current_user.current_game_id == @game.id
 
     if @game.destroy
-      current_user.update!(current_game: nil) if was_current
-      notice_text = "#{title} removed."
+      current_user.update!(current_game: nil) if @was_current
+      @notice_text = "#{title} removed."
 
       if params[:source] == "index"
-        load_quick_sync_data if was_current
-        games = GameDecorator.decorate(Game.order(:title))
-        streams = [
-          turbo_stream.update("games-list", partial: "games/game_list", locals: { games: games }),
-          turbo_stream.append("flash-container",
-            ::Layouts::FlashComponent::Item.new(type: :notice, message: notice_text))
-        ]
-        streams << turbo_stream.update(:quick_sync_content, partial: "shared/quick_sync_content") if was_current
-        render turbo_stream: streams
+        load_quick_sync_data if @was_current
+        @games = GameDecorator.decorate(Game.order(:title))
       else
-        redirect_to games_path, notice: notice_text, status: :see_other
+        redirect_to games_path, notice: @notice_text, status: :see_other
       end
     else
       redirect_back_or_to game_path(@game), alert: "Could not remove #{title}."

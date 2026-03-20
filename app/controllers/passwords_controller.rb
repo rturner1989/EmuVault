@@ -10,8 +10,7 @@ class PasswordsController < ApplicationController
     if @form.save(Current.user)
       redirect_to settings_path, notice: "Password updated."
     else
-      render turbo_stream: turbo_stream.replace(:password_form,
-        partial: "passwords/form"), status: :unprocessable_entity
+      render :edit, status: :unprocessable_entity
     end
   end
 
