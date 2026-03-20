@@ -97,7 +97,7 @@ class EmulatorProfilesController < ApplicationController
   def create
     authorize! EmulatorProfile
 
-    @profile = EmulatorProfile.new(profile_params)
+    @profile = EmulatorProfile.new(profile_params.merge(user_selected: true))
     if @profile.save
       render turbo_stream: [
         turbo_stream.action(:close_dialog, "new-profile-dialog"),
@@ -168,6 +168,6 @@ class EmulatorProfilesController < ApplicationController
   end
 
   private def profile_params
-    params.require(:emulator_profile).permit(:name, :platform, :game_system, :save_extension, :default_save_path, :user_selected)
+    params.require(:emulator_profile).permit(:name, :platform, :game_system, :save_extension, :default_save_path)
   end
 end

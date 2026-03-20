@@ -67,6 +67,7 @@ class ExportGenerator
     {
       name: profile.name,
       platform: profile.platform,
+      game_system: profile.game_system,
       save_extension: profile.save_extension,
       default_save_path: profile.default_save_path
     }

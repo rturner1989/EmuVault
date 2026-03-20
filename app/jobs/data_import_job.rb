@@ -13,6 +13,8 @@ class DataImportJob < ApplicationJob
     resolutions = import.resolutions || {}
     result = { imported: 0, skipped: 0, failed: 0 }
 
+    Array(manifest["emulator_profiles"]).each { restore_profile(_1) }
+
     import.file.open do |tmp|
       Zip::File.open(tmp.path) do |zip|
         manifest["games"].each do |game_data|
@@ -50,6 +52,29 @@ class DataImportJob < ApplicationJob
   rescue => e
     Rails.logger.error "[DataImportJob] Failed to import game #{game_data["title"]}: #{e.message}"
     result[:failed] += 1
+  end
+
+  private def restore_profile(profile_data)
+    lookup = { name: profile_data["name"], platform: profile_data["platform"] }
+    lookup[:game_system] = profile_data["game_system"] if profile_data["game_system"].present?
+
+    profiles = EmulatorProfile.where(lookup)
+
+    if profiles.any?
+      profiles.update_all(user_selected: true)
+    else
+      EmulatorProfile.create!(
+        name: profile_data["name"],
+        platform: profile_data["platform"],
+        game_system: profile_data["game_system"],
+        save_extension: profile_data["save_extension"],
+        default_save_path: profile_data["default_save_path"],
+        is_default: false,
+        user_selected: true
+      )
+    end
+  rescue => e
+    Rails.logger.error "[DataImportJob] Failed to restore profile #{profile_data["name"]}: #{e.message}"
   end
 
   private def restore_emulator_config(game, config_data)
