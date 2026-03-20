@@ -1,8 +1,7 @@
 %div{ class: "stat bg-base-100 border border-base-300 rounded-lg" }
-  - if icon?
-    %div{ class: "stat-figure" }
+  %div{ class: "stat-title flex items-center gap-1.5" }
+    - if icon?
       = icon
-  %div{ class: "stat-title" }
     = @title
   %div{ class: "stat-value text-2xl #{@value_color}" }
     = @value
