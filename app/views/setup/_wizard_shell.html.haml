@@ -9,14 +9,14 @@
 
       -# Step indicator
       .flex.items-center.justify-center.gap-2
-        - [["1", "Account", setup_path], ["2", "Emulators", profiles_setup_path], ["3", "Paths", configure_setup_path], ["4", "Library", library_setup_path]].each_with_index do |(num, label, _path), i|
+        - [["1", "Emulators", profiles_setup_path], ["2", "Paths", configure_setup_path], ["3", "Library", library_setup_path]].each_with_index do |(num, label, _path), i|
           - active = current_step == i + 1
           - done = current_step > i + 1
           .flex.items-center.gap-2
             %span.w-7.h-7.rounded-full.flex.items-center.justify-center.text-xs.font-bold{ class: active ? "bg-primary text-primary-content" : done ? "bg-success text-success-content" : "bg-base-300 text-muted" }
               = num
             %span.text-xs{ class: active ? "text-base-content" : "text-muted" }= label
-          - if i < 3
+          - if i < 2
             .h-px.w-6{ class: "bg-base-300" }
 
     .flex-1.flex.flex-col.min-h-0

@@ -29,8 +29,12 @@ module Authentication
   end
 
   private def request_authentication
-    session[:return_to_after_authenticating] = request.url
-    redirect_to new_session_path
+    if User.exists?
+      session[:return_to_after_authenticating] = request.url
+      redirect_to new_session_path
+    else
+      redirect_to new_registration_path
+    end
   end
 
   private def after_authentication_url

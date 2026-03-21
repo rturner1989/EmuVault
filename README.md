@@ -49,7 +49,7 @@ Designed to run on your own PC or home server and be accessed from any device vi
 - **Quick Sync** — set a game as "Now Playing" for one-tap upload and download from the mobile nav
 - **Activity log** — every upload and download is recorded with timestamp, device type (inferred from user agent), and IP address
 - **Themes** — 22 selectable themes (dark and light), applied instantly with live preview
-- **First-run setup wizard** — guided 4-step flow: account setup → choose your emulators → configure save directories → library scan paths
+- **First-run setup wizard** — guided 3-step flow: choose your emulators → configure save directories → library scan paths
 - **Notifications** — in-app notification panel with live badge updates; web push to iPhone (when installed as a home screen app) via the Web Push API
 - **Mobile-first UI** — works on iPhone with safe-area insets, installable as a home screen app (PWA)
 - **Single-user** — self-hosted, no accounts or cloud services
@@ -136,7 +136,6 @@ Copy `docker-compose.prod.yml` from this repo and replace the placeholder values
 
 - `YOUR_SECRET_KEY_BASE` — from step 1
 - `YOUR_DB_PASSWORD` — choose a strong password
-- `YOUR_EMAIL` / `YOUR_PASSWORD` — your login credentials
 - `YOUR_VAPID_PUBLIC_KEY` / `YOUR_VAPID_PRIVATE_KEY` — from step 1
 - `/path/to/...` — your persistent directory paths from step 2
 
@@ -206,7 +205,7 @@ docker compose restart app sidekiq
 
 ## Monitoring
 
-EmuVault includes built-in admin dashboards. All are protected by HTTP Basic Auth using your `ADMIN_EMAIL` / `ADMIN_PASSWORD` credentials.
+EmuVault includes built-in admin dashboards.
 
 | Dashboard | URL | Description |
 |---|---|---|
@@ -231,8 +230,6 @@ All configuration is via environment variables. Key variables:
 
 | Variable | Description | Default |
 |---|---|---|
-| `ADMIN_EMAIL` | Login email | — |
-| `ADMIN_PASSWORD` | Login password | — |
 | `DB_HOST` | PostgreSQL host | `postgres` |
 | `DB_USERNAME` | PostgreSQL username | — |
 | `DB_PASSWORD` | PostgreSQL password | — |
@@ -249,10 +246,9 @@ See `.env.example` for the full list.
 
 On first login you'll be walked through:
 
-1. **Account** — set your email and password
-2. **Emulators** — pick which emulators you use from the built-in library
-3. **Save paths** — configure where each emulator stores saves on your system (used for download path hints)
-4. **Library scan** — configure scan paths and auto-scan settings
+1. **Emulators** — pick which emulators you use from the built-in library
+2. **Save paths** — configure where each emulator stores saves on your system (used for download path hints)
+3. **Library scan** — configure scan paths and auto-scan settings
 
 After completing setup you'll be taken to your games library.
 

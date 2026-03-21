@@ -1,17 +1,6 @@
 # frozen_string_literal: true
 
-# =============================================================================
-# Admin user
-# =============================================================================
-admin_email    = ENV.fetch("ADMIN_EMAIL") { raise "ADMIN_EMAIL env var is required" }
-admin_password = ENV.fetch("ADMIN_PASSWORD") { raise "ADMIN_PASSWORD env var is required" }
-
-User.find_or_initialize_by(email_address: admin_email).tap do |user|
-  user.password = admin_password
-  user.password_confirmation = admin_password
-  user.save!
-  puts "Admin user ready: #{admin_email}"
-end
+# No user is seeded — the first user is created via the registration page on first load.
 
 # =============================================================================
 # Emulator profiles

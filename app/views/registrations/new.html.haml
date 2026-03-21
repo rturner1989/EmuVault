@@ -1,0 +1,30 @@
+- content_for :title, "Create Account — EmuVault"
+
+.h-screen.flex.items-center.justify-center.overflow-hidden{ class: "bg-base-200" }
+  .w-full.max-w-sm.px-4
+    .text-center.mb-8
+      .flex.justify-center
+        = render ::UI::LogoComponent.new(size: :lg)
+      %p.mt-2.text-sm.text-muted Create your account to get started
+
+    = render ::UI::CardComponent.new do |c|
+      - c.with_body do
+        = simple_form_for @user || User.new, url: registration_path, method: :post, html: { class: "space-y-4" } do |f|
+          = f.input :username,
+              label: "Username",
+              required: true,
+              input_html: { autocomplete: "username", class: "input input-bordered w-full" },
+              label_html: { class: "label-text font-medium" }
+          = f.input :password,
+              as: :password,
+              label: "Password",
+              required: true,
+              input_html: { autocomplete: "new-password", class: "input input-bordered w-full" },
+              label_html: { class: "label-text font-medium" }
+          = f.input :password_confirmation,
+              as: :password,
+              label: "Confirm password",
+              required: true,
+              input_html: { autocomplete: "new-password", class: "input input-bordered w-full" },
+              label_html: { class: "label-text font-medium" }
+          = f.button :submit, "Create account", class: "btn btn-primary w-full mt-2"

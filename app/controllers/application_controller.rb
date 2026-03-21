@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
   private def require_setup_complete
     return unless current_user
     return if current_user.setup_completed?
-    return if controller_name == "setup" || controller_name == "sessions" || controller_name == "passwords" || controller_name == "directory_browser" || controller_name == "scan_paths"
+    return if controller_name == "setup" || controller_name == "sessions" || controller_name == "directory_browser" || controller_name == "scan_paths"
 
     redirect_to setup_path
   end

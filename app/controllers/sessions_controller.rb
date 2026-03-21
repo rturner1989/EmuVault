@@ -4,6 +4,7 @@ class SessionsController < ApplicationController
   rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_path, alert: "Try again later." }
 
   def new
+    redirect_to new_registration_path unless User.exists?
   end
 
   def create
@@ -11,7 +12,7 @@ class SessionsController < ApplicationController
       start_new_session_for user
       redirect_to after_authentication_url
     else
-      redirect_to new_session_path, alert: "Try another email address or password."
+      redirect_to new_session_path, alert: "Try another username or password."
     end
   end
 
@@ -21,6 +22,6 @@ class SessionsController < ApplicationController
   end
 
   private def session_params
-    params.require(:session).permit(:email_address, :password)
+    params.require(:session).permit(:username, :password)
   end
 end

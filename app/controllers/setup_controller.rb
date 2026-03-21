@@ -2,27 +2,17 @@ class SetupController < ApplicationController
   layout "setup"
   before_action :redirect_if_setup_complete
 
-  # Step 1 — account setup (email + password)
+  # Redirect to first step (emulator profiles)
   def show
+    redirect_to profiles_setup_path
   end
 
-  # Step 1 POST
-  def update
-    @form = SetupAccountForm.new(setup_account_params)
-
-    if @form.save(current_user)
-      redirect_to profiles_setup_path
-    else
-      render :show, status: :unprocessable_entity
-    end
-  end
-
-  # Step 2a — system picker (or emulator picker when ?system= is present, handled in view)
+  # Step 1a — system picker (or emulator picker when ?system= is present, handled in view)
   def profiles
     session.delete(:pending_systems) unless params[:system].present?
   end
 
-  # Step 2a POST — save selected systems, auto-select their profiles, begin per-system emulator config
+  # Step 1a POST — save selected systems, auto-select their profiles, begin per-system emulator config
   def select_systems
     @form = SetupSystemsForm.new(system_keys: params[:system_keys])
 
@@ -34,7 +24,7 @@ class SetupController < ApplicationController
     end
   end
 
-  # Step 2b POST — save emulator selections for a specific system, advance to next system or step 3
+  # Step 1b POST — save emulator selections for a specific system, advance to next system or step 2
   def select_profiles
     system_key = params[:redirect_system].presence
     selected_ids = (params[:profile_ids] || []).map(&:to_i)
@@ -45,7 +35,7 @@ class SetupController < ApplicationController
       EmulatorProfile.where(id: selected_ids, is_default: true, game_system: system_key)
                      .update_all(user_selected: true)
 
-      # Advance to next system in queue, or step 3
+      # Advance to next system in queue, or step 2
       pending = Array(session[:pending_systems])
       current_index = pending.index(system_key)
       next_system = current_index ? pending[current_index + 1] : nil
@@ -61,7 +51,7 @@ class SetupController < ApplicationController
     end
   end
 
-  # Step 3 — configure save directories (one row per emulator+platform, not per system)
+  # Step 2 — configure save directories (one row per emulator+platform, not per system)
   def configure
     # Group selected profiles by name+platform so the user sets one path per
     # emulator installation, not one per system (e.g. RetroArch Linux shows once)
@@ -71,7 +61,7 @@ class SetupController < ApplicationController
     redirect_to profiles_setup_path if @profiles_by_emulator.empty?
   end
 
-  # Step 3 POST — save paths (apply to all profiles for the same emulator+platform)
+  # Step 2 POST — save paths (apply to all profiles for the same emulator+platform)
   def save_configuration
     params[:emulators]&.each do |key, attrs|
       name, platform = key.split("|")
@@ -83,12 +73,12 @@ class SetupController < ApplicationController
     redirect_to library_setup_path
   end
 
-  # Step 4 — configure scan paths + auto-scan
+  # Step 3 — configure scan paths + auto-scan
   def library
     @scan_paths = ScanPath.ordered
   end
 
-  # Step 4 POST — save auto-scan settings, mark setup complete
+  # Step 3 POST — save auto-scan settings, mark setup complete
   def save_library
     current_user.update!(
       params.require(:user).permit(:scan_enabled, :scan_interval)
@@ -100,9 +90,5 @@ class SetupController < ApplicationController
 
   private def redirect_if_setup_complete
     redirect_to root_path, notice: "Setup is already complete." if current_user&.setup_completed?
-  end
-
-  private def setup_account_params
-    params.require(:user).permit(:email_address, :password, :password_confirmation)
   end
 end

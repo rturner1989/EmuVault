@@ -4,7 +4,6 @@
 #
 #  id               :bigint           not null, primary key
 #  api_token        :string
-#  email_address    :string           not null
 #  last_scan_result :jsonb
 #  last_scanned_at  :datetime
 #  password_digest  :string           not null
@@ -12,6 +11,7 @@
 #  scan_interval    :string           default("hourly"), not null
 #  setup_completed  :boolean          default(FALSE), not null
 #  theme            :string           default("dracula"), not null
+#  username         :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  current_game_id  :bigint
@@ -20,7 +20,7 @@
 #
 #  index_users_on_api_token        (api_token) UNIQUE
 #  index_users_on_current_game_id  (current_game_id)
-#  index_users_on_email_address    (email_address) UNIQUE
+#  index_users_on_username         (username) UNIQUE
 #
 # Foreign Keys
 #
@@ -48,7 +48,7 @@ class User < ApplicationRecord
   has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
   has_many :web_push_subscriptions, dependent: :destroy
 
-  normalizes :email_address, with: ->(e) { e.strip.downcase }
+  normalizes :username, with: ->(e) { e.strip.downcase }
 
   before_create :generate_api_token
 

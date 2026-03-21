@@ -5,15 +5,8 @@
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }
     %h2.text-sm.font-semibold.mb-1 Account
-    %p.text-sm.text-muted.mb-4= @user.email_address
-    .flex.items-center.gap-3
-      = render ::UI::ModalComponent.new(id: "change-password-dialog", title: "Change Password") do |modal|
-        = modal.with_trigger do
-          = render ::UI::ActionComponent.new(content_text: "Change Password", variant: :secondary, data: { action: "dialog#open" })
-        = modal.with_body do
-          = render "passwords/form"
-        = modal.with_footer do
-          = render ::UI::ActionComponent.new(content_text: "Update password", variant: :primary, size: :sm, type: :submit, form: "password-form")
+    %p.text-sm.text-muted= @user.username
+    .mt-4.lg:hidden
       = render ::UI::ActionComponent.new(content_text: "Sign Out", href: session_path, variant: :danger, data: { turbo_method: :delete })
 
   .rounded-lg.p-5{ class: "bg-base-100 border border-base-300" }

@@ -266,11 +266,11 @@ Activity is exposed at `/activity` (`ActivityController#show`, singular resource
 
 ## First-run setup wizard
 
-On first login (`setup_completed: false`), all routes redirect to `/setup`. The wizard has 3 steps:
+On first load with no users, the app shows a registration page to create an account (username + password). After registration, and on subsequent logins when `setup_completed: false`, all routes redirect to `/setup`. The wizard has 3 steps:
 
-1. **Account** (`GET/PATCH /setup`) — set email and password
-2. **Emulators** (`GET /setup/profiles`, `POST /setup/select_profiles`) — pick from the seeded library
-3. **Paths** (`GET /setup/configure`, `PATCH /setup/save_configuration`) — set save directory per selected profile
+1. **Emulators** (`GET /setup/profiles`, `POST /setup/select_profiles`) — pick from the seeded library
+2. **Paths** (`GET /setup/configure`, `PATCH /setup/save_configuration`) — set save directory per selected profile
+3. **Library** (`GET /setup/library`, `PATCH /setup/save_library`) — configure scan paths and auto-scan
 
 Uses a separate `setup` layout (`app/views/layouts/setup.html.haml`) — no nav sidebar. Shared step indicator in `app/views/setup/_wizard_shell.html.haml` rendered via `render layout: "setup/wizard_shell", locals: { current_step: N }`.
 
@@ -310,11 +310,10 @@ See `.env.example` for all required vars. Key ones:
 - `REDIS_URL` — Redis connection for Sidekiq
 - `HUB_URL` — Selenium hub for system tests (e.g. `http://selenium-hub:4444/wd/hub`)
 - `APP_HOST` — used by Capybara for system tests
-- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — seeded admin credentials
 
 ## Notable config
 
-- `config/initializers/sidekiq.rb` — Sidekiq::Web protected via HTTP Basic Auth using admin credentials
+- `config/initializers/sidekiq.rb` — Sidekiq server + client Redis config, scheduler setup
 - `config/initializers/better_errors.rb` — allows BetterErrors from any IP (needed for Docker)
 - `config/initializers/rack_attack.rb` — rate limiting (300 req/5min, 30 uploads/5min)
 - `config/initializers/content_security_policy.rb` — CSP enabled, frame-ancestors :none
@@ -356,7 +355,6 @@ Multi-stage build:
 Required environment variables:
 - `SECRET_KEY_BASE` — generate with `bundle exec rails secret`
 - `DB_PASSWORD` — shared between app/sidekiq/postgres
-- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — login credentials (seeded on first run)
 - `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` — web push notifications
 
 Volume mounts (bind to host paths):
@@ -370,7 +368,7 @@ SSL is off by default (`FORCE_SSL` env var). Tailscale encrypts traffic end-to-e
 
 ### First run
 
-The app command runs `rails db:prepare` before starting Puma, which creates the database, runs migrations, and seeds. The setup wizard appears on first login.
+The app command runs `rails db:prepare` before starting Puma, which creates the database, runs migrations, and seeds emulator profiles. On first load, the user creates their account via the registration page, then the setup wizard begins.
 
 ## Security
 
@@ -380,11 +378,9 @@ The app command runs `rails db:prepare` before starting Puma, which creates the 
 - `force_ssl` + `assume_ssl` controlled via `FORCE_SSL` env var (off by default for Tailscale)
 - Rack::Attack rate limiting
 - BetterErrors restricted to development only
-- Single-user authentication via Rails 8 native auth (`rails generate authentication`)
-  - Admin credentials seeded from `ADMIN_EMAIL` / `ADMIN_PASSWORD` env vars
+- Single-user authentication via Rails 8 native auth (`has_secure_password`)
+  - First-time registration page when no users exist (`RegistrationsController`)
   - All routes protected by default via `ApplicationController`
-  - Sidekiq Web protected by HTTP Basic Auth using admin credentials
-  - Password change available via Settings modal (no email reset — self-hosted)
   - `simple_form_for :session` nests params under `session[field]` — controller uses `params.require(:session).permit(...)`
 
 ## Architecture intent
@@ -438,7 +434,7 @@ SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrappe
 - [x] PWA + app icon — Dracula floppy disk SVG icon, manifest.json, iOS home screen meta tags
 - [x] Save model refactor — dropped slot, one canonical save per game (latest by created_at), history preserved
 - [x] Emulator profiles refactor — user_selected + is_default flags, setup wizard selects from library
-- [x] Setup wizard — 3-step first-run flow (account, emulator selection, save paths), separate layout
+- [x] Setup wizard — 3-step first-run flow (emulator selection, save paths, library scan), separate layout
 - [x] JS stack — Hotwire + a11y-dialog wired via esbuild; Stimulus controllers: dialog, save-hint
 - [x] Game show redesign — current save card, save path hint, upload toggle, history panel
 - [x] Emulator profiles CRUD — index shows selected only, edit/new via a11y-dialog modals

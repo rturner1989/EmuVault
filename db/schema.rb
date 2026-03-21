@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_18_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_21_211321) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -165,7 +165,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_120000) do
     t.string "api_token"
     t.datetime "created_at", null: false
     t.bigint "current_game_id"
-    t.string "email_address", null: false
     t.jsonb "last_scan_result"
     t.datetime "last_scanned_at"
     t.string "password_digest", null: false
@@ -174,9 +173,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_120000) do
     t.boolean "setup_completed", default: false, null: false
     t.string "theme", default: "dracula", null: false
     t.datetime "updated_at", null: false
+    t.string "username", null: false
     t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["current_game_id"], name: "index_users_on_current_game_id"
-    t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   create_table "web_push_subscriptions", force: :cascade do |t|

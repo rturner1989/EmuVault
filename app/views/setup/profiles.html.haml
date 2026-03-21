@@ -1,6 +1,6 @@
 - content_for :title, "Setup — EmuVault"
 
-= render layout: "setup/wizard_shell", locals: { current_step: 2 } do
+= render layout: "setup/wizard_shell", locals: { current_step: 1 } do
   - if params[:system].present?
     -# Step 2b — emulator picker for a specific system
     - system_key = params[:system]
@@ -48,13 +48,9 @@
           %h2.text-base.font-semibold Which systems do you use?
           %p.text-sm.text-muted.mt-0.5 Select all the systems you want to set up.
         - c.with_footer do
-          .flex.gap-3
-            = link_to setup_path, class: "btn btn-ghost flex-1" do
-              %i.fa-solid.fa-arrow-left
-              Back
-            %button.btn.btn-primary.flex-1{ type: "submit" }
-              Next
-              %i.fa-solid.fa-arrow-right
+          %button.btn.btn-primary.w-full{ type: "submit" }
+            Next
+            %i.fa-solid.fa-arrow-right
         .p-4
           .grid.gap-2{ style: "grid-template-columns: repeat(auto-fill, minmax(130px, 1fr))" }
             - all_systems.each do |system|

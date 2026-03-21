@@ -2,8 +2,8 @@ Rails.application.routes.draw do
   root "dashboard#index"
 
   resource :session
-  resource :password, only: %i[edit update]
-  resource :setup, only: %i[show update], controller: "setup" do
+  resource :registration, only: %i[new create]
+  resource :setup, only: [:show], controller: "setup" do
     get :profiles
     post :select_systems
     post :select_profiles
