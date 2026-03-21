@@ -56,16 +56,16 @@ Designed to run on your own PC or home server and be accessed from any device vi
 
 ## Supported emulators (built-in profiles)
 
-| Emulator | Platforms | Extension |
+| Emulator | Platforms | Extensions |
 |---|---|---|
-| RetroArch | Linux, Windows, macOS | `.srm` |
-| Delta | iOS | `.sav` |
-| mGBA | Linux, Windows, macOS, iOS, Android | `.sav` |
-| Dolphin | Linux, Windows, macOS | `.gci` |
+| RetroArch | Linux, Windows, macOS, Android | `.srm`, `.sav`, `.sra`, `.gci`, `.bin` |
+| Delta | iOS | `.sav`, `.srm`, `.dsv` |
+| mGBA | Linux, Windows, macOS, Android | `.sav` |
+| Dolphin | Linux, Windows, macOS | `.gci`, `.bin` |
 | PPSSPP | Linux, Windows, macOS, iOS, Android | `.bin` |
 | melonDS | Linux, Windows, macOS | `.sav` |
 | Snes9x | Linux, Windows, macOS | `.srm` |
-| OpenEmu | macOS | `.sav` |
+| OpenEmu | macOS | `.sav`, `.srm`, `.dsv`, `.mcr`, `.gci` |
 | DuckStation | Linux, Windows, macOS, Android | `.mcd` |
 | PCSX2 | Linux, Windows, macOS | `.ps2` |
 
