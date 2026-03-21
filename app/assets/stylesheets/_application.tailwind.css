@@ -67,8 +67,15 @@
   flex-direction: column;
 }
 
+/* Sheet wrapper passes layout through to the card */
+.dialog-sheet {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 /* Non-card dialogs (e.g. Quick Sync) get visual styling on the wrapper */
-.dialog-content > *:not(.dialog-card) {
+.dialog-content > *:not(.dialog-card):not(.dialog-sheet) {
   background: var(--color-base-100);
   border: 1px solid var(--color-base-300);
   border-radius: 0.75rem;
@@ -77,6 +84,29 @@
 
 [aria-hidden="true"] {
   display: none;
+}
+
+/* Drag handle for mobile bottom sheets */
+.dialog-handle-wrapper {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .dialog-handle-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 0 0.25rem;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .dialog-handle {
+    width: 3rem;
+    height: 0.25rem;
+    border-radius: 9999px;
+    background: var(--color-base-content);
+    opacity: 0.3;
+  }
 }
 
 /* Mobile: all dialogs become bottom sheets */
@@ -91,7 +121,7 @@
     max-height: 85dvh;
   }
 
-  .dialog-content > *:not(.dialog-card) {
+  .dialog-content > *:not(.dialog-card):not(.dialog-sheet) {
     border-radius: 0.75rem 0.75rem 0 0;
     border-bottom: none;
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
@@ -100,6 +130,10 @@
   .dialog-content .dialog-card {
     border-radius: 0.75rem 0.75rem 0 0;
     border-bottom: none;
+  }
+
+  .dialog-content .dialog-sheet {
+    border-radius: 0.75rem 0.75rem 0 0;
   }
 
   .dialog-content .dialog-card > *:last-child {
@@ -119,13 +153,14 @@
   max-height: 85dvh;
 }
 
-.dialog-content.dialog-content--bottom > *:not(.dialog-card) {
+.dialog-content.dialog-content--bottom > *:not(.dialog-card):not(.dialog-sheet) {
   border-radius: 0.75rem 0.75rem 0 0;
   border-bottom: none;
   padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
 }
 
-.dialog-content.dialog-content--bottom .dialog-card {
+.dialog-content.dialog-content--bottom .dialog-card,
+.dialog-content.dialog-content--bottom .dialog-sheet {
   border-radius: 0.75rem 0.75rem 0 0;
   border-bottom: none;
 }

@@ -1,4 +1,4 @@
-= render ::UI::ModalComponent.new(id: @id, title: @title) do |modal|
+= render ::UI::ModalComponent.new(id: @id, title: @title, swipeable: false) do |modal|
   = modal.with_trigger do
     - if @trigger_icon
       = render ::UI::ActionComponent.new(variant: @trigger_variant, size: @size, class: @trigger_class, data: { action: "dialog#open" }, "aria-label": @trigger_label) do |a|

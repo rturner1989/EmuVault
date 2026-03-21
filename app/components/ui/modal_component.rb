@@ -8,12 +8,13 @@ module UI
     renders_many :footer_actions, "UI::ActionComponent"
     renders_one :page_content
 
-    def initialize(id:, title:, subtitle: nil, variant: :default, container_data: {})
+    def initialize(id:, title:, subtitle: nil, variant: :default, container_data: {}, swipeable: true)
       @id = id
       @title = title
       @subtitle = subtitle
       @variant = variant
       @container_data = container_data
+      @swipeable = swipeable
     end
 
     def managed?
@@ -23,6 +24,10 @@ module UI
     def content_classes
       base = "dialog-content"
       @variant == :bottom_sheet ? "#{base} dialog-content--bottom" : base
+    end
+
+    def close_data
+      managed? ? { action: "click->dialog#close" } : { "a11y-dialog-hide": "" }
     end
   end
 end

@@ -12,6 +12,7 @@ import QuickSyncController from "./quick_sync_controller"
 import SaveHintController from "./save_hint_controller"
 import ThemeController from "./theme_controller"
 import ProfileSelectController from "./profile_select_controller"
+import SwipeDismissController from "./swipe_dismiss_controller"
 
 const application = Application.start()
 application.register("auto-submit", AutoSubmitController)
@@ -27,3 +28,4 @@ application.register("iframe-download", IframeDownloadController)
 application.register("save-hint", SaveHintController)
 application.register("theme", ThemeController)
 application.register("profile-select", ProfileSelectController)
+application.register("swipe-dismiss", SwipeDismissController)
