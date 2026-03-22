@@ -6,22 +6,39 @@ Designed to run on your own PC or home server and be accessed from any device vi
 
 ## Screenshots
 
-### Desktop
+<details>
+<summary>Desktop</summary>
 
-![Dashboard](docs/screenshots/desktop_dashboard.png)
-![Games](docs/screenshots/desktop_games.png)
-![Activity](docs/screenshots/desktop_activity.png)
-![Emulator Profiles](docs/screenshots/desktop_emulator_profiles.png)
-![Settings](docs/screenshots/desktop_settings.png)
+<table>
+  <tr>
+    <td><img src="docs/screenshots/desktop_dashboard.png" width="400" /></td>
+    <td><img src="docs/screenshots/desktop_games.png" width="400" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/desktop_activity.png" width="400" /></td>
+    <td><img src="docs/screenshots/desktop_emulator_profiles.png" width="400" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/desktop_settings.png" width="400" /></td>
+    <td></td>
+  </tr>
+</table>
 
-### Mobile
+</details>
 
-<p float="left">
-  <img src="docs/screenshots/mobile_dashboard.png" width="200" />
-  <img src="docs/screenshots/mobile_games.png" width="200" />
-  <img src="docs/screenshots/mobile_activity.png" width="200" />
-  <img src="docs/screenshots/mobile_settings.png" width="200" />
-</p>
+<details>
+<summary>Mobile</summary>
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/mobile_dashboard.png" width="200" /></td>
+    <td><img src="docs/screenshots/mobile_games.png" width="200" /></td>
+    <td><img src="docs/screenshots/mobile_activity.png" width="200" /></td>
+    <td><img src="docs/screenshots/mobile_settings.png" width="200" /></td>
+  </tr>
+</table>
+
+</details>
 
 ---
 
