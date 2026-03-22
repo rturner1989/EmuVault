@@ -4,10 +4,30 @@ A self-hosted save file manager for emulators. Upload a save from one device, do
 
 Designed to run on your own PC or home server and be accessed from any device via browser. Works great as a PWA on iPhone.
 
+## Screenshots
+
+### Desktop
+
+![Dashboard](docs/screenshots/desktop_dashboard.png)
+![Games](docs/screenshots/desktop_games.png)
+![Activity](docs/screenshots/desktop_activity.png)
+![Emulator Profiles](docs/screenshots/desktop_emulator_profiles.png)
+![Settings](docs/screenshots/desktop_settings.png)
+
+### Mobile
+
+<p float="left">
+  <img src="docs/screenshots/mobile_dashboard.png" width="200" />
+  <img src="docs/screenshots/mobile_games.png" width="200" />
+  <img src="docs/screenshots/mobile_activity.png" width="200" />
+  <img src="docs/screenshots/mobile_settings.png" width="200" />
+</p>
+
 ---
 
 ## Contents
 
+- [Screenshots](#screenshots)
 - [Features](#features)
 - [Supported emulators](#supported-emulators-built-in-profiles)
 - [Requirements](#requirements)
