@@ -8,8 +8,7 @@ Turbo.config.drive.progressBarDelay = 0
 // Custom Turbo Stream action: dispatches a "dialog:close" event on the target
 // element, which the dialog Stimulus controller handles to hide the dialog.
 Turbo.StreamActions.close_dialog = function() {
-  document.getElementById(this.target)
-    ?.dispatchEvent(new CustomEvent("dialog:close"))
+  document.getElementById(this.target)?.dispatchEvent(new CustomEvent("dialog:close"))
 }
 
 // Reset all forms inside dialogs before Turbo caches the page,

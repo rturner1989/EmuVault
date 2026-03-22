@@ -10,15 +10,10 @@
 #  updated_at  :datetime         not null
 #
 class ScanPath < ApplicationRecord
+  include HasGameSystem
   extend Enumerize
 
-  enumerize :game_system, in: %i[
-    nes snes gb gbc gba nds
-    genesis sms gg
-    psx ps2 psp
-    n64 gc wii
-    arcade
-  ]
+  enumerize :game_system, in: GAME_SYSTEMS
 
   validates :path, presence: true
   validates :game_system, presence: true

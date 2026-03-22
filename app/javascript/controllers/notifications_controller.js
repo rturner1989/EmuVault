@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import { lockScroll, unlockScroll } from "./scroll_lock"
+import { lockScroll, unlockScroll } from "../utils/scroll_lock"
 
 export default class extends Controller {
   static targets = ["backdrop", "overlay", "panel", "frame"]

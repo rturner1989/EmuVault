@@ -8,7 +8,7 @@ export default class extends Controller {
   toggle() {
     if (this.browserTarget.hidden) {
       this.browserTarget.hidden = false
-      this.loadPath(this.inputTarget.value.trim() || "/")
+      this._loadPath(this.inputTarget.value.trim() || "/")
     } else {
       this.browserTarget.hidden = true
     }
@@ -17,7 +17,7 @@ export default class extends Controller {
   // Navigate into a directory (called from button data-action)
   navigate(event) {
     event.stopPropagation()
-    this.loadPath(event.currentTarget.dataset.path)
+    this._loadPath(event.currentTarget.dataset.path)
   }
 
   // Write the current path into the text input and close the browser
@@ -33,83 +33,89 @@ export default class extends Controller {
     this.inputTarget.focus()
   }
 
-  // ── private ──────────────────────────────────────────────────────────────
-
-  loadPath(path) {
+  _loadPath(path) {
     this.currentValue = path
     this.currentPathTarget.textContent = path
 
     // Update the "up" button target
-    const parent = this.parentOf(path)
+    const parent = this._parentOf(path)
     this.upButtonTarget.dataset.path = parent
     this.upButtonTarget.disabled     = path === "/"
 
     fetch(`/directory_browser?path=${encodeURIComponent(path)}`)
-      .then(r => r.json())
+      .then(response => response.json())
       .then(data => {
         if (data.error) {
-          this.listTarget.innerHTML = this.errorHTML(data.error)
+          this._renderError(data.error)
         } else {
-          this.renderShortcuts(data.shortcuts || [])
-          this.renderEntries(data.entries)
+          this._renderShortcuts(data.shortcuts || [])
+          this._renderEntries(data.entries)
         }
       })
       .catch(() => {
-        this.listTarget.innerHTML = this.errorHTML("Could not read directory")
+        this._renderError("Could not read directory")
       })
   }
 
-  renderShortcuts(shortcuts) {
+  _renderShortcuts(shortcuts) {
     if (!this.hasShortcutsTarget) return
-    this.shortcutsTarget.innerHTML = shortcuts.map(p => `
-      <button
-        type="button"
-        class="text-xs px-2 py-0.5 rounded border border-base-300 text-muted hover:border-base-content hover:text-base-content transition-colors cursor-pointer"
-        data-action="click->directory-browser#navigate"
-        data-path="${this.escapeAttr(p)}">${this.escapeHTML(p)}</button>
-    `).join("")
+    this.shortcutsTarget.replaceChildren(
+      ...shortcuts.map(shortcut => {
+        const btn = document.createElement("button")
+        btn.type = "button"
+        btn.className = "text-xs px-2 py-0.5 rounded border border-base-300 text-muted hover:border-base-content hover:text-base-content transition-colors cursor-pointer"
+        btn.dataset.action = "click->directory-browser#navigate"
+        btn.dataset.path = shortcut
+        btn.textContent = shortcut
+        return btn
+      })
+    )
   }
 
-  renderEntries(entries) {
+  _renderEntries(entries) {
     if (entries.length === 0) {
-      this.listTarget.innerHTML =
-        '<p class="text-xs text-muted px-3 py-3 italic">No subdirectories</p>'
+      const p = document.createElement("p")
+      p.className = "text-xs text-muted px-3 py-3 italic"
+      p.textContent = "No subdirectories"
+      this.listTarget.replaceChildren(p)
       return
     }
 
-    this.listTarget.innerHTML = entries.map(entry => `
-      <button
-        type="button"
-        class="w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-base-content hover:bg-base-200 transition-colors"
-        data-action="click->directory-browser#navigate"
-        data-path="${this.escapeAttr(entry.path)}">
-        <i class="fa-solid fa-folder text-warning fa-fw shrink-0"></i>
-        <span class="truncate min-w-0 flex-1">${this.escapeHTML(entry.name)}</span>
-        <i class="fa-solid fa-chevron-right text-muted shrink-0 text-xs"></i>
-      </button>
-    `).join("")
+    this.listTarget.replaceChildren(
+      ...entries.map(entry => {
+        const btn = document.createElement("button")
+        btn.type = "button"
+        btn.className = "w-full flex items-center gap-2 px-3 py-2 text-left text-sm text-base-content hover:bg-base-200 transition-colors"
+        btn.dataset.action = "click->directory-browser#navigate"
+        btn.dataset.path = entry.path
+
+        const folder = document.createElement("i")
+        folder.className = "fa-solid fa-folder text-warning fa-fw shrink-0"
+
+        const name = document.createElement("span")
+        name.className = "truncate min-w-0 flex-1"
+        name.textContent = entry.name
+
+        const chevron = document.createElement("i")
+        chevron.className = "fa-solid fa-chevron-right text-muted shrink-0 text-xs"
+
+        btn.append(folder, name, chevron)
+        return btn
+      })
+    )
   }
 
-  parentOf(path) {
+  _parentOf(path) {
     if (path === "/" || path === "") return "/"
     const parts = path.replace(/\/$/, "").split("/")
     parts.pop()
     return parts.join("/") || "/"
   }
 
-  errorHTML(msg) {
-    return `<p class="text-xs text-error px-3 py-3">${this.escapeHTML(msg)}</p>`
-  }
-
-  escapeHTML(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-  }
-
-  escapeAttr(str) {
-    return String(str).replace(/"/g, "&quot;")
+  _renderError(msg) {
+    const p = document.createElement("p")
+    p.className = "text-xs text-error px-3 py-3"
+    p.textContent = msg
+    this.listTarget.replaceChildren(p)
   }
 }

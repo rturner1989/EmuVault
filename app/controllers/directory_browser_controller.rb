@@ -27,6 +27,7 @@ class DirectoryBrowserController < ApplicationController
         next unless mount_point&.start_with?("/")
         next if %w[proc sys dev run tmpfs cgroup cgroup2 mqueue shm overlay].include?(fs_type)
         next if mount_point == "/"
+
         paths << mount_point
       end
     end
@@ -34,13 +35,14 @@ class DirectoryBrowserController < ApplicationController
     # If no interesting mounts found, fall back to common local directories
     if paths.empty?
       candidates = [
-        Dir.home,                          # current user's home dir
-        "/home",                           # Linux
-        "/Users",                          # macOS
-        "/mnt",                            # Linux external drives
-        "/Volumes",                        # macOS external drives
-        "/media"                           # Linux removable media
+        Dir.home, # current user's home dir
+        "/home", # Linux
+        "/Users", # macOS
+        "/mnt", # Linux external drives
+        "/Volumes", # macOS external drives
+        "/media" # Linux removable media
       ]
+
       paths = candidates.select { |p| Dir.exist?(p) }
     end
 

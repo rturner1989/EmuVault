@@ -58,7 +58,6 @@ class EmulatorProfilesController < ApplicationController
     EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true)
 
     remaining = Array(params[:remaining]).reject(&:blank?)
-
     if remaining.any?
       redirect_to library_system_emulator_profiles_path(system: remaining.first, remaining: remaining.drop(1), total: params[:total])
     else

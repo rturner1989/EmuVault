@@ -6,6 +6,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   submit(event) {
     event.preventDefault()
+
     const form = event.currentTarget
     const triggerEl = form.querySelector('[type="submit"]')
     const method = (form.method || "GET").toUpperCase()
@@ -21,6 +22,7 @@ export default class extends Controller {
 
   click(event) {
     event.preventDefault()
+
     const anchor = event.currentTarget.closest("a") || event.currentTarget
     const url = anchor.href
     if (url) this._download(url, anchor)

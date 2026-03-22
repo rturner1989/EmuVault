@@ -15,7 +15,6 @@ class SetupController < ApplicationController
   # Step 1a POST — save selected systems, auto-select their profiles, begin per-system emulator config
   def select_systems
     @form = SetupSystemsForm.new(system_keys: params[:system_keys])
-
     if @form.save
       session[:pending_systems] = @form.system_keys
       redirect_to profiles_setup_path(system: @form.system_keys.first)

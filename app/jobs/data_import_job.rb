@@ -13,7 +13,7 @@ class DataImportJob < ApplicationJob
     resolutions = import.resolutions || {}
     result = { imported: 0, skipped: 0, failed: 0 }
 
-    Array(manifest["emulator_profiles"]).each { restore_profile(_1) }
+    Array(manifest["emulator_profiles"]).each { |profile_data| restore_profile(profile_data) }
 
     import.file.open do |tmp|
       Zip::File.open(tmp.path) do |zip|
@@ -46,8 +46,8 @@ class DataImportJob < ApplicationJob
       game = Game.create!(title: game_data["title"], system: game_data["system"])
     end
 
-    game_data["saves"].each { restore_save(zip, game, _1) }
-    game_data.fetch("emulator_configs", []).each { restore_emulator_config(game, _1) }
+    game_data["saves"].each { |save_data| restore_save(zip, game, save_data) }
+    game_data.fetch("emulator_configs", []).each { |config_data| restore_emulator_config(game, config_data) }
     result[:imported] += 1
   rescue => e
     Rails.logger.error "[DataImportJob] Failed to import game #{game_data["title"]}: #{e.message}"

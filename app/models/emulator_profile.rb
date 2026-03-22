@@ -18,16 +18,11 @@
 #  index_emulator_profiles_on_name_and_platform_and_game_system  (name,platform,game_system) UNIQUE
 #
 class EmulatorProfile < ApplicationRecord
+  include HasGameSystem
   extend Enumerize
 
   enumerize :platform, in: %i[linux windows macos ios android], predicates: true
-  enumerize :game_system, in: %i[
-    nes snes gb gbc gba nds
-    genesis sms gg
-    psx ps2 psp
-    n64 gc wii
-    arcade
-  ]
+  enumerize :game_system, in: GAME_SYSTEMS
 
   has_many :game_saves, dependent: :nullify
   has_many :game_emulator_configs, dependent: :destroy

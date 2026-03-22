@@ -14,15 +14,10 @@
 #  index_games_on_rom_hash  (rom_hash)
 #
 class Game < ApplicationRecord
+  include HasGameSystem
   extend Enumerize
 
-  enumerize :system, in: %i[
-    nes snes gb gbc gba nds
-    genesis sms gg
-    psx ps2 psp
-    n64 gc wii
-    arcade
-  ], predicates: true
+  enumerize :system, in: GAME_SYSTEMS, predicates: true
 
   has_many :game_saves, dependent: :destroy
   has_many :game_emulator_configs, dependent: :destroy

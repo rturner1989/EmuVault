@@ -30,8 +30,8 @@ class ExportGenerator
     {
       exported_at: Time.current.iso8601,
       app_version: File.read(Rails.root.join("VERSION")).strip,
-      games: @games.map { serialize_game(_1) },
-      emulator_profiles: EmulatorProfile.where(user_selected: true).map { serialize_profile(_1) }
+      games: @games.map { |game| serialize_game(game) },
+      emulator_profiles: EmulatorProfile.where(user_selected: true).map { |profile| serialize_profile(profile) }
     }
   end
 
@@ -40,8 +40,8 @@ class ExportGenerator
       export_id: game.id.to_s,
       title: game.title,
       system: game.system,
-      saves: game.game_saves.latest_first.map { serialize_save(game, _1) },
-      emulator_configs: game.game_emulator_configs.map { serialize_emulator_config(_1) }
+      saves: game.game_saves.latest_first.map { |save| serialize_save(game, save) },
+      emulator_configs: game.game_emulator_configs.map { |config| serialize_emulator_config(config) }
     }
   end
 

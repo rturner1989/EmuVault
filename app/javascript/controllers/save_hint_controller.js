@@ -19,13 +19,17 @@ export default class extends Controller {
   copy() {
     const path = this.hintTarget.textContent
     if (!path) return
+
     navigator.clipboard.writeText(path).then(() => {
       if (!this.hasCopyBtnTarget) return
+
       const icon = this.copyBtnTarget.querySelector('i')
       if (!icon) return
+
       icon.className = 'fa-solid fa-check fa-fw'
       this.copyBtnTarget.classList.add("text-success")
       this.copyBtnTarget.classList.remove("text-muted")
+
       setTimeout(() => {
         icon.className = 'fa-regular fa-clipboard fa-fw'
         this.copyBtnTarget.classList.remove("text-success")

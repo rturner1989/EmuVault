@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import A11yDialog from "a11y-dialog"
-import { lockScroll, unlockScroll } from "./scroll_lock"
+import { lockScroll, unlockScroll } from "../utils/scroll_lock"
 
 // Manages the quick sync bottom sheet — triggered from the mobile centre nav button.
 // Works identically to the dialog controller but scoped to the app shell wrapper
