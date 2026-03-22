@@ -2,10 +2,21 @@
 
 class GameDecorator < ApplicationDecorator
   SYSTEM_COLORS = {
-    nes: :purple, snes: :purple, n64: :purple, gc: :purple, wii: :purple,
-    gb: :green, gbc: :green, gba: :green, nds: :green,
-    genesis: :yellow, sms: :yellow, gg: :yellow,
-    psx: :cyan, ps2: :cyan, psp: :cyan,
+    nes: :purple,
+    snes: :purple,
+    n64: :purple,
+    gc: :purple,
+    wii: :purple,
+    gb: :green,
+    gbc: :green,
+    gba: :green,
+    nds: :green,
+    genesis: :yellow,
+    sms: :yellow,
+    gg: :yellow,
+    psx: :cyan,
+    ps2: :cyan,
+    psp: :cyan,
     arcade: :pink
   }.freeze
 

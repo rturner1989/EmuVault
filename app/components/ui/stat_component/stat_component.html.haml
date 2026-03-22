@@ -1,12 +1,12 @@
-%div{ class: "stat bg-base-100 border border-base-300 rounded-lg" }
-  %div{ class: "stat-title flex items-center gap-1.5" }
+.stat.bg-base-100.border.border-base-300.rounded-lg
+  .stat-title.flex.items-center{ class: "gap-1.5" }
     - if icon?
       = icon
     = @title
-  %div{ class: "stat-value text-2xl #{@value_color}" }
+  .stat-value.text-2xl{ class: @value_color }
     = @value
   - if @description || action?
-    %div{ class: "stat-desc" }
+    .stat-desc
       - if action?
         = action
       - else

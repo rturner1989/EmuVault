@@ -1,9 +1,10 @@
-- if managed?
+- if has_dialog_controller?
   %div{ data: { controller: "dialog" } }
     = trigger
 
     %div{ id: @id, aria: { hidden: "true" }, data: { dialog_target: "container" }, class: "dialog-container" }
       .dialog-overlay{ data: close_data }
+
       %div{ class: content_classes, data: content_data }
         .dialog-sheet
           = render ::UI::CardComponent.new(scrollable: true, padding: :sm, class: "dialog-card") do |c|
@@ -18,7 +19,10 @@
                   - if @subtitle
                     %p.text-sm.text-muted.mt-1
                       = @subtitle
-                = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: close_data, "aria-label": "Close") do |a|
+                = render ::UI::ActionComponent.new(variant: :ghost,
+                  class: "btn-circle",
+                  data: close_data,
+                  aria: { label: "Close" }) do |a|
                   - a.with_leading_icon(name: "fa-xmark")
 
             - c.with_body do
@@ -28,23 +32,32 @@
               - c.with_footer do
                 .flex.items-center.gap-3
                   = footer
-                  = render ::UI::ActionComponent.new(variant: :ghost, size: :sm, type: :button, data: close_data) do
+                  = render ::UI::ActionComponent.new(variant: :ghost,
+                    size: :sm,
+                    type: :button,
+                    data: close_data) do
                     = "Cancel"
             - elsif footer_actions?
               - c.with_footer do
                 .flex.items-center.gap-3
                   - footer_actions.each do |action|
                     = action
-                  = render ::UI::ActionComponent.new(variant: :ghost, size: :sm, type: :button, data: close_data) do
+                  = render ::UI::ActionComponent.new(variant: :ghost,
+                    size: :sm,
+                    type: :button,
+                    data: close_data) do
                     = "Cancel"
     - if page_content?
       = page_content
 - else
   %div{ id: @id, aria: { hidden: "true" }, data: @container_data, class: "dialog-container" }
     .dialog-overlay{ data: close_data }
+
     %div{ class: content_classes, data: content_data }
       .dialog-sheet
-        = render ::UI::CardComponent.new(scrollable: true, padding: :sm, class: "dialog-card") do |c|
+        = render ::UI::CardComponent.new(scrollable: true,
+          padding: :sm,
+          class: "dialog-card") do |c|
           - c.with_header do
             - if @swipeable
               .dialog-handle-wrapper
@@ -52,7 +65,10 @@
             .flex.items-center.justify-between
               %h2.text-base.font-semibold
                 = @title
-              = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: close_data, "aria-label": "Close") do |a|
+              = render ::UI::ActionComponent.new(variant: :ghost,
+                class: "btn-circle",
+                data: close_data,
+                aria: { label: "Close" }) do |a|
                 - a.with_leading_icon(name: "fa-xmark")
 
           - c.with_body do

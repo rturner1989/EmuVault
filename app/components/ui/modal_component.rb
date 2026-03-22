@@ -17,7 +17,7 @@ module UI
       @swipeable = swipeable
     end
 
-    def managed?
+    def has_dialog_controller?
       @container_data.empty?
     end
 
@@ -31,7 +31,7 @@ module UI
     end
 
     def close_data
-      managed? ? { action: "click->dialog#close" } : { "a11y-dialog-hide": "" }
+      has_dialog_controller? ? { action: "click->dialog#close" } : { "a11y-dialog-hide": "" }
     end
   end
 end

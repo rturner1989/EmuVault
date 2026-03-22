@@ -1,8 +1,14 @@
 .flex.flex-col.items-center.justify-center.py-16.px-4.text-center
-  .w-16.h-16.rounded-full.flex.items-center.justify-center.mb-4{ class: "bg-base-300" }
-    %span.text-2xl ✦
-  %h3.text-lg.font-semibold= @title
+  .w-16.h-16.rounded-full.flex.items-center.justify-center.mb-4.bg-base-300
+    %span.text-2xl
+      = "✦"
+  %h3.text-lg.font-semibold
+    = @title
+
   - if @description
-    %p.mt-1.text-sm.opacity-60.max-w-sm= @description
+    %p.mt-1.text-sm.opacity-60.max-w-sm
+      = @description
+
   - if action
-    .mt-4= action
+    .mt-4
+      = action

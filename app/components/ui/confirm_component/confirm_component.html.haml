@@ -1,15 +1,27 @@
 = render ::UI::ModalComponent.new(id: @id, title: @title, swipeable: false) do |modal|
   = modal.with_trigger do
     - if @trigger_icon
-      = render ::UI::ActionComponent.new(variant: @trigger_variant, size: @size, class: @trigger_class, data: { action: "dialog#open" }, "aria-label": @trigger_label) do |a|
+      = render ::UI::ActionComponent.new(variant: @trigger_variant,
+        size: @size,
+        class: @trigger_class,
+        data: { action: "dialog#open" },
+        aria: { label: @trigger_label }) do |a|
         - a.with_leading_icon(name: @trigger_icon)
     - else
-      = render ::UI::ActionComponent.new(variant: @trigger_variant, size: @size, class: @trigger_class, data: { action: "dialog#open" }) do
+      = render ::UI::ActionComponent.new(variant: @trigger_variant,
+        size: @size,
+        class: @trigger_class,
+        data: { action: "dialog#open" }) do
         = @trigger_label
 
   = modal.with_body do
-    %p.text-sm.opacity-70
+    %p{ class: "text-sm opacity-70" }
       = @message
 
   = modal.with_footer do
-    = button_to @confirm_label, @url, method: @method, params: @params, class: "btn btn-error btn-sm"
+    = render ::UI::ActionComponent.new(href: @url,
+      method: @method,
+      params: @params,
+      variant: :danger,
+      size: :sm) do
+      = @confirm_label
