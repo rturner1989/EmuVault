@@ -1,48 +1,96 @@
 = helpers.turbo_stream_from "notifications_#{current_user.id}"
 
-.flex.min-h-screen{ class: "bg-base-200", data: { controller: "notifications onboarding quick-sync", "onboarding-active-value": @onboarding.to_s } }
+.flex.min-h-screen.bg-base-200{ data: { controller: "notifications onboarding quick-sync", onboarding_active_value: @onboarding.to_s } }
   %nav{ class: "hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-base-100 border-r border-base-300" }
-    .flex.items-center.h-16.px-6{ class: "border-b border-base-300" }
-      = link_to root_path, class: "hover:opacity-80 transition-opacity" do
+    .flex.items-center.h-16.px-6.border-b.border-base-300
+      = render UI::ActionComponent.new(href: root_path,
+        variant: :default,
+        size: :md,
+        class: "hover:opacity-80 transition-opacity") do
         = render ::UI::LogoComponent.new(size: :md)
 
     .flex-1.overflow-y-auto.px-3.py-4.space-y-1
-      = link_to root_path, class: nav_link_class("/") do
-        %i.fa-solid.fa-house.fa-fw
-        %span Dashboard
-      = link_to games_path, id: "nav-games", class: nav_link_class("/games") do
-        %i.fa-solid.fa-gamepad.fa-fw
-        %span Games
-      = link_to activity_path, id: "nav-activity", class: nav_link_class("/activity") do
-        %i.fa-solid.fa-clock-rotate-left.fa-fw
-        %span Activity
-      = link_to emulator_profiles_path, id: "nav-profiles", class: nav_link_class("/emulator_profiles") do
-        %i.fa-solid.fa-microchip.fa-fw
-        %span Emulator Profiles
+      = render ::UI::ActionComponent.new(href: root_path,
+        variant: :default,
+        size: :md,
+        class: nav_link_class("/")) do |a|
+        - a.with_leading_icon(name: "fa-house")
+        = "Dashboard"
+      = render ::UI::ActionComponent.new(href: games_path,
+        variant: :default,
+        size: :md,
+        id: "nav-games",
+        class: nav_link_class("/games")) do |a|
+        - a.with_leading_icon(name: "fa-gamepad")
+        = "Games"
+      = render ::UI::ActionComponent.new(href: activity_path,
+        variant: :default,
+        size: :md,
+        id: "nav-activity",
+        class: nav_link_class("/activity")) do |a|
+        - a.with_leading_icon(name: "fa-clock-rotate-left")
+        = "Activity"
+      = render ::UI::ActionComponent.new(href: emulator_profiles_path,
+        variant: :default,
+        size: :md,
+        id: "nav-profiles",
+        class: nav_link_class("/emulator_profiles")) do |a|
+        - a.with_leading_icon(name: "fa-microchip")
+        = "Emulator Profiles"
 
-    .p-3.space-y-1{ class: "border-t border-base-300" }
-      .px-3.py-1.text-xs.text-muted.truncate= current_user.username
-      %button#nav-notifications.flex.items-center.gap-2.w-full.px-3.py-2.rounded-lg.text-sm.text-muted{ class: "hover:bg-base-300 hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
-        %i.fa-solid.fa-bell.fa-fw
-        %span Notifications
+    .p-3.space-y-1.border-t.border-base-300
+      .px-3.py-1.text-xs.text-muted.truncate
+        = current_user.username
+
+      = render ::UI::ActionComponent.new(variant: :default,
+        size: :md,
+        id: "nav-notifications",
+        class: "flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-base-content transition-colors cursor-pointer",
+        data: { action: "notifications#open" }) do |a|
+        - a.with_leading_icon(name: "fa-bell")
+        = "Notifications"
         - if unread_count > 0
-          %span.ml-auto.min-w-5.h-5.bg-error.text-white.text-xs.rounded-full.flex.items-center.justify-center.leading-none{ "data-notification-badge": "" }= unread_count
-      = link_to settings_path, id: "nav-settings", class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-base-content transition-colors" do
-        %i.fa-solid.fa-gear.fa-fw
-        %span Settings
-      = button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-error transition-colors cursor-pointer" do
-        %i.fa-solid.fa-right-from-bracket.fa-fw
-        %span Sign Out
+          %span{ class: "ml-auto min-w-5 h-5 bg-error text-white text-xs rounded-full flex items-center justify-center leading-none", "data-notification-badge": "" }
+            = unread_count
+      = render ::UI::ActionComponent.new(href: settings_path,
+        variant: :default,
+        size: :md,
+        id: "nav-settings",
+        class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-base-content transition-colors") do |a|
+        - a.with_leading_icon(name: "fa-gear")
+        = "Settings"
+      = render ::UI::ActionComponent.new(href: session_path,
+        method: :delete,
+        form: { data: { turbo: false } },
+        variant: :default,
+        size: :md,
+        class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-error transition-colors cursor-pointer") do |a|
+        - a.with_leading_icon(name: "fa-right-from-bracket")
+        = "Sign Out"
 
-  .flex-1.min-w-0.flex.flex-col.min-h-screen.mobile-bottom-content-pad{ class: "lg:pl-64 lg:pt-0 lg:pb-0" }
-    .lg:hidden.flex.items-center.pb-2.mobile-top-bar{ class: "bg-base-100 border-b border-base-300" }
-      = link_to root_path, class: "hover:opacity-80 transition-opacity" do
+  .flex-1.min-w-0.flex.flex-col.min-h-screen.mobile-bottom-content-pad.lg:pl-64.lg:pt-0.lg:pb-0
+    .lg:hidden.flex.items-center.pb-2.mobile-top-bar.bg-base-100.border-b.border-base-300
+      = render UI::ActionComponent.new(href: root_path,
+        variant: :default,
+        size: :md,
+        class: "hover:opacity-80 transition-opacity") do
         = render ::UI::LogoComponent.new(size: :sm)
+
       .ml-auto.flex.items-center.gap-1
-        = link_to settings_path, id: "mobile-nav-settings", class: "relative inline-flex items-center justify-center w-8 h-8 text-muted hover:text-base-content transition-colors", aria: { label: "Settings" } do
-          %i.fas.fa-gear
-        %button#mobile-nav-notifications.relative.inline-flex.items-center.justify-center.w-8.h-8.text-muted{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "notifications#open" } }
-          %i.fas.fa-bell
+        = render ::UI::ActionComponent.new(href: settings_path,
+          variant: :default,
+          size: :md,
+          id: "mobile-nav-settings",
+          class: "relative inline-flex items-center justify-center w-8 h-8 text-muted hover:text-base-content transition-colors",
+          aria: { label: "Settings" }) do |a|
+          - a.with_leading_icon(name: "fa-gear")
+        = render ::UI::ActionComponent.new(type: :button,
+          variant: :default,
+          size: :md,
+          id: "mobile-nav-notifications",
+          class: "relative inline-flex items-center justify-center w-8 h-8 text-muted hover:text-base-content transition-colors cursor-pointer",
+          data: { action: "notifications#open" }) do |a|
+          - a.with_leading_icon(name: "fa-bell")
           = render "shared/notification_badge", count: unread_count
 
     .w-full.max-w-4xl.mx-auto.min-w-0
@@ -50,36 +98,66 @@
 
   %nav{ class: "fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-base-100 border-t border-base-300 mobile-bottom-nav" }
     .flex
-      = link_to root_path, class: mobile_nav_class("/"), aria: { label: "Dashboard" } do
-        %i.fa-solid.fa-house.fa-fw
-      = link_to games_path, id: "mobile-nav-games", class: mobile_nav_class("/games"), aria: { label: "Games" } do
-        %i.fa-solid.fa-gamepad.fa-fw
-      -# Centre Quick Sync button — prominent, always accessible
-      %button#mobile-nav-quick-sync.flex-1.flex.flex-col.items-center.justify-center.py-2.cursor-pointer{ aria: { label: "Quick Sync" }, data: { action: "quick-sync#open" } }
-        .relative.flex.items-center.justify-center{ class: "w-10 h-10 rounded-full bg-primary -mt-5 shadow-lg" }
-          %i.fa-solid.fa-rotate.text-primary-content
-      = link_to activity_path, id: "mobile-nav-activity", class: mobile_nav_class("/activity"), aria: { label: "Activity" } do
-        %i.fa-solid.fa-clock-rotate-left.fa-fw
-      = link_to emulator_profiles_path, id: "mobile-nav-profiles", class: mobile_nav_class("/emulator_profiles"), aria: { label: "Emulator Profiles" } do
-        %i.fa-solid.fa-microchip.fa-fw
+      = render ::UI::ActionComponent.new(href: root_path,
+        variant: :default,
+        size: :md,
+        class: mobile_nav_class("/"),
+        aria: { label: "Dashboard" }) do |a|
+        - a.with_leading_icon(name: "fa-house")
+      = render ::UI::ActionComponent.new(href: games_path,
+        variant: :default,
+        size: :md,
+        id: "mobile-nav-games",
+        class: mobile_nav_class("/games"), aria: { label: "Games" }) do |a|
+        - a.with_leading_icon(name: "fa-gamepad")
+      = render ::UI::ActionComponent.new(variant: :default,
+        size: :md,
+        id: "mobile-nav-quick-sync",
+        class: "flex-1 flex flex-col items-center justify-center py-2 cursor-pointer",
+        aria: { label: "Quick Sync" }, data: { action: "quick-sync#open" }) do
+        .relative.flex.items-center.justify-center.w-10.h-10.rounded-full.bg-primary.-mt-5.shadow-lg
+          = render ::UI::IconComponent.new(name: "fa-rotate", class: "text-primary-content", fw: false)
+      = render ::UI::ActionComponent.new(href: activity_path,
+        variant: :default,
+        size: :md,
+        id: "mobile-nav-activity",
+        class: mobile_nav_class("/activity"), aria: { label: "Activity" }) do |a|
+        - a.with_leading_icon(name: "fa-clock-rotate-left")
+      = render ::UI::ActionComponent.new(href: emulator_profiles_path,
+        variant: :default,
+        size: :md,
+        id: "mobile-nav-profiles",
+        class: mobile_nav_class("/emulator_profiles"), aria: { label: "Emulator Profiles" }) do |a|
+        - a.with_leading_icon(name: "fa-microchip")
 
-  -# Quick sync bottom sheet
-  = render ::UI::ModalComponent.new(id: "quick-sync-sheet", title: "Quick Sync", variant: :bottom_sheet,
-    container_data: { "quick-sync-target": "container" }) do |modal|
+  -# Quick sync
+  = render ::UI::ModalComponent.new(id: "quick-sync-sheet",
+    title: "Quick Sync",
+    variant: :bottom_sheet,
+    container_data: { quick_sync_target: "container" }) do |modal|
     = modal.with_body do
       = helpers.turbo_frame_tag :quick_sync_content do
         = render "shared/quick_sync_content"
 
   -# Notification panel overlay
-  %div{ data: { notifications_target: "backdrop" }, class: "fixed inset-0 z-50 pointer-events-none" }
-    %div{ class: "absolute inset-0 opacity-0 transition-opacity duration-300 bg-black/40", data: { notifications_target: "overlay", action: "click->notifications#close" } }
-    .absolute.right-0.top-0.h-full.w-full.flex.flex-col.translate-x-full.transition-transform.duration-300.ease-out{ class: "lg:max-w-sm bg-base-100 border-l border-base-300", data: { notifications_target: "panel" } }
-      .flex.items-center.justify-between.px-4.py-3.notification-panel-top{ class: "border-b border-base-300" }
-        %h2.font-semibold Notifications
-        = render ::UI::ActionComponent.new(variant: :ghost, class: "btn-circle", data: { action: "click->notifications#close" }) do |a|
+  .fixed.inset-0.z-50.pointer-events-none{ data: { notifications_target: "backdrop" } }
+    .absolute.inset-0.opacity-0.transition-opacity.duration-300{ class: "bg-black/40", data: { notifications_target: "overlay", action: "click->notifications#close" } }
+    .absolute.right-0.top-0.h-full.w-full.flex.flex-col.translate-x-full.transition-transform.duration-300.ease-out.lg:max-w-sm.bg-base-100.border-l.border-base-300{ data: { notifications_target: "panel" } }
+      .flex.items-center.justify-between.px-4.py-3.notification-panel-top.border-b.border-base-300
+        %h2.font-semibold
+          = "Notifications"
+        = render ::UI::ActionComponent.new(variant: :ghost,
+          class: "btn-circle",
+          data: { action: "click->notifications#close" }) do |a|
           - a.with_leading_icon(name: "fa-times", style: "fas", fw: false)
       .flex-1.overflow-y-auto
-        = helpers.turbo_frame_tag :notifications_panel, src: notifications_path, loading: :lazy, data: { notifications_target: "frame" }
-      .px-4.py-2.notification-panel-bottom{ class: "border-t border-base-300" }
-        %button.text-xs.text-muted.w-full.text-left.py-1{ class: "hover:text-base-content transition-colors cursor-pointer", data: { action: "click->notifications#markAllRead" } }
-          Mark all as read
+        = helpers.turbo_frame_tag :notifications_panel,
+          src: notifications_path,
+          loading: :lazy,
+          data: { notifications_target: "frame" }
+      .px-4.py-2.notification-panel-bottom.border-t.border-base-300
+        = render ::UI::ActionComponent.new(variant: :default,
+          size: :md,
+          class: "text-xs text-muted w-full text-left py-1 hover:text-base-content transition-colors cursor-pointer",
+          data: { action: "click->notifications#markAllRead" }) do
+          = "Mark all as read"

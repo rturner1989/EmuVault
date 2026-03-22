@@ -8,14 +8,21 @@ module UI
     LINK_VARIANTS = %i[link link_primary link_secondary link_accent link_neutral
                        link_success link_info link_warning link_error].to_set.freeze
 
-    def initialize(href: nil, variant: :secondary, size: :sm, disabled: false, **kwargs)
+    def initialize(href: nil, method: nil, params: nil, form: nil, variant: :secondary, size: :sm, disabled: false, **kwargs)
       @href = href
+      @method = method
+      @params = params
+      @form = form
       @link = LINK_VARIANTS.include?(variant.to_sym)
       extra_class = kwargs.delete(:class)
       computed = style(:action, variant: variant.to_sym, size: @link ? :md : size.to_sym, disabled: disabled)
       final_class = (computed + [extra_class]).compact.reject(&:empty?).join(" ")
       @kwargs = kwargs.merge(class: final_class)
       @kwargs[:disabled] = true if disabled
+    end
+
+    private def form_action?
+      @href && @method
     end
 
     style :action,

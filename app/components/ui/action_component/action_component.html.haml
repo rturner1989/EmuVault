@@ -1,4 +1,16 @@
-- if @href
+- if form_action?
+  = button_to @href,
+    method: @method,
+    params: @params,
+    form: @form,
+    **@kwargs do
+    - if leading_icon?
+      = leading_icon
+    - if content
+      = content
+    - if trailing_icon?
+      = trailing_icon
+- elsif @href
   = link_to @href, **@kwargs do
     - if leading_icon?
       = leading_icon
