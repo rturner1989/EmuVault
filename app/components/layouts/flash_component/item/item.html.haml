@@ -1,0 +1,14 @@
+%div{ **@kwargs }
+  = render UI::IconComponent.new(name: variant[:icon], classes: "shrink-0")
+
+  %span.flex-1.text-sm
+    = @message
+
+  = render UI::ActionComponent.new(type: :button,
+    variant: :ghost,
+    class: "btn-circle shrink-0",
+    aria: { label: "Dismiss" },
+    data: { action: "flash#dismiss" }) do |a|
+    - a.with_trailing_icon(name: "fa-xmark")
+ 
+  %div{ class: "flash-progress", data: { flash_target: "progress" } }

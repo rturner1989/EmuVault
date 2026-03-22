@@ -1,5 +1,5 @@
 - if @href
-  = link_to @href, **@html_options do
+  = link_to @href, **@kwargs do
     - if leading_icon?
       = leading_icon
     - if @content_text
@@ -7,7 +7,7 @@
     - if trailing_icon?
       = trailing_icon
 - else
-  %button{ **@html_options }
+  %button{ **@kwargs }
     - if leading_icon?
       = leading_icon
     - if @content_text
