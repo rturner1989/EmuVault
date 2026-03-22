@@ -26,7 +26,7 @@ module Layouts
     end
 
     def unread_count
-      Current.user.notifications.where(read_at: nil).count
+      current_user.notifications.where(read_at: nil).count
     end
 
     private def active_path?(path)

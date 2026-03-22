@@ -4,7 +4,7 @@ class NotificationsController < ApplicationController
   def index
     authorize! current_user
 
-    @notifications = Current.user.notifications
+    @notifications = current_user.notifications
                             .where(read_at: nil)
                             .includes(event: {})
                             .order(created_at: :desc)
@@ -12,14 +12,14 @@ class NotificationsController < ApplicationController
   end
 
   def show
-    notification = Current.user.notifications.find(params[:id])
+    notification = current_user.notifications.find(params[:id])
     authorize! current_user
 
     notification.update!(read_at: Time.current) unless notification.read_at
 
-    count = Current.user.notifications.where(read_at: nil).count
+    count = current_user.notifications.where(read_at: nil).count
     Turbo::StreamsChannel.broadcast_replace_later_to(
-      "notifications_#{Current.user.id}",
+      "notifications_#{current_user.id}",
       targets: "[data-notification-badge]",
       partial: "shared/notification_badge",
       locals: { count: count }
@@ -31,10 +31,10 @@ class NotificationsController < ApplicationController
   def mark_all_read
     authorize! current_user
 
-    Current.user.notifications.where(read_at: nil).update_all(read_at: Time.current)
+    current_user.notifications.where(read_at: nil).update_all(read_at: Time.current)
 
     Turbo::StreamsChannel.broadcast_replace_to(
-      "notifications_#{Current.user.id}",
+      "notifications_#{current_user.id}",
       targets: "[data-notification-badge]",
       partial: "shared/notification_badge",
       locals: { count: 0 }

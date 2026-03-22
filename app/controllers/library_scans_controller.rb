@@ -9,7 +9,7 @@ class LibraryScansController < ApplicationController
   def review
     authorize! current_user
 
-    result = Current.user.last_scan_result || {}
+    result = current_user.last_scan_result || {}
     @found = result["found"] || []
     @already_in_lib = result["already_in_lib"] || 0
     @skipped_paths = result["skipped_paths"] || []
@@ -20,7 +20,7 @@ class LibraryScansController < ApplicationController
     authorize! current_user
 
     selected_roms = Set.new(params[:selected_roms] || [])
-    stored = Current.user.last_scan_result&.dig("found") || []
+    stored = current_user.last_scan_result&.dig("found") || []
     items = stored.select { |item| selected_roms.include?(item["rom_path"]) }
 
     if items.any?

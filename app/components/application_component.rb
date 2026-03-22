@@ -20,6 +20,10 @@ class ApplicationComponent < ViewComponent::Base
     top: "_top"
   }.freeze
 
+  private def current_user
+    Current.user
+  end
+
   private def target_for(target)
     return nil if target.nil?
     return target if TARGET_MAPPINGS.value?(target)

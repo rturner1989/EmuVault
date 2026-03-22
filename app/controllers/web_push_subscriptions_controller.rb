@@ -4,7 +4,7 @@ class WebPushSubscriptionsController < ApplicationController
   def create
     authorize! current_user
 
-    Current.user.web_push_subscriptions.find_or_create_by!(
+    current_user.web_push_subscriptions.find_or_create_by!(
       endpoint: subscription_params[:endpoint]
     ) do |sub|
       sub.p256dh = subscription_params[:p256dh]
@@ -17,7 +17,7 @@ class WebPushSubscriptionsController < ApplicationController
   def destroy
     authorize! current_user
 
-    Current.user.web_push_subscriptions
+    current_user.web_push_subscriptions
            .find_by(endpoint: params[:endpoint])
            &.destroy
 

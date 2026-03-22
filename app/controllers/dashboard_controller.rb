@@ -6,6 +6,7 @@ class DashboardController < ApplicationController
     @games_count = Game.count
     @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count
     @sync_events_count = SyncEvent.count
+
     @storage_used = storage_label(
       ActiveStorage::Attachment.joins(:blob)
         .where(record_type: "GameSave", name: "file")

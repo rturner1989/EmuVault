@@ -43,6 +43,7 @@ class EmulatorProfilesController < ApplicationController
       @remaining = systems.drop(1)
       @total = systems.size
     end
+
     @current_pos = @total - @remaining.size
     @system_label = EmulatorProfile.game_system.find_value(@system)&.text || @system.to_s.upcase
     @profiles = EmulatorProfile.where(is_default: true, user_selected: false, game_system: @system).ordered

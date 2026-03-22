@@ -30,8 +30,8 @@ class SetupController < ApplicationController
     selected_ids = (params[:profile_ids] || []).map(&:to_i)
 
     if system_key
-      system_profiles = EmulatorProfile.where(is_default: true, game_system: system_key)
-      system_profiles.update_all(user_selected: false)
+      EmulatorProfile.where(is_default: true, game_system: system_key)
+                     .update_all(user_selected: false)
       EmulatorProfile.where(id: selected_ids, is_default: true, game_system: system_key)
                      .update_all(user_selected: true)
 
@@ -80,12 +80,15 @@ class SetupController < ApplicationController
 
   # Step 3 POST — save auto-scan settings, mark setup complete
   def save_library
-    current_user.update!(
-      params.require(:user).permit(:scan_enabled, :scan_interval)
+    if current_user.update(
+      **params.require(:user).permit(:scan_enabled, :scan_interval),
+      setup_completed: true
     )
-    current_user.update!(setup_completed: true)
-    session[:show_onboarding] = true
-    redirect_to root_path
+      session[:show_onboarding] = true
+      redirect_to root_path
+    else
+      redirect_to library_setup_path, alert: current_user.errors.full_messages.to_sentence
+    end
   end
 
   private def redirect_if_setup_complete

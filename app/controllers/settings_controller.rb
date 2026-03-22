@@ -2,14 +2,14 @@ class SettingsController < ApplicationController
   def show
     authorize! current_user
 
-    @user = Current.user
+    @user = current_user
     @scan_paths = ScanPath.ordered
   end
 
   def update
     authorize! current_user
 
-    @user = Current.user
+    @user = current_user
     if @user.update(scan_params)
     else
       render :show, status: :unprocessable_entity
