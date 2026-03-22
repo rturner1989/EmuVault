@@ -4,12 +4,10 @@ module UI
   class BadgeComponent < ApplicationComponent
     renders_one :icon, "UI::IconComponent"
 
-    def initialize(context_text: nil, color: :comment, size: :sm, **kwargs)
-      @content_text = context_text
+    def initialize(color: :comment, size: :sm, **kwargs)
       extra = kwargs.delete(:class)
       computed = style(:badge, color: color.to_sym, size: size.to_sym)
-      @class = (computed + [extra]).compact.reject(&:empty?).join(" ")
-      @kwargs = kwargs
+      @kwargs = kwargs.merge(class: (computed + [extra]).compact.reject(&:empty?).join(" "))
     end
 
     style :badge,

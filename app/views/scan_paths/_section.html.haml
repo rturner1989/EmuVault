@@ -2,7 +2,7 @@
 
 %details{ class: scan_paths.any? ? "mt-4" : nil }
   %summary.text-sm.text-primary.cursor-pointer.font-medium
-    = render UI::IconComponent.new(name: "fa-plus", classes: "mr-1")
+    = render UI::IconComponent.new(name: "fa-plus", class: "mr-1")
     = "Add scan path"
   .mt-3
     = render "scan_paths/form"

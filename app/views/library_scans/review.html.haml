@@ -54,5 +54,6 @@
                         #{item["save_files"].size} save #{pluralize(item["save_files"].size, "file")} found alongside ROM
 
       .flex.items-center.gap-3.pt-2
-        = render ::UI::ActionComponent.new(content_text: "Cancel", href: settings_path, variant: :ghost, size: :full)
+        = render ::UI::ActionComponent.new(href: settings_path, variant: :ghost, size: :full) do
+          = "Cancel"
         = f.submit "Add to library", class: "btn btn-primary flex-1"

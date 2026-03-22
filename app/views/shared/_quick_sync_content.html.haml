@@ -4,9 +4,11 @@
     .flex.items-center.justify-between.gap-3
       .min-w-0
         %p.text-base.font-semibold.truncate= @quick_sync_game.title
-        = render ::UI::BadgeComponent.new(context_text: @quick_sync_game.system_label, color: @quick_sync_game.system_badge_color)
+        = render ::UI::BadgeComponent.new(color: @quick_sync_game.system_badge_color) do
+          = @quick_sync_game.system_label
       .flex.items-center.gap-2.shrink-0
-        = render ::UI::ActionComponent.new(content_text: "View →", href: game_path(@quick_sync_game), variant: :ghost, data: { turbo_frame: "_top" })
+        = render ::UI::ActionComponent.new(href: game_path(@quick_sync_game), variant: :ghost, data: { turbo_frame: "_top" }) do
+          = "View →"
         = button_to current_game_path, method: :delete, params: { game_id: @quick_sync_game.id, inline: true }, class: "btn btn-error btn-outline btn-sm", form: { data: { action: "turbo:submit-end->quick-sync#close" } } do
           Clear
 
@@ -31,8 +33,9 @@
                 %p.text-xs.font-mono.flex-1{ data: { save_hint_target: "hint" } }
                 %button.text-muted.hover:text-base-content.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
                   %i.fa-regular.fa-clipboard.fa-fw
-            = render ::UI::ActionComponent.new(content_text: "Download", variant: :info, type: "submit") do |a|
+            = render ::UI::ActionComponent.new(variant: :info, type: "submit") do |a|
               - a.with_leading_icon(name: "fa-download")
+              = "Download"
     - else
       .rounded-lg.p-4.text-center{ class: "bg-base-200 border border-base-300" }
         %p.text-xs.text-muted No save uploaded yet. Upload one below.
@@ -49,8 +52,9 @@
           %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
           %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
           = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
-        = render ::UI::ActionComponent.new(content_text: "Upload", variant: :primary, type: "submit") do |a|
+        = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do |a|
           - a.with_leading_icon(name: "fa-upload")
+          = "Upload"
 
 - else
   .text-center.py-6.space-y-2

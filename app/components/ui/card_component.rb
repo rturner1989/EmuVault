@@ -12,8 +12,7 @@ module UI
       @scrollable = scrollable
       extra_class = kwargs.delete(:class)
       computed = style(:card, scrollable: scrollable)
-      @class = (computed + [extra_class]).compact.reject(&:empty?).join(" ")
-      @kwargs = kwargs
+      @kwargs = kwargs.merge(class: (computed + [extra_class]).compact.reject(&:empty?).join(" "))
     end
 
     def padding_class

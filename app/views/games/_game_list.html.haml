@@ -6,8 +6,9 @@
         .text-base.font-semibold.truncate
           = game.title
         .mt-1
-          = render ::UI::BadgeComponent.new(context_text: game.system_label, color: game.system_badge_color)
-      = render ::UI::IconComponent.new(name: "fa-chevron-right", classes: "text-muted shrink-0")
+          = render ::UI::BadgeComponent.new(color: game.system_badge_color) do
+            = game.system_label
+      = render ::UI::IconComponent.new(name: "fa-chevron-right", class: "text-muted shrink-0")
 
     %div{ class: "flex items-center border-l border-base-300" }
       - if is_current

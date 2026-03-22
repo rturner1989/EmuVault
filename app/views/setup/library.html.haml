@@ -7,9 +7,11 @@
       %p.text-sm.text-muted.mt-0.5
         Add paths to your game directories. EmuVault will scan them to discover games and save files.
         You can skip this and configure it later in Settings.
-    - c.with_footer_action(content_text: "Back", variant: :ghost, size: :md, href: configure_setup_path, class: "flex-1") do |a|
+    - c.with_footer_action(variant: :ghost, size: :md, href: configure_setup_path, class: "flex-1") do |a|
       - a.with_leading_icon(name: "fa-arrow-left")
-    - c.with_footer_action(content_text: "Finish setup", variant: :primary, size: :md, class: "flex-1", type: "submit", form: "library-form")
+      = "Back"
+    - c.with_footer_action(variant: :primary, size: :md, class: "flex-1", type: "submit", form: "library-form") do
+      = "Finish setup"
 
     -# Add path form (inline, no modal)
     .px-5.py-4{ class: "border-b border-base-300" }

@@ -5,11 +5,14 @@ module UI
     renders_one :leading_icon, "UI::IconComponent"
     renders_one :trailing_icon, "UI::IconComponent"
 
-    def initialize(content_text: nil, href: nil, variant: :secondary, size: :sm, disabled: false, **kwargs)
-      @content_text = content_text
+    LINK_VARIANTS = %i[link link_primary link_secondary link_accent link_neutral
+                       link_success link_info link_warning link_error].to_set.freeze
+
+    def initialize(href: nil, variant: :secondary, size: :sm, disabled: false, **kwargs)
       @href = href
+      @link = LINK_VARIANTS.include?(variant.to_sym)
       extra_class = kwargs.delete(:class)
-      computed = style(:action, variant: variant.to_sym, size: size.to_sym, disabled: disabled)
+      computed = style(:action, variant: variant.to_sym, size: @link ? :md : size.to_sym, disabled: disabled)
       final_class = (computed + [extra_class]).compact.reject(&:empty?).join(" ")
       @kwargs = kwargs.merge(class: final_class)
       @kwargs[:disabled] = true if disabled
@@ -24,7 +27,15 @@ module UI
         danger: "btn btn-error btn-outline",
         info: "btn btn-info",
         warning: "btn btn-warning btn-outline",
-        default: ""
+        link: "link",
+        link_primary: "link link-primary",
+        link_secondary: "link link-secondary",
+        link_accent: "link link-accent",
+        link_neutral: "link link-neutral",
+        link_success: "link link-success",
+        link_info: "link link-info",
+        link_warning: "link link-warning",
+        link_error: "link link-error"
       },
       size: {
         xs: "btn-xs",

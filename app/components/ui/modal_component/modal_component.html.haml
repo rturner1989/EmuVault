@@ -28,13 +28,15 @@
               - c.with_footer do
                 .flex.items-center.gap-3
                   = footer
-                  = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: close_data)
+                  = render ::UI::ActionComponent.new(variant: :ghost, size: :sm, type: :button, data: close_data) do
+                    = "Cancel"
             - elsif footer_actions?
               - c.with_footer do
                 .flex.items-center.gap-3
                   - footer_actions.each do |action|
                     = action
-                  = render ::UI::ActionComponent.new(content_text: "Cancel", variant: :ghost, size: :sm, type: :button, data: close_data)
+                  = render ::UI::ActionComponent.new(variant: :ghost, size: :sm, type: :button, data: close_data) do
+                    = "Cancel"
     - if page_content?
       = page_content
 - else

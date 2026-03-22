@@ -7,8 +7,9 @@
       = f.text_field :path, placeholder: "/saves/gba/", required: true, class: "input input-bordered input-sm w-full font-mono pr-8", data: { "directory-browser-target": "input" }
       %button{ type: "button", class: "absolute right-2 top-1/2 -translate-y-1/2 text-muted cursor-pointer hover:text-base-content transition-colors", data: { action: "click->directory-browser#clearInput" } }
         %i.fa-solid.fa-xmark.fa-fw
-    = render ::UI::ActionComponent.new(content_text: "Browse", variant: :ghost, class: "shrink-0", type: "button", data: { action: "click->directory-browser#toggle" }) do |a|
+    = render ::UI::ActionComponent.new(variant: :ghost, class: "shrink-0", type: "button", data: { action: "click->directory-browser#toggle" }) do |a|
       - a.with_leading_icon(name: "fa-folder-open")
+      = "Browse"
 
   -# File browser panel (hidden until Browse clicked)
   %div{ hidden: "", data: { "directory-browser-target": "browser" }, class: "rounded-lg border border-base-300 overflow-hidden" }
@@ -17,7 +18,8 @@
       %button.text-muted.hover:text-base-content.transition-colors.cursor-pointer.disabled:opacity-40{ type: "button", data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" } }
         %i.fa-solid.fa-arrow-up.fa-fw
       %span.text-xs.font-mono.text-muted.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } } /
-      = render ::UI::ActionComponent.new(content_text: "Select folder", variant: :primary, size: :xs, class: "shrink-0", type: "button", data: { action: "click->directory-browser#select" })
+      = render ::UI::ActionComponent.new(variant: :primary, size: :xs, class: "shrink-0", type: "button", data: { action: "click->directory-browser#select" }) do
+        = "Select folder"
 
     -# Quick-jump shortcuts (populated dynamically from server mount points)
     .flex.items-center.flex-wrap.gap-1.px-3.py-2{ class: "border-b border-base-300" }

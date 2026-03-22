@@ -59,7 +59,8 @@
                 .min-w-0
                   %p.text-sm.font-medium= game["title"]
                   %p.text-xs.text-muted.mt-0.5= "#{game["system"].upcase} · #{game["saves"].size} #{game["saves"].size == 1 ? "save" : "saves"}"
-                = render ::UI::BadgeComponent.new(context_text: "Exists", color: :orange, class: "ml-3 shrink-0")
+                = render ::UI::BadgeComponent.new(color: :orange, class: "ml-3 shrink-0") do
+                  = "Exists"
               .flex.gap-6
                 %label.flex.items-center.gap-2.cursor-pointer
                   %input{ type: "radio", name: "resolutions[#{game["export_id"]}]", value: "skip", checked: true, class: "accent-primary" }
@@ -87,5 +88,6 @@
 
     -# Actions
     .flex.items-center.justify-between.pt-1
-      = render ::UI::ActionComponent.new(content_text: "Cancel", href: settings_path, variant: :ghost)
+      = render ::UI::ActionComponent.new(href: settings_path, variant: :ghost) do
+        = "Cancel"
       = f.submit "Start Import", class: "btn btn-primary"

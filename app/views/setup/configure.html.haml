@@ -21,6 +21,7 @@
           .px-5.py-4
             .flex.items-center.gap-2.mb-1
               %span.text-sm.font-medium= emulator_name
-              = render ::UI::BadgeComponent.new(context_text: profiles.first.platform.text, color: platform_badge_color(platform))
+              = render ::UI::BadgeComponent.new(color: platform_badge_color(platform)) do
+                = profiles.first.platform.text
             %p.text-xs.text-muted.mb-2= systems_text
             %input.input.input-bordered.w-full.font-mono{ type: "text", name: "emulators[#{key}][default_save_path]", value: profiles.first.default_save_path, placeholder: "e.g. ~/.config/retroarch/saves/" }

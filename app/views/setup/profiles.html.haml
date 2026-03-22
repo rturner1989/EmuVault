@@ -34,7 +34,8 @@
               %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id, checked: profile.user_selected }
               .flex-1.min-w-0
                 %p.text-sm.font-medium= profile.name
-                = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+                = render ::UI::BadgeComponent.new(color: platform_badge_color(profile.platform)) do
+                  = profile.platform.text
               %span.text-xs.text-muted.font-mono.shrink-0 .#{profile.save_extension}
 
   - else

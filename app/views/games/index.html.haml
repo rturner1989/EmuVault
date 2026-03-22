@@ -5,14 +5,16 @@
     = modal.with_trigger do
       = render ::UI::PageHeaderComponent.new(title: "Games") do |header|
         - header.with_action do
-          = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, data: { action: "dialog#open" }) do |a|
+          = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
+            = "Add Game"
 
     = modal.with_body do
       = render "games/form", form_url: games_path, form_id: "add-game-form"
 
     = modal.with_footer do
-      = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, size: :sm, type: :submit, form: "add-game-form")
+      = render ::UI::ActionComponent.new(variant: :primary, size: :sm, type: :submit, form: "add-game-form") do
+        = "Add Game"
 
     = modal.with_page_content do
       = turbo_frame_tag "games-filters", style: "display: contents", target: "_top" do
@@ -22,8 +24,9 @@
         - if @games.empty?
           = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
             - c.with_action do
-              = render ::UI::ActionComponent.new(content_text: "Add Game", variant: :primary, data: { action: "dialog#open" }) do |a|
+              = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
                 - a.with_leading_icon(name: "fa-plus")
+                = "Add Game"
         - elsif @selected_sort == "system"
           .space-y-6
             - @games.group_by(&:system).each do |system_key, system_games|

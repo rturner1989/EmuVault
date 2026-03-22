@@ -2,15 +2,15 @@
   = link_to @href, **@kwargs do
     - if leading_icon?
       = leading_icon
-    - if @content_text
-      = @content_text
+    - if content
+      = content
     - if trailing_icon?
       = trailing_icon
 - else
   %button{ **@kwargs }
     - if leading_icon?
       = leading_icon
-    - if @content_text
-      = @content_text
+    - if content
+      = content
     - if trailing_icon?
       = trailing_icon

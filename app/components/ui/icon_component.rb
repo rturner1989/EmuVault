@@ -2,15 +2,13 @@
 
 module UI
   class IconComponent < ApplicationComponent
-    def initialize(name:, style: "fa-solid", fw: true, classes: nil)
-      @name = name
-      @style = style
-      @fw = fw
-      @classes = classes
+    def initialize(name:, style: "fa-solid", fw: true, **kwargs)
+      extra = kwargs.delete(:class)
+      @kwargs = kwargs.merge(class: [style, name, ("fa-fw" if fw), extra].compact.join(" "))
     end
 
     def call
-      tag.i(class: [ @style, @name, ("fa-fw" if @fw), @classes.presence ].compact.join(" "))
+      tag.i(**@kwargs)
     end
   end
 end

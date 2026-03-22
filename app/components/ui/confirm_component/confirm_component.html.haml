@@ -4,8 +4,12 @@
       = render ::UI::ActionComponent.new(variant: @trigger_variant, size: @size, class: @trigger_class, data: { action: "dialog#open" }, "aria-label": @trigger_label) do |a|
         - a.with_leading_icon(name: @trigger_icon)
     - else
-      = render ::UI::ActionComponent.new(content_text: @trigger_label, variant: @trigger_variant, size: @size, class: @trigger_class, data: { action: "dialog#open" })
+      = render ::UI::ActionComponent.new(variant: @trigger_variant, size: @size, class: @trigger_class, data: { action: "dialog#open" }) do
+        = @trigger_label
+
   = modal.with_body do
-    %p.text-sm.opacity-70= @message
+    %p.text-sm.opacity-70
+      = @message
+
   = modal.with_footer do
     = button_to @confirm_label, @url, method: @method, params: @params, class: "btn btn-error btn-sm"

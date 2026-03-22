@@ -1,5 +1,5 @@
-%span{ class: @class, **@kwargs }
+%span{ **@kwargs }
   - if icon?
     = icon
-  - if @content_text
-    = @content_text
+  - if content?
+    = content

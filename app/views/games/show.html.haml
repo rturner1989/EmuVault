@@ -24,8 +24,8 @@
 
           .flex.items-center.gap-2.mt-1.text-xs.text-muted
             - if @latest_save.emulator_profile
-              = render ::UI::BadgeComponent.new(context_text: @latest_save.emulator_profile.platform.text,
-                color: platform_badge_color(@latest_save.emulator_profile.platform))
+              = render ::UI::BadgeComponent.new(color: platform_badge_color(@latest_save.emulator_profile.platform)) do
+                = @latest_save.emulator_profile.platform.text
               %span= @latest_save.emulator_label
             - else
               %span= "Unknown source"
@@ -58,8 +58,9 @@
                 %p.text-xs.text-muted
                   = "Your browser will save it to Downloads — move it to the path above."
               .flex.justify-start
-                = render ::UI::ActionComponent.new(content_text: "Download", variant: :info, type: "submit") do |a|
+                = render ::UI::ActionComponent.new(variant: :info, type: "submit") do |a|
                   - a.with_leading_icon(name: "fa-download")
+                  = "Download"
 
         -# Upload new version
         %div{ class: "px-4 py-3 border-t border-base-300" }
@@ -83,8 +84,9 @@
                 = @new_save.errors.full_messages.to_sentence
 
             .flex.justify-start
-              = render ::UI::ActionComponent.new(content_text: "Upload", variant: :primary, type: "submit") do |a|
+              = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do |a|
                 - a.with_leading_icon(name: "fa-upload")
+                = "Upload"
 
     - else
       -# No save yet — full upload card
@@ -110,8 +112,9 @@
                 = @new_save.errors.full_messages.to_sentence
 
             .flex.justify-start
-              = render ::UI::ActionComponent.new(content_text: "Upload Save", variant: :primary, type: "submit") do |a|
+              = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do |a|
                 - a.with_leading_icon(name: "fa-upload")
+                = "Upload Save"
 
     -# History
     - if @history.exists?
@@ -124,7 +127,8 @@
               .px-4.py-3.flex.items-center.justify-between{ class: "border-b border-base-300" }
                 %h2.text-sm.font-semibold
                   = "Previous Versions"
-                = render ::UI::ActionComponent.new(content_text: "View all #{history_all.size}", variant: :ghost, data: { action: "dialog#open" })
+                = render ::UI::ActionComponent.new(variant: :ghost, data: { action: "dialog#open" }) do
+                  = "View all #{history_all.size}"
             = modal.with_body do
               %div{ class: "divide-y divide-base-300" }
                 - history_all.each do |save|
@@ -170,7 +174,8 @@
             .flex.items-center.gap-3.px-4.py-3
               .flex-1.min-w-0
                 .flex.items-center.gap-2.mb-1.5
-                  = render ::UI::BadgeComponent.new(context_text: profile.platform.text, color: platform_badge_color(profile.platform))
+                  = render ::UI::BadgeComponent.new(color: platform_badge_color(profile.platform)) do
+                    = profile.platform.text
                   %span.text-sm
                     = profile.name
                 .flex.items-center.gap-1
@@ -181,7 +186,8 @@
                   %span.text-xs.text-muted.shrink-0.font-mono
                     = ".#{profile.save_extension}"
         .px-4.py-3.flex.justify-start{ class: "border-t border-base-300" }
-          = render ::UI::ActionComponent.new(content_text: "Save Filenames", variant: :primary, type: "submit")
+          = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do
+            = "Save Filenames"
     - else
       .px-4.py-4.text-sm.text-muted
         = "No emulators selected. Add emulators from the Profiles page."
