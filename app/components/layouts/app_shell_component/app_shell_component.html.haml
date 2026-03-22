@@ -50,7 +50,7 @@
         - a.with_leading_icon(name: "fa-bell")
         = "Notifications"
         - if unread_count > 0
-          %span{ class: "ml-auto min-w-5 h-5 bg-error text-white text-xs rounded-full flex items-center justify-center leading-none", "data-notification-badge": "" }
+          %span{ class: "ml-auto min-w-5 h-5 bg-error text-white text-xs rounded-full flex items-center justify-center leading-none", data: { notification_badge: "" }}
             = unread_count
       = render ::UI::ActionComponent.new(href: settings_path,
         variant: :default,
