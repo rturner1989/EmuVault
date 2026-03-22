@@ -4,7 +4,7 @@
 
     %div{ id: @id, aria: { hidden: "true" }, data: { dialog_target: "container" }, class: "dialog-container" }
       .dialog-overlay{ data: close_data }
-      %div{ class: content_classes, data: { controller: "swipe-dismiss" } }
+      %div{ class: content_classes, data: content_data }
         .dialog-sheet
           = render ::UI::CardComponent.new(scrollable: true, padding: :sm, class: "dialog-card") do |c|
             - c.with_header do
@@ -40,7 +40,7 @@
 - else
   %div{ id: @id, aria: { hidden: "true" }, data: @container_data, class: "dialog-container" }
     .dialog-overlay{ data: close_data }
-    %div{ class: content_classes, data: { controller: "swipe-dismiss" } }
+    %div{ class: content_classes, data: content_data }
       .dialog-sheet
         = render ::UI::CardComponent.new(scrollable: true, padding: :sm, class: "dialog-card") do |c|
           - c.with_header do

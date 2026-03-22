@@ -26,6 +26,10 @@ module UI
       @variant == :bottom_sheet ? "#{base} dialog-content--bottom" : base
     end
 
+    def content_data
+      @swipeable ? { controller: "swipe-dismiss" } : {}
+    end
+
     def close_data
       managed? ? { action: "click->dialog#close" } : { "a11y-dialog-hide": "" }
     end

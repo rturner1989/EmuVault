@@ -123,7 +123,7 @@
 
     -# Unsaved theme confirmation dialog
     = render ::UI::ModalComponent.new(id: "unsaved-theme-dialog", title: "Unsaved theme change",
-      container_data: { theme_target: "dialog" }) do |modal|
+      container_data: { theme_target: "dialog" }, swipeable: false) do |modal|
       = modal.with_body do
         %p.text-sm.text-muted You have an unsaved theme change. Leave and save it, or stay to continue editing.
       = modal.with_footer do
