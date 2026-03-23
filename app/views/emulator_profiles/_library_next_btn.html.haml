@@ -1,3 +1,7 @@
-= render ::UI::ActionComponent.new(variant: :primary, size: :sm, type: :submit, form: "library-step-form", data: { turbo_frame: "library_modal_frame" }) do |a|
+= render ::UI::ActionComponent.new(variant: :primary,
+  size: :sm,
+  type: :submit,
+  form: "library-step-form",
+  data: { turbo_frame: "library_modal_frame" }) do |a|
   - a.with_trailing_icon(name: is_last ? "fa-check" : "fa-arrow-right")
   = is_last ? "Confirm" : "Next"

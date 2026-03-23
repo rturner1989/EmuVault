@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_21_211321) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_23_130708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -165,6 +165,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_21_211321) do
     t.string "api_token"
     t.datetime "created_at", null: false
     t.bigint "current_game_id"
+    t.string "kuma_url"
     t.jsonb "last_scan_result"
     t.datetime "last_scanned_at"
     t.string "password_digest", null: false

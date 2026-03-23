@@ -13,12 +13,19 @@
       = render "games/form", form_url: games_path, form_id: "add-game-form"
 
     = modal.with_footer do
-      = render ::UI::ActionComponent.new(variant: :primary, size: :sm, type: :submit, form: "add-game-form") do
+      = render ::UI::ActionComponent.new(variant: :primary,
+        size: :sm,
+        type: :submit,
+        form: "add-game-form") do
         = "Add Game"
 
     = modal.with_page_content do
       = turbo_frame_tag "games-filters", style: "display: contents", target: "_top" do
-        = render "games/filters", games_count: @games.size, system_options: @system_options, selected_system: @selected_system, selected_sort: @selected_sort
+        = render "games/filters",
+          games_count: @games.size,
+          system_options: @system_options,
+          selected_system: @selected_system,
+          selected_sort: @selected_sort
 
       = turbo_frame_tag "games-list", class: "space-y-3 block" do
         - if @games.empty?
@@ -32,13 +39,15 @@
             - @games.group_by(&:system).each do |system_key, system_games|
               - system_label = Game.system.find_value(system_key)&.text || system_key.to_s.upcase
               %div
-                %p.text-sm.font-medium.mb-2= system_label
+                %p.text-sm.font-medium.mb-2
+                  = system_label
                 .space-y-3
                   = render "games/game_list", games: system_games
         - elsif @selected_system.present?
           - system_label = Game.system.find_value(@selected_system)&.text || @selected_system.upcase
           %div
-            %p.text-sm.font-medium.mb-2= system_label
+            %p.text-sm.font-medium.mb-2
+              = system_label
             .space-y-3
               = render "games/game_list", games: @games
         - else

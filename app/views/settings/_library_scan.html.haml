@@ -1,0 +1,41 @@
+.rounded-lg.p-5.bg-base-100.border.border-base-300
+  %h2.text-sm.font-semibold.mb-1
+    = "Library Scan"
+  %p.text-sm.text-muted.mb-4
+    = "Point EmuVault at your games directories. It will discover new games and any save files alongside them."
+
+  -# Last scan result
+  - result = user.last_scan_result
+  - if result.present? && result["status"] == "completed"
+    .rounded-lg.border.border-base-300.px-4.py-3.mb-4
+      %p.text-xs.text-muted.mb-1
+        = "Last scan"
+      %p.text-sm
+        = "Added #{result["added"]} #{"game".pluralize(result["added"].to_i)} — #{result["skipped"] || 0} already in library"
+
+      - if result["errors"]&.any?
+        %p.text-xs.mt-1.text-error
+          = "#{result["errors"].size} errors"
+      %p.text-xs.text-muted.mt-1
+        = user.last_scanned_at&.strftime("%d %b %Y at %H:%M")
+
+  -# Scan actions
+  .flex.items-center.gap-3.mb-5
+    = render ::UI::ActionComponent.new(href: library_scan_path,
+      method: :post,
+      variant: :primary,
+      size: :sm) do |a|
+      - a.with_leading_icon(name: "fa-magnifying-glass")
+      = "Scan now"
+    - if result.present? && result["status"] == "pending_review"
+      = render ::UI::ActionComponent.new(href: review_library_scan_path, variant: :warning) do |a|
+        - a.with_leading_icon(name: "fa-eye")
+        = "Review (#{(result["found"] || []).size} found)"
+
+  .border-t.pt-5.border-base-300
+    = turbo_frame_tag "scan_paths" do
+      = render "scan_paths/section", scan_paths: scan_paths
+
+  -# Auto-scan schedule
+  .border-t.mt-5.pt-5.border-base-300
+    = render "shared/auto_scan_schedule", user: user, form_url: settings_path, form_id: nil

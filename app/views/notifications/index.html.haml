@@ -1,17 +1,23 @@
 = turbo_frame_tag :notifications_panel do
   - if @notifications.empty?
     .flex.flex-col.items-center.justify-center.py-12.px-4.text-center
-      %i.fas.fa-bell-slash.text-3xl.text-muted.mb-3
-      %p.text-sm.text-muted No notifications yet
+      = render ::UI::IconComponent.new(name: "fa-bell-slash", class: "text-3xl text-muted mb-3")
+      %p.text-sm.text-muted
+        = "No notifications yet"
   - else
-    .divide-y{ class: "divide-base-300" }
+    .divide-y.divide-base-300
       - @notifications.each do |notification|
-        = link_to notification_path(notification), data: { turbo_frame: "_top", turbo_prefetch: false }, class: "flex gap-3 px-4 py-3 hover:bg-base-300 transition-colors cursor-pointer" do
+        = render ::UI::ActionComponent.new(href: notification_path(notification),
+          variant: :default,
+          class: "flex gap-3 px-4 py-3 hover:bg-base-300 transition-colors cursor-pointer",
+          data: { turbo_frame: "_top", turbo_prefetch: false }) do
           .flex-shrink-0.mt-0.5
-            .w-8.h-8.rounded-full.flex.items-center.justify-center{ class: "bg-base-300" }
-              %i.fas.fa-floppy-disk.text-primary.text-xs
+            .w-8.h-8.rounded-full.flex.items-center.justify-center.bg-base-300
+              = render ::UI::IconComponent.new(name: "fa-floppy-disk", class: "text-primary text-xs")
           .flex-1.min-w-0
-            %p.text-sm.leading-snug= notification.message
-            %p.text-xs.text-muted.mt-0.5= time_ago_in_words(notification.created_at) + " ago"
+            %p.text-sm.leading-snug
+              = notification.message
+            %p.text-xs.text-muted.mt-0.5
+              = "#{time_ago_in_words(notification.created_at)} ago"
           .flex-shrink-0.mt-1.5
             .w-2.h-2.rounded-full.bg-primary

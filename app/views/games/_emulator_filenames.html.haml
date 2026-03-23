@@ -1,33 +1,33 @@
 = turbo_frame_tag "emulator_filenames", style: "display: contents" do
   .mt-4.rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
-  %div{ class: "px-4 py-3 border-b border-base-300" }
-    %h2.text-sm.font-semibold
-      = "Emulator Save Filenames"
-    %p.text-xs.text-muted.mt-1
-      = "Set the filename each emulator expects for this game. Leave blank to use a default based on the game title."
+    .px-4.py-3.border-b.border-base-300
+      %h2.text-sm.font-semibold
+        = "Emulator Save Filenames"
+      %p.text-xs.text-muted.mt-1
+        = "Set the filename each emulator expects for this game. Leave blank to use a default based on the game title."
 
-  - if user_profiles.any?
-    = form_with url: game_emulator_configs_path(game), method: :patch do |f|
-      %div{ class: "divide-y divide-base-300" }
-        - user_profiles.each do |profile|
-          - config = emulator_configs[profile.id]
-          .flex.items-center.gap-3.px-4.py-3
-            .flex-1.min-w-0
-              .flex.items-center.gap-2.mb-1.5
-                = render ::UI::BadgeComponent.new(color: platform_badge_color(profile.platform)) do
-                  = profile.platform.text
-                %span.text-sm
-                  = profile.name
-              .flex.items-center.gap-1
-                = f.text_field "emulator_configs[#{profile.id}]",
+    - if user_profiles.any?
+      = form_with url: game_emulator_configs_path(game), method: :patch do |f|
+        .divide-y.divide-base-300
+          - user_profiles.each do |profile|
+            - config = emulator_configs[profile.id]
+            .flex.items-center.gap-3.px-4.py-3
+              .flex-1.min-w-0
+                .flex.items-center.gap-2.mb-1.5
+                  = render ::UI::BadgeComponent.new(color: platform_badge_color(profile.platform)) do
+                    = profile.platform.text
+                  %span.text-sm
+                    = profile.name
+                .flex.items-center.gap-1
+                  = f.text_field "emulator_configs[#{profile.id}]",
                     value: config&.save_filename,
                     placeholder: game.default_save_base_name,
                     class: "input input-bordered input-sm flex-1 font-mono min-w-0"
-                %span.text-xs.text-muted.shrink-0.font-mono
-                  = ".#{profile.save_extension}"
-      .px-4.py-3.flex.justify-start{ class: "border-t border-base-300" }
-        = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do
-          = "Save Filenames"
-  - else
-    .px-4.py-4.text-sm.text-muted
-      = "No emulators selected. Add emulators from the Profiles page."
+                  %span.text-xs.text-muted.shrink-0.font-mono
+                    = ".#{profile.save_extension}"
+        .px-4.py-3.flex.justify-start.border-t.border-base-300
+          = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do
+            = "Save Filenames"
+    - else
+      .px-4.py-4.text-sm.text-muted
+        = "No emulators selected. Add emulators from the Profiles page."

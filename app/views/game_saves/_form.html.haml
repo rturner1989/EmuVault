@@ -1,26 +1,31 @@
 = simple_form_for game_save, url: game_game_saves_path(game), html: { class: "space-y-4", multipart: true } do |f|
   - if game_save.errors.any?
-    %div{ class: "alert alert-error" }
+    .alert.alert-error
       %ul.list-disc.list-inside.space-y-1
         - game_save.errors.full_messages.each do |msg|
-          %li= msg
+          %li
+            = msg
+
   .grid.grid-cols-1.gap-4.sm:grid-cols-2
     = f.association :emulator_profile,
-        collection: EmulatorProfile.order(:name, :platform),
-        label_method: ->(p) { "#{p.name} (#{p.platform.text})" },
-        value_method: :id,
-        prompt: "Select emulator…",
-        label: "Emulator Profile",
-        input_html: { class: "select select-bordered w-full" },
-        label_html: { class: "label-text font-medium" }
-    = f.input :slot,
-        as: :integer,
-        label: "Slot (0 = auto-save)",
-        input_html: { value: 0, min: 0, class: "input input-bordered w-full" },
-        label_html: { class: "label-text font-medium" }
-  = f.input :file,
-      as: :file,
-      label: "Save File",
-      input_html: { class: "file-input file-input-bordered w-full" },
+      collection: EmulatorProfile.order(:name, :platform),
+      label_method: ->(p) { "#{p.name} (#{p.platform.text})" },
+      value_method: :id,
+      prompt: "Select emulator…",
+      label: "Emulator Profile",
+      input_html: { class: "select select-bordered w-full" },
       label_html: { class: "label-text font-medium" }
-  = f.button :submit, "Upload Save", class: "btn btn-primary"
+    = f.input :slot,
+      as: :integer,
+      label: "Slot (0 = auto-save)",
+      input_html: { value: 0, min: 0, class: "input input-bordered w-full" },
+      label_html: { class: "label-text font-medium" }
+
+  = f.input :file,
+    as: :file,
+    label: "Save File",
+    input_html: { class: "file-input file-input-bordered w-full" },
+    label_html: { class: "label-text font-medium" }
+
+  = render ::UI::ActionComponent.new(variant: :primary, type: :submit) do
+    = "Upload Save"

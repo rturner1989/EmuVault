@@ -4,24 +4,36 @@
   = form_with url: save_configuration_setup_path, method: :patch, class: "flex-1 flex flex-col min-h-0" do |f|
     = render ::UI::CardComponent.new(scrollable: true, class: "flex-1") do |c|
       - c.with_header do
-        %h2.text-base.font-semibold Where do your emulators store saves?
-        %p.text-sm.text-muted.mt-0.5 Used to show you where to put downloaded files. Leave blank for mobile-only emulators.
+        %h2.text-base.font-semibold
+          = "Where do your emulators store saves?"
+        %p.text-sm.text-muted.mt-0.5
+          = "Used to show you where to put downloaded files. Leave blank for mobile-only emulators."
       - c.with_footer do
         .flex.gap-3
-          = link_to profiles_setup_path, class: "btn btn-ghost flex-1" do
-            %i.fa-solid.fa-arrow-left
-            Back
-          %button.btn.btn-primary.flex-1{ type: "submit" }
-            Next
-            %i.fa-solid.fa-arrow-right
-      .divide-y{ class: "divide-base-300" }
+          = render ::UI::ActionComponent.new(href: profiles_setup_path,
+            variant: :ghost,
+            class: "flex-1") do |a|
+            - a.with_leading_icon(name: "fa-arrow-left")
+            = "Back"
+          = render ::UI::ActionComponent.new(variant: :primary,
+            type: :submit,
+            class: "flex-1") do |a|
+            = "Next"
+            - a.with_trailing_icon(name: "fa-arrow-right")
+
+      .divide-y.divide-base-300
         - @profiles_by_emulator.each do |(emulator_name, platform), profiles|
           - key = "#{emulator_name}|#{platform}"
           - systems_text = profiles.map { |p| p.game_system.text }.join(", ")
           .px-5.py-4
             .flex.items-center.gap-2.mb-1
-              %span.text-sm.font-medium= emulator_name
+              %span.text-sm.font-medium
+                = emulator_name
               = render ::UI::BadgeComponent.new(color: platform_badge_color(platform)) do
                 = profiles.first.platform.text
-            %p.text-xs.text-muted.mb-2= systems_text
-            %input.input.input-bordered.w-full.font-mono{ type: "text", name: "emulators[#{key}][default_save_path]", value: profiles.first.default_save_path, placeholder: "e.g. ~/.config/retroarch/saves/" }
+            %p.text-xs.text-muted.mb-2
+              = systems_text
+            %input.input.input-bordered.w-full.font-mono{ type: "text",
+              name: "emulators[#{key}][default_save_path]",
+              value: profiles.first.default_save_path,
+              placeholder: "e.g. ~/.config/retroarch/saves/" }

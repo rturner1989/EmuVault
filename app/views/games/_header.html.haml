@@ -6,12 +6,22 @@
       = game.system_label
   .flex.gap-2.shrink-0
     - if current_user.current_game_id == game.id
-      = button_to current_game_path, method: :delete, params: { game_id: game.id, inline: true }, class: "btn btn-outline btn-primary btn-sm" do
-        %i.fa-solid.fa-rotate.fa-fw
+      = render ::UI::ActionComponent.new(href: current_game_path,
+        method: :delete,
+        variant: :primary,
+        size: :sm,
+        class: "btn-outline",
+        params: { game_id: game.id, inline: true }) do |a|
+        - a.with_leading_icon(name: "fa-rotate")
         = "Now Playing"
     - else
-      = button_to current_game_path, method: :patch, params: { game_id: game.id, inline: true }, class: "btn btn-outline btn-sm" do
-        %i.fa-solid.fa-rotate.fa-fw
+      = render ::UI::ActionComponent.new(href: current_game_path,
+        method: :patch,
+        variant: :secondary,
+        size: :sm,
+        class: "btn-outline",
+        params: { game_id: game.id, inline: true }) do |a|
+        - a.with_leading_icon(name: "fa-rotate")
         = "Set as current"
 
     = render ::UI::ModalComponent.new(id: "edit-game-dialog", title: "Edit Game") do |modal|
@@ -21,7 +31,10 @@
       = modal.with_body do
         = render "games/form", form_url: game_path(game), form_id: "edit-game-form"
       = modal.with_footer do
-        = render ::UI::ActionComponent.new(variant: :primary, size: :sm, type: :submit, form: "edit-game-form") do
+        = render ::UI::ActionComponent.new(variant: :primary,
+          size: :sm,
+          type: :submit,
+          form: "edit-game-form") do
           = "Save Changes"
 
     = render ::UI::ConfirmComponent.new(id: "remove-game-dialog",

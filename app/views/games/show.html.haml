@@ -2,20 +2,20 @@
 
 .p-4.lg:p-6.space-y-4
   -# Back breadcrumb
-  = link_to games_path, class: "text-xs text-muted hover:text-base-content transition-colors cursor-pointer inline-flex items-center gap-1" do
-    %i.fa-solid.fa-arrow-left
+  = render ::UI::ActionComponent.new(href: games_path,
+    variant: :link,
+    class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
+    - a.with_leading_icon(name: "fa-arrow-left")
     = "Games"
 
-  -# Title + actions
   = render "games/header", game: @game
 
-  -# Save panel — updates in place on upload without reloading title/nav
+  -# Save panel
   = turbo_frame_tag :save_panel do
-    -# Latest save
     - if @latest_save
-      %div{ class: "rounded-lg overflow-hidden mb-5 bg-base-100 border border-base-300" }
-        -# Current Save header + metadata subtitle
-        %div{ class: "px-4 py-3 border-b border-base-300" }
+      .rounded-lg.overflow-hidden.mb-5.bg-base-100.border.border-base-300
+        -# Current save header
+        .px-4.py-3.border-b.border-base-300
           .flex.items-center.justify-between
             %h2.text-sm.font-semibold
               = "Current Save"
@@ -26,10 +26,13 @@
             - if @latest_save.emulator_profile
               = render ::UI::BadgeComponent.new(color: platform_badge_color(@latest_save.emulator_profile.platform)) do
                 = @latest_save.emulator_profile.platform.text
-              %span= @latest_save.emulator_label
+              %span
+                = @latest_save.emulator_label
             - else
-              %span= "Unknown source"
-            %span · #{@latest_save.file_size_label}
+              %span
+                = "Unknown source"
+            %span
+              = "· #{@latest_save.file_size_label}"
 
         -# Download
         .px-4.py-4
@@ -47,14 +50,12 @@
                   = "Place the downloaded file at:"
                 .flex.items-center.gap-2.mb-2
                   %p.text-xs.font-mono.flex-1{ data: { save_hint_target: "hint" } }
-                  = render ::UI::ActionComponent.new(class: "text-muted hover:text-base-content transition-colors cursor-pointer",
-                    variant: :default,
-                    size: :sm,
+                  = render ::UI::ActionComponent.new(variant: :default,
                     type: :button,
+                    class: "text-muted hover:text-base-content transition-colors cursor-pointer",
                     title: "Copy Path",
                     data: { action: "save-hint#copy", save_hint_target: "copyBtn" }) do |a|
                     - a.with_leading_icon(name: "fa-clipboard", style: "fa-regular")
-
                 %p.text-xs.text-muted
                   = "Your browser will save it to Downloads — move it to the path above."
               .flex.justify-start
@@ -63,100 +64,48 @@
                   = "Download"
 
         -# Upload new version
-        %div{ class: "px-4 py-3 border-t border-base-300" }
+        .px-4.py-3.border-t.border-base-300
           %h2.text-sm.font-semibold
             = "Upload New Version"
         .px-4.pb-4
-          = simple_form_for :game_save, url: game_game_saves_path(@game), method: :post, html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
-            = f.select :emulator_profile_id,
-                @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
-                { include_blank: "Which emulator is this save from? (optional)" },
-                { class: "select select-bordered w-full" }
-            %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20", data: { controller: "file-picker" } }
-              %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" }
-                = "Choose file"
-              %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } }
-                = "No file selected"
-              = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
-
-            - if @new_save&.errors&.any?
-              %p.text-xs.text-error
-                = @new_save.errors.full_messages.to_sentence
-
-            .flex.justify-start
-              = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do |a|
-                - a.with_leading_icon(name: "fa-upload")
-                = "Upload"
+          = render "games/upload_form", game: @game, user_profiles: @user_profiles, new_save: @new_save, submit_label: "Upload"
 
     - else
-      -# No save yet — full upload card
-      %div{ class: "rounded-lg overflow-hidden bg-base-100 border border-base-300" }
-        %div{ class: "px-4 py-3 border-b border-base-300" }
+      -# No save yet
+      .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
+        .px-4.py-3.border-b.border-base-300
           %h2.text-sm.font-semibold
             = "Upload Save File"
         .p-4
-          = simple_form_for :game_save, url: game_game_saves_path(@game), method: :post, html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
-            = f.select :emulator_profile_id,
-                @user_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
-                { include_blank: "Which emulator is this save from? (optional)" },
-                { class: "select select-bordered w-full" }
-            %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20", data: { controller: "file-picker" } }
-              %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" }
-                = "Choose file"
-              %span.text-sm.text-muted.flex-1.px-3.py-3.truncate{ data: { file_picker_target: "filename" } }
-                = "No file selected"
-              = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
-
-            - if @new_save&.errors&.any?
-              %p.text-xs.text-error
-                = @new_save.errors.full_messages.to_sentence
-
-            .flex.justify-start
-              = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do |a|
-                - a.with_leading_icon(name: "fa-upload")
-                = "Upload Save"
+          = render "games/upload_form", game: @game, user_profiles: @user_profiles, new_save: @new_save, submit_label: "Upload Save"
 
     -# History
     - if @history.exists?
       - history_all = @history.to_a
       - history_preview = history_all.first(5)
-      %div{ class: "rounded-lg overflow-hidden bg-base-100 border border-base-300", data: { controller: "iframe-download" } }
+      .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300{ data: { controller: "iframe-download" } }
         - if history_all.size > 5
-          = render ::UI::ModalComponent.new(id: "save-history-dialog", title: "Save History") do |modal|
+          = render ::UI::ModalComponent.new(id: "save-history-dialog",
+            title: "Save History") do |modal|
             = modal.with_trigger do
-              .px-4.py-3.flex.items-center.justify-between{ class: "border-b border-base-300" }
+              .px-4.py-3.flex.items-center.justify-between.border-b.border-base-300
                 %h2.text-sm.font-semibold
                   = "Previous Versions"
-                = render ::UI::ActionComponent.new(variant: :ghost, data: { action: "dialog#open" }) do
+                = render ::UI::ActionComponent.new(variant: :ghost,
+                  data: { action: "dialog#open" }) do
                   = "View all #{history_all.size}"
             = modal.with_body do
-              %div{ class: "divide-y divide-base-300" }
+              .divide-y.divide-base-300
                 - history_all.each do |save|
-                  - decorated = GameSaveDecorator.new(save)
-                  .flex.items-center.gap-3.px-4.py-3
-                    .flex-1.min-w-0
-                      .text-sm
-                        = decorated.uploaded_at_label
-                      .text-xs.text-muted
-                        = "#{decorated.emulator_label} · #{decorated.file_size_label}"
-                    = render ::UI::ActionComponent.new(href: download_game_game_save_path(@game, save), variant: :info, size: :sm, class: "btn-outline", data: { turbo: false, action: "click->iframe-download#click" }) do |a|
-                      - a.with_leading_icon(name: "fa-download")
+                  = render "games/save_row", save: save, game: @game
         - else
-          %div{ class: "px-4 py-3 border-b border-base-300" }
+          .px-4.py-3.border-b.border-base-300
             %h2.text-sm.font-semibold
               = "Previous Versions"
 
-        %div{ class: "divide-y divide-base-300" }
+        .divide-y.divide-base-300
           - history_preview.each do |save|
-            - decorated = GameSaveDecorator.new(save)
-            .flex.items-center.gap-3.px-4.py-3
-              .flex-1.min-w-0
-                .text-sm
-                  = decorated.uploaded_at_label
-                .text-xs.text-muted
-                  = "#{decorated.emulator_label} · #{decorated.file_size_label}"
-              = render ::UI::ActionComponent.new(href: download_game_game_save_path(@game, save), variant: :info, size: :sm, class: "btn-outline", data: { turbo: false, action: "click->iframe-download#click" }) do |a|
-                - a.with_leading_icon(name: "fa-download")
+            = render "games/save_row", save: save, game: @game
 
   -# Emulator save filenames
   = render "games/emulator_filenames", game: @game, user_profiles: @user_profiles, emulator_configs: @emulator_configs

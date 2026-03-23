@@ -4,6 +4,7 @@
 #
 #  id               :bigint           not null, primary key
 #  api_token        :string
+#  kuma_url         :string
 #  last_scan_result :jsonb
 #  last_scanned_at  :datetime
 #  password_digest  :string           not null

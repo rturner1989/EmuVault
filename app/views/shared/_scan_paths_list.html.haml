@@ -1,21 +1,32 @@
 - if scan_paths.any?
-  .rounded-lg.border.overflow-hidden{ class: "bg-base-200 border-base-300" }
-    .divide-y{ class: "divide-base-300" }
+  .rounded-lg.border.overflow-hidden.bg-base-200.border-base-300
+    .divide-y.divide-base-300
       - scan_paths.each do |sp|
         %div
           .flex.items-center.gap-2.px-4.py-3
             .flex-1.min-w-0
-              %p.text-sm.font-mono.truncate= sp.path
-              %p.text-xs.text-muted= sp.game_system.text
+              %p.text-sm.font-mono.truncate
+                = sp.path
+              %p.text-xs.text-muted
+                = sp.game_system.text
             .flex.items-center.gap-1.shrink-0
-              = button_to scan_path_path(sp), method: :patch, params: { scan_path: { auto_scan: !sp.auto_scan } }, class: "btn btn-sm #{sp.auto_scan ? 'btn-primary btn-outline' : 'btn-ghost'}" do
-                %i.fa-solid.fa-rotate.fa-fw.mr-1
+              = render ::UI::ActionComponent.new(href: scan_path_path(sp),
+                method: :patch,
+                variant: sp.auto_scan ? :primary : :ghost,
+                size: :sm,
+                class: sp.auto_scan ? "btn-outline" : nil,
+                params: { scan_path: { auto_scan: !sp.auto_scan } }) do |a|
+                - a.with_leading_icon(name: "fa-rotate")
                 = sp.auto_scan ? "Auto-scan on" : "Auto-scan off"
-              = button_to scan_path_path(sp), method: :delete, class: "btn btn-ghost btn-outline btn-error btn-sm btn-square" do
-                %i.fa-solid.fa-trash
+              = render ::UI::ActionComponent.new(href: scan_path_path(sp),
+                method: :delete,
+                variant: :danger,
+                size: :sm,
+                class: "btn-square") do |a|
+                - a.with_leading_icon(name: "fa-trash")
           %details
             %summary.px-4.py-2.text-xs.text-muted.cursor-pointer{ class: "hover:text-base-content transition-colors" }
-              %i.fa-solid.fa-pencil.fa-fw.mr-1
-              Edit path
+              = render ::UI::IconComponent.new(name: "fa-pencil", class: "mr-1")
+              = "Edit path"
             .px-4.pb-3
               = render "scan_paths/edit_form", sp: sp

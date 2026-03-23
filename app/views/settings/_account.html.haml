@@ -1,0 +1,10 @@
+.rounded-lg.p-5.bg-base-100.border.border-base-300
+  %h2.text-sm.font-semibold.mb-1
+    = "Account"
+  %p.text-sm.text-muted
+    = user.username
+  .mt-4.lg:hidden
+    = render ::UI::ActionComponent.new(href: session_path,
+      variant: :danger,
+      data: { turbo_method: :delete }) do
+      = "Sign Out"

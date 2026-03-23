@@ -1,0 +1,48 @@
+.rounded-lg.p-5.bg-base-100.border.border-base-300{ data: { controller: "theme", "theme-current-value": user.theme } }
+  %h2.text-sm.font-semibold.mb-1
+    = "Theme"
+  %p.text-sm.text-muted.mb-4
+    = "Choose the look and feel of EmuVault."
+  = form_with model: user, url: settings_path, method: :patch do |f|
+    .grid.grid-cols-2.gap-3{ class: "sm:grid-cols-3 lg:grid-cols-4" }
+      - User::THEMES.each do |_group, themes|
+        - themes.each do |theme|
+          %label.cursor-pointer.group
+            = f.radio_button :theme, theme, class: "hidden peer", data: { action: "change->theme#preview" }
+            %div{ class: "rounded-lg border-2 overflow-hidden transition-colors border-base-300 peer-checked:border-primary" }
+              .p-3{ "data-theme": theme }
+                .flex.gap-1.mb-2
+                  %div{ class: "rounded-full w-3 h-3 bg-primary" }
+                  %div{ class: "rounded-full w-3 h-3 bg-secondary" }
+                  %div{ class: "rounded-full w-3 h-3 bg-accent" }
+                %div{ class: "rounded h-2 w-full mb-1 bg-base-content/20" }
+                %div{ class: "rounded h-2 w-3/4 bg-base-content/10" }
+            %p.text-xs.text-center.mt-1.capitalize
+              = theme
+    .mt-4
+      = render ::UI::ActionComponent.new(variant: :primary,
+        size: :sm,
+        type: :submit,
+        data: { action: "click->theme#save" }) do
+        = "Save theme"
+
+  -# Unsaved theme confirmation dialog
+  = render ::UI::ModalComponent.new(id: "unsaved-theme-dialog",
+    title: "Unsaved theme change",
+    container_data: { theme_target: "dialog" },
+    swipeable: false) do |modal|
+    = modal.with_body do
+      %p.text-sm.text-muted
+        = "You have an unsaved theme change. Leave and save it, or stay to continue editing."
+    = modal.with_footer do
+      .flex.items-center.gap-3
+        = render ::UI::ActionComponent.new(variant: :primary,
+          size: :sm,
+          type: :button,
+          data: { action: "theme#confirmLeaveAndSave" }) do
+          = "Leave and save"
+        = render ::UI::ActionComponent.new(variant: :ghost,
+          size: :sm,
+          type: :button,
+          data: { action: "theme#cancelLeave" }) do
+          = "Stay"

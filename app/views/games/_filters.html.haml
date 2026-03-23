@@ -14,7 +14,8 @@
           data: { action: "change->auto-submit#submit" }
 
         - if selected_system.present?
-          = link_to games_path(sort: selected_sort),
-            class: "text-xs text-muted hover:text-base-content transition-colors inline-flex items-center gap-1" do
-            = render ::UI::IconComponent.new(name: "fa-xmark")
+          = render ::UI::ActionComponent.new(href: games_path(sort: selected_sort),
+            variant: :link,
+            class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
+            - a.with_leading_icon(name: "fa-xmark")
             = "Clear"

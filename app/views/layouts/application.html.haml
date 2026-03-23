@@ -1,28 +1,37 @@
 !!!
 %html{ lang: "en", "data-theme": current_user&.theme || "dracula" }
   %head
-    %title= content_for(:title) || "EmuVault"
+    %title
+      = content_for(:title) || "EmuVault"
+    -# Meta
     %meta{ name: "viewport", content: "width=device-width,initial-scale=1,viewport-fit=cover" }
-    %meta{ name: "apple-mobile-web-app-capable", content: "yes" }
-    %meta{ name: "apple-mobile-web-app-title", content: "EmuVault" }
-    %meta{ name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" }
-    %meta{ name: "application-name", content: "EmuVault" }
-    %meta{ name: "mobile-web-app-capable", content: "yes" }
     %meta{ name: "theme-color", content: "#282a36" }
+    %meta{ name: "application-name", content: "EmuVault" }
     = csrf_meta_tags
     = csp_meta_tag
     = yield :head
+
+    -# PWA / iOS
+    %meta{ name: "apple-mobile-web-app-capable", content: "yes" }
+    %meta{ name: "apple-mobile-web-app-title", content: "EmuVault" }
+    %meta{ name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" }
+    %meta{ name: "mobile-web-app-capable", content: "yes" }
+
+    -# Icons & manifest
     %link{ rel: "icon", href: "/icon.png", type: "image/png" }
     %link{ rel: "icon", href: "/icon.svg", type: "image/svg+xml" }
     %link{ rel: "apple-touch-icon", href: "/icon.png" }
     %link{ rel: "manifest", href: "/manifest.json" }
-    %link{ rel: "stylesheet", href: "/fontawesome/css/all.min.css" }
 
+    -# Stylesheets
+    = stylesheet_link_tag "/fontawesome/css/all.min.css"
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     - if @show_onboarding
-      %link{ rel: "stylesheet", href: "/driver/driver.css" }
+      = stylesheet_link_tag "/driver/driver.css"
 
+    -# JavaScript
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
+
   %body
     = render ::Layouts::FlashComponent.new(flash: flash)
 

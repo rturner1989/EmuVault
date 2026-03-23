@@ -1,0 +1,27 @@
+%div{ hidden: "", class: "rounded-lg border border-base-300 overflow-hidden", data: { "directory-browser-target": "browser" } }
+  -# Toolbar
+  .flex.items-center.gap-2.px-3.py-2.bg-base-200.border-b.border-base-300
+    = render ::UI::ActionComponent.new(variant: :default,
+      type: :button,
+      class: "text-muted hover:text-base-content transition-colors cursor-pointer disabled:opacity-40",
+      data: { action: "click->directory-browser#navigate", "directory-browser-target": "upButton", path: "/" }) do |a|
+      - a.with_leading_icon(name: "fa-arrow-up")
+    %span.text-xs.font-mono.text-muted.truncate.flex-1.min-w-0{ data: { "directory-browser-target": "currentPath" } }
+      = "/"
+    = render ::UI::ActionComponent.new(variant: :primary,
+      size: :xs,
+      class: "shrink-0",
+      type: :button,
+      data: { action: "click->directory-browser#select" }) do
+      = "Select folder"
+
+  -# Quick-jump shortcuts
+  .flex.items-center.flex-wrap.gap-1.px-3.py-2.border-b.border-base-300
+    %span.text-xs.text-muted.shrink-0
+      = "Jump to:"
+    .flex.items-center.flex-wrap.gap-1{ data: { "directory-browser-target": "shortcuts" } }
+
+  -# Directory listing
+  .max-h-48.overflow-y-auto{ data: { "directory-browser-target": "list" } }
+    %p.text-xs.text-muted.px-3.py-3
+      = "Click Browse to explore"
