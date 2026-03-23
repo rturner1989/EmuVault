@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class NewSaveNotifier < Noticed::Event
-  deliver_by :database
 
   notification_methods do
     def message

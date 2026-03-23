@@ -1,0 +1,1 @@
+Rack::Attack.enabled = false

@@ -26,7 +26,7 @@
             = "Background job queues, failures, and throughput"
         - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
 
-      - if user.kuma_url.present?
+      - if user.kuma_url_in_database.present?
         = render ::UI::ActionComponent.new(href: user.kuma_url,
           variant: :default,
           class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300",
@@ -49,13 +49,17 @@
 
     -# Kuma URL setting
     .mt-4.border-t.border-base-300.pt-4
-      = form_with model: user, url: settings_path, method: :patch, html: { class: "flex items-center gap-3" } do |f|
-        .flex-1.min-w-0
-          = f.text_field :kuma_url,
-            placeholder: "https://kuma.example.com",
-            class: "input input-bordered input-sm w-full font-mono"
-        = render ::UI::ActionComponent.new(variant: :primary,
-          size: :sm,
-          type: :submit,
-          class: "shrink-0") do
-          = "Save"
+      = form_with model: user, url: settings_path, method: :patch, html: { class: "flex flex-col gap-2" } do |f|
+        .flex.items-center.gap-3
+          .flex-1.min-w-0
+            = f.text_field :kuma_url,
+              placeholder: "https://kuma.example.com",
+              class: "input input-bordered input-sm w-full font-mono"
+          = render ::UI::ActionComponent.new(variant: :primary,
+            size: :sm,
+            type: :submit,
+            class: "shrink-0") do
+            = "Save"
+        - if user.errors[:kuma_url].any?
+          %p.text-xs.text-error
+            = user.errors[:kuma_url].first

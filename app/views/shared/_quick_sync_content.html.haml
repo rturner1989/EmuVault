@@ -37,7 +37,7 @@
           html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
           .space-y-3
             = f.select :target_profile_id,
-              @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @quick_sync_save.save_path_hint(p) } }] },
+              @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text}) (.#{p.save_extension})", p.id, { data: { path: @quick_sync_save.save_path_hint(p) } }] },
               { include_blank: "Select emulator…" },
               { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
             .hidden{ data: { save_hint_target: "note" } }
@@ -68,7 +68,7 @@
         method: :post,
         html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
         = f.select :emulator_profile_id,
-          @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
+          @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text}) (.#{p.save_extension})", p.id] },
           { include_blank: "Source emulator (optional)" },
           { class: "select select-bordered w-full" }
         %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }

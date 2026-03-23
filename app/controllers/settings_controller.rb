@@ -10,7 +10,10 @@ class SettingsController < ApplicationController
     authorize! current_user
 
     @user = current_user
-    render :show, status: :unprocessable_entity unless @user.update(scan_params)
+    unless @user.update(scan_params)
+      @scan_paths = ScanPath.ordered
+      render :show, status: :unprocessable_entity
+    end
   end
 
   private def scan_params
