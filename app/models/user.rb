@@ -41,6 +41,7 @@ class User < ApplicationRecord
   enumerize :scan_interval, in: %i[hourly every_6_hours daily], default: :hourly
 
   validates :theme, inclusion: { in: ALL_THEMES }
+  validates :kuma_url, format: { with: /\Ahttps?:\/\//i, message: "must be an HTTP or HTTPS URL" }, allow_blank: true
 
   has_secure_password
 

@@ -38,7 +38,7 @@ module Authentication
   end
 
   private def after_authentication_url
-    session.delete(:return_to_after_authenticating) || root_url
+    url_from(session.delete(:return_to_after_authenticating)) || root_url
   end
 
   private def start_new_session_for(user)

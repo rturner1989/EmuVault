@@ -21,6 +21,8 @@
 #  fk_rails_...  (game_id => games.id)
 #
 class GameSave < ApplicationRecord
+  include HasFileSizeLimit
+
   belongs_to :game
   belongs_to :emulator_profile, optional: true
 
@@ -28,6 +30,7 @@ class GameSave < ApplicationRecord
   has_one_attached :file
 
   validates :file, presence: true
+  max_file_size 100.megabytes
 
   scope :latest_first, -> { order(created_at: :desc) }
 

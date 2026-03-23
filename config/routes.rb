@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  require "sidekiq/web"
+  Sidekiq::Web.use(AdminAuthMiddleware)
+  mount Sidekiq::Web => "/sidekiq"
+
+  PgHero::Engine.middleware.use(AdminAuthMiddleware)
+  mount PgHero::Engine => "/pghero"
+  mount ActionCable.server => "/cable"
+
+  get "up" => "rails/health#show", as: :rails_health_check
+
   root "dashboard#index"
 
   resource :session
@@ -53,12 +63,4 @@ Rails.application.routes.draw do
     end
   end
   resources :web_push_subscriptions, only: %i[create destroy]
-
-  require "sidekiq/web"
-  mount Sidekiq::Web => "/sidekiq"
-
-  mount PgHero::Engine => "/pghero"
-  mount ActionCable.server => "/cable"
-
-  get "up" => "rails/health#show", as: :rails_health_check
 end
