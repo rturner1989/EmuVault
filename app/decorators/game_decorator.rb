@@ -27,4 +27,8 @@ class GameDecorator < ApplicationDecorator
   def system_badge_color
     SYSTEM_COLORS.fetch(object.system&.to_sym, :comment)
   end
+
+  def default_save_base_name
+    object.title.gsub(/[^0-9A-Za-z\-_ .()]/, "").strip.squeeze(" ")
+  end
 end

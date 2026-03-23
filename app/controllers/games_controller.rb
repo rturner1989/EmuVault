@@ -72,6 +72,8 @@ class GamesController < ApplicationController
     if @form.persist(@game)
       @form = GameForm.from(@game)
       @decorated_game = GameDecorator.new(@game)
+      @user_profiles = EmulatorProfile.selected_for_system(@game.system).ordered
+      @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)
     else
       render :edit, status: :unprocessable_entity
     end

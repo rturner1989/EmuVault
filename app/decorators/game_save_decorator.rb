@@ -50,6 +50,6 @@ class GameSaveDecorator < ApplicationDecorator
   end
 
   private def default_base_name
-    object.game.title.gsub(/[^0-9A-Za-z\-_ ]/, "").strip.gsub(/\s+/, "_")
+    GameDecorator.new(object.game).default_save_base_name
   end
 end

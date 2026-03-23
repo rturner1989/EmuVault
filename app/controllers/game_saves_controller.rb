@@ -47,10 +47,10 @@ class GameSavesController < ApplicationController
       user_agent: request.user_agent
     )
 
-    send_data @game_save.file.download,
-              filename: decorated.download_filename(target_profile),
-              type: "application/octet-stream",
-              disposition: "attachment"
+    filename = decorated.download_filename(target_profile)
+    response.headers["Content-Type"] = "application/octet-stream"
+    response.headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
+    render body: @game_save.file.download
   end
 
   private def set_game
