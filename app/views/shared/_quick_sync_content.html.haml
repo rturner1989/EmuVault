@@ -3,54 +3,79 @@
     -# Game header
     .flex.items-center.justify-between.gap-3
       .min-w-0
-        %p.text-base.font-semibold.truncate= @quick_sync_game.title
+        %p.text-base.font-semibold.truncate
+          = @quick_sync_game.title
         = render ::UI::BadgeComponent.new(color: @quick_sync_game.system_badge_color) do
           = @quick_sync_game.system_label
       .flex.items-center.gap-2.shrink-0
-        = render ::UI::ActionComponent.new(href: game_path(@quick_sync_game), variant: :ghost, data: { turbo_frame: "_top" }) do
+        = render ::UI::ActionComponent.new(href: game_path(@quick_sync_game),
+          variant: :ghost,
+          data: { turbo_frame: "_top" }) do
           = "View →"
-        = button_to current_game_path, method: :delete, params: { game_id: @quick_sync_game.id, inline: true }, class: "btn btn-error btn-outline btn-sm", form: { data: { action: "turbo:submit-end->quick-sync#close" } } do
-          Clear
+        = render ::UI::ActionComponent.new(href: current_game_path,
+          method: :delete,
+          variant: :danger,
+          size: :sm,
+          form: { data: { action: "turbo:submit-end->quick-sync#close" } },
+          params: { game_id: @quick_sync_game.id, inline: true }) do
+          = "Clear"
 
     - if @quick_sync_save
       .text-xs.text-muted
-        Last save:
-        %span= @quick_sync_save.uploaded_at_label
+        = "Last save: "
+        %span
+          = @quick_sync_save.uploaded_at_label
 
     -# Download
     - if @quick_sync_save
-      .rounded-lg.p-4{ class: "bg-base-200 border border-base-300" }
-        %p.text-xs.font-medium.mb-3 Download to device
-        = simple_form_for :game_save, url: download_game_game_save_path(@quick_sync_game, @quick_sync_save), method: :get, html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
+      .rounded-lg.p-4.bg-base-200.border.border-base-300
+        %p.text-xs.font-medium.mb-3
+          = "Download to device"
+        = simple_form_for :game_save,
+          url: download_game_game_save_path(@quick_sync_game, @quick_sync_save),
+          method: :get,
+          html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
           .space-y-3
             = f.select :target_profile_id,
-                @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @quick_sync_save.save_path_hint(p) } }] },
-                { include_blank: "Select emulator…" },
-                { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
+              @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id, { data: { path: @quick_sync_save.save_path_hint(p) } }] },
+              { include_blank: "Select emulator…" },
+              { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
             .hidden{ data: { save_hint_target: "note" } }
-              %p.text-xs.text-muted.mb-1 Place file at:
+              %p.text-xs.text-muted.mb-1
+                = "Place file at:"
               .flex.items-center.gap-2.mb-2
                 %p.text-xs.font-mono.flex-1{ data: { save_hint_target: "hint" } }
-                %button.text-muted.hover:text-base-content.transition-colors.cursor-pointer{ type: "button", title: "Copy path", data: { action: "save-hint#copy", save_hint_target: "copyBtn" } }
-                  %i.fa-regular.fa-clipboard.fa-fw
+                = render ::UI::ActionComponent.new(type: :button,
+                  variant: :default,
+                  class: "text-muted hover:text-base-content transition-colors cursor-pointer",
+                  title: "Copy path",
+                  data: { action: "save-hint#copy", save_hint_target: "copyBtn" }) do |a|
+                  - a.with_leading_icon(name: "fa-clipboard", style: "far")
             = render ::UI::ActionComponent.new(variant: :info, type: "submit") do |a|
               - a.with_leading_icon(name: "fa-download")
               = "Download"
     - else
-      .rounded-lg.p-4.text-center{ class: "bg-base-200 border border-base-300" }
-        %p.text-xs.text-muted No save uploaded yet. Upload one below.
+      .rounded-lg.p-4.text-center.bg-base-200.border.border-base-300
+        %p.text-xs.text-muted
+          = "No save uploaded yet. Upload one below."
 
     -# Upload
-    .rounded-lg.p-4{ class: "bg-base-200 border border-base-300" }
-      %p.text-xs.font-medium.mb-3 Upload new save
-      = simple_form_for :game_save, url: game_game_saves_path(@quick_sync_game), method: :post, html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
+    .rounded-lg.p-4.bg-base-200.border.border-base-300
+      %p.text-xs.font-medium.mb-3
+        = "Upload new save"
+      = simple_form_for :game_save,
+        url: game_game_saves_path(@quick_sync_game),
+        method: :post,
+        html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
         = f.select :emulator_profile_id,
-            @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
-            { include_blank: "Source emulator (optional)" },
-            { class: "select select-bordered w-full" }
+          @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform.text})", p.id] },
+          { include_blank: "Source emulator (optional)" },
+          { class: "select select-bordered w-full" }
         %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
-          %span.flex.items-center.self-stretch.shrink-0.px-4.text-sm.border-r{ class: "border-base-content/20" } Choose file
-          %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } } No file selected
+          %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
+            = "Choose file"
+          %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } }
+            = "No file selected"
           = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
         = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do |a|
           - a.with_leading_icon(name: "fa-upload")
@@ -58,6 +83,8 @@
 
 - else
   .text-center.py-6.space-y-2
-    %i.fa-solid.fa-rotate.text-2xl.text-muted
-    %p.text-sm.text-muted No game set as Now Playing.
-    %p.text-xs.text-muted Open a game and tap "Set as current" to enable quick sync.
+    = render ::UI::IconComponent.new(name: "fa-rotate", class: "text-2xl text-muted")
+    %p.text-sm.text-muted
+      = "No game set as Now Playing."
+    %p.text-xs.text-muted
+      = "Open a game and tap \"Set as current\" to enable quick sync."

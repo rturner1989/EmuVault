@@ -5,19 +5,26 @@
     = header.with_action do
       = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
         = modal.with_trigger do
-          = render ::UI::ActionComponent.new(variant: :primary, id: "add-game-btn", data: { action: "dialog#open" }) do |a|
+          = render ::UI::ActionComponent.new(variant: :primary,
+            id: "add-game-btn",
+            data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
             = "Add Game"
+
         = modal.with_body do
           = render "games/form", form_url: games_path, form_id: "add-game-form"
+
         = modal.with_footer do
-          = render ::UI::ActionComponent.new(variant: :primary, size: :sm, type: :submit, form: "add-game-form") do
+          = render ::UI::ActionComponent.new(variant: :primary,
+            size: :sm,
+            type: :submit,
+            form: "add-game-form") do
             = "Add Game"
 
   = turbo_frame_tag :now_playing, class: "block space-y-4" do
     = render "shared/now_playing"
 
-  -# Stat cards — 2×2 on mobile, 4-col on desktop
+  -# Stat cards
   .grid.grid-cols-2.gap-4.lg:grid-cols-4
     = turbo_frame_tag "game_stats", style: "display: contents" do
       = render "shared/game_stats", games_count: @games_count, games_without_save: @games_without_save
@@ -27,58 +34,13 @@
 
     = render ::UI::StatComponent.new(title: "Sync Events", value: @sync_events_count) do |stat|
       - stat.with_icon(name: "fa-rotate", class: "text-secondary fa-lg", fw: false)
-      - stat.with_action do
-        = link_to activity_path, class: "text-primary hover:underline cursor-pointer inline-flex items-center gap-1" do
-          = "View all"
-          %i.fa-solid.fa-arrow-right
+      - stat.with_action(href: activity_path)
 
-  -# Main content — activity + insights
+  -# Main content
   .grid.grid-cols-1.gap-4.lg:grid-cols-3
-
-    -# Recent Activity (wider)
     .lg:col-span-2
-      .rounded-lg{ class: "bg-base-100 border border-base-300" }
-        .px-5.py-4.flex.items-center.justify-between{ class: "border-b border-base-300" }
-          %h2.text-sm.font-semibold Recent Activity
-          = link_to activity_path, class: "text-xs text-primary hover:underline cursor-pointer inline-flex items-center gap-1" do
-            View all
-            %i.fa-solid.fa-arrow-right
-        - if @recent_sync_events.empty?
-          .px-5.py-8.text-center.text-sm.text-muted No activity yet.
-        - else
-          %ul.divide-y{ class: "divide-base-300" }
-            - @recent_sync_events.each do |event|
-              %li.px-5.py-3.flex.items-center.justify-between.gap-4
-                .flex.items-center.gap-2
-                  = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
-                    - badge.with_icon(name: event.action_icon)
-                  = link_to event.game_title, game_path(event.game_id), class: "text-sm text-primary hover:underline truncate cursor-pointer"
-                .text-xs.text-muted= event.performed_at_label
+      = render "dashboard/recent_activity", recent_sync_events: @recent_sync_events
 
-    -# Insights sidebar
     .space-y-4
-      -# Top games
-      .rounded-lg{ class: "bg-base-100 border border-base-300" }
-        .px-5.py-4{ class: "border-b border-base-300" }
-          %h2.text-sm.font-semibold Most Active Games
-        - if @top_games.empty?
-          .px-5.py-6.text-center.text-sm.text-muted No syncs yet.
-        - else
-          %ul.divide-y{ class: "divide-base-300" }
-            - @top_games.each do |game|
-              %li.px-5.py-3.flex.items-center.justify-between.gap-2
-                = link_to game[:title], game_path(game[:id]), class: "text-sm text-primary hover:underline truncate cursor-pointer"
-                .text-xs.text-muted.shrink-0= "#{game[:count]} sync#{"s" if game[:count] != 1}"
-
-      -# Systems breakdown
-      .rounded-lg{ class: "bg-base-100 border border-base-300" }
-        .px-5.py-4{ class: "border-b border-base-300" }
-          %h2.text-sm.font-semibold Systems
-        - if @system_counts.empty?
-          .px-5.py-6.text-center.text-sm.text-muted No games yet.
-        - else
-          %ul.divide-y{ class: "divide-base-300" }
-            - @system_counts.sort_by { |_, count| -count }.each do |system, count|
-              %li.px-5.py-3.flex.items-center.justify-between.gap-2
-                .text-sm= system.to_s.upcase
-                .text-xs.text-muted= "#{count} game#{"s" if count != 1}"
+      = render "dashboard/top_games", top_games: @top_games
+      = render "dashboard/systems", system_counts: @system_counts

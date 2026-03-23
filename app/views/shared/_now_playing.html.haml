@@ -1,21 +1,26 @@
 - if @quick_sync_game
-  -# Mobile banner — tap to open quick sync sheet
-  %button.lg:hidden.w-full.flex.items-center.gap-3.rounded-lg.px-4.py-3.text-left.cursor-pointer{ class: "bg-base-100 border border-primary", data: { action: "quick-sync#open" } }
-    %i.fa-solid.fa-rotate.text-primary.shrink-0
+  -# Mobile banner
+  = render ::UI::ActionComponent.new(type: :button,
+    variant: :default,
+    class: "w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left cursor-pointer lg:hidden bg-base-100 border border-primary",
+    data: { action: "quick-sync#open" }) do |a|
+    - a.with_leading_icon(name: "fa-rotate", class: "text-primary")
     .min-w-0.flex-1
       %p.text-xs.text-muted.leading-none.mb-0.5
         = "Now Playing"
-      %p.text-sm.font-medium.truncate= @quick_sync_game.title
-    %i.fa-solid.fa-chevron-up.text-muted.text-xs.shrink-0
+      %p.text-sm.font-medium.truncate
+        = @quick_sync_game.title
+    - a.with_trailing_icon(name: "fa-chevron-up", class: "text-muted text-xs")
 
   -# Desktop accordion
-  %details.hidden.lg:block.rounded-lg.overflow-hidden{ class: "bg-base-100 border border-primary" }
+  %details.hidden.rounded-lg.overflow-hidden.lg:block{ class: "bg-base-100 border border-primary" }
     %summary.flex.items-center.gap-3.px-4.py-3.cursor-pointer.select-none.list-none
-      %i.fa-solid.fa-rotate.text-primary.shrink-0
+      = render ::UI::IconComponent.new(name: "fa-rotate", class: "text-primary shrink-0")
       .min-w-0.flex-1
         %p.text-xs.text-muted.leading-none.mb-0.5
           = "Now Playing"
-        %p.text-sm.font-medium.truncate= @quick_sync_game.title
-      %i.fa-solid.fa-chevron-down.text-muted.text-xs.shrink-0.details-chevron
-    .border-t.p-5{ class: "border-base-300" }
+        %p.text-sm.font-medium.truncate
+          = @quick_sync_game.title
+      = render ::UI::IconComponent.new(name: "fa-chevron-down", class: "text-muted text-xs shrink-0 details-chevron")
+    .border-t.p-5.border-base-300
       = render "shared/quick_sync_content"

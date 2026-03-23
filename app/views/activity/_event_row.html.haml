@@ -1,0 +1,12 @@
+.flex.items-center.gap-4.px-5.py-3
+  .flex-1.min-w-0
+    .flex.items-center.gap-2
+      = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
+        - badge.with_icon(name: event.action_icon)
+      = render ::UI::BadgeComponent.new(color: event.device_badge_color) do
+        = event.device_label
+      %span.text-xs.text-muted
+        = event.performed_at_label
+  - if event.ip_address.present?
+    %span{ class: "text-xs text-muted font-mono hidden lg:block" }
+      = event.ip_address

@@ -1,0 +1,26 @@
+.rounded-lg.bg-base-100.border.border-base-300
+  .px-5.py-4.flex.items-center.justify-between.border-b.border-base-300
+    %h2.text-sm.font-semibold
+      = "Recent Activity"
+    = render ::UI::ActionComponent.new(href: activity_path,
+      variant: :link_primary,
+      class: "text-xs") do |a|
+      = "View all"
+      - a.with_trailing_icon(name: "fa-arrow-right")
+
+  - if recent_sync_events.empty?
+    .px-5.py-8.text-center.text-sm.text-muted
+      = "No activity yet."
+  - else
+    %ul.divide-y.divide-base-300
+      - recent_sync_events.each do |event|
+        %li.px-5.py-3.flex.items-center.justify-between.gap-4
+          .flex.items-center.gap-2
+            = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
+              - badge.with_icon(name: event.action_icon)
+            = render ::UI::ActionComponent.new(href: game_path(event.game_id),
+              variant: :link_primary,
+              class: "text-sm truncate") do
+              = event.game_title
+          .text-xs.text-muted
+            = event.performed_at_label

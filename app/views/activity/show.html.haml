@@ -4,81 +4,40 @@
   = render ::UI::PageHeaderComponent.new(title: "Activity", subtitle: "Recent uploads and downloads")
 
   - if @games.any? || @events.any?
-    .mb-4
-      = form_with url: activity_path, method: :get, data: { controller: "auto-submit" } do
-        .flex.items-center.gap-2.flex-wrap
-          - if @games.any?
-            = select_tag :game_id, options_for_select([["All games", ""], *@games.map { |g| [g.title, g.id] }], @selected_game_id), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
-          = select_tag :sort, options_for_select([["Newest first", "newest"], ["Oldest first", "oldest"]], @selected_sort), class: "select select-bordered select-sm w-44", data: { action: "change->auto-submit#submit" }
-          - if @selected_game_id.present?
-            = link_to activity_path(sort: @selected_sort), class: "text-xs text-muted hover:text-base-content transition-colors inline-flex items-center gap-1" do
-              %i.fa-solid.fa-xmark
-              Clear
-          .ml-auto.text-xs.text-muted
-            = "#{@total_count} #{"event".pluralize(@total_count)}"
+    = render "activity/filters", games: @games, selected_game_id: @selected_game_id, selected_sort: @selected_sort, total_count: @total_count
 
   - if @events.empty?
     = render ::UI::EmptyStateComponent.new(title: "No activity yet", description: "Uploads and downloads will appear here.")
-
   - elsif @selected_game_id
-    -# Filtered: flat list for one game.
-    -# When loaded as a turbo frame ("Show more"), the outer game section already provides the container.
-    -# When loaded as a full page (dropdown filter), we render our own container.
-    = turbo_frame_tag "game_events_#{@selected_game_id}" do
+    = turbo_frame_tag dom_id(Game.new(id: @selected_game_id), :events) do
       - if turbo_frame_request?
-        .divide-y{ class: "divide-base-300" }
-          - @events.each do |event|
-            .flex.items-center.gap-4.px-5.py-3
-              .flex-1.min-w-0
-                .flex.items-center.gap-2
-                  = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
-                    - badge.with_icon(name: event.action_icon)
-                  = render ::UI::BadgeComponent.new(color: event.device_badge_color) do
-                    = event.device_label
-                  %span.text-xs.text-muted= event.performed_at_label
-              - if event.ip_address.present?
-                %span.text-xs.text-muted.font-mono.hidden.lg:block= event.ip_address
+        .divide-y.divide-base-300
+          = render partial: "activity/event_row", collection: @events, as: :event
       - else
-        .rounded-lg.border.divide-y{ class: "bg-base-100 border-base-300 divide-base-300" }
-          - @events.each do |event|
-            .flex.items-center.gap-4.px-5.py-4
-              .flex-1.min-w-0
-                .flex.items-center.gap-2.mb-1
-                  = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
-                    - badge.with_icon(name: event.action_icon)
-                  = render ::UI::BadgeComponent.new(color: event.device_badge_color) do
-                    = event.device_label
-                %p.text-xs.text-muted= event.performed_at_label
-              - if event.ip_address.present?
-                %span.text-xs.text-muted.font-mono.hidden.lg:block= event.ip_address
+        .rounded-lg.border.divide-y.bg-base-100.border-base-300.divide-base-300
+          = render partial: "activity/event_row", collection: @events, as: :event
 
   - else
-    -# Unfiltered: grouped by game, each group has its own turbo frame
     .space-y-3
-      - @events.group_by { |e| [e.game_id, e.game_title] }.each do |(gid, gtitle), events|
+      - @events.group_by { |e| [e.game_id, e.game_title] }.each do |(game_id, game_title), events|
         - preview = events.first(ActivityController::PREVIEW_COUNT)
         - remaining = events.size - preview.size
-        .rounded-lg.overflow-hidden{ class: "bg-base-100 border border-base-300" }
-          .px-5.py-3{ class: "border-b border-base-300" }
-            = link_to gtitle, game_path(gid), class: "text-sm font-semibold text-primary hover:underline cursor-pointer"
+        .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
+          .px-5.py-3.border-b.border-base-300
+            = render ::UI::ActionComponent.new(href: game_path(game_id),
+              variant: :link_primary,
+              class: "text-sm font-semibold") do
+              = game_title
 
-          = turbo_frame_tag "game_events_#{gid}" do
-            .divide-y{ class: "divide-base-300" }
-              - preview.each do |event|
-                .flex.items-center.gap-4.px-5.py-3
-                  .flex-1.min-w-0
-                    .flex.items-center.gap-2
-                      = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
-                        - badge.with_icon(name: event.action_icon)
-                      = render ::UI::BadgeComponent.new(color: event.device_badge_color) do
-                        = event.device_label
-                      %span.text-xs.text-muted= event.performed_at_label
-                  - if event.ip_address.present?
-                    %span.text-xs.text-muted.font-mono.hidden.lg:block= event.ip_address
+          - frame_id = dom_id(Game.new(id: game_id), :events)
+          = turbo_frame_tag frame_id do
+            .divide-y.divide-base-300
+              = render partial: "activity/event_row", collection: preview, as: :event
               - if remaining > 0
                 .px-5.py-3
-                  = link_to activity_path(game_id: gid, sort: @selected_sort),
-                      class: "text-xs text-primary hover:underline inline-flex items-center gap-1",
-                      data: { turbo_frame: "game_events_#{gid}" } do
-                    %i.fa-solid.fa-chevron-down
+                  = render ::UI::ActionComponent.new(href: activity_path(game_id: game_id, sort: @selected_sort),
+                    variant: :link_primary,
+                    class: "text-xs",
+                    data: { turbo_frame: frame_id }) do |a|
+                    - a.with_leading_icon(name: "fa-chevron-down")
                     = "Show #{remaining} more"
