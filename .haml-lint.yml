@@ -29,6 +29,35 @@ linters:
   TrailingWhitespace:
     enabled: true
 
+  # Disabled — we prefer `= "text"` for text content on new lines
+  UnnecessaryStringOutput:
+    enabled: false
+
+  # Disabled — we use class: hash when special chars are present (hover:, peer-checked:, etc.)
+  ClassAttributeWithStaticValue:
+    enabled: false
+
+  # Disabled — some component templates exceed 100 lines
+  ViewLength:
+    enabled: false
+
+  # Hash attributes spacing
+  SpaceInsideHashAttributes:
+    enabled: true
+    style: space
+
+  # Disabled — we use inline style="display: contents" on turbo frames intentionally
+  InlineStyles:
+    enabled: false
+
+  # Disabled — consecutive variable assignments are fine for readability
+  ConsecutiveSilentScripts:
+    enabled: false
+
+  # Disabled — partials use instance variables via controller context
+  InstanceVariables:
+    enabled: false
+
   # Warn on empty scripts (e.g. bare `-`)
   EmptyScript:
     enabled: true
@@ -36,3 +65,4 @@ linters:
 exclude:
   - "vendor/**"
   - "node_modules/**"
+  - "lib/templates/**"
