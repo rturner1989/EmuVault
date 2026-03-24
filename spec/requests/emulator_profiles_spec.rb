@@ -113,7 +113,7 @@ RSpec.describe "EmulatorProfiles" do
       profile = create(:emulator_profile, game_system: :snes)
       create(:game, system: :snes)
 
-      delete bulk_destroy_emulator_profiles_path, params: { profile_ids: [profile.id] },
+      delete bulk_destroy_emulator_profiles_path, params: { profile_ids: [ profile.id ] },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(EmulatorProfile.exists?(profile.id)).to be(true)

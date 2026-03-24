@@ -21,7 +21,7 @@ A cross-platform emulator save file manager. Allows users to sync game saves bet
 - **Redis** for Sidekiq queue
 - **BetterErrors** + **binding_of_caller** for improved error pages in development
 - **Rack::Attack** for rate limiting
-- **RSpec** + FactoryBot + Capybara + Selenium + DatabaseCleaner for testing
+- **RSpec** + FactoryBot + Capybara + Playwright + DatabaseCleaner for testing
 - **RuboCop** with rubocop-rails, rubocop-rspec, rubocop-capybara, rubocop-factory_bot, rubocop-rspec_rails
 - **Docker** for development environment
 
@@ -308,8 +308,6 @@ Managed at `/emulator_profiles`. Index shows only `user_selected` profiles. Edit
 See `.env.example` for all required vars. Key ones:
 - `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD`, `DB_NAME` — PostgreSQL connection
 - `REDIS_URL` — Redis connection for Sidekiq
-- `HUB_URL` — Selenium hub for system tests (e.g. `http://selenium-hub:4444/wd/hub`)
-- `APP_HOST` — used by Capybara for system tests
 
 ## Notable config
 
@@ -329,7 +327,6 @@ See `.env.example` for all required vars. Key ones:
 - `postgres` — PostgreSQL 17 (credentials from .env)
 - `redis` — Redis (port 6379)
 - `sidekiq` — background job worker
-- `selenium-hub` + `chrome` + `edge` + `firefox` — for system tests
 
 ## Production deployment
 

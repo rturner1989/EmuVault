@@ -5,20 +5,19 @@ RSpec.describe UI::ActionComponent, type: :component do
     it "renders a button by default (no href)" do
       render_inline(described_class.new) { "Click me" }
 
-      expect(page).to have_css("button", text: "Click me")
+      expect(page).to have_button("Click me")
     end
 
     it "renders with type submit" do
       render_inline(described_class.new(type: :submit)) { "Save" }
 
-      expect(page).to have_css("button[type='submit']", text: "Save")
+      expect(page).to have_button("Save")
     end
 
     it "renders disabled state" do
       render_inline(described_class.new(disabled: true)) { "Nope" }
 
-      expect(page).to have_css("button[disabled]", text: "Nope")
-      expect(page).to have_css("button.cursor-not-allowed")
+      expect(page).to have_button("Nope", disabled: true, class: "cursor-not-allowed")
     end
   end
 
@@ -41,7 +40,7 @@ RSpec.describe UI::ActionComponent, type: :component do
       render_inline(described_class.new(href: "/session", method: :delete)) { "Sign Out" }
 
       expect(page).to have_css("form[action='/session']")
-      expect(page).to have_css("input[name='_method'][value='delete']", visible: false)
+      expect(page).to have_css("input[name='_method'][value='delete']", visible: :hidden)
       expect(page).to have_button("Sign Out")
     end
   end
@@ -72,19 +71,19 @@ RSpec.describe UI::ActionComponent, type: :component do
     it "applies primary variant" do
       render_inline(described_class.new(variant: :primary)) { "Go" }
 
-      expect(page).to have_css("button.btn.btn-primary")
+      expect(page).to have_button("Go", class: %w[btn btn-primary])
     end
 
     it "applies danger variant" do
       render_inline(described_class.new(variant: :danger)) { "Delete" }
 
-      expect(page).to have_css("button.btn.btn-error")
+      expect(page).to have_button("Delete", class: %w[btn btn-error])
     end
 
     it "applies ghost variant" do
       render_inline(described_class.new(variant: :ghost)) { "Cancel" }
 
-      expect(page).to have_css("button.btn.btn-ghost")
+      expect(page).to have_button("Cancel", class: %w[btn btn-ghost])
     end
   end
 
@@ -92,13 +91,13 @@ RSpec.describe UI::ActionComponent, type: :component do
     it "applies xs size" do
       render_inline(described_class.new(size: :xs)) { "Tiny" }
 
-      expect(page).to have_css("button.btn-xs")
+      expect(page).to have_button("Tiny", class: "btn-xs")
     end
 
     it "applies sm size" do
       render_inline(described_class.new(size: :sm)) { "Small" }
 
-      expect(page).to have_css("button.btn-sm")
+      expect(page).to have_button("Small", class: "btn-sm")
     end
   end
 end

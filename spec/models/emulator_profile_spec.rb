@@ -38,9 +38,10 @@ RSpec.describe EmulatorProfile do
   end
 
   describe "scopes" do
-    let!(:selected_snes) { create(:emulator_profile, game_system: :snes, user_selected: true) }
-    let!(:unselected_gba) { create(:emulator_profile, game_system: :gba, user_selected: false) }
     let!(:selected_gba) { create(:emulator_profile, game_system: :gba, user_selected: true) }
+    let!(:unselected_gba) { create(:emulator_profile, game_system: :gba, user_selected: false) }
+
+    before { create(:emulator_profile, game_system: :snes, user_selected: true) }
 
     describe ".for_system" do
       it "returns profiles for the given system" do

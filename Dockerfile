@@ -23,6 +23,9 @@ RUN yarn install
 
 RUN yarn global add esbuild
 
+# Install Playwright Chromium for system tests
+RUN npx playwright install chromium --with-deps
+
 COPY . .
 
 COPY entrypoint.sh /usr/bin/

@@ -39,3 +39,6 @@
 
 /node_modules
 /public/fontawesome
+
+# Playwright test videos
+/tmp/playwright_videos/

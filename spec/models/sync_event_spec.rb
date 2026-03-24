@@ -29,7 +29,7 @@ RSpec.describe SyncEvent do
         old_event = create(:sync_event, performed_at: 1.day.ago)
         new_event = create(:sync_event, performed_at: 1.hour.ago)
 
-        expect(described_class.recent).to eq([new_event, old_event])
+        expect(described_class.recent).to eq([ new_event, old_event ])
       end
     end
   end

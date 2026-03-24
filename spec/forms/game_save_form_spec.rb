@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe GameSaveForm do
   let(:game) { create(:game) }
   let(:file) do
-    tempfile = Tempfile.new(["save", ".srm"])
+    tempfile = Tempfile.new([ "save", ".srm" ])
     tempfile.write("save data")
     tempfile.rewind
     Rack::Test::UploadedFile.new(tempfile.path, "application/octet-stream", true, original_filename: "save.srm")

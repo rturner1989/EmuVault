@@ -10,16 +10,16 @@ RSpec.describe SetupSystemsForm do
     end
 
     it "is valid with systems selected" do
-      form = described_class.new(system_keys: ["snes", "gba"])
+      form = described_class.new(system_keys: [ "snes", "gba" ])
 
       expect(form).to be_valid
     end
 
     it "strips blank entries" do
-      form = described_class.new(system_keys: ["", "snes", ""])
+      form = described_class.new(system_keys: [ "", "snes", "" ])
 
       expect(form).to be_valid
-      expect(form.system_keys).to eq(["snes"])
+      expect(form.system_keys).to eq([ "snes" ])
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe SetupSystemsForm do
       snes_profile = create(:emulator_profile, :default_profile, game_system: :snes, user_selected: true)
       gba_profile = create(:emulator_profile, :default_profile, game_system: :gba, user_selected: true)
 
-      form = described_class.new(system_keys: ["snes"])
+      form = described_class.new(system_keys: [ "snes" ])
       form.save
 
       expect(snes_profile.reload.user_selected).to be(true)

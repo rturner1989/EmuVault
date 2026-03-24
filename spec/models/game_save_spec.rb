@@ -35,7 +35,7 @@ RSpec.describe GameSave do
         old_save = create(:game_save, created_at: 1.day.ago)
         new_save = create(:game_save, created_at: 1.hour.ago)
 
-        expect(described_class.latest_first).to eq([new_save, old_save])
+        expect(described_class.latest_first).to eq([ new_save, old_save ])
       end
     end
   end

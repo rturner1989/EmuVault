@@ -44,7 +44,7 @@ RSpec.describe UI::ConfirmComponent, type: :component do
   it "uses delete method by default" do
     render_inline(described_class.new(**default_attrs))
 
-    expect(page).to have_css("input[name='_method'][value='delete']", visible: false)
+    expect(page).to have_css("input[name='_method'][value='delete']", visible: :hidden)
   end
 
   it "wraps in a ModalComponent" do

@@ -51,6 +51,7 @@ group :development, :test do
 end
 
 group :development do
+  gem "ruby-lsp", require: false
   gem "web-console"
   gem "better_errors"
   gem "binding_of_caller"
@@ -59,7 +60,7 @@ end
 
 group :test do
   gem "capybara"
-  gem "selenium-webdriver"
+  gem "capybara-playwright-driver"
   gem "shoulda-matchers"
   gem "database_cleaner-active_record"
 end

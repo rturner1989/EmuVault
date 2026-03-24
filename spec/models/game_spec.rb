@@ -15,7 +15,7 @@ RSpec.describe Game do
 
   describe "enumerize" do
     it "defines system with game system values" do
-      expect(Game.system.values.map(&:to_sym)).to include(:snes, :gba, :psx, :ps2)
+      expect(described_class.system.values.map(&:to_sym)).to include(:snes, :gba, :psx, :ps2)
     end
   end
 end
