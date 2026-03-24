@@ -12,7 +12,7 @@ class AdminAuthMiddleware
     if session_id.present? && Session.exists?(id: session_id)
       @app.call(env)
     else
-      [302, { "Location" => "/session/new" }, [""]]
+      [ 302, { "Location" => "/session/new" }, [ "" ] ]
     end
   end
 end

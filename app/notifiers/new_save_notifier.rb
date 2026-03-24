@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class NewSaveNotifier < Noticed::Event
-
   notification_methods do
     def message
       game_save = event.params[:game_save]

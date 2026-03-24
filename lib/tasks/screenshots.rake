@@ -61,7 +61,7 @@ task screenshots: :environment do
     exit 1
   end
 
-  driver = Selenium::WebDriver.for(:remote, url: hub_url, capabilities: [options])
+  driver = Selenium::WebDriver.for(:remote, url: hub_url, capabilities: [ options ])
   puts "Using #{browser} browser"
 
   begin

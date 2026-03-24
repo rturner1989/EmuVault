@@ -12,7 +12,7 @@ module Layouts
     def initialize(type:, message:)
       @type = type.to_sym
       @message = message
-      @kwargs = { 
+      @kwargs = {
         role: :alert,
         class: "alert #{variant[:css]} shadow-lg overflow-hidden relative",
         data: { controller: "flash", flash_duration_value: "4000" }

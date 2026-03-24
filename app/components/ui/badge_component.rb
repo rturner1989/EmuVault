@@ -7,7 +7,7 @@ module UI
     def initialize(color: :comment, size: :sm, **kwargs)
       extra = kwargs.delete(:class)
       computed = style(:badge, color: color.to_sym, size: size.to_sym)
-      @kwargs = kwargs.merge(class: (computed + [extra]).compact.reject(&:empty?).join(" "))
+      @kwargs = kwargs.merge(class: (computed + [ extra ]).compact.reject(&:empty?).join(" "))
     end
 
     style :badge,

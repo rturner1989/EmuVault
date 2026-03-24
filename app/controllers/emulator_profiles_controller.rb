@@ -48,7 +48,7 @@ class EmulatorProfilesController < ApplicationController
     @system_label = EmulatorProfile.game_system.find_value(@system)&.text || @system.to_s.upcase
     @profiles = EmulatorProfile.where(is_default: true, user_selected: false, game_system: @system).ordered
 
-    return redirect_to library_emulator_profiles_path if @system.blank?
+    return redirect_to library_emulator_profiles_path if @system.blank? # rubocop:disable Style/RedundantReturn
   end
 
   def add_from_library
