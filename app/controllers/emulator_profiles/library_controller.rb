@@ -31,8 +31,8 @@ module EmulatorProfiles
     end
 
     def create
-      selected_ids = (params[:profile_ids] || []).map(&:to_i)
-      EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true)
+      selected_ids = Array(params[:profile_ids]).filter_map { |id| id.to_i.nonzero? }
+      EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true) if selected_ids.any?
 
       remaining = Array(params[:remaining]).reject(&:blank?)
       if remaining.any?

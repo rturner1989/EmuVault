@@ -11,7 +11,6 @@
     %span.text-xs.text-muted
       = "(#{@current_pos}/#{@total})"
 
-- is_last = @remaining.empty?
 - if @profiles.any?
   = form_with url: emulator_profiles_library_index_path, method: :post, id: "library-step-form" do |f|
     %input{ type: "hidden", name: "total", value: @total }
@@ -30,12 +29,6 @@
               = profile.platform_label
           %span.text-xs.text-muted.font-mono.shrink-0
             = ".#{profile.save_extension}"
-    .sticky.bottom-0.pt-3.mt-4.border-t.border-base-300.bg-base-100
-      = render ::UI::ActionComponent.new(variant: :primary,
-        size: :sm,
-        type: :submit) do |a|
-        - a.with_trailing_icon(name: is_last ? "fa-check" : "fa-arrow-right")
-        = is_last ? "Confirm" : "Next"
 - else
   %p.text-sm.text-muted
     = "All emulators for this system are already added."
@@ -44,19 +37,9 @@
       method: :get,
       id: "library-step-form",
       data: { turbo_frame: :library_modal_frame } do |f|
-      .sticky.bottom-0.pt-3.mt-4.border-t.border-base-300.bg-base-100
-        = render ::UI::ActionComponent.new(variant: :primary,
-          size: :sm,
-          type: :submit) do |a|
-          - a.with_trailing_icon(name: is_last ? "fa-check" : "fa-arrow-right")
-          = is_last ? "Confirm" : "Next"
+      -# params embedded in action URL — no inputs needed
   - else
     = form_with url: emulator_profiles_library_index_path,
       method: :post,
       id: "library-step-form" do |f|
-      .sticky.bottom-0.pt-3.mt-4.border-t.border-base-300.bg-base-100
-        = render ::UI::ActionComponent.new(variant: :primary,
-          size: :sm,
-          type: :submit) do |a|
-          - a.with_trailing_icon(name: "fa-check")
-          = "Confirm"
+      -# submits with no profile_ids — triggers close + list refresh

@@ -56,23 +56,24 @@
                       %p.text-xs.text-muted
                         = "No save path set"
                   .flex.items-center.gap-2.shrink-0
-                    = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
-                      = modal.with_trigger do
-                        = render ::UI::ActionComponent.new(variant: :secondary,
-                          size: :xs,
-                          data: { action: "dialog#open" }) do
-                          = "Edit"
-                      = modal.with_body do
-                        = render "emulator_profiles/form", profile: profile,
-                          url: emulator_profile_path(profile),
-                          method: :patch,
-                          form_id: "edit-profile-#{profile.id}-form"
-                      = modal.with_footer do
-                        = render ::UI::ActionComponent.new(variant: :primary,
-                          size: :sm,
-                          type: :submit,
-                          form: "edit-profile-#{profile.id}-form") do
-                          = "Save"
+                    - unless profile.is_default
+                      = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
+                        = modal.with_trigger do
+                          = render ::UI::ActionComponent.new(variant: :secondary,
+                            size: :xs,
+                            data: { action: "dialog#open" }) do
+                            = "Edit"
+                        = modal.with_body do
+                          = render "emulator_profiles/form", profile: profile,
+                            url: emulator_profile_path(profile),
+                            method: :patch,
+                            form_id: "edit-profile-#{profile.id}-form"
+                        = modal.with_footer do
+                          = render ::UI::ActionComponent.new(variant: :primary,
+                            size: :sm,
+                            type: :submit,
+                            form: "edit-profile-#{profile.id}-form") do
+                            = "Save"
                     - if profile_in_use
                       = render ::UI::ActionComponent.new(variant: :danger,
                         size: :xs,
@@ -112,6 +113,13 @@
           = turbo_frame_tag :library_modal_frame, src: emulator_profiles_library_index_path do
             .py-4.text-center
               %span.loading.loading-spinner.loading-sm
+        = modal.with_footer do
+          = render ::UI::ActionComponent.new(variant: :primary,
+            size: :sm,
+            type: :submit,
+            form: "library-step-form") do |a|
+            - a.with_trailing_icon(name: "fa-check")
+            = "Confirm"
       = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
         = modal.with_trigger do
           = render ::UI::ActionComponent.new(variant: :secondary, data: { action: "dialog#open" }) do |a|
@@ -137,6 +145,13 @@
         = turbo_frame_tag :library_modal_frame, src: emulator_profiles_library_index_path do
           .py-4.text-center
             %span.loading.loading-spinner.loading-sm
+      = modal.with_footer do
+        = render ::UI::ActionComponent.new(variant: :primary,
+          size: :sm,
+          type: :submit,
+          form: "library-step-form") do |a|
+          - a.with_trailing_icon(name: "fa-check")
+          = "Confirm"
     = render ::UI::ModalComponent.new(id: "new-profile-dialog",
       title: "New Profile") do |modal|
       = modal.with_body do

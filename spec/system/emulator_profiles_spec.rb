@@ -149,6 +149,18 @@ RSpec.describe "Emulator Profiles" do
     end
   end
 
+  describe "default profile restrictions" do
+    before do
+      create(:emulator_profile, :default_profile, name: "RetroArch", platform: :linux, game_system: :gba, save_extension: "srm")
+      visit emulator_profiles_path
+    end
+
+    it "does not show the Edit button for default profiles" do
+      expect(page).to have_text("RetroArch")
+      expect(page).to have_no_button("Edit")
+    end
+  end
+
   describe "deleting a profile" do
     before do
       create(:emulator_profile, name: "RetroArch", platform: :linux, game_system: :gba, save_extension: "srm")

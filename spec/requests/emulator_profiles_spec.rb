@@ -57,14 +57,25 @@ RSpec.describe "EmulatorProfiles" do
   end
 
   describe "PATCH /emulator_profiles/:id" do
-    let(:profile) { create(:emulator_profile, name: "Old Name") }
+    it "updates a custom profile" do
+      profile = create(:emulator_profile, name: "Old Name", is_default: false)
 
-    it "updates the profile" do
       patch emulator_profile_path(profile), params: {
         emulator_profile: { name: "New Name" }
       }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(profile.reload.name).to eq("New Name")
+    end
+
+    it "blocks editing a default profile" do
+      profile = create(:emulator_profile, :default_profile, name: "RetroArch")
+
+      patch emulator_profile_path(profile), params: {
+        emulator_profile: { name: "Hacked" }
+      }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:forbidden)
+      expect(profile.reload.name).to eq("RetroArch")
     end
   end
 
@@ -117,6 +128,27 @@ RSpec.describe "EmulatorProfiles" do
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(EmulatorProfile.exists?(profile.id)).to be(true)
+    end
+  end
+
+  describe "POST /emulator_profiles/library (add from library)" do
+    let!(:profile) { create(:emulator_profile, :default_profile, :unselected, game_system: :gba) }
+
+    it "selects profiles from the library" do
+      post emulator_profiles_library_index_path,
+        params: { profile_ids: [profile.id] },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(profile.reload.user_selected).to be(true)
+    end
+
+    it "allows submission with no profiles selected (skips system)" do
+      post emulator_profiles_library_index_path,
+        params: { profile_ids: [] },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:ok)
+      expect(profile.reload.user_selected).to be(false)
     end
   end
 end

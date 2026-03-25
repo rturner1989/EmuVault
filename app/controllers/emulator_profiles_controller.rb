@@ -24,6 +24,8 @@ class EmulatorProfilesController < ApplicationController
   end
 
   def update
+    return head :forbidden if @profile.is_default
+
     if @profile.update(profile_params)
       load_profiles_list
     else
