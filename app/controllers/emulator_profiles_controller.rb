@@ -2,21 +2,16 @@ class EmulatorProfilesController < ApplicationController
   before_action :set_profile, only: %i[edit update destroy]
 
   def index
-    authorize! EmulatorProfile
     @selected_by_system = EmulatorProfile.where(user_selected: true)
       .ordered
       .group_by { |p| p.game_system&.to_sym }
   end
 
   def new
-    authorize! EmulatorProfile
-
     @profile = EmulatorProfile.new
   end
 
   def create
-    authorize! EmulatorProfile
-
     @profile = EmulatorProfile.new(profile_params.merge(user_selected: true))
     if @profile.save
       load_profiles_list
@@ -26,12 +21,9 @@ class EmulatorProfilesController < ApplicationController
   end
 
   def edit
-    authorize! @profile
   end
 
   def update
-    authorize! @profile
-
     if @profile.update(profile_params)
       load_profiles_list
     else
@@ -40,8 +32,6 @@ class EmulatorProfilesController < ApplicationController
   end
 
   def destroy
-    authorize! @profile
-
     if @profile.in_use?
       @destroy_failed = true
       @destroy_error = :in_use

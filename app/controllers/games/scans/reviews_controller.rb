@@ -2,8 +2,6 @@ module Games
   module Scans
     class ReviewsController < ApplicationController
       def show
-        authorize! current_user
-
         result = current_user.last_scan_result || {}
         @found = result["found"] || []
         @already_in_lib = result["already_in_lib"] || 0

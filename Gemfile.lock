@@ -1,8 +1,6 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    action_policy (0.7.6)
-      ruby-next-core (>= 1.0)
     action_text-trix (2.1.17)
       railties
     actioncable (8.1.2)
@@ -136,8 +134,6 @@ GEM
       railties (>= 6.1)
     drb (2.2.3)
     ed25519 (1.4.0)
-    enumerize (2.8.1)
-      activesupport (>= 3.2)
     erb (6.0.2)
     erubi (1.13.1)
     et-orbi (1.4.0)
@@ -423,7 +419,6 @@ GEM
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 5)
-    ruby-next-core (1.2.0)
     ruby-progressbar (1.13.0)
     ruby-vips (2.3.0)
       ffi (~> 1.12)
@@ -504,7 +499,6 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  action_policy
   annotaterb
   bcrypt (~> 3.1)
   better_errors
@@ -518,7 +512,6 @@ DEPENDENCIES
   database_cleaner-active_record
   debug
   dotenv-rails
-  enumerize
   factory_bot_rails
   faker
   haml-lint
@@ -558,7 +551,6 @@ DEPENDENCIES
   webpush
 
 CHECKSUMS
-  action_policy (0.7.6) sha256=a80156671e6b7784a2f1fa3a5f347da27c7e13abe7b1c9aab81772839794002d
   action_text-trix (2.1.17) sha256=b44691639d77e67169dc054ceacd1edc04d44dc3e4c6a427aa155a2beb4cc951
   actioncable (8.1.2) sha256=dc31efc34cca9cdefc5c691ddb8b4b214c0ea5cd1372108cbc1377767fb91969
   actionmailbox (8.1.2) sha256=058b2fb1980e5d5a894f675475fcfa45c62631103d5a2596d9610ec81581889b
@@ -601,7 +593,6 @@ CHECKSUMS
   dotenv-rails (3.2.0) sha256=657e25554ba622ffc95d8c4f1670286510f47f2edda9f68293c3f661b303beab
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
   ed25519 (1.4.0) sha256=16e97f5198689a154247169f3453ef4cfd3f7a47481fde0ae33206cdfdcac506
-  enumerize (2.8.1) sha256=6f2fa9c7714d8f6c4f69503e41f3c060a3382cba1dcbbc69dab931bffd023d9a
   erb (6.0.2) sha256=9fe6264d44f79422c87490a1558479bd0e7dad4dd0e317656e67ea3077b5242b
   erubi (1.13.1) sha256=a082103b0885dbc5ecf1172fede897f9ebdb745a4b97a5e8dc63953db1ee4ad9
   et-orbi (1.4.0) sha256=6c7e3c90779821f9e3b324c5e96fda9767f72995d6ae435b96678a4f3e2de8bc
@@ -713,7 +704,6 @@ CHECKSUMS
   rubocop-rspec (3.9.0) sha256=8fa70a3619408237d789aeecfb9beef40576acc855173e60939d63332fdb55e2
   rubocop-rspec_rails (2.32.0) sha256=4a0d641c72f6ebb957534f539d9d0a62c47abd8ce0d0aeee1ef4701e892a9100
   ruby-lsp (0.26.8) sha256=fa607c342736c6ea791c945ae05025bc306ef9dd72c640b0b660478c5832f968
-  ruby-next-core (1.2.0) sha256=f6a7d00bb5186cecbb02f7f1845a0f3a2c9788d35b6ccff5c9be3f0d46799b86
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   ruby-vips (2.3.0) sha256=e685ec02c13969912debbd98019e50492e12989282da5f37d05f5471442f5374
   rubyzip (3.2.2) sha256=c0ed99385f0625415c8f05bcae33fe649ed2952894a95ff8b08f26ca57ea5b3c

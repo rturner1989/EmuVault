@@ -21,10 +21,14 @@
 #  fk_rails_...  (game_save_id => game_saves.id)
 #
 class SyncEvent < ApplicationRecord
-  extend Enumerize
+  DEVICE_BADGE_COLORS = {
+    phone: :orange,
+    tablet: :yellow,
+    desktop: :purple
+  }.freeze
 
-  enumerize :action, in: %i[push pull], predicates: true
-  enumerize :status, in: %i[success failed], predicates: true
+  enum :action, { push: "push", pull: "pull" }
+  enum :status, { success: "success", failed: "failed" }
 
   belongs_to :game_save
 
@@ -33,4 +37,47 @@ class SyncEvent < ApplicationRecord
   validates :performed_at, presence: true
 
   scope :recent, -> { order(performed_at: :desc) }
+
+  def device_type
+    ua = user_agent.to_s
+    if ua.match?(/iPad|Android.*Tablet|Kindle/i)
+      :tablet
+    elsif ua.match?(/Mobile|Android|iPhone|iPod/i)
+      :phone
+    else
+      :desktop
+    end
+  end
+
+  def device_label
+    { phone: "Phone", tablet: "Tablet", desktop: "Desktop" }[device_type]
+  end
+
+  def device_badge_color
+    DEVICE_BADGE_COLORS[device_type]
+  end
+
+  def action_label
+    push? ? "Upload" : "Download"
+  end
+
+  def action_icon
+    push? ? "fa-arrow-up" : "fa-arrow-down"
+  end
+
+  def action_badge_color
+    push? ? :green : :cyan
+  end
+
+  def performed_at_label
+    performed_at.strftime("%b %-d, %Y at %H:%M")
+  end
+
+  def game_title
+    game_save.game.title
+  end
+
+  def game_id
+    game_save.game_id
+  end
 end

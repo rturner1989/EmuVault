@@ -15,7 +15,7 @@
               .flex-1.min-w-0
                 .flex.items-center.gap-2.mb-1.5
                   = render ::UI::BadgeComponent.new(color: platform_badge_color(profile.platform)) do
-                    = profile.platform.text
+                    = profile.platform_label
                   %span.text-sm
                     = profile.name
                 .flex.items-center.gap-1

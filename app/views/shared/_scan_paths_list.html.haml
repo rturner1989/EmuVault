@@ -8,7 +8,7 @@
               %p.text-sm.font-mono.truncate
                 = sp.path
               %p.text-xs.text-muted
-                = sp.game_system.text
+                = ScanPath.game_system_label(sp.game_system)
             .flex.items-center.gap-1.shrink-0
               = render ::UI::ActionComponent.new(href: scan_path_path(sp),
                 method: :patch,

@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   include Authentication
-  include ActionPolicy::Behaviour
   include SetupProgress
 
   allow_browser versions: :modern
@@ -30,10 +29,10 @@ class ApplicationController < ActionController::Base
     game = current_user.current_game
     return unless game
 
-    @quick_sync_game = GameDecorator.new(game)
+    @quick_sync_game = game
 
     latest = @quick_sync_game.game_saves.latest_first.first
-    @quick_sync_save = latest ? GameSaveDecorator.new(latest) : nil
+    @quick_sync_save = latest
     @quick_sync_profiles = EmulatorProfile.selected_for_system(game.system).ordered
   end
 

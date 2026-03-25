@@ -28,8 +28,6 @@
 #  fk_rails_...  (current_game_id => games.id) ON DELETE => nullify
 #
 class User < ApplicationRecord
-  extend Enumerize
-
   THEMES = {
     "Dark" => %w[dracula night dark business luxury coffee dim sunset],
     "Light" => %w[light cupcake emerald corporate retro cyberpunk valentine
@@ -38,7 +36,13 @@ class User < ApplicationRecord
 
   ALL_THEMES = THEMES.values.flatten.freeze
 
-  enumerize :scan_interval, in: %i[hourly every_6_hours daily], default: :hourly
+  SCAN_INTERVAL_LABELS = {
+    hourly: "Every hour",
+    every_6_hours: "Every 6 hours",
+    daily: "Daily"
+  }.freeze
+
+  enum :scan_interval, { hourly: "hourly", every_6_hours: "every_6_hours", daily: "daily" }
 
   validates :theme, inclusion: { in: ALL_THEMES }
   validates :kuma_url, format: { with: /\Ahttps?:\/\/\S+\z/i, message: "must be an HTTP or HTTPS URL" }, allow_blank: true

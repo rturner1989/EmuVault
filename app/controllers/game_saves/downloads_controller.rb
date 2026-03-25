@@ -4,12 +4,8 @@ module GameSaves
     before_action :set_game_save
 
     def show
-      authorize! @game_save, to: :show?
-
       target_profile_id = params.dig(:game_save, :target_profile_id)
       target_profile = target_profile_id.present? ? EmulatorProfile.find(target_profile_id) : nil
-      decorated = GameSaveDecorator.new(@game_save)
-
       SyncEvent.create!(
         game_save: @game_save,
         action: :pull,
@@ -19,7 +15,7 @@ module GameSaves
         user_agent: request.user_agent
       )
 
-      filename = decorated.download_filename(target_profile)
+      filename = @game_save.download_filename(target_profile)
       response.headers["Content-Type"] = "application/octet-stream"
       response.headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
       render body: @game_save.file.download

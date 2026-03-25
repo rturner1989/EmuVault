@@ -85,14 +85,14 @@
           - elsif @selected_sort == "system"
             .space-y-6
               - @games.group_by(&:system).each do |system_key, system_games|
-                - system_label = Game.system.find_value(system_key)&.text || system_key.to_s.upcase
+                - system_label = Game.game_system_label(system_key)
                 %div
                   %p.text-sm.font-medium.mb-2
                     = system_label
                   .space-y-3
                     = render "games/game_list", games: system_games
           - elsif @selected_system.present?
-            - system_label = Game.system.find_value(@selected_system)&.text || @selected_system.upcase
+            - system_label = Game.game_system_label(@selected_system)
             %div
               %p.text-sm.font-medium.mb-2
                 = system_label

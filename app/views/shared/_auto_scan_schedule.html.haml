@@ -11,7 +11,7 @@
   .flex.items-center.justify-between.gap-4
     %label.text-sm.shrink-0{ for: "user_scan_interval" }
       = "Interval"
-    = f.select :scan_interval, User.scan_interval.values.map { |v| [v.text, v.value] }, {}, class: "select select-bordered select-sm w-auto"
+    = f.select :scan_interval, User::SCAN_INTERVAL_LABELS.map { |value, label| [label, value] }, {}, class: "select select-bordered select-sm w-auto"
   - if local_assigns[:show_submit] != false
     = render ::UI::ActionComponent.new(variant: :primary,
       size: :sm,

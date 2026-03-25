@@ -1,8 +1,6 @@
 module EmulatorProfiles
   class BulkDestroysController < ApplicationController
     def create
-      authorize! EmulatorProfile, to: :destroy?
-
       ids = Array(params[:profile_ids]).map(&:to_i)
       profiles = EmulatorProfile.where(id: ids)
 

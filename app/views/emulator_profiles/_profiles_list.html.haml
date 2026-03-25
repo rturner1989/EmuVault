@@ -25,7 +25,7 @@
       - in_use_systems = Game.distinct.pluck(:system).map(&:to_sym).to_set
       .space-y-4
         - selected_by_system.each do |system_key, profiles|
-          - system_label = EmulatorProfile.game_system.find_value(system_key)&.text || (system_key.present? ? system_key.to_s.upcase : "Unknown System")
+          - system_label = system_key.present? ? EmulatorProfile.game_system_label(system_key) : "Unknown System"
           = render ::UI::CardComponent.new(padding: :sm) do |c|
             - c.with_header do
               %span.font-medium.text-sm
@@ -46,7 +46,7 @@
                       %span.text-sm.font-medium
                         = profile.name
                       = render ::UI::BadgeComponent.new(color: platform_badge_color(profile.platform)) do
-                        = profile.platform.text
+                        = profile.platform_label
                       %span.text-xs.text-muted.font-mono
                         = ".#{profile.save_extension}"
                     - if profile.default_save_path.present?

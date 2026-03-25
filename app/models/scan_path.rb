@@ -11,9 +11,8 @@
 #
 class ScanPath < ApplicationRecord
   include HasGameSystem
-  extend Enumerize
 
-  enumerize :game_system, in: GAME_SYSTEMS
+  enum :game_system, GAME_SYSTEMS.index_with(&:to_s)
 
   validates :path, presence: true
   validates :game_system, presence: true

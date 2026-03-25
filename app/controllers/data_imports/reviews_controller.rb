@@ -1,8 +1,6 @@
 module DataImports
   class ReviewsController < ApplicationController
     def show
-      authorize! current_user
-
       @import = DataImport.find(params[:data_import_id])
       manifest = @import.manifest
       conflict_ids = @import.conflicts.map { |conflict| conflict["export_id"] }.to_set

@@ -1,7 +1,5 @@
 class DashboardController < ApplicationController
   def index
-    authorize! current_user
-
     @form = GameForm.new
     @games_count = Game.count
     @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count
@@ -13,7 +11,7 @@ class DashboardController < ApplicationController
         .sum("active_storage_blobs.byte_size")
     )
 
-    @recent_sync_events = SyncEventDecorator.decorate(SyncEvent.includes(game_save: :game).recent.limit(5))
+    @recent_sync_events = SyncEvent.includes(game_save: :game).recent.limit(5)
     @top_games = SyncEvent.joins(game_save: :game)
                           .group("games.id", "games.title")
                           .order(Arel.sql("COUNT(*) DESC"))

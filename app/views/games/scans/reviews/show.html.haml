@@ -46,7 +46,7 @@
     = form_with url: game_scan_confirmation_path, method: :post do |f|
       .space-y-4
         - @grouped.each do |system_key, items|
-          - system_label = ScanPath.game_system.find_value(system_key)&.text || system_key.upcase
+          - system_label = ScanPath.game_system_label(system_key)
           .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
             .flex.items-center.justify-between.px-4.py-3.border-b.border-base-300
               %h3.text-sm.font-semibold

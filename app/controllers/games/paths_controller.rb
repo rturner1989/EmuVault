@@ -4,8 +4,6 @@ module Games
     before_action :set_scan_path, only: %i[update destroy]
 
     def create
-      authorize! ScanPath
-
       @scan_path = ScanPath.new(scan_path_params)
       if @scan_path.save
         return redirect_to settings_path unless turbo_frame_request?
@@ -18,8 +16,6 @@ module Games
     end
 
     def update
-      authorize! @scan_path
-
       if @scan_path.update(scan_path_params)
         return redirect_to settings_path unless turbo_frame_request?
 
@@ -31,8 +27,6 @@ module Games
     end
 
     def destroy
-      authorize! @scan_path
-
       if @scan_path.destroy
         return redirect_to settings_path unless turbo_frame_request?
 

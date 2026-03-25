@@ -4,8 +4,6 @@ module Games
       skip_before_action :require_setup_complete
 
       def show
-        authorize! current_user
-
         path = File.expand_path(params[:path].presence || "/")
 
         entries = Dir.entries(path)

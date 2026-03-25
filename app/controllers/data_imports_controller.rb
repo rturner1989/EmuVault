@@ -4,8 +4,6 @@ require "zip"
 
 class DataImportsController < ApplicationController
   def create
-    authorize! current_user
-
     unless params[:file].present?
       return redirect_to settings_path, alert: "Please select an export file."
     end

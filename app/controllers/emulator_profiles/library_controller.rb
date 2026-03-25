@@ -1,8 +1,6 @@
 module EmulatorProfiles
   class LibraryController < ApplicationController
     def index
-      authorize! EmulatorProfile, to: :index?
-
       # If systems param present, show the per-system emulator picker
       if params[:systems].present? || params[:system].present?
         load_system_step
@@ -21,22 +19,16 @@ module EmulatorProfiles
         .compact
         .map(&:to_sym)
       visible_systems = (selected_systems + available_systems).uniq
-      @systems = EmulatorProfile.game_system
-        .values
-        .select { |v| visible_systems.include?(v.value.to_sym) }
+      @systems = visible_systems.map { |s| { value: s.to_s, text: EmulatorProfile.game_system_label(s) } }
       @selected_systems = selected_systems
     end
 
     def show
-      authorize! EmulatorProfile, to: :index?
-
       load_system_step
       return redirect_to emulator_profiles_library_index_path if @system.blank? # rubocop:disable Style/RedundantReturn
     end
 
     def create
-      authorize! EmulatorProfile, to: :create?
-
       selected_ids = (params[:profile_ids] || []).map(&:to_i)
       EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true)
 
@@ -61,7 +53,7 @@ module EmulatorProfiles
       end
 
       @current_pos = @total - @remaining.size
-      @system_label = EmulatorProfile.game_system.find_value(@system)&.text || @system.to_s.upcase
+      @system_label = EmulatorProfile.game_system_label(@system)
       @profiles = EmulatorProfile.where(is_default: true, user_selected: false, game_system: @system).ordered
     end
 

@@ -19,10 +19,23 @@
 #
 class EmulatorProfile < ApplicationRecord
   include HasGameSystem
-  extend Enumerize
 
-  enumerize :platform, in: %i[linux windows macos ios android], predicates: true
-  enumerize :game_system, in: GAME_SYSTEMS
+  PLATFORM_LABELS = {
+    linux: "Linux",
+    windows: "Windows",
+    macos: "macOS",
+    ios: "iOS",
+    android: "Android"
+  }.freeze
+
+  enum :platform, { 
+    linux: "linux",
+    windows: "windows",
+    macos: "macos",
+    ios: "ios",
+    android: "android"
+  }
+  enum :game_system, GAME_SYSTEMS.index_with(&:to_s)
 
   has_many :game_saves, dependent: :nullify
   has_many :game_emulator_configs, dependent: :destroy
@@ -36,6 +49,10 @@ class EmulatorProfile < ApplicationRecord
   scope :ordered, -> { order(:game_system, :name, :platform) }
   scope :for_system, ->(system) { where(game_system: system) }
   scope :selected_for_system, ->(system) { where(user_selected: true, game_system: system) }
+
+  def platform_label
+    PLATFORM_LABELS[platform&.to_sym] || platform.to_s.capitalize
+  end
 
   def deletable?
     !is_default

@@ -1,8 +1,6 @@
 module DataImports
   class ResolutionsController < ApplicationController
     def create
-      authorize! current_user
-
       @import = DataImport.find(params[:data_import_id])
       @import.update!(resolutions: params.fetch(:resolutions, {}).to_unsafe_h, status: :importing)
       DataImportJob.perform_later(@import.id)

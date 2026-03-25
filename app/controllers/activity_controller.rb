@@ -2,8 +2,6 @@ class ActivityController < ApplicationController
   PREVIEW_COUNT = 5
 
   def show
-    authorize! SyncEvent, to: :index?
-
     @games = Game.joins(game_saves: :sync_events).distinct.order(:title)
     @selected_game_id = params[:game_id].presence
     @selected_sort = params[:sort].presence || "newest"
@@ -13,6 +11,6 @@ class ActivityController < ApplicationController
     events = @selected_sort == "oldest" ? events.order(performed_at: :asc) : events.order(performed_at: :desc)
 
     @total_count = events.count
-    @events = SyncEventDecorator.decorate(events)
+    @events = events
   end
 end

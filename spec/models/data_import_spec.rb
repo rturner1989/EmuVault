@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe DataImport do
-  describe "enumerize" do
+  describe "enum" do
     it "defines status with expected values" do
-      expect(described_class.status.values.map(&:to_sym)).to eq(
-        %i[pending analyzing conflicts_pending importing complete failed]
+      expect(described_class.statuses.keys).to eq(
+        %w[pending analyzing conflicts_pending importing complete failed]
       )
     end
   end

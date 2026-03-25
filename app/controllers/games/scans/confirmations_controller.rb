@@ -4,8 +4,6 @@ module Games
       include ActionView::Helpers::TextHelper
 
       def create
-        authorize! current_user
-
         selected_roms = Set.new(params[:selected_roms] || [])
         stored = current_user.last_scan_result&.dig("found") || []
         items = stored.select { |item| selected_roms.include?(item["rom_path"]) }

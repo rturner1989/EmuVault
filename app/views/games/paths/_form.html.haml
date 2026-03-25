@@ -38,7 +38,7 @@
   -# Game system
   = f.label :game_system, "Game system", class: "block text-sm mb-1"
   = f.select :game_system,
-    ScanPath.game_system.values.select { |v| @available_systems&.include?(v.value) }.map { |v| [v.text, v.value] },
+    ScanPath::GAME_SYSTEM_OPTIONS.select { |_label, value| @available_systems&.include?(value) },
     { include_blank: "Select system" },
     class: "select select-bordered w-full",
     required: true
