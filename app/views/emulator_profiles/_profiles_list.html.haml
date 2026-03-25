@@ -112,9 +112,6 @@
           = turbo_frame_tag :library_modal_frame, src: emulator_profiles_library_index_path do
             .py-4.text-center
               %span.loading.loading-spinner.loading-sm
-        = modal.with_footer do
-          = turbo_frame_tag "library-next-btn" do
-            = render "emulator_profiles/library_next_btn", is_last: false
       = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
         = modal.with_trigger do
           = render ::UI::ActionComponent.new(variant: :secondary, data: { action: "dialog#open" }) do |a|
@@ -140,14 +137,6 @@
         = turbo_frame_tag :library_modal_frame, src: emulator_profiles_library_index_path do
           .py-4.text-center
             %span.loading.loading-spinner.loading-sm
-      = modal.with_footer do
-        = render ::UI::ActionComponent.new(variant: :primary,
-          size: :sm,
-          type: :submit,
-          form: "library-step-form",
-          data: { turbo_frame: "library_modal_frame" }) do |a|
-          - a.with_trailing_icon(name: "fa-arrow-right")
-          = "Next"
     = render ::UI::ModalComponent.new(id: "new-profile-dialog",
       title: "New Profile") do |modal|
       = modal.with_body do

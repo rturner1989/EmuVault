@@ -11,6 +11,12 @@
           %span.text-sm.font-medium
             = system[:text]
           = render ::UI::IconComponent.new(name: "fa-check", class: "text-xs text-primary invisible peer-checked:visible")
+    .sticky.bottom-0.pt-3.mt-4.border-t.border-base-300.bg-base-100
+      = render ::UI::ActionComponent.new(variant: :primary,
+        size: :sm,
+        type: :submit) do |a|
+        - a.with_trailing_icon(name: "fa-arrow-right")
+        = "Next"
 - else
   %p.text-sm.text-muted
     = "All available emulators from the library are already added."

@@ -31,6 +31,8 @@ RSpec.describe "Emulator Profiles" do
     before do
       create(:emulator_profile, :default_profile, :unselected,
         name: "RetroArch", platform: :linux, game_system: :gba, save_extension: "srm")
+      create(:emulator_profile, :default_profile, :unselected,
+        name: "Snes9x", platform: :linux, game_system: :snes, save_extension: "srm")
       create(:emulator_profile, name: "Delta", platform: :ios, game_system: :gba, save_extension: "sav")
       visit emulator_profiles_path
     end
@@ -51,16 +53,6 @@ RSpec.describe "Emulator Profiles" do
       expect(page).to have_css("[id='library-modal'][aria-hidden='true']", visible: :all)
     end
 
-    it "closes the library modal by clicking Cancel" do
-      click_on "Add from library"
-      expect(page).to have_css("[id='library-modal']:not([aria-hidden])")
-
-      within("[id='library-modal']") do
-        click_on "Cancel"
-      end
-
-      expect(page).to have_css("[id='library-modal'][aria-hidden='true']", visible: :all)
-    end
   end
 
   describe "custom profile creation" do
