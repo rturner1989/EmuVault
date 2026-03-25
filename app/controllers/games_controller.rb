@@ -59,14 +59,12 @@ class GamesController < MainController
 
   def destroy
     title = @game.title
-    @was_current = current_user.current_game_id == @game.id
 
     if @game.destroy
-      current_user.update!(current_game: nil) if @was_current
+      current_user.reload
       @notice_text = "#{title} removed."
 
       if params[:source] == "index"
-        load_quick_sync_data if @was_current
         @games_count = Game.count
         @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| Game.distinct.pluck(:system).compact.include?(value) }
       else
