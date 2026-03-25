@@ -9,6 +9,4 @@
       next_path: (onboarding_games_path if EmulatorProfile.where(user_selected: true).exists?),
       next_label: "Next: Add Games"
 
-  = turbo_frame_tag "page_header", style: "display: contents"
-
   = render "emulator_profiles/profiles_list", selected_by_system: @selected_by_system

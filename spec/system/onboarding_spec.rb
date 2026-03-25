@@ -31,6 +31,50 @@ RSpec.describe "Onboarding" do
       expect(page).to have_text("No emulators configured yet")
     end
 
+    it "does not show the page header after deleting all profiles" do
+      # Add a profile
+      click_on "Add custom profile"
+      fill_in "Emulator name", with: "DeSmuME"
+      find("[id='new-profile-dialog'] select[name*='platform']").select("Linux")
+      find("[id='new-profile-dialog'] select[name*='game_system']").select("Game Boy Advance")
+      fill_in "Save extension (without dot)", with: "dsv"
+      find("[form='new-profile-form'][type='submit']").click
+      expect(page).to have_text("DeSmuME")
+
+      # Delete it
+      click_on "Remove"
+      within("[id*='delete-profile']:not([aria-hidden])") do
+        click_on "Confirm"
+      end
+      expect(page).to have_text("Profile removed")
+
+      # Should show empty state without the post-setup page header
+      expect(page).to have_text("No emulators configured yet")
+      expect(page).to have_no_text("Emulator Profiles")
+      expect(page).to have_no_text("Your configured emulators by game system")
+    end
+
+    it "hides the Next button after adding then deleting all profiles" do
+      # Add a profile
+      click_on "Add custom profile"
+      fill_in "Emulator name", with: "DeSmuME"
+      find("[id='new-profile-dialog'] select[name*='platform']").select("Linux")
+      find("[id='new-profile-dialog'] select[name*='game_system']").select("Game Boy Advance")
+      fill_in "Save extension (without dot)", with: "dsv"
+      find("[form='new-profile-form'][type='submit']").click
+      expect(page).to have_link("Next: Add Games")
+
+      # Delete it
+      click_on "Remove"
+      within("[id*='delete-profile']:not([aria-hidden])") do
+        click_on "Confirm"
+      end
+      expect(page).to have_text("Profile removed")
+
+      # Next button should be gone
+      expect(page).to have_no_link("Next: Add Games")
+    end
+
     it "adds a custom profile" do
       click_on "Add custom profile"
 
@@ -157,6 +201,22 @@ RSpec.describe "Onboarding" do
       end
 
       expect(page).to have_text("Pokemon Emerald removed")
+    end
+
+    it "hides the Complete Setup button after adding then removing all games" do
+      find("details", text: "Add game").click
+      fill_in "Title", with: "Pokemon Emerald"
+      select "Game Boy Advance", from: "game[system]"
+      find("[form='add-game-form-inline'][type='submit']").click
+      expect(page).to have_text("Complete Setup")
+
+      find("[aria-label='Remove']").click
+      within("[id*='remove-game']:not([aria-hidden])") do
+        click_on "Remove"
+      end
+      expect(page).to have_text("Pokemon Emerald removed")
+
+      expect(page).to have_no_text("Complete Setup")
     end
 
     it "navigates back to step 1" do
