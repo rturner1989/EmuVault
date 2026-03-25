@@ -45,14 +45,7 @@ class GameSave < ApplicationRecord
   def file_size_label
     return "—" unless file.attached?
 
-    bytes = file.byte_size
-    if bytes >= 1_048_576
-      format("%.1f MB", bytes.to_f / 1_048_576)
-    elsif bytes >= 1_024
-      format("%.1f KB", bytes.to_f / 1_024)
-    else
-      "#{bytes} B"
-    end
+    ActiveSupport::NumberHelper.number_to_human_size(file.byte_size)
   end
 
   def uploaded_at_label

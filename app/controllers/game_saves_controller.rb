@@ -12,7 +12,6 @@ class GameSavesController < ApplicationController
       @new_save = @game_save_form
       @user_profiles = EmulatorProfile.where(user_selected: true).ordered
       @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)
-      @form = GameForm.from(@game)
 
       render "games/show", status: :unprocessable_entity
     end

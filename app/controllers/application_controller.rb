@@ -5,9 +5,13 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   before_action :require_setup_complete
-  before_action :load_onboarding_flag
-  before_action :load_quick_sync_data
-  before_action :load_available_systems
+  before_action :load_onboarding_flag, if: :html_request?
+  before_action :load_quick_sync_data, if: :html_request?
+  before_action :load_available_systems, if: :html_request?
+
+  private def html_request?
+    request.format.html?
+  end
 
   private def load_onboarding_flag
     @show_onboarding = session.delete(:show_onboarding).present?

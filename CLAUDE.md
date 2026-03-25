@@ -167,7 +167,6 @@ Fixed bottom nav on mobile with 5 items: Dashboard, Games, Quick Sync (centre fl
 
 Base classes in `app/components/`:
 - `ApplicationComponent < ViewComponent::Base` — provides `js_controller_name` (Stimulus controller name from class name)
-- `Styleable` module — CSS class management DSL, included in ApplicationComponent
 
 Component namespaces:
 - `app/components/layouts/` — layout-level components (`AppShellComponent`, `FlashComponent`)

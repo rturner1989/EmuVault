@@ -1,5 +1,5 @@
 - if setup_incomplete?
-  = turbo_stream.update "onboarding-game-form", partial: "games/form", locals: { form_url: games_path, form_id: "add-game-form-inline" }
+  = turbo_stream.update "onboarding-game-form", partial: "games/form", locals: { game: Game.new, form_url: games_path, form_id: "add-game-form-inline" }
   = turbo_stream.update "onboarding-banner", partial: "games/onboarding_banner"
   - if @games.any?
     = turbo_stream.update "games-list", partial: "games/onboarding_game_list", locals: { games: @games }

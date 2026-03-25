@@ -60,21 +60,21 @@ RSpec.describe GameSave do
       game_save = create(:game_save)
       allow(game_save.file).to receive(:byte_size).and_return(512)
 
-      expect(game_save.file_size_label).to eq("512 B")
+      expect(game_save.file_size_label).to eq("512 Bytes")
     end
 
     it "formats kilobytes" do
       game_save = create(:game_save)
       allow(game_save.file).to receive(:byte_size).and_return(2048)
 
-      expect(game_save.file_size_label).to eq("2.0 KB")
+      expect(game_save.file_size_label).to eq("2 KB")
     end
 
     it "formats megabytes" do
       game_save = create(:game_save)
       allow(game_save.file).to receive(:byte_size).and_return(5_242_880)
 
-      expect(game_save.file_size_label).to eq("5.0 MB")
+      expect(game_save.file_size_label).to eq("5 MB")
     end
   end
 

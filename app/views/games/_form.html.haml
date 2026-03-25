@@ -1,11 +1,12 @@
+- game = local_assigns.fetch(:game, @game)
 = turbo_frame_tag :game_form do
-  = simple_form_for @form, url: form_url, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
+  = simple_form_for game, url: form_url, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
     = f.input :title,
         label: "Title",
         input_html: { class: "input input-bordered w-full" },
         label_html: { class: "label-text text-xs font-medium" }
 
-    - allowed = (Array(@available_systems) + [@form.system.to_s]).map(&:presence).uniq.compact
+    - allowed = (Array(@available_systems) + [game.system.to_s]).map(&:presence).uniq.compact
     - system_options = allowed.any? ? Game::GAME_SYSTEM_OPTIONS.select { |_label, value| allowed.include?(value) } : Game::GAME_SYSTEM_OPTIONS
     = f.input :system,
         label: "System",

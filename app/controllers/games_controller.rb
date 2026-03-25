@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   before_action :set_game, only: %i[show edit update destroy]
 
   def index
-    @form = GameForm.new
+    @game = Game.new
     @selected_system = params[:system].presence
     @selected_sort = params[:sort].presence || "title_asc"
 
@@ -27,19 +27,16 @@ class GamesController < ApplicationController
     @new_save = @game.game_saves.build
     @user_profiles = EmulatorProfile.selected_for_system(@game.system).ordered
     @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)
-    @form = GameForm.from(@game)
   end
 
   def new
-    @form = GameForm.new
+    @game = Game.new
   end
 
   def create
-    @form = GameForm.new(game_params)
-    game = Game.new
-    if @form.persist(game)
-      @game = game
-      @form = GameForm.new
+    @game = Game.new(game_params)
+    if @game.save
+      @new_game = Game.new
       @games = Game.order(:title)
       @games_count = Game.count
       @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count
@@ -51,14 +48,10 @@ class GamesController < ApplicationController
   end
 
   def edit
-    @form = GameForm.from(@game)
   end
 
   def update
-    @form = GameForm.new(game_params)
-    @form.id = @game.id
-    if @form.persist(@game)
-      @form = GameForm.from(@game)
+    if @game.update(game_params)
       @user_profiles = EmulatorProfile.selected_for_system(@game.system).ordered
       @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)
     else

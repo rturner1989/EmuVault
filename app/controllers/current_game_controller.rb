@@ -18,7 +18,6 @@ class CurrentGameController < ApplicationController
   private def respond_with_game(notice)
     if params[:inline]
       load_quick_sync_data
-      @form = GameForm.from(@game)
       @games = Game.order(:title)
       @notice = notice
     else
