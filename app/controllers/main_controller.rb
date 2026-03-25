@@ -30,9 +30,13 @@ class MainController < ApplicationController
 
   private def load_quick_sync_data
     game = current_user.current_game
-    return unless game
 
     @quick_sync_game = game
+    @quick_sync_save = nil
+    @quick_sync_profiles = nil
+
+    return unless game
+
     @quick_sync_save = game.game_saves.latest_first.first
     @quick_sync_profiles = EmulatorProfile.selected_for_system(game.system).ordered
   end

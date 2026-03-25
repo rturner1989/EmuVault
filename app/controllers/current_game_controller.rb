@@ -8,6 +8,7 @@ class CurrentGameController < MainController
 
   def destroy
     current_user.update!(current_game: nil)
+    current_user.reload
     respond_with_game("Cleared current game")
   end
 
