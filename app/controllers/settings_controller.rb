@@ -1,4 +1,4 @@
-class SettingsController < ApplicationController
+class SettingsController < MainController
   def show
     @user = current_user
     @scan_paths = ScanPath.ordered

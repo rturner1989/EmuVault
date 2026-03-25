@@ -1,5 +1,5 @@
 module DataImports
-  class ResolutionsController < ApplicationController
+  class ResolutionsController < MainController
     def create
       @import = DataImport.find(params[:data_import_id])
       @import.update!(resolutions: params.fetch(:resolutions, {}).to_unsafe_h, status: :importing)

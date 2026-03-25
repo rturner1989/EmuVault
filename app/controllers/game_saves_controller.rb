@@ -1,4 +1,4 @@
-class GameSavesController < ApplicationController
+class GameSavesController < MainController
   before_action :set_game
   before_action :set_game_save, only: [:destroy]
 

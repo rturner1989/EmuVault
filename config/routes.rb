@@ -11,9 +11,15 @@ Rails.application.routes.draw do
 
   root "dashboard#index"
 
+  namespace :onboarding do
+    resources :emulator_profiles, only: [:index]
+    resources :games, only: %i[index create destroy]
+    resource :scan, only: [:create], controller: "scans"
+    resource :completion, only: [:create]
+  end
+
   resource :session
   resource :registration, only: %i[new create]
-  resource :setup_completion, only: [:create]
   resource :settings, only: %i[show update] do
     resource :password, only: [:update], controller: "settings/passwords"
   end

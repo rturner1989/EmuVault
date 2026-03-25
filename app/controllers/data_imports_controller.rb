@@ -2,7 +2,7 @@
 
 require "zip"
 
-class DataImportsController < ApplicationController
+class DataImportsController < MainController
   def create
     unless params[:file].present?
       return redirect_to settings_path, alert: "Please select an export file."

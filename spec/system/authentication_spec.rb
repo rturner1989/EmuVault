@@ -14,7 +14,7 @@ RSpec.describe "Authentication" do
       fill_in "Confirm password", with: "password123"
       click_button "Create account"
 
-      expect(page).to have_current_path(emulator_profiles_path)
+      expect(page).to have_current_path(onboarding_emulator_profiles_path)
       expect(User.count).to eq(1)
     end
 
@@ -73,7 +73,7 @@ RSpec.describe "Authentication" do
       fill_in "Password", with: "password123"
       click_button "Sign in"
 
-      expect(page).to have_current_path(emulator_profiles_path)
+      expect(page).to have_current_path(onboarding_emulator_profiles_path)
     end
   end
 

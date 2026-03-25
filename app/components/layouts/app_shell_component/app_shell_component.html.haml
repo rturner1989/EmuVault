@@ -1,6 +1,8 @@
 = helpers.turbo_stream_from "notifications_#{current_user.id}"
 
-.flex.min-h-screen.bg-base-200{ data: { controller: "notifications onboarding quick-sync", onboarding_active_value: @onboarding.to_s } }
+- controllers = ["notifications", "quick-sync"]
+- controllers << "onboarding" if @onboarding
+.flex.min-h-screen.bg-base-200{ data: { controller: controllers.join(" "), onboarding_active_value: @onboarding.to_s } }
   %nav{ class: "hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-base-100 border-r border-base-300" }
     .flex.items-center.h-16.px-6.border-b.border-base-300
       = render UI::ActionComponent.new(href: root_path,

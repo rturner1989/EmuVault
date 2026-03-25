@@ -1,5 +1,5 @@
 module Settings
-  class PasswordsController < ApplicationController
+  class PasswordsController < MainController
     def update
       if current_user.authenticate(params[:current_password])
         if current_user.update(password: params[:password], password_confirmation: params[:password_confirmation])

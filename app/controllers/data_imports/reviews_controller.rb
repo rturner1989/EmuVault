@@ -1,5 +1,5 @@
 module DataImports
-  class ReviewsController < ApplicationController
+  class ReviewsController < MainController
     def show
       @import = DataImport.find(params[:data_import_id])
       manifest = @import.manifest

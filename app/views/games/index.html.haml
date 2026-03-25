@@ -1,102 +1,61 @@
 - content_for :title, "Games — EmuVault"
 
 .p-4
-  - if setup_incomplete?
-    = turbo_frame_tag "onboarding-banner", style: "display: contents" do
-      = render "games/onboarding_banner"
+  = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
+    = modal.with_trigger do
+      = render ::UI::PageHeaderComponent.new(title: "Games") do |header|
+        - header.with_action do
+          .flex.items-center.gap-2
+            = render ::UI::ActionComponent.new(href: game_scan_path,
+              method: :post,
+              variant: :ghost,
+              size: :sm) do |a|
+              - a.with_leading_icon(name: "fa-magnifying-glass")
+              = "Scan Library"
+            = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
+              - a.with_leading_icon(name: "fa-plus")
+              = "Add Game"
 
-    .space-y-6.mb-6
-      = render ::UI::CardComponent.new(padding: :sm) do |card|
-        - card.with_header do
-          %span.font-medium.text-sm
-            = "Scan Paths"
-        %div{ class: "px-4 py-3" }
-          %p.text-sm.text-muted.mb-3
-            = "Point EmuVault at directories where your game files are stored."
-          = turbo_frame_tag "scan_paths" do
-            = render "games/paths/section", scan_paths: @scan_paths, show_scan_button: true
+    = modal.with_body do
+      = render "games/form", form_url: games_path, form_id: "add-game-form"
 
-      = render ::UI::CardComponent.new(padding: :sm) do |card|
-        - card.with_header do
-          %span.font-medium.text-sm
-            = "Add Game"
-        %div{ class: "px-4 py-3" }
-          %p.text-sm.text-muted.mb-3
-            = "Manually add a game to your library."
-          %details
-            %summary.text-sm.text-primary.cursor-pointer.font-medium
-              = render ::UI::IconComponent.new(name: "fa-plus", class: "fa-fw mr-1")
-              = "Add game"
-            .mt-3
-              = turbo_frame_tag "onboarding-game-form", style: "display: contents" do
-                = render "games/form", form_url: games_path, form_id: "add-game-form-inline"
-              .pt-3
-                = render ::UI::ActionComponent.new(variant: :primary,
-                  size: :sm,
-                  type: :submit,
-                  form: "add-game-form-inline") do
-                  = "Add Game"
+    = modal.with_footer do
+      = render ::UI::ActionComponent.new(variant: :primary,
+        size: :sm,
+        type: :submit,
+        form: "add-game-form") do
+        = "Add Game"
 
-    - if @games.any?
+    = modal.with_page_content do
+      = turbo_frame_tag "games-filters", style: "display: contents", target: "_top" do
+        = render "games/filters",
+          games_count: @games.size,
+          system_options: @system_options,
+          selected_system: @selected_system,
+          selected_sort: @selected_sort
+
       = turbo_frame_tag "games-list", class: "space-y-3 block" do
-        = render "games/onboarding_game_list", games: @games
-
-  - else
-    = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
-      = modal.with_trigger do
-        = render ::UI::PageHeaderComponent.new(title: "Games") do |header|
-          - header.with_action do
-            .flex.items-center.gap-2
-              = render ::UI::ActionComponent.new(href: game_scan_path,
-                method: :post,
-                variant: :ghost,
-                size: :sm) do |a|
-                - a.with_leading_icon(name: "fa-magnifying-glass")
-                = "Scan Library"
+        - if @games.empty?
+          = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
+            - c.with_action do
               = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
                 - a.with_leading_icon(name: "fa-plus")
                 = "Add Game"
-
-      = modal.with_body do
-        = render "games/form", form_url: games_path, form_id: "add-game-form"
-
-      = modal.with_footer do
-        = render ::UI::ActionComponent.new(variant: :primary,
-          size: :sm,
-          type: :submit,
-          form: "add-game-form") do
-          = "Add Game"
-
-      = modal.with_page_content do
-        = turbo_frame_tag "games-filters", style: "display: contents", target: "_top" do
-          = render "games/filters",
-            games_count: @games.size,
-            system_options: @system_options,
-            selected_system: @selected_system,
-            selected_sort: @selected_sort
-
-        = turbo_frame_tag "games-list", class: "space-y-3 block" do
-          - if @games.empty?
-            = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
-              - c.with_action do
-                = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
-                  - a.with_leading_icon(name: "fa-plus")
-                  = "Add Game"
-          - elsif @selected_sort == "system"
-            .space-y-6
-              - @games.group_by(&:system).each do |system_key, system_games|
-                - system_label = Game.game_system_label(system_key)
-                %div
-                  %p.text-sm.font-medium.mb-2
-                    = system_label
-                  .space-y-3
-                    = render "games/game_list", games: system_games
-          - elsif @selected_system.present?
-            - system_label = Game.game_system_label(@selected_system)
-            %div
-              %p.text-sm.font-medium.mb-2
-                = system_label
-              .space-y-3
-                = render "games/game_list", games: @games
-          - else
-            = render "games/game_list", games: @games
+        - elsif @selected_sort == "system"
+          .space-y-6
+            - @games.group_by(&:system).each do |system_key, system_games|
+              - system_label = Game.game_system_label(system_key)
+              %div
+                %p.text-sm.font-medium.mb-2
+                  = system_label
+                .space-y-3
+                  = render "games/game_list", games: system_games
+        - elsif @selected_system.present?
+          - system_label = Game.game_system_label(@selected_system)
+          %div
+            %p.text-sm.font-medium.mb-2
+              = system_label
+            .space-y-3
+              = render "games/game_list", games: @games
+        - else
+          = render "games/game_list", games: @games

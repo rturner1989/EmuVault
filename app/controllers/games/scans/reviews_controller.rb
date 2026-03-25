@@ -1,6 +1,6 @@
 module Games
   module Scans
-    class ReviewsController < ApplicationController
+    class ReviewsController < MainController
       def show
         result = current_user.last_scan_result || {}
         @found = result["found"] || []

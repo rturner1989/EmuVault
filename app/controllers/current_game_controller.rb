@@ -1,4 +1,4 @@
-class CurrentGameController < ApplicationController
+class CurrentGameController < MainController
   before_action :set_game
 
   def update

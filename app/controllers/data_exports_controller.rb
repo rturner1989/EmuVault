@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DataExportsController < ApplicationController
+class DataExportsController < MainController
   def create
     games = Game.includes(:game_emulator_configs, game_saves: [ :emulator_profile, { file_attachment: :blob } ]).all
     zip_data = ExportGenerator.new(games).generate

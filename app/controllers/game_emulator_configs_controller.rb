@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GameEmulatorConfigsController < ApplicationController
+class GameEmulatorConfigsController < MainController
   before_action :set_game
 
   def update

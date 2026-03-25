@@ -1,5 +1,5 @@
 module GameSaves
-  class DownloadsController < ApplicationController
+  class DownloadsController < MainController
     before_action :set_game
     before_action :set_game_save
 

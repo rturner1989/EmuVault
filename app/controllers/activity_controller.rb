@@ -1,4 +1,4 @@
-class ActivityController < ApplicationController
+class ActivityController < MainController
   PREVIEW_COUNT = 5
 
   def show

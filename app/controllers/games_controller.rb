@@ -1,4 +1,4 @@
-class GamesController < ApplicationController
+class GamesController < MainController
   before_action :set_game, only: %i[show edit update destroy]
 
   def index
@@ -17,7 +17,6 @@ class GamesController < ApplicationController
     end
 
     @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| Game.distinct.pluck(:system).compact.include?(value) }
-    @scan_paths = ScanPath.ordered if setup_incomplete?
   end
 
   def show
@@ -36,7 +35,6 @@ class GamesController < ApplicationController
   def create
     @game = Game.new(game_params)
     if @game.save
-      @new_game = Game.new
       @games = Game.order(:title)
       @games_count = Game.count
       @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count
@@ -69,15 +67,13 @@ class GamesController < ApplicationController
 
       if params[:source] == "index"
         load_quick_sync_data if @was_current
-        @games = Game.order(:title)
         @games_count = Game.count
         @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| Game.distinct.pluck(:system).compact.include?(value) }
-        @selected_sort = "title_asc"
       else
         redirect_to games_path, notice: @notice_text, status: :see_other
       end
     else
-      redirect_back_or_to game_path(@game), alert: "Could not remove #{title}."
+      @alert_text = "Could not remove #{title}."
     end
   end
 

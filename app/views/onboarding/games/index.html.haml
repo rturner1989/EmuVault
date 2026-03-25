@@ -1,0 +1,48 @@
+- content_for :title, "Add Games — EmuVault"
+
+.p-4
+  = turbo_frame_tag "onboarding-banner", style: "display: contents" do
+    = render "shared/onboarding_banner",
+      step: 2,
+      title: "Add your games",
+      description: "Configure scan paths to discover games automatically, or add them manually.",
+      back_path: onboarding_emulator_profiles_path,
+      next_path: (onboarding_completion_path if Game.exists?),
+      next_label: "Complete Setup",
+      next_method: (Game.exists? ? :post : nil)
+
+  .space-y-6.mb-6
+    = render ::UI::CardComponent.new(padding: :sm) do |card|
+      - card.with_header do
+        %span.font-medium.text-sm
+          = "Scan Paths"
+      %div{ class: "px-4 py-3" }
+        %p.text-sm.text-muted.mb-3
+          = "Point EmuVault at directories where your game files are stored."
+        = turbo_frame_tag "onboarding_scan_paths" do
+          = render "games/paths/section", scan_paths: @scan_paths, show_scan_button: true, scan_path: onboarding_scan_path
+
+    = render ::UI::CardComponent.new(padding: :sm) do |card|
+      - card.with_header do
+        %span.font-medium.text-sm
+          = "Add Game"
+      %div{ class: "px-4 py-3" }
+        %p.text-sm.text-muted.mb-3
+          = "Manually add a game to your library."
+        %details
+          %summary.text-sm.text-primary.cursor-pointer.font-medium
+            = render ::UI::IconComponent.new(name: "fa-plus", class: "fa-fw mr-1")
+            = "Add game"
+          .mt-3
+            = turbo_frame_tag "onboarding-game-form", style: "display: contents" do
+              = render "games/form", form_url: onboarding_games_path, form_id: "add-game-form-inline"
+            .pt-3
+              = render ::UI::ActionComponent.new(variant: :primary,
+                size: :sm,
+                type: :submit,
+                form: "add-game-form-inline") do
+                = "Add Game"
+
+  = turbo_frame_tag "onboarding-games-list", class: "space-y-3 block" do
+    - if @games.any?
+      = render "games/onboarding_game_list", games: @games

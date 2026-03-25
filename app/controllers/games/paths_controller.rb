@@ -1,6 +1,5 @@
 module Games
   class PathsController < ApplicationController
-    skip_before_action :require_setup_complete
     before_action :set_scan_path, only: %i[update destroy]
 
     def create

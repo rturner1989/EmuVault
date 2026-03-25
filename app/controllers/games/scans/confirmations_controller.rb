@@ -1,6 +1,6 @@
 module Games
   module Scans
-    class ConfirmationsController < ApplicationController
+    class ConfirmationsController < MainController
       include ActionView::Helpers::TextHelper
 
       def create

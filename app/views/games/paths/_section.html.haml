@@ -9,7 +9,7 @@
 
 - if local_assigns[:show_scan_button] && scan_paths.any?
   .mt-4.pt-4.border-t.border-base-300
-    = render ::UI::ActionComponent.new(href: game_scan_path,
+    = render ::UI::ActionComponent.new(href: local_assigns.fetch(:scan_path, game_scan_path),
       method: :post,
       variant: :primary,
       size: :sm) do |a|

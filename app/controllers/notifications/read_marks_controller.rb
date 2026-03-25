@@ -1,5 +1,5 @@
 module Notifications
-  class ReadMarksController < ApplicationController
+  class ReadMarksController < MainController
     def create
       current_user.notifications.where(read_at: nil).update_all(read_at: Time.current)
 

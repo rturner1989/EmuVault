@@ -1,7 +1,6 @@
 module Games
   module Paths
     class BrowserController < ApplicationController
-      skip_before_action :require_setup_complete
 
       def show
         path = File.expand_path(params[:path].presence || "/")

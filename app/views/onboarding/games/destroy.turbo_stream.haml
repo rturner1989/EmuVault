@@ -1,0 +1,15 @@
+- if @notice_text
+  = turbo_stream.remove @game
+  = turbo_stream.update "onboarding-banner" do
+    = render "shared/onboarding_banner",
+      step: 2,
+      title: "Add your games",
+      description: "Configure scan paths to discover games automatically, or add them manually.",
+      back_path: onboarding_emulator_profiles_path,
+      next_path: (onboarding_completion_path if Game.exists?),
+      next_label: "Complete Setup",
+      next_method: (Game.exists? ? :post : nil)
+
+- flash_type = @notice_text ? :notice : :alert
+- flash_message = @notice_text || @alert_text
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: flash_type, message: flash_message)

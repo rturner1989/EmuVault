@@ -1,0 +1,13 @@
+= turbo_stream.update "onboarding-game-form", partial: "games/form", locals: { game: Game.new, form_url: onboarding_games_path, form_id: "add-game-form-inline" }
+= turbo_stream.update "onboarding-banner" do
+  = render "shared/onboarding_banner",
+    step: 2,
+    title: "Add your games",
+    description: "Configure scan paths to discover games automatically, or add them manually.",
+    back_path: onboarding_emulator_profiles_path,
+    next_path: (onboarding_completion_path if Game.exists?),
+    next_label: "Complete Setup",
+    next_method: (Game.exists? ? :post : nil)
+- if @games.any?
+  = turbo_stream.update "onboarding-games-list", partial: "games/onboarding_game_list", locals: { games: @games }
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} added.")

@@ -1,4 +1,4 @@
-class DashboardController < ApplicationController
+class DashboardController < MainController
   include ActiveSupport::NumberHelper
 
   def index
