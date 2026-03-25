@@ -14,6 +14,8 @@ module Onboarding
       if @game.save
         @games = Game.order(:title)
       else
+        @games = Game.order(:title)
+        @scan_paths = ScanPath.ordered
         render :index, status: :unprocessable_entity
       end
     end
