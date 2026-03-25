@@ -31,10 +31,10 @@
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
 
   %body
-    = render ::Layouts::FlashComponent.new(flash: flash)
+    = render ::Layouts::FlashComponent.new(flash: flash, position: :bottom)
 
     - if authenticated?
-      .min-h-screen.bg-base-200
+      .min-h-screen.bg-base-200{ style: "padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom)" }
         .w-full.max-w-4xl.mx-auto.min-w-0
           = yield
     - else

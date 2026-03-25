@@ -42,10 +42,6 @@ class MainController < ApplicationController
   end
 
   private def require_setup_complete
-    if EmulatorProfile.where(user_selected: true).none?
-      redirect_to onboarding_emulator_profiles_path
-    else
-      redirect_to onboarding_games_path
-    end
+    redirect_to onboarding_emulator_profiles_path
   end
 end

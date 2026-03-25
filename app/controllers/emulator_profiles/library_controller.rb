@@ -19,7 +19,9 @@ module EmulatorProfiles
         .compact
         .map(&:to_sym)
       visible_systems = (selected_systems + available_systems).uniq
-      @systems = visible_systems.map { |s| { value: s.to_s, text: EmulatorProfile.game_system_label(s) } }
+      @systems = visible_systems
+        .map { |s| { value: s.to_s, text: EmulatorProfile.game_system_label(s) } }
+        .sort_by { |s| s[:text] }
       @selected_systems = selected_systems
     end
 

@@ -1,16 +1,16 @@
 %div{ class: "rounded-lg border border-primary/30 px-4 py-3 mb-6", style: "background: color-mix(in srgb, oklch(var(--p)) 8%, transparent)" }
-  .flex.items-center.justify-between.gap-4
+  .flex.flex-col.gap-3{ class: "sm:flex-row sm:items-center sm:justify-between sm:gap-4" }
     .min-w-0
       .flex.items-center.gap-2.mb-1
         - (1..2).each do |n|
           - if n < step
-            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-success text-success-content" }
+            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-success text-success-content shrink-0" }
               = render ::UI::IconComponent.new(name: "fa-check")
           - elsif n == step
-            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-primary text-primary-content" }
+            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-primary text-primary-content shrink-0" }
               = n
           - else
-            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-base-300 text-muted" }
+            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-base-300 text-muted shrink-0" }
               = n
         %span.text-sm.font-medium
           = title
