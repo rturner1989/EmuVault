@@ -270,4 +270,47 @@ RSpec.describe "Onboarding" do
       expect(page).to have_current_path(root_path)
     end
   end
+
+  describe "URL manipulation during setup" do
+    before do
+      visit root_path
+
+      fill_in "Username", with: "admin"
+      fill_in "Password", with: "password123"
+      fill_in "Confirm password", with: "password123"
+      click_button "Create account"
+
+      expect(page).to have_text("Select your emulators")
+    end
+
+    it "redirects /emulator_profiles to onboarding" do
+      visit emulator_profiles_path
+
+      expect(page).to have_current_path(onboarding_emulator_profiles_path)
+    end
+
+    it "redirects /games to onboarding" do
+      visit games_path
+
+      expect(page).to have_current_path(onboarding_emulator_profiles_path)
+    end
+
+    it "redirects /settings to onboarding" do
+      visit settings_path
+
+      expect(page).to have_current_path(onboarding_emulator_profiles_path)
+    end
+
+    it "redirects /activity to onboarding" do
+      visit activity_path
+
+      expect(page).to have_current_path(onboarding_emulator_profiles_path)
+    end
+
+    it "redirects the dashboard to onboarding" do
+      visit root_path
+
+      expect(page).to have_current_path(onboarding_emulator_profiles_path)
+    end
+  end
 end

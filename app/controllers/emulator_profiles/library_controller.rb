@@ -13,7 +13,7 @@ module EmulatorProfiles
         .pluck(:game_system)
         .compact
         .map(&:to_sym)
-      available_systems = EmulatorProfile.where(is_default: true, user_selected: false)
+      available_systems = EmulatorProfile.where(is_default: true)
         .distinct
         .pluck(:game_system)
         .compact
@@ -32,7 +32,12 @@ module EmulatorProfiles
 
     def create
       selected_ids = Array(params[:profile_ids]).filter_map { |id| id.to_i.nonzero? }
-      EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true) if selected_ids.any?
+      game_system = params[:game_system]
+
+      if game_system.present?
+        EmulatorProfile.where(is_default: true, game_system: game_system).update_all(user_selected: false)
+        EmulatorProfile.where(id: selected_ids, is_default: true).update_all(user_selected: true) if selected_ids.any?
+      end
 
       remaining = Array(params[:remaining]).reject(&:blank?)
       if remaining.any?
@@ -56,7 +61,8 @@ module EmulatorProfiles
 
       @current_pos = @total - @remaining.size
       @system_label = EmulatorProfile.game_system_label(@system)
-      @profiles = EmulatorProfile.where(is_default: true, user_selected: false, game_system: @system).ordered
+      @profiles = EmulatorProfile.where(is_default: true, game_system: @system).ordered
+      @selected_ids = EmulatorProfile.where(is_default: true, user_selected: true, game_system: @system).pluck(:id).to_set
     end
 
     private def load_profiles_list

@@ -2,6 +2,8 @@ class EmulatorProfilesController < ApplicationController
   before_action :set_profile, only: %i[edit update destroy]
 
   def index
+    return redirect_to onboarding_emulator_profiles_path unless current_user.setup_completed?
+
     @selected_by_system = EmulatorProfile.where(user_selected: true)
       .ordered
       .group_by { |p| p.game_system&.to_sym }

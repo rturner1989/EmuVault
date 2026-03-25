@@ -136,19 +136,41 @@ RSpec.describe "EmulatorProfiles" do
 
     it "selects profiles from the library" do
       post emulator_profiles_library_index_path,
-        params: { profile_ids: [profile.id] },
+        params: { profile_ids: [profile.id], game_system: "gba" },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(profile.reload.user_selected).to be(true)
     end
 
-    it "allows submission with no profiles selected (skips system)" do
+    it "deselects profiles that are unchecked" do
+      selected = create(:emulator_profile, :default_profile, game_system: :gba, name: "Selected", user_selected: true)
+
       post emulator_profiles_library_index_path,
-        params: { profile_ids: [] },
+        params: { profile_ids: [profile.id], game_system: "gba" },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-      expect(response).to have_http_status(:ok)
+      expect(profile.reload.user_selected).to be(true)
+      expect(selected.reload.user_selected).to be(false)
+    end
+
+    it "deselects all when no profiles are checked" do
+      profile.update!(user_selected: true)
+
+      post emulator_profiles_library_index_path,
+        params: { profile_ids: [], game_system: "gba" },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
       expect(profile.reload.user_selected).to be(false)
+    end
+  end
+
+  describe "GET /emulator_profiles during onboarding" do
+    it "redirects setup-incomplete users to onboarding" do
+      user.update!(setup_completed: false)
+
+      get emulator_profiles_path
+
+      expect(response).to redirect_to(onboarding_emulator_profiles_path)
     end
   end
 end

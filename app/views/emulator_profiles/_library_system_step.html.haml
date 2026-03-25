@@ -11,35 +11,21 @@
     %span.text-xs.text-muted
       = "(#{@current_pos}/#{@total})"
 
-- if @profiles.any?
-  = form_with url: emulator_profiles_library_index_path, method: :post, id: "library-step-form" do |f|
-    %input{ type: "hidden", name: "total", value: @total }
+= form_with url: emulator_profiles_library_index_path, method: :post, id: "library-step-form" do |f|
+  %input{ type: "hidden", name: "game_system", value: @system }
+  %input{ type: "hidden", name: "total", value: @total }
 
-    - @remaining.each do |sys|
-      %input{ type: "hidden", name: "remaining[]", value: sys }
+  - @remaining.each do |sys|
+    %input{ type: "hidden", name: "remaining[]", value: sys }
 
-    .space-y-2
-      - @profiles.each do |profile|
-        %label{ class: "flex items-center gap-3 px-3 py-2.5 rounded-lg border cursor-pointer border-base-300 hover:border-primary hover:bg-base-200 transition-colors" }
-          %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id }
-          .flex-1.min-w-0
-            %p.text-sm.font-medium
-              = profile.name
-            = render ::UI::BadgeComponent.new(color: platform_badge_color(profile.platform)) do
-              = profile.platform_label
-          %span.text-xs.text-muted.font-mono.shrink-0
-            = ".#{profile.save_extension}"
-- else
-  %p.text-sm.text-muted
-    = "All emulators for this system are already added."
-  - if @remaining.any?
-    = form_with url: emulator_profiles_library_index_path(system: @remaining.first, remaining: @remaining.drop(1), total: @total),
-      method: :get,
-      id: "library-step-form",
-      data: { turbo_frame: :library_modal_frame } do |f|
-      -# params embedded in action URL — no inputs needed
-  - else
-    = form_with url: emulator_profiles_library_index_path,
-      method: :post,
-      id: "library-step-form" do |f|
-      -# submits with no profile_ids — triggers close + list refresh
+  .space-y-2
+    - @profiles.each do |profile|
+      %label{ class: "flex items-center gap-3 px-3 py-2.5 rounded-lg border cursor-pointer transition-colors #{@selected_ids.include?(profile.id) ? 'border-primary bg-base-200' : 'border-base-300 hover:border-primary hover:bg-base-200'}" }
+        %input.accent-primary{ type: "checkbox", name: "profile_ids[]", value: profile.id, checked: @selected_ids.include?(profile.id) }
+        .flex-1.min-w-0
+          %p.text-sm.font-medium
+            = profile.name
+          = render ::UI::BadgeComponent.new(color: platform_badge_color(profile.platform)) do
+            = profile.platform_label
+        %span.text-xs.text-muted.font-mono.shrink-0
+          = ".#{profile.save_extension}"
