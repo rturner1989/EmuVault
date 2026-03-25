@@ -1,0 +1,3 @@
+class OnboardingController < ApplicationController
+  skip_before_action :require_setup_complete
+end

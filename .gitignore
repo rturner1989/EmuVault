@@ -42,3 +42,4 @@
 
 # Playwright test videos
 /tmp/playwright_videos/
+test_emuvault.mjs

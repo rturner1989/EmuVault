@@ -99,11 +99,11 @@ RSpec.describe "EmulatorProfiles" do
     end
   end
 
-  describe "DELETE /emulator_profiles/bulk_destroy" do
+  describe "POST /emulator_profiles/bulk_destroy" do
     it "bulk deletes custom profiles" do
       profiles = create_list(:emulator_profile, 3, is_default: false)
 
-      delete bulk_destroy_emulator_profiles_path, params: { profile_ids: profiles.map(&:id) },
+      post emulator_profiles_bulk_destroy_path, params: { profile_ids: profiles.map(&:id) },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(EmulatorProfile.where(id: profiles.map(&:id))).to be_empty
@@ -113,7 +113,7 @@ RSpec.describe "EmulatorProfiles" do
       profile = create(:emulator_profile, game_system: :snes)
       create(:game, system: :snes)
 
-      delete bulk_destroy_emulator_profiles_path, params: { profile_ids: [ profile.id ] },
+      post emulator_profiles_bulk_destroy_path, params: { profile_ids: [ profile.id ] },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(EmulatorProfile.exists?(profile.id)).to be(true)

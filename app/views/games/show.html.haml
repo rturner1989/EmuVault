@@ -37,7 +37,7 @@
         -# Download
         .px-4.py-4
           = simple_form_for :game_save,
-            url: download_game_game_save_path(@game, @latest_save),
+            url: game_game_save_download_path(@game, @latest_save),
             method: :get,
             html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
             .space-y-2

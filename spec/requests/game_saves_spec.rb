@@ -42,7 +42,7 @@ RSpec.describe "GameSaves" do
     it "downloads the save file" do
       game_save = create(:game_save, game: game)
 
-      get download_game_game_save_path(game, game_save)
+      get game_game_save_download_path(game, game_save)
 
       expect(response).to have_http_status(:ok)
       expect(response.headers["Content-Disposition"]).to include("attachment")
@@ -51,7 +51,7 @@ RSpec.describe "GameSaves" do
     it "creates a sync event on download" do
       game_save = create(:game_save, game: game)
 
-      get download_game_game_save_path(game, game_save)
+      get game_game_save_download_path(game, game_save)
 
       event = SyncEvent.last
       expect(event.action).to eq("pull")

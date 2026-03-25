@@ -1,0 +1,2 @@
+= turbo_stream.update :scan_paths, partial: "games/paths/section", locals: { scan_paths: @scan_paths, show_scan_button: setup_incomplete? }
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: @notice_text)

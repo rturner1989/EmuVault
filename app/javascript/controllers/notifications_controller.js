@@ -48,8 +48,8 @@ export default class extends Controller {
       el.textContent = ""
     })
 
-    fetch("/notifications/mark_all_read", {
-      method: "PATCH",
+    fetch("/notifications/read_mark", {
+      method: "POST",
       headers: {
         "X-CSRF-Token": document.querySelector("[name='csrf-token']")?.content || "",
         "Content-Type": "application/json",

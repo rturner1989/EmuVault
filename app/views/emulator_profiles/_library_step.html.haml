@@ -1,5 +1,5 @@
 - if @systems.any?
-  = form_with url: library_system_emulator_profiles_path,
+  = form_with url: emulator_profiles_library_index_path,
     method: :get,
     id: "library-step-form",
     data: { turbo_frame: :library_modal_frame } do |f|

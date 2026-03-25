@@ -20,6 +20,7 @@ class GamesController < ApplicationController
 
     @games = GameDecorator.decorate(games)
     @system_options = Game.system.options.select { |_text, value| Game.distinct.pluck(:system).compact.include?(value) }
+    @scan_paths = ScanPath.ordered if setup_incomplete?
   end
 
   def show
@@ -48,6 +49,7 @@ class GamesController < ApplicationController
     game = Game.new
     if @form.persist(game)
       @game = game
+      @form = GameForm.new
       @games = GameDecorator.decorate(Game.order(:title))
       @games_count = Game.count
       @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count

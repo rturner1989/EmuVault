@@ -18,6 +18,7 @@
     "a11y-dialog": "^8.1.5",
     "daisyui": "^5.5.19",
     "driver.js": "^1.4.0",
+    "playwright": "^1.58.2",
     "tailwindcss": "^4.2.1"
   }
 }

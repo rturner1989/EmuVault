@@ -1,0 +1,78 @@
+- content_for :title, "Scan Review — EmuVault"
+
+.p-4.lg:p-6.max-w-2xl.space-y-4
+  = render ::UI::PageHeaderComponent.new(title: "Scan Review",
+    subtitle: "Select the games you want to add to your library")
+
+  -# Summary banner
+  .rounded-lg.border.border-base-300.px-4.py-3.flex.flex-wrap.items-center.gap-4
+    .flex.items-center.gap-2
+      = render ::UI::IconComponent.new(name: "fa-gamepad", class: "text-primary")
+      %span.text-sm
+        %strong
+          = @found.size
+        = " new #{"game".pluralize(@found.size)} found"
+    .flex.items-center.gap-2
+      = render ::UI::IconComponent.new(name: "fa-circle-check", class: "text-muted")
+      %span.text-sm.text-muted
+        = "#{@already_in_lib} already in library"
+
+  -# Warning: paths that couldn't be read
+  - if @skipped_paths.any?
+    %div{ class: "rounded-lg border px-4 py-3 border-warning/40 bg-warning/5" }
+      %p.text-sm.font-medium.text-warning
+        = render ::UI::IconComponent.new(name: "fa-triangle-exclamation", class: "mr-1")
+        = "#{@skipped_paths.size} #{"path".pluralize(@skipped_paths.size)} could not be read"
+      %ul.mt-2.space-y-1
+        - @skipped_paths.each do |sp|
+          %li.text-xs.font-mono.text-muted
+            = sp["path"]
+      %p.text-xs.mt-2.text-muted
+        = "Make sure the directory is mounted into the container."
+
+  - if @found.empty?
+    .rounded-lg.p-8.text-center.bg-base-100.border.border-base-300
+      = render ::UI::IconComponent.new(name: "fa-box-open", class: "text-2xl text-muted mb-3")
+      %p.text-muted.mb-1
+        = "No new games found"
+      %p.text-xs.text-muted
+        = "Add scan paths in Settings and make sure the directories are mounted."
+      = render ::UI::ActionComponent.new(href: settings_path,
+        variant: :link_primary,
+        class: "text-sm mt-4 inline-block") do
+        = "Back to Settings"
+
+  - else
+    = form_with url: game_scan_confirmation_path, method: :post do |f|
+      .space-y-4
+        - @grouped.each do |system_key, items|
+          - system_label = ScanPath.game_system.find_value(system_key)&.text || system_key.upcase
+          .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
+            .flex.items-center.justify-between.px-4.py-3.border-b.border-base-300
+              %h3.text-sm.font-semibold
+                = system_label
+              %span.text-xs.text-muted
+                = "#{items.size} #{"game".pluralize(items.size)}"
+            .divide-y.divide-base-300
+              - items.each do |item|
+                .flex.items-start.gap-3.px-4.py-3
+                  %input.mt-0.5.accent-primary.shrink-0{ type: "checkbox", name: "selected_roms[]", value: item["rom_path"], checked: true }
+                  .min-w-0.flex-1
+                    %p.text-sm
+                      = item["title"]
+                    %p.text-xs.text-muted.font-mono.truncate
+                      = item["rom_path"]
+                    - if item["save_files"]&.any?
+                      %p.text-xs.mt-1.text-success
+                        = render ::UI::IconComponent.new(name: "fa-floppy-disk", class: "mr-1")
+                        = "#{item["save_files"].size} save #{"file".pluralize(item["save_files"].size)} found alongside ROM"
+
+      .flex.items-center.gap-3.pt-2
+        = render ::UI::ActionComponent.new(href: settings_path,
+          variant: :ghost,
+          size: :full) do
+          = "Cancel"
+        = render ::UI::ActionComponent.new(variant: :primary,
+          type: :submit,
+          size: :full) do
+          = "Add to library"

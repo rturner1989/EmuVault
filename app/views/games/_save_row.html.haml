@@ -5,7 +5,7 @@
       = decorated.uploaded_at_label
     .text-xs.text-muted
       = "#{decorated.emulator_label} · #{decorated.file_size_label}"
-  = render ::UI::ActionComponent.new(href: download_game_game_save_path(game, save),
+  = render ::UI::ActionComponent.new(href: game_game_save_download_path(game, save),
     variant: :info,
     size: :sm,
     class: "btn-outline",

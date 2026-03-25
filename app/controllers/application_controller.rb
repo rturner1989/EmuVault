@@ -1,19 +1,14 @@
 class ApplicationController < ActionController::Base
   include Authentication
   include ActionPolicy::Behaviour
+  include SetupProgress
 
   allow_browser versions: :modern
-
-  helper_method :current_user
 
   before_action :require_setup_complete
   before_action :load_onboarding_flag
   before_action :load_quick_sync_data
   before_action :load_available_systems
-
-  private def current_user
-    Current.user
-  end
 
   private def load_onboarding_flag
     @show_onboarding = session.delete(:show_onboarding).present?
@@ -45,8 +40,12 @@ class ApplicationController < ActionController::Base
   private def require_setup_complete
     return unless current_user
     return if current_user.setup_completed?
-    return if controller_name == "setup" || controller_name == "sessions" || controller_name == "directory_browser" || controller_name == "scan_paths"
 
-    redirect_to setup_path
+    # Allow access to onboarding pages and setup completion
+    allowed = [ emulator_profiles_path, games_path, setup_completion_path ]
+    return if allowed.any? { |p| request.path.start_with?(p) }
+
+    step_path = next_setup_step_path || games_path
+    redirect_to step_path
   end
 end

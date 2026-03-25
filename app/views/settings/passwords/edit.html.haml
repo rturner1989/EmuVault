@@ -1,0 +1,50 @@
+- content_for :title, "Change Password — EmuVault"
+
+.p-4.lg:p-6
+  = render ::UI::PageHeaderComponent.new(title: "Change Password")
+
+  %div{ class: "max-w-md rounded-lg p-6 bg-base-100 border border-base-300" }
+    = simple_form_for :password, url: settings_password_path, method: :patch,
+      html: { class: "space-y-4" } do |f|
+
+      .space-y-1
+        %label.block.text-sm.font-medium{ for: "current_password" }
+          = "Current password"
+        %input.input.input-bordered.w-full{ type: "password",
+          name: "current_password",
+          id: "current_password",
+          required: true,
+          autocomplete: "current-password" }
+        - if current_user.errors[:current_password].any?
+          %span.text-xs.text-error
+            = current_user.errors[:current_password].first
+
+      .space-y-1
+        %label.block.text-sm.font-medium{ for: "password" }
+          = "New password"
+        %input.input.input-bordered.w-full{ type: "password",
+          name: "password",
+          id: "password",
+          required: true,
+          autocomplete: "new-password" }
+        - if current_user.errors[:password].any?
+          %span.text-xs.text-error
+            = current_user.errors[:password].first
+
+      .space-y-1
+        %label.block.text-sm.font-medium{ for: "password_confirmation" }
+          = "Confirm new password"
+        %input.input.input-bordered.w-full{ type: "password",
+          name: "password_confirmation",
+          id: "password_confirmation",
+          required: true,
+          autocomplete: "new-password" }
+        - if current_user.errors[:password_confirmation].any?
+          %span.text-xs.text-error
+            = current_user.errors[:password_confirmation].first
+
+      .flex.items-center.gap-3
+        = render ::UI::ActionComponent.new(variant: :primary, size: :sm, type: :submit) do
+          = "Update Password"
+        = render ::UI::ActionComponent.new(href: settings_path, variant: :ghost, size: :sm) do
+          = "Cancel"

@@ -24,29 +24,7 @@ class DataImportsController < ApplicationController
     import.status = conflicts.any? ? :conflicts_pending : :pending
     import.save!
 
-    redirect_to review_data_import_path(import)
-  end
-
-  def review
-    authorize! current_user
-
-    @import = DataImport.find(params[:id])
-    manifest = @import.manifest
-    conflict_ids = @import.conflicts.map { |conflict| conflict["export_id"] }.to_set
-
-    @new_games = manifest["games"].reject { |game| conflict_ids.include?(game["export_id"]) }
-    @conflicts = @import.conflicts
-    @profiles = manifest.fetch("emulator_profiles", [])
-    @total_saves = manifest["games"].sum { |game| game["saves"].size }
-  end
-
-  def resolve
-    authorize! current_user
-
-    @import = DataImport.find(params[:id])
-    @import.update!(resolutions: params.fetch(:resolutions, {}).to_unsafe_h, status: :importing)
-    DataImportJob.perform_later(@import.id)
-    redirect_to settings_path, notice: "Import started — your library will be restored shortly."
+    redirect_to data_import_review_path(import)
   end
 
   private def analyze_zip(uploaded_file)

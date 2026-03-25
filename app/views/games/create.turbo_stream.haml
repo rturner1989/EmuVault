@@ -1,5 +1,11 @@
-= turbo_stream.action :close_dialog, "add-game-dialog"
-= turbo_stream.update "games-list", partial: "games/game_list", locals: { games: @games }
-= turbo_stream.update "game_stats", partial: "shared/game_stats", locals: { games_count: @games_count, games_without_save: @games_without_save }
-= turbo_stream.update "games-filters", partial: "games/filters", locals: { games_count: @games_count, system_options: @system_options, selected_system: nil, selected_sort: @selected_sort }
+- if setup_incomplete?
+  = turbo_stream.update "onboarding-game-form", partial: "games/form", locals: { form_url: games_path, form_id: "add-game-form-inline" }
+  = turbo_stream.update "onboarding-banner", partial: "games/onboarding_banner"
+  - if @games.any?
+    = turbo_stream.update "games-list", partial: "games/onboarding_game_list", locals: { games: @games }
+- else
+  = turbo_stream.action :close_dialog, "add-game-dialog"
+  = turbo_stream.update "games-list", partial: "games/game_list", locals: { games: @games }
+  = turbo_stream.update "game_stats", partial: "shared/game_stats", locals: { games_count: @games_count, games_without_save: @games_without_save }
+  = turbo_stream.update "games-filters", partial: "games/filters", locals: { games_count: @games_count, system_options: @system_options, selected_system: nil, selected_sort: @selected_sort }
 = turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} added.")

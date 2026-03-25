@@ -1,8 +1,8 @@
 = turbo_frame_tag "profiles_list" do
   - if selected_by_system.any?
     %div{ data: { controller: "profile-select" } }
-      = form_with url: bulk_destroy_emulator_profiles_path,
-        method: :delete,
+      = form_with url: emulator_profiles_bulk_destroy_path,
+        method: :post,
         data: { profile_select_target: "bulkForm" } do |f|
         -# Hidden inputs are populated by Stimulus before submit — no static inputs here
 
@@ -63,7 +63,7 @@
                           data: { action: "dialog#open" }) do
                           = "Edit"
                       = modal.with_body do
-                        = render "form", profile: profile,
+                        = render "emulator_profiles/form", profile: profile,
                           url: emulator_profile_path(profile),
                           method: :patch,
                           form_id: "edit-profile-#{profile.id}-form"
@@ -109,19 +109,19 @@
             - a.with_leading_icon(name: "fa-plus")
             = "Add from library"
         = modal.with_body do
-          = turbo_frame_tag :library_modal_frame, src: library_emulator_profiles_path do
+          = turbo_frame_tag :library_modal_frame, src: emulator_profiles_library_index_path do
             .py-4.text-center
               %span.loading.loading-spinner.loading-sm
         = modal.with_footer do
           = turbo_frame_tag "library-next-btn" do
-            = render "library_next_btn", is_last: false
+            = render "emulator_profiles/library_next_btn", is_last: false
       = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
         = modal.with_trigger do
           = render ::UI::ActionComponent.new(variant: :secondary, data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
             = "Add custom profile"
         = modal.with_body do
-          = render "form", profile: EmulatorProfile.new,
+          = render "emulator_profiles/form", profile: EmulatorProfile.new,
             url: emulator_profiles_path,
             method: :post,
             form_id: "new-profile-form"
@@ -137,7 +137,7 @@
       title: "Add from library",
       subtitle: "Select the systems you want to add emulators for.") do |modal|
       = modal.with_body do
-        = turbo_frame_tag :library_modal_frame, src: library_emulator_profiles_path do
+        = turbo_frame_tag :library_modal_frame, src: emulator_profiles_library_index_path do
           .py-4.text-center
             %span.loading.loading-spinner.loading-sm
       = modal.with_footer do
@@ -151,7 +151,7 @@
     = render ::UI::ModalComponent.new(id: "new-profile-dialog",
       title: "New Profile") do |modal|
       = modal.with_body do
-        = render "form", profile: EmulatorProfile.new,
+        = render "emulator_profiles/form", profile: EmulatorProfile.new,
           url: emulator_profiles_path,
           method: :post,
           form_id: "new-profile-form"

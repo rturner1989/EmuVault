@@ -32,7 +32,7 @@
         %p.text-xs.font-medium.mb-3
           = "Download to device"
         = simple_form_for :game_save,
-          url: download_game_game_save_path(@quick_sync_game, @quick_sync_save),
+          url: game_game_save_download_path(@quick_sync_game, @quick_sync_save),
           method: :get,
           html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
           .space-y-3

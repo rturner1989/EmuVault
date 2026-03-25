@@ -13,9 +13,9 @@ RSpec.describe "Notifications" do
     end
   end
 
-  describe "PATCH /notifications/mark_all_read" do
+  describe "POST /notifications/read_mark" do
     it "marks all notifications as read" do
-      patch mark_all_read_notifications_path
+      post read_mark_path
 
       expect(response).to have_http_status(:ok)
     end

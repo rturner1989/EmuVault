@@ -1,0 +1,4 @@
+= turbo_stream.action :close_dialog, "library-modal"
+= turbo_stream.replace "profiles_list", partial: "emulator_profiles/profiles_list", locals: { selected_by_system: @selected_by_system }
+= turbo_stream.update "page_header", partial: "emulator_profiles/page_header"
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Emulators added.")

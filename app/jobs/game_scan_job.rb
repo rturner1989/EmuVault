@@ -44,6 +44,12 @@ class GameScanJob < ApplicationJob
       result = import_roms(ScanPath.for_auto_scan)
       result["status"] = "completed"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
+
+    when "auto_all"
+      result = import_roms(ScanPath.ordered)
+      result["status"] = "completed"
+      user.update!(last_scanned_at: Time.current, last_scan_result: result)
+      return result
     end
   end
 

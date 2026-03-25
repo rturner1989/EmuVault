@@ -35,9 +35,13 @@
   %body
     = render ::Layouts::FlashComponent.new(flash: flash)
 
-    - if authenticated?
+    - if authenticated? && !setup_incomplete?
       = render ::Layouts::AppShellComponent.new(current_path: request.path, onboarding: @show_onboarding) do |shell|
         - shell.with_content_body do
+          = yield
+    - elsif authenticated?
+      .min-h-screen.bg-base-200
+        .w-full.max-w-4xl.mx-auto.min-w-0
           = yield
     - else
       = yield

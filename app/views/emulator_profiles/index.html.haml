@@ -1,5 +1,6 @@
 - content_for :title, "Emulator Profiles — EmuVault"
 
 .p-4.space-y-6
-  = render ::UI::PageHeaderComponent.new(title: "Emulator Profiles", subtitle: "Your configured emulators by game system")
+  = turbo_frame_tag "page_header", style: "display: contents" do
+    = render "emulator_profiles/page_header"
   = render "profiles_list", selected_by_system: @selected_by_system

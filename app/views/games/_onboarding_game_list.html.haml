@@ -1,0 +1,20 @@
+- games.each do |game|
+  %div{ class: "rounded-lg border bg-base-100 border-base-300 flex items-center overflow-hidden" }
+    .flex-1.min-w-0.p-4.flex.items-center.gap-3
+      .min-w-0
+        .text-base.font-semibold.truncate
+          = game.title
+        .mt-1
+          = render ::UI::BadgeComponent.new(color: game.system_badge_color) do
+            = game.system_label
+
+    = render ::UI::ConfirmComponent.new(id: "remove-game-#{game.id}-dialog",
+      title: "Remove game?",
+      message: "Remove #{game.title} from your library?",
+      url: game_path(game),
+      params: { source: "index" },
+      trigger_label: "Remove",
+      trigger_variant: :ghost,
+      trigger_icon: "fa-trash-can",
+      trigger_class: "text-error",
+      confirm_label: "Remove")

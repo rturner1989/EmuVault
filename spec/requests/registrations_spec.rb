@@ -24,7 +24,7 @@ RSpec.describe "Registrations" do
       }
 
       expect(User.count).to eq(1)
-      expect(response).to redirect_to(setup_path)
+      expect(response).to redirect_to(root_path)
     end
 
     it "re-renders form with invalid params" do
