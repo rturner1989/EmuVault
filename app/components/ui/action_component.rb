@@ -12,6 +12,7 @@ module UI
       primary: "btn btn-primary",
       secondary: "btn btn-soft",
       ghost: "btn btn-ghost",
+      outline: "btn btn-primary btn-outline",
       danger: "btn btn-error btn-outline",
       info: "btn btn-info",
       warning: "btn btn-warning btn-outline",
