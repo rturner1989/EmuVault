@@ -42,5 +42,7 @@ module EmuVault
     config.active_job.queue_adapter = :sidekiq
 
     config.middleware.use Rack::Attack
+
+    config.app_version = ENV.fetch("APP_VERSION", "dev")
   end
 end
