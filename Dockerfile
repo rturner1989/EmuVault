@@ -3,8 +3,8 @@ FROM ruby:3.4.8
 RUN apt-get update && \
     apt-get install -y curl gnupg build-essential libpq-dev
 
-# Install Node.js 20.x
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+# Install Node.js 22.x (LTS)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs
 
 # Install Yarn
@@ -18,7 +18,7 @@ WORKDIR /emu-vault
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .npmrc ./
 RUN yarn install
 
 RUN yarn global add esbuild
