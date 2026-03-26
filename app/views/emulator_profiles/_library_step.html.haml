@@ -7,7 +7,9 @@
       - @systems.each do |system|
         - already_has = @selected_systems.include?(system[:value].to_sym)
         - in_use = @in_use_systems&.include?(system[:value].to_sym)
-        %label{ class: "flex flex-col items-center gap-1.5 px-3 py-4 rounded-lg border text-center transition-all #{in_use ? 'border-primary bg-base-200 cursor-not-allowed opacity-60' : 'cursor-pointer border-base-300 hover:border-primary hover:bg-base-200 has-[:checked]:border-primary has-[:checked]:bg-base-200'}",
+        - base_classes = "flex flex-col items-center gap-1.5 px-3 py-4 rounded-lg border text-center transition-all"
+        - state_classes = in_use ? "border-primary bg-base-200 cursor-not-allowed opacity-60" : "cursor-pointer border-base-300 hover:border-primary hover:bg-base-200 has-[:checked]:border-primary has-[:checked]:bg-base-200"
+        %label{ class: "#{base_classes} #{state_classes}",
           title: (in_use ? "Games exist for this system" : nil) }
           - if in_use
             %input{ type: "hidden", name: "systems[]", value: system[:value] }

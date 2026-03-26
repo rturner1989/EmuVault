@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   require "sidekiq/web"
   require "sidekiq-scheduler/web"
+  Sidekiq::Web.use(ActionDispatch::Cookies)
+  Sidekiq::Web.use(ActionDispatch::Session::CookieStore, key: "_sidekiq_session")
   Sidekiq::Web.use(AdminAuthMiddleware)
   mount Sidekiq::Web => "/sidekiq"
 
