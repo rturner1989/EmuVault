@@ -31,8 +31,9 @@ export default class extends Controller {
 
     // Reset scroll position when turbo frame content updates inside the dialog
     this.containerTarget.addEventListener("turbo:frame-load", () => {
-      const scrollable = this.containerTarget.querySelector(".overflow-y-auto")
-      if (scrollable) scrollable.scrollTop = 0
+      this.containerTarget.querySelectorAll(".overflow-y-auto, .dialog-content").forEach(el => {
+        el.scrollTop = 0
+      })
     })
 
     this.dialog.on("hide", () => {

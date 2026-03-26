@@ -40,8 +40,9 @@ module EmulatorProfiles
       end
 
       remaining = Array(params[:remaining]).reject(&:blank?)
+      previous = Array(params[:previous]).reject(&:blank?) + [ game_system ]
       if remaining.any?
-        redirect_to emulator_profiles_library_index_path(system: remaining.first, remaining: remaining.drop(1), total: params[:total])
+        redirect_to emulator_profiles_library_index_path(system: remaining.first, remaining: remaining.drop(1), previous: previous, total: params[:total])
       else
         load_profiles_list
       end
@@ -51,15 +52,17 @@ module EmulatorProfiles
       if params[:system].present?
         @system = params[:system]
         @remaining = Array(params[:remaining]).reject(&:blank?)
+        @previous = Array(params[:previous]).reject(&:blank?)
         @total = params[:total].to_i
       else
         systems = Array(params[:systems]).reject(&:blank?)
         @system = systems.first
         @remaining = systems.drop(1)
+        @previous = []
         @total = systems.size
       end
 
-      @current_pos = @total - @remaining.size
+      @current_pos = @previous.size + 1
       @system_label = EmulatorProfile.game_system_label(@system)
       @profiles = EmulatorProfile.where(is_default: true, game_system: @system).ordered
       @selected_ids = EmulatorProfile.where(is_default: true, user_selected: true, game_system: @system).pluck(:id).to_set

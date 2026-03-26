@@ -1,5 +1,9 @@
+- if @previous.any?
+  - back_path = emulator_profiles_library_index_path(system: @previous.last, remaining: [@system] + @remaining, previous: @previous[0..-2], total: @total)
+- else
+  - back_path = emulator_profiles_library_index_path
 .flex.items-center.gap-3.mb-4
-  = render ::UI::ActionComponent.new(href: emulator_profiles_library_index_path,
+  = render ::UI::ActionComponent.new(href: back_path,
     variant: :default,
     class: "text-muted hover:text-base-content transition-colors",
     data: { turbo_frame: :library_modal_frame }) do |a|
@@ -17,6 +21,9 @@
 
   - @remaining.each do |sys|
     %input{ type: "hidden", name: "remaining[]", value: sys }
+
+  - @previous.each do |sys|
+    %input{ type: "hidden", name: "previous[]", value: sys }
 
   .space-y-2
     - @profiles.each do |profile|
