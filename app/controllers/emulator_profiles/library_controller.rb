@@ -23,6 +23,11 @@ module EmulatorProfiles
         .map { |s| { value: s.to_s, text: EmulatorProfile.game_system_label(s) } }
         .sort_by { |s| s[:text] }
       @selected_systems = selected_systems
+      @in_use_systems = Game.distinct
+        .pluck(:system)
+        .compact
+        .map(&:to_sym)
+        .to_set
     end
 
     def show
@@ -66,6 +71,7 @@ module EmulatorProfiles
       @system_label = EmulatorProfile.game_system_label(@system)
       @profiles = EmulatorProfile.where(is_default: true, game_system: @system).ordered
       @selected_ids = EmulatorProfile.where(is_default: true, user_selected: true, game_system: @system).pluck(:id).to_set
+      @system_in_use = Game.where(system: @system).exists?
     end
 
     private def load_profiles_list
