@@ -8,7 +8,7 @@
     = render ::UI::ModalComponent.new(id: "change-password-dialog",
       title: "Change Password") do |modal|
       = modal.with_trigger do
-        = render ::UI::ActionComponent.new(variant: :ghost,
+        = render ::UI::ActionComponent.new(variant: :outline,
           size: :sm,
           data: { action: "dialog#open" }) do
           = "Change Password"
