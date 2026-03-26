@@ -29,7 +29,7 @@ class ExportGenerator
   private def build_manifest
     {
       exported_at: Time.current.iso8601,
-      app_version: File.read(Rails.root.join("VERSION")).strip,
+      app_version: Rails.application.config.app_version,
       games: @games.map { |game| serialize_game(game) },
       emulator_profiles: EmulatorProfile.where(user_selected: true).map { |profile| serialize_profile(profile) }
     }
