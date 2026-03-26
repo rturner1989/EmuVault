@@ -2,7 +2,7 @@
 
 = turbo_stream_from "scans_#{current_user.id}"
 
-.p-4
+.p-4.lg:p-6
   = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
     = modal.with_trigger do
       = render ::UI::PageHeaderComponent.new(title: "Games") do |header|
@@ -61,3 +61,16 @@
               = render "games/game_list", games: @games
         - else
           = render "games/game_list", games: @games
+
+  -# Scan review modal — opens immediately on scan, body updated via broadcast
+  = render ::UI::ModalComponent.new(id: "scan-review-dialog", title: "Scan Review", subtitle: "Select the games you want to add to your library") do |modal|
+    = modal.with_body do
+      %div{ id: "scan-review-content" }
+        = render "games/scan_progress"
+    = modal.with_footer do
+      %div{ id: "scan-review-footer" }
+        = render ::UI::ActionComponent.new(variant: :primary,
+          size: :sm,
+          type: :submit,
+          form: "scan-confirm-form") do
+          = "Add to library"

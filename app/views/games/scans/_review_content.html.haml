@@ -1,0 +1,48 @@
+-# Warning: paths that couldn't be read
+- if skipped_paths.any?
+  %div{ class: "rounded-lg border px-4 py-3 mb-4 border-warning/40", style: "background: color-mix(in srgb, oklch(var(--wa)) 5%, transparent)" }
+    %p.text-sm.font-medium.text-warning
+      = render ::UI::IconComponent.new(name: "fa-triangle-exclamation", class: "mr-1")
+      = "#{skipped_paths.size} #{"path".pluralize(skipped_paths.size)} could not be read"
+    %ul.mt-2.space-y-1
+      - skipped_paths.each do |sp|
+        %li.text-xs.font-mono.text-muted
+          = sp["path"]
+
+- if found.empty?
+  .py-6.text-center
+    = render ::UI::IconComponent.new(name: "fa-box-open", class: "text-2xl text-muted mb-3")
+    %p.text-muted.mb-1
+      = "No new games found"
+    %p.text-xs.text-muted
+      = "Check your scan paths in Settings."
+- else
+  - total_found = found.size
+  - if already_in_lib > 0
+    %p.text-xs.text-muted.mb-3
+      = "#{already_in_lib} #{"game".pluralize(already_in_lib)} already in library"
+  = form_with url: game_scan_confirmation_path, method: :post, id: "scan-confirm-form" do |f|
+    .space-y-3
+      - grouped.each do |system_key, items|
+        - system_label = ScanPath.game_system_label(system_key)
+        %details.rounded-lg.overflow-hidden.border.border-base-300{ open: grouped.size == 1 }
+          %summary.flex.items-center.justify-between.px-4.py-3.cursor-pointer.select-none.list-none{ class: "hover:bg-base-200 transition-colors" }
+            .flex.items-center.gap-2
+              = render ::UI::IconComponent.new(name: "fa-chevron-down", class: "text-xs text-muted shrink-0 details-chevron")
+              %span.text-sm.font-semibold
+                = system_label
+            %span.text-xs.text-muted
+              = "#{items.size} #{"game".pluralize(items.size)}"
+          .divide-y.divide-base-300.border-t.border-base-300
+            - items.each do |item|
+              %label.flex.items-start.gap-3.px-4.py-3.cursor-pointer{ class: "hover:bg-base-200 transition-colors" }
+                %input.mt-0.5.accent-primary.shrink-0{ type: "checkbox", name: "selected_roms[]", value: item["rom_path"], checked: true }
+                .min-w-0.flex-1
+                  %p.text-sm
+                    = item["title"]
+                  %p.text-xs.text-muted.font-mono.truncate
+                    = item["rom_path"]
+                  - if item["save_files"]&.any?
+                    %p.text-xs.mt-1.text-success
+                      = render ::UI::IconComponent.new(name: "fa-floppy-disk", class: "mr-1")
+                      = "#{item["save_files"].size} save #{"file".pluralize(item["save_files"].size)} found"

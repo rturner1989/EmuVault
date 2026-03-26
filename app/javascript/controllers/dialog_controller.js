@@ -18,6 +18,7 @@ export default class extends Controller {
   connect() {
     this.dialog = new A11yDialog(this.containerTarget)
     this.containerTarget.addEventListener("dialog:close", () => this.dialog.hide())
+    this.containerTarget.addEventListener("dialog:open", () => this.dialog.show())
     // Hook into a11y-dialog events so Escape key, backdrop click, and button
     // close all go through the same animation path.
     this.dialog.on("show", () => {

@@ -47,7 +47,7 @@ RSpec.describe GameScanJob do
       )
     end
 
-    it "broadcasts scan start indicator" do
+    it "clears onboarding scan spinner on completion" do
       FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
 
       described_class.perform_now("auto_all")
@@ -55,7 +55,7 @@ RSpec.describe GameScanJob do
       expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
         "scans_#{User.first.id}",
         target: "scan-progress",
-        html: include("Scanning")
+        html: ""
       )
     end
 
@@ -80,18 +80,6 @@ RSpec.describe GameScanJob do
         "scans_#{User.first.id}",
         target: "onboarding-banner",
         html: include("Complete Setup")
-      )
-    end
-
-    it "clears scan progress indicator on completion" do
-      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
-
-      described_class.perform_now("auto_all")
-
-      expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
-        "scans_#{User.first.id}",
-        target: "scan-progress",
-        html: ""
       )
     end
 

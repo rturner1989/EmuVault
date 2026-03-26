@@ -1,0 +1,4 @@
+= turbo_stream.action :close_dialog, "scan-review-dialog"
+- flash_type = @notice_text ? :notice : :alert
+- flash_message = @notice_text || @alert_text
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: flash_type, message: flash_message)

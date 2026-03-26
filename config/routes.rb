@@ -26,7 +26,6 @@ Rails.application.routes.draw do
   resource :current_game, only: %i[update destroy], controller: "current_game"
 
   resource :game_scan, only: [:create], controller: "games/scans" do
-    resource :review, only: [:show], controller: "games/scans/reviews"
     resource :confirmation, only: [:create], controller: "games/scans/confirmations"
   end
   resources :scan_paths, only: %i[create update destroy], controller: "games/paths", as: :scan_paths do

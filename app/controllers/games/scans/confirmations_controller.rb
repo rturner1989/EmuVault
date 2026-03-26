@@ -10,9 +10,9 @@ module Games
 
         if items.any?
           GameScanJob.perform_later("confirm", items)
-          redirect_to games_path, notice: "#{items.size} #{pluralize(items.size, "game")} queued for import — they'll appear in your library shortly."
+          @notice_text = "#{pluralize(items.size, "game")} queued for import."
         else
-          redirect_to game_scan_review_path, alert: "No games selected."
+          @alert_text = "No games selected."
         end
       end
     end

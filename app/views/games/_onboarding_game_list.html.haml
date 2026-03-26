@@ -1,2 +1,1 @@
-- games.each do |game|
-  = render "games/onboarding_game_list_item", game: game
+= render partial: "games/onboarding_game_list_item", collection: games, as: :game
