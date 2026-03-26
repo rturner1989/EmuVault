@@ -59,7 +59,7 @@ docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/bui
 - Use ViewComponent for any UI element used in more than one place
 - Use `simple_form_for` for model-backed forms, `form_with url:` for non-model forms (filters, search)
 - Use Rails `enum` for model enum fields — string-backed with label constants (e.g. `GAME_SYSTEM_LABELS`, `PLATFORM_LABELS`)
-- Use form objects (`ApplicationForm` with `ActiveModel::API`) for non-trivial form handling — `app/forms/`
+- Use form objects (`ActiveModel::API` + `ActiveModel::Attributes`) for multi-step form logic — `app/forms/`
 - Controllers are thin — logic lives in models or form objects
 - Use `private def method_name` (inline) instead of a standalone `private` keyword with methods below
 - Prefer Turbo Frames for partial page updates — wrap sections that change independently (e.g. form results, filtered lists) in `turbo_frame_tag`. Use `turbo_frame_tag` (not plain `%div` with `id:`) when the element is a target for `turbo_stream.update` or `turbo_stream.replace`
@@ -213,17 +213,16 @@ All controllers in `app/javascript/controllers/`:
 ## Form object pattern
 
 ```ruby
-# app/forms/application_form.rb
-class ApplicationForm
+# app/forms/game_save_form.rb
+class GameSaveForm
   include ActiveModel::API
   include ActiveModel::Attributes
-  def self.model_name = ActiveModel::Name.new(self, nil, "ModelName")
-  def self.from(record)  # builds form populated from AR record
-  def persist(record)    # validates, then assigns attrs and saves
+  def self.model_name = ActiveModel::Name.new(self, nil, "GameSave")
+  def save(game:, request:)  # validates, builds record, records sync event
 end
 ```
 
-Form objects live in `app/forms/`. Views use `url:` explicitly (don't rely on polymorphic routing).
+Form objects live in `app/forms/`. Used for multi-step logic (checksum computation, sync event creation) that doesn't belong on the model.
 
 ## Data model
 
