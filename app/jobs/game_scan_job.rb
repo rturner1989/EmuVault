@@ -113,9 +113,22 @@ class GameScanJob < ApplicationJob
       html: ApplicationController.render(Layouts::FlashComponent::Item.new(type: :notice, message: message), layout: false)
     )
 
-    # Update game filters and stats (no-op if not on games index)
-    games_count = Game.count
-    system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| Game.distinct.pluck(:system).compact.include?(value) }
+    # Replace games list to remove empty state (no-op if not on games index)
+    games = Game.order(:title)
+    games_count = games.size
+    system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| games.map(&:system).compact.uniq.include?(value) }
+
+    if added > 0
+      Turbo::StreamsChannel.broadcast_update_to(
+        "scans_#{user.id}",
+        target: "games-list",
+        html: ApplicationController.render(
+          partial: "games/game_list",
+          locals: { games: games },
+          layout: false
+        )
+      )
+    end
 
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
