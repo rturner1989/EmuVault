@@ -24,6 +24,29 @@ RSpec.describe "ScanPaths" do
     end
   end
 
+  describe "POST /scan_paths turbo stream response" do
+    it "includes game system options for selected profiles" do
+      create(:emulator_profile, game_system: :gba, user_selected: true)
+
+      post scan_paths_path, params: {
+        scan_path: { path: "/home/user/roms", game_system: "gba" }
+      }, headers: { "Turbo-Frame" => "scan_paths", "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response.body).to include("Game Boy Advance")
+    end
+
+    it "filters new path form to only show selected profile systems" do
+      create(:emulator_profile, game_system: :gba, user_selected: true)
+      create(:emulator_profile, :default_profile, :unselected, game_system: :snes)
+
+      post scan_paths_path, params: {
+        scan_path: { path: "/home/user/roms", game_system: "gba" }
+      }, headers: { "Turbo-Frame" => "scan_paths", "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response.body).to include("Game Boy Advance")
+    end
+  end
+
   describe "DELETE /scan_paths/:id" do
     it "destroys the scan path" do
       scan_path = create(:scan_path)

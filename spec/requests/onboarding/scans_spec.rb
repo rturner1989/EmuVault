@@ -6,21 +6,23 @@ RSpec.describe "Onboarding::Scans" do
   before { user }
 
   describe "POST /onboarding/scan" do
-    it "runs auto_all scan and redirects to onboarding games" do
-      allow(GameScanJob).to receive(:perform_now).with("auto_all").and_return({ "added" => 0 })
+    it "enqueues scan job" do
+      allow(GameScanJob).to receive(:perform_later).with("auto_all")
 
-      post onboarding_scan_path
+      post onboarding_scan_path,
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-      expect(GameScanJob).to have_received(:perform_now).with("auto_all")
-      expect(response).to redirect_to(onboarding_games_path)
+      expect(GameScanJob).to have_received(:perform_later).with("auto_all")
     end
 
-    it "reports the number of games imported" do
-      allow(GameScanJob).to receive(:perform_now).with("auto_all").and_return({ "added" => 3 })
+    it "shows scanning indicator via turbo stream" do
+      allow(GameScanJob).to receive(:perform_later).with("auto_all")
 
-      post onboarding_scan_path
+      post onboarding_scan_path,
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-      expect(flash[:notice]).to include("3")
+      expect(response.body).to include("scan-progress")
+      expect(response.body).to include("Scanning your library")
     end
 
     it "redirects to root when setup is already complete" do

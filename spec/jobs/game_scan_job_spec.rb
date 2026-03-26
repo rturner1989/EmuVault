@@ -1,0 +1,168 @@
+require "rails_helper"
+
+RSpec.describe GameScanJob do
+  let(:scan_dir) { Dir.mktmpdir }
+
+  before do
+    create(:user, setup_completed: false)
+    create(:emulator_profile, :default_profile,
+      name: "RetroArch", platform: :linux, game_system: :gba,
+      save_extension: "srm", user_selected: true)
+    create(:scan_path, path: scan_dir, game_system: :gba)
+    allow(Turbo::StreamsChannel).to receive(:broadcast_update_to)
+    allow(Turbo::StreamsChannel).to receive(:broadcast_append_to)
+  end
+
+  after { FileUtils.remove_entry(scan_dir) }
+
+  describe "auto_all mode" do
+    it "imports games from scan paths" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+      FileUtils.touch(File.join(scan_dir, "Pokemon.gba"))
+
+      described_class.perform_now("auto_all")
+
+      expect(Game.count).to eq(2)
+      expect(Game.pluck(:title)).to contain_exactly("Zelda", "Pokemon")
+    end
+
+    it "does not create duplicate games" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+      create(:game, title: "Zelda", system: :gba)
+
+      described_class.perform_now("auto_all")
+
+      expect(Game.where(title: "Zelda").count).to eq(1)
+    end
+
+    it "broadcasts per-game additions" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto_all")
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_append_to).with(
+        "scans_#{User.first.id}",
+        target: "onboarding-games-list",
+        html: include("Zelda")
+      )
+    end
+
+    it "broadcasts scan start indicator" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto_all")
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
+        "scans_#{User.first.id}",
+        target: "scan-progress",
+        html: include("Scanning")
+      )
+    end
+
+    it "broadcasts flash message on completion" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto_all")
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_append_to).with(
+        "scans_#{User.first.id}",
+        target: "flash-container",
+        html: include("1 game imported")
+      )
+    end
+
+    it "broadcasts banner update with Complete Setup on completion" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto_all")
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
+        "scans_#{User.first.id}",
+        target: "onboarding-banner",
+        html: include("Complete Setup")
+      )
+    end
+
+    it "clears scan progress indicator on completion" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto_all")
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
+        "scans_#{User.first.id}",
+        target: "scan-progress",
+        html: ""
+      )
+    end
+
+    it "sets scan status to completed" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto_all")
+
+      expect(User.first.last_scan_result["status"]).to eq("completed")
+    end
+
+    it "reports no games found when scan path is empty" do
+      described_class.perform_now("auto_all")
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_append_to).with(
+        "scans_#{User.first.id}",
+        target: "flash-container",
+        html: include("No new games found")
+      )
+    end
+  end
+
+  describe "dry_run mode" do
+    it "does not create games" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("dry_run")
+
+      expect(Game.count).to eq(0)
+    end
+
+    it "stores results in user last_scan_result" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("dry_run")
+
+      result = User.first.last_scan_result
+      expect(result["status"]).to eq("pending_review")
+      expect(result["found"].size).to eq(1)
+      expect(result["found"].first["title"]).to eq("Zelda")
+    end
+
+    it "does not broadcast" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("dry_run")
+
+      expect(Turbo::StreamsChannel).not_to have_received(:broadcast_append_to)
+    end
+  end
+
+  describe "confirm mode" do
+    let(:items) do
+      [ { "title" => "Zelda", "game_system" => "gba", "rom_path" => "/roms/Zelda.gba", "save_files" => [] } ]
+    end
+
+    it "imports specified items" do
+      described_class.perform_now("confirm", items)
+
+      expect(Game.count).to eq(1)
+      expect(Game.last.title).to eq("Zelda")
+    end
+
+    it "broadcasts per-game additions" do
+      described_class.perform_now("confirm", items)
+
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_append_to).with(
+        "scans_#{User.first.id}",
+        target: "onboarding-games-list",
+        html: include("Zelda")
+      )
+    end
+  end
+end

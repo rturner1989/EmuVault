@@ -1,6 +1,7 @@
 module Games
   class PathsController < ApplicationController
     before_action :set_scan_path, only: %i[update destroy]
+    before_action :load_available_systems
 
     def create
       @scan_path = ScanPath.new(scan_path_params)
@@ -34,6 +35,10 @@ module Games
       else
         redirect_to settings_path, alert: "Could not remove scan path."
       end
+    end
+
+    private def load_available_systems
+      @available_systems = EmulatorProfile.where(user_selected: true).distinct.pluck(:game_system).compact
     end
 
     private def set_scan_path

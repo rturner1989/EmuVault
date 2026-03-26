@@ -1,8 +1,6 @@
 = helpers.turbo_stream_from "notifications_#{current_user.id}"
 
-- controllers = ["notifications", "quick-sync"]
-- controllers << "onboarding" if @onboarding
-.flex.min-h-screen.bg-base-200{ data: { controller: controllers.join(" "), onboarding_active_value: @onboarding.to_s } }
+.flex.min-h-screen.bg-base-200{ data: { controller: stimulus_controllers, onboarding_active_value: @onboarding.to_s } }
   %nav{ class: "hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-base-100 border-r border-base-300" }
     .flex.items-center.h-16.px-6.border-b.border-base-300
       = render UI::ActionComponent.new(href: root_path,
@@ -116,20 +114,23 @@
         size: :md,
         id: "mobile-nav-quick-sync",
         class: "flex-1 flex flex-col items-center justify-center py-2 cursor-pointer",
-        aria: { label: "Quick Sync" }, data: { action: "quick-sync#open" }) do
+        aria: { label: "Quick Sync" },
+        data: { action: "quick-sync#open" }) do
         .relative.flex.items-center.justify-center.w-10.h-10.rounded-full.bg-primary.-mt-5.shadow-lg
           = render ::UI::IconComponent.new(name: "fa-rotate", class: "text-primary-content", fw: false)
       = render ::UI::ActionComponent.new(href: activity_path,
         variant: :default,
         size: :md,
         id: "mobile-nav-activity",
-        class: mobile_nav_class("/activity"), aria: { label: "Activity" }) do |a|
+        class: mobile_nav_class("/activity"),
+        aria: { label: "Activity" }) do |a|
         - a.with_leading_icon(name: "fa-clock-rotate-left")
       = render ::UI::ActionComponent.new(href: emulator_profiles_path,
         variant: :default,
         size: :md,
         id: "mobile-nav-profiles",
-        class: mobile_nav_class("/emulator_profiles"), aria: { label: "Emulator Profiles" }) do |a|
+        class: mobile_nav_class("/emulator_profiles"),
+        aria: { label: "Emulator Profiles" }) do |a|
         - a.with_leading_icon(name: "fa-microchip")
 
   -# Quick sync

@@ -25,6 +25,12 @@ module Layouts
       active ? "#{base} text-primary" : "#{base} text-muted hover:text-base-content"
     end
 
+    def stimulus_controllers
+      controllers = %w[notifications quick-sync]
+      controllers << "onboarding" if @onboarding
+      controllers.join(" ")
+    end
+
     def unread_count
       current_user.notifications.where(read_at: nil).count
     end

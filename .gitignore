@@ -42,3 +42,6 @@
 
 # Playwright test videos
 /tmp/playwright_videos/
+
+# Local ROM files for development scan path testing
+/roms/

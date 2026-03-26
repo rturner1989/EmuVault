@@ -1,5 +1,7 @@
 - content_for :title, "Games — EmuVault"
 
+= turbo_stream_from "scans_#{current_user.id}"
+
 .p-4
   = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
     = modal.with_trigger do

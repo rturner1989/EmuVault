@@ -24,6 +24,7 @@ class GameScanJob < ApplicationJob
   # mode: "dry_run"  — discover ROMs, store findings, no DB writes
   # mode: "confirm"  — import a specific list of items (from review step)
   # mode: "auto"     — import all new ROMs from auto_scan paths (scheduled)
+  # mode: "auto_all" — import all ROMs from all paths (onboarding)
   def perform(mode = "auto", items = nil)
     user = User.first
 
@@ -34,21 +35,25 @@ class GameScanJob < ApplicationJob
       user.update!(last_scan_result: result)
 
     when "confirm"
-      result = import_items(items || [])
+      broadcast_scan_start(user)
+      result = import_items(items || [], user: user)
       result["status"] = "completed"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
+      broadcast_scan_complete(user, result)
 
     when "auto"
       return unless user.scan_enabled? && scan_due?(user)
 
-      result = import_roms(ScanPath.for_auto_scan)
+      result = import_roms(ScanPath.for_auto_scan, user: user)
       result["status"] = "completed"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
 
     when "auto_all"
-      result = import_roms(ScanPath.ordered)
+      broadcast_scan_start(user)
+      result = import_roms(ScanPath.ordered, user: user)
       result["status"] = "completed"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
+      broadcast_scan_complete(user, result)
       result
     end
   end
@@ -116,14 +121,15 @@ class GameScanJob < ApplicationJob
   end
 
   # Import a specific list of items confirmed by the user.
-  private def import_items(items)
+  private def import_items(items, user: nil)
     added = 0
     errors = []
 
     items.each do |item|
       begin
-        import_rom(item)
+        game = import_rom(item)
         added += 1
+        broadcast_game_added(user, game) if user
       rescue => e
         errors << { "rom" => item["rom_path"], "error" => e.message }
       end
@@ -133,7 +139,7 @@ class GameScanJob < ApplicationJob
   end
 
   # Walk auto_scan paths and import all newly discovered ROMs.
-  private def import_roms(scan_paths)
+  private def import_roms(scan_paths, user: nil)
     added = 0
     skipped = 0
     errors = []
@@ -161,13 +167,14 @@ class GameScanJob < ApplicationJob
         save_files = find_save_files(file_path, save_extensions)
 
         begin
-          import_rom({
+          game = import_rom({
             "rom_path"    => file_path,
             "game_system" => sp.game_system.to_s,
             "title"       => title,
             "save_files"  => save_files
           })
           added += 1
+          broadcast_game_added(user, game) if user
         rescue => e
           errors << { "rom" => file_path, "error" => e.message }
         end
@@ -178,7 +185,7 @@ class GameScanJob < ApplicationJob
   end
 
   private def import_rom(item)
-    game = Game.create!(title: item["title"], system: item["game_system"])
+    game = Game.find_or_create_by!(title: item["title"], system: item["game_system"])
 
     (item["save_files"] || []).each do |save_file|
       next unless File.exist?(save_file["path"])
@@ -200,7 +207,82 @@ class GameScanJob < ApplicationJob
       )
       game_save.save!
     end
+
+    game
   end
+
+  # --- Broadcasts ---
+
+  private def broadcast_scan_start(user)
+    user.update!(last_scan_result: { "status" => "scanning" })
+
+    html = ApplicationController.render(
+      partial: "games/scan_progress",
+      layout: false
+    )
+
+    Turbo::StreamsChannel.broadcast_update_to(
+      "scans_#{user.id}",
+      target: "scan-progress",
+      html: html
+    )
+  end
+
+  private def broadcast_game_added(user, game)
+    html = ApplicationController.render(
+      partial: "games/onboarding_game_list_item",
+      locals: { game: game }
+    )
+
+    Turbo::StreamsChannel.broadcast_append_to(
+      "scans_#{user.id}",
+      target: "onboarding-games-list",
+      html: html
+    )
+  end
+
+  private def broadcast_scan_complete(user, result)
+    added = result["added"] || 0
+    message = added > 0 ? "#{added} #{"game".pluralize(added)} imported." : "No new games found."
+
+    Turbo::StreamsChannel.broadcast_update_to(
+      "scans_#{user.id}",
+      target: "scan-progress",
+      html: ""
+    )
+
+    Turbo::StreamsChannel.broadcast_append_to(
+      "scans_#{user.id}",
+      target: "flash-container",
+      html: ApplicationController.render(
+        Layouts::FlashComponent::Item.new(type: :notice, message: message),
+        layout: false
+      )
+    )
+
+    # Update onboarding banner to show Complete Setup if games exist
+    banner_html = ApplicationController.render(
+      partial: "shared/onboarding_banner",
+      locals: {
+        step: 2,
+        title: "Add your games",
+        description: "Configure scan paths to discover games automatically, or add them manually.",
+        back_path: Rails.application.routes.url_helpers.onboarding_emulator_profiles_path,
+        next_path: (Rails.application.routes.url_helpers.onboarding_completion_path if Game.exists?),
+        next_label: "Complete Setup",
+        next_method: (Game.exists? ? :post : nil)
+      },
+      layout: false
+    )
+
+    Turbo::StreamsChannel.broadcast_update_to(
+      "scans_#{user.id}",
+      target: "onboarding-banner",
+      html: banner_html
+    )
+  end
+
+  # --- Helpers ---
 
   # Look for save files alongside a ROM with matching base name.
   private def find_save_files(rom_path, save_extensions)
