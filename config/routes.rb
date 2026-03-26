@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   require "sidekiq/web"
+  require "sidekiq-scheduler/web"
   Sidekiq::Web.use(AdminAuthMiddleware)
   mount Sidekiq::Web => "/sidekiq"
 
