@@ -136,7 +136,7 @@ RSpec.describe "EmulatorProfiles" do
 
     it "selects profiles from the library" do
       post emulator_profiles_library_index_path,
-        params: { profile_ids: [profile.id], game_system: "gba" },
+        params: { profile_ids: [ profile.id ], game_system: "gba" },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(profile.reload.user_selected).to be(true)
@@ -146,7 +146,7 @@ RSpec.describe "EmulatorProfiles" do
       selected = create(:emulator_profile, :default_profile, game_system: :gba, name: "Selected", user_selected: true)
 
       post emulator_profiles_library_index_path,
-        params: { profile_ids: [profile.id], game_system: "gba" },
+        params: { profile_ids: [ profile.id ], game_system: "gba" },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(profile.reload.user_selected).to be(true)

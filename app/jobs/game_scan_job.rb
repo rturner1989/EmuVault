@@ -49,7 +49,7 @@ class GameScanJob < ApplicationJob
       result = import_roms(ScanPath.ordered)
       result["status"] = "completed"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
-      return result
+      result
     end
   end
 

@@ -1,7 +1,7 @@
 module Onboarding
   class GamesController < StepController
     before_action :load_available_systems
-    before_action :set_game, only: [:destroy]
+    before_action :set_game, only: [ :destroy ]
 
     def index
       @game = Game.new

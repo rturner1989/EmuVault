@@ -84,9 +84,10 @@ RSpec.describe "Current Game" do
     end
 
     context "with a save file" do
-      let!(:game_save) { create(:game_save, game: game, emulator_profile: profile) }
-
-      before { visit root_path }
+      before do
+        create(:game_save, game: game, emulator_profile: profile)
+        visit root_path
+      end
 
       it "shows the download section" do
         find("details", text: "Now Playing").click

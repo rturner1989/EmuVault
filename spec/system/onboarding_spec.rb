@@ -144,7 +144,7 @@ RSpec.describe "Onboarding" do
       fill_in "Save extension (without dot)", with: "srm"
       find("[form='new-profile-form'][type='submit']").click
 
-      expect(page).to have_text("Profile added")
+      page.has_text?("Profile added") # wait for turbo stream without expect in hook
       click_on "Next: Add Games"
     end
 
@@ -164,7 +164,7 @@ RSpec.describe "Onboarding" do
     it "only shows systems with selected emulator profiles" do
       find("details", text: "Add game").click
 
-      expect(page).to have_select("game[system]", with_options: ["Game Boy Advance"])
+      expect(page).to have_select("game[system]", with_options: [ "Game Boy Advance" ])
     end
 
     it "adds a game manually" do
@@ -243,7 +243,7 @@ RSpec.describe "Onboarding" do
       find("[id='new-profile-dialog'] select[name*='game_system']").select("Game Boy Advance")
       fill_in "Save extension (without dot)", with: "srm"
       find("[form='new-profile-form'][type='submit']").click
-      expect(page).to have_text("Profile added")
+      page.has_text?("Profile added") # wait for turbo stream without expect in hook
       click_on "Next: Add Games"
 
       # Step 2: add game
@@ -251,7 +251,7 @@ RSpec.describe "Onboarding" do
       fill_in "Title", with: "Pokemon Emerald"
       select "Game Boy Advance", from: "game[system]"
       click_on "Add Game"
-      expect(page).to have_text("Pokemon Emerald added")
+      page.has_text?("Pokemon Emerald added") # wait for turbo stream without expect in hook
     end
 
     it "completes setup and redirects to the dashboard" do
@@ -280,7 +280,7 @@ RSpec.describe "Onboarding" do
       fill_in "Confirm password", with: "password123"
       click_button "Create account"
 
-      expect(page).to have_text("Select your emulators")
+      page.has_text?("Select your emulators") # wait for redirect without expect in hook
     end
 
     it "redirects /emulator_profiles to onboarding" do

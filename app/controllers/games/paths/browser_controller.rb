@@ -1,7 +1,6 @@
 module Games
   module Paths
     class BrowserController < ApplicationController
-
       def show
         path = File.expand_path(params[:path].presence || "/")
 

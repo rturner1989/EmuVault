@@ -28,7 +28,7 @@ class EmulatorProfile < ApplicationRecord
     android: "Android"
   }.freeze
 
-  enum :platform, { 
+  enum :platform, {
     linux: "linux",
     windows: "windows",
     macos: "macos",

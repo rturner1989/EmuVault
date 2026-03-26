@@ -3,9 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Emulator Profiles" do
-  let!(:user) { create(:user, username: "admin", password: "password123", setup_completed: true) }
-
   before do
+    create(:user, username: "admin", password: "password123", setup_completed: true)
     visit new_session_path
     fill_in "Username", with: "admin"
     fill_in "Password", with: "password123"
@@ -52,7 +51,6 @@ RSpec.describe "Emulator Profiles" do
 
       expect(page).to have_css("[id='library-modal'][aria-hidden='true']", visible: :all)
     end
-
   end
 
   describe "custom profile creation" do
