@@ -77,6 +77,9 @@ Rails.application.configure do
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
 
+  # ActionCable: allow connections from any origin (accessed via Tailscale IP)
+  config.action_cable.disable_request_forgery_protection = true
+
   # Enable DNS rebinding protection and other `Host` header attacks.
   # Add your domain or Tailscale hostname here when deploying.
   # config.hosts = [ENV["APP_HOST"]]
