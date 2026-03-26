@@ -86,4 +86,97 @@ RSpec.describe "Games Scan" do
       expect(page).to have_text("Pokemon")
     end
   end
+
+  describe "auto-scan pending review" do
+    let(:user) { User.find_by(username: "admin") }
+
+    before do
+      user.update!(last_scan_result: {
+        "status" => "pending_review",
+        "found" => [
+          { "title" => "Zelda", "game_system" => "gba", "rom_path" => "/roms/Zelda.gba", "save_files" => [] },
+          { "title" => "Pokemon", "game_system" => "gba", "rom_path" => "/roms/Pokemon.gba", "save_files" => [] }
+        ],
+        "already_in_lib" => 0,
+        "skipped_paths" => []
+      })
+    end
+
+    it "auto-opens the review modal on games index" do
+      visit games_path
+
+      expect(page).to have_css("[id='scan-review-dialog']:not([aria-hidden])")
+      expect(page).to have_text("Zelda")
+      expect(page).to have_text("Pokemon")
+    end
+
+    it "does not auto-open the modal on subsequent visits" do
+      visit games_path
+      expect(page).to have_css("[id='scan-review-dialog']:not([aria-hidden])")
+
+      find("[id='scan-review-dialog'] [aria-label='Close']").click
+      expect(page).to have_css("[id='scan-review-dialog'][aria-hidden='true']", visible: :all)
+
+      visit games_path
+      expect(page).to have_text("Games")
+
+      expect(page).to have_no_css("[id='scan-review-dialog']:not([aria-hidden])")
+    end
+
+    it "shows review content grouped by system" do
+      visit games_path
+
+      expect(page).to have_text("Game Boy Advance")
+      expect(page).to have_text("2 games")
+    end
+  end
+
+  describe "auto-scan notification flow" do
+    let(:user) { User.find_by(username: "admin") }
+
+    before do
+      user.update!(last_scan_result: {
+        "status" => "pending_review",
+        "found" => [
+          { "title" => "Zelda", "game_system" => "gba", "rom_path" => "/roms/Zelda.gba", "save_files" => [] }
+        ],
+        "already_in_lib" => 0,
+        "skipped_paths" => []
+      })
+
+      ScanCompleteNotifier.with(found: 1).deliver(user)
+    end
+
+    it "shows notification badge" do
+      visit root_path
+
+      expect(page).to have_css("[data-notification-badge]")
+    end
+
+    it "clicking notification goes to games index with review modal" do
+      visit root_path
+      find_by_id("nav-notifications").click
+      expect(page).to have_text("Auto-scan found")
+
+      first("[data-turbo-frame='_top']", text: "Auto-scan found").click
+
+      expect(page).to have_current_path(games_path)
+      expect(page).to have_css("[id='scan-review-dialog']:not([aria-hidden])")
+      expect(page).to have_text("Zelda")
+    end
+  end
+
+  describe "manual scan does not persist review state" do
+    it "does not auto-open modal on refresh after manual scan" do
+      allow(GameScanJob).to receive(:perform_later)
+      visit games_path
+
+      click_on "Scan Library"
+
+      visit games_path
+      expect(page).to have_text("Games")
+
+      expect(page).to have_no_css("[id='scan-review-dialog']:not([aria-hidden])")
+    end
+  end
 end

@@ -26,6 +26,8 @@ class GamesController < MainController
       @scan_already_in_lib = scan_result["already_in_lib"] || 0
       @scan_skipped_paths = scan_result["skipped_paths"] || []
       @scan_grouped = @scan_found.group_by { |item| item["game_system"] }
+
+      current_user.update!(last_scan_result: scan_result.merge("status" => "reviewed"))
     end
   end
 

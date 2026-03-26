@@ -12,7 +12,7 @@ class GameScanJob < ApplicationJob
     case mode
     when "dry_run"
       result = scanner.collect(ScanPath.ordered)
-      result["status"] = "pending_review"
+      result["status"] = "reviewed"
       user.update!(last_scan_result: result)
       broadcast_dry_run_complete(user, result)
 

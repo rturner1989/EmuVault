@@ -117,7 +117,7 @@ RSpec.describe GameScanJob do
       described_class.perform_now("dry_run")
 
       result = User.first.last_scan_result
-      expect(result["status"]).to eq("pending_review")
+      expect(result["status"]).to eq("reviewed")
       expect(result["found"].size).to eq(1)
       expect(result["found"].first["title"]).to eq("Zelda")
     end
