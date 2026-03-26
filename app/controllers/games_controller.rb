@@ -20,7 +20,7 @@ class GamesController < MainController
     @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| systems_in_use.include?(value) }
 
     scan_result = current_user.last_scan_result || {}
-    @pending_scan = scan_result["status"] == "pending_review"
+    @pending_scan = scan_result["status"] == "pending_review" && (scan_result["found"] || []).any?
     if @pending_scan
       @scan_found = scan_result["found"] || []
       @scan_already_in_lib = scan_result["already_in_lib"] || 0
