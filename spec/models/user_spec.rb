@@ -67,6 +67,44 @@ RSpec.describe User do
     end
   end
 
+  describe "#scan_due?" do
+    it "returns true when never scanned" do
+      user = create(:user, last_scanned_at: nil)
+
+      expect(user.scan_due?).to be(true)
+    end
+
+    it "returns true when hourly interval has elapsed" do
+      user = create(:user, scan_interval: :hourly, last_scanned_at: 2.hours.ago)
+
+      expect(user.scan_due?).to be(true)
+    end
+
+    it "returns false when hourly interval has not elapsed" do
+      user = create(:user, scan_interval: :hourly, last_scanned_at: 30.minutes.ago)
+
+      expect(user.scan_due?).to be(false)
+    end
+
+    it "returns true when daily interval has elapsed" do
+      user = create(:user, scan_interval: :daily, last_scanned_at: 2.days.ago)
+
+      expect(user.scan_due?).to be(true)
+    end
+
+    it "returns false when daily interval has not elapsed" do
+      user = create(:user, scan_interval: :daily, last_scanned_at: 12.hours.ago)
+
+      expect(user.scan_due?).to be(false)
+    end
+
+    it "returns true when every_6_hours interval has elapsed" do
+      user = create(:user, scan_interval: :every_6_hours, last_scanned_at: 7.hours.ago)
+
+      expect(user.scan_due?).to be(true)
+    end
+  end
+
   describe "THEMES" do
     it "includes dracula as a dark theme" do
       expect(User::THEMES["Dark"]).to include("dracula")

@@ -143,6 +143,35 @@ RSpec.describe GameScanJob do
     end
   end
 
+  describe "auto mode" do
+    before do
+      User.first.update!(scan_enabled: true, scan_interval: :hourly, last_scanned_at: 2.hours.ago)
+      create(:scan_path, path: scan_dir, game_system: :gba, auto_scan: true)
+    end
+
+    it "sends a notification when games are found" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      expect { described_class.perform_now("auto") }
+        .to change(Noticed::Notification, :count).by(1)
+    end
+
+    it "does not send a notification when no games are found" do
+      expect { described_class.perform_now("auto") }
+        .not_to change(Noticed::Notification, :count)
+    end
+
+    it "notification message includes game count" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+      FileUtils.touch(File.join(scan_dir, "Pokemon.gba"))
+
+      described_class.perform_now("auto")
+
+      notification = Noticed::Notification.last
+      expect(notification.message).to include("2 new games")
+    end
+  end
+
   describe "confirm mode" do
     let(:items) do
       [ { "title" => "Zelda", "game_system" => "gba", "rom_path" => "/roms/Zelda.gba", "save_files" => [] } ]

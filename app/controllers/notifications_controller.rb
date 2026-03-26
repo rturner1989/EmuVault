@@ -11,7 +11,6 @@ class NotificationsController < MainController
 
   def show
     notification = current_user.notifications.find(params[:id])
-
     notification.update!(read_at: Time.current) unless notification.read_at
 
     count = current_user.notifications.where(read_at: nil).count
@@ -22,6 +21,6 @@ class NotificationsController < MainController
       locals: { count: count }
     )
 
-    redirect_to game_path(notification.game)
+    redirect_to notification.game ? game_path(notification.game) : games_path
   end
 end

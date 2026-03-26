@@ -1,56 +1,38 @@
 class GameScanJob < ApplicationJob
   queue_as :default
 
-  # Known ROM file extensions per system.
-  ROM_EXTENSIONS = {
-    "nes"     => %w[nes],
-    "snes"    => %w[sfc smc],
-    "gb"      => %w[gb],
-    "gbc"     => %w[gbc],
-    "gba"     => %w[gba],
-    "nds"     => %w[nds],
-    "genesis" => %w[md bin gen],
-    "sms"     => %w[sms],
-    "gg"      => %w[gg],
-    "psx"     => %w[bin iso img cue],
-    "ps2"     => %w[iso],
-    "psp"     => %w[iso cso],
-    "n64"     => %w[n64 z64 v64],
-    "gc"      => %w[iso gcm],
-    "wii"     => %w[iso wbfs],
-    "arcade"  => %w[zip]
-  }.freeze
-
   # mode: "dry_run"  — discover ROMs, store findings, no DB writes
   # mode: "confirm"  — import a specific list of items (from review step)
   # mode: "auto"     — import all new ROMs from auto_scan paths (scheduled)
   # mode: "auto_all" — import all ROMs from all paths (onboarding)
   def perform(mode = "auto", items = nil)
     user = User.first
+    scanner = GameScanner.new
 
     case mode
     when "dry_run"
-      result = collect_roms(ScanPath.ordered)
+      result = scanner.collect(ScanPath.ordered)
       result["status"] = "pending_review"
       user.update!(last_scan_result: result)
 
     when "confirm"
       broadcast_scan_start(user)
-      result = import_items(items || [], user: user)
+      result = scanner.import_items(items || []) { |game| broadcast_game_added(user, game) }
       result["status"] = "completed"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
       broadcast_scan_complete(user, result)
 
     when "auto"
-      return unless user.scan_enabled? && scan_due?(user)
+      return unless user.scan_enabled? && user.scan_due?
 
-      result = import_roms(ScanPath.for_auto_scan, user: user)
+      result = scanner.import_all(ScanPath.for_auto_scan)
       result["status"] = "completed"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
+      notify_scan_complete(user, result) if (result["added"] || 0) > 0
 
     when "auto_all"
       broadcast_scan_start(user)
-      result = import_roms(ScanPath.ordered, user: user)
+      result = scanner.import_all(ScanPath.ordered) { |game| broadcast_game_added(user, game) }
       result["status"] = "completed"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
       broadcast_scan_complete(user, result)
@@ -58,157 +40,19 @@ class GameScanJob < ApplicationJob
     end
   end
 
-  private def scan_due?(user)
-    return true if user.last_scanned_at.nil?
+  # --- Notifications ---
 
-    interval = case user.scan_interval.to_s
-    when "every_6_hours" then 6.hours
-    when "daily"         then 1.day
-    else                      1.hour
-    end
+  private def notify_scan_complete(user, result)
+    added = result["added"] || 0
+    ScanCompleteNotifier.with(added: added).deliver(user)
 
-    user.last_scanned_at < interval.ago
-  end
-
-  # Walk scan paths and collect ROM discoveries without touching the DB.
-  private def collect_roms(scan_paths)
-    found = []
-    already_in_lib = 0
-    skipped_paths = []
-
-    save_extensions = active_save_extensions
-
-    scan_paths.each do |sp|
-      unless Dir.exist?(sp.path)
-        skipped_paths << { "id" => sp.id, "path" => sp.path, "system" => sp.game_system.to_s }
-        next
-      end
-
-      rom_exts = ROM_EXTENSIONS[sp.game_system.to_s] || []
-
-      Dir.glob(File.join(sp.path, "**", "*")).each do |file_path|
-        next unless File.file?(file_path)
-
-        ext = File.extname(file_path).delete_prefix(".").downcase
-        next unless rom_exts.include?(ext)
-
-        title = titleize(file_path)
-
-        if Game.exists?(title: title, system: sp.game_system.to_s)
-          already_in_lib += 1
-          next
-        end
-
-        save_files = find_save_files(file_path, save_extensions)
-
-        found << {
-          "rom_path"      => file_path,
-          "scan_path_id"  => sp.id,
-          "game_system"   => sp.game_system.to_s,
-          "title"         => title,
-          "size"          => File.size(file_path),
-          "save_files"    => save_files
-        }
-      end
-    end
-
-    {
-      "found"          => found,
-      "already_in_lib" => already_in_lib,
-      "skipped_paths"  => skipped_paths,
-      "errors"         => []
-    }
-  end
-
-  # Import a specific list of items confirmed by the user.
-  private def import_items(items, user: nil)
-    added = 0
-    errors = []
-
-    items.each do |item|
-      begin
-        game = import_rom(item)
-        added += 1
-        broadcast_game_added(user, game) if user
-      rescue => e
-        errors << { "rom" => item["rom_path"], "error" => e.message }
-      end
-    end
-
-    { "added" => added, "errors" => errors }
-  end
-
-  # Walk auto_scan paths and import all newly discovered ROMs.
-  private def import_roms(scan_paths, user: nil)
-    added = 0
-    skipped = 0
-    errors = []
-
-    save_extensions = active_save_extensions
-
-    scan_paths.each do |sp|
-      next unless Dir.exist?(sp.path)
-
-      rom_exts = ROM_EXTENSIONS[sp.game_system.to_s] || []
-
-      Dir.glob(File.join(sp.path, "**", "*")).each do |file_path|
-        next unless File.file?(file_path)
-
-        ext = File.extname(file_path).delete_prefix(".").downcase
-        next unless rom_exts.include?(ext)
-
-        title = titleize(file_path)
-
-        if Game.exists?(title: title, system: sp.game_system.to_s)
-          skipped += 1
-          next
-        end
-
-        save_files = find_save_files(file_path, save_extensions)
-
-        begin
-          game = import_rom({
-            "rom_path"    => file_path,
-            "game_system" => sp.game_system.to_s,
-            "title"       => title,
-            "save_files"  => save_files
-          })
-          added += 1
-          broadcast_game_added(user, game) if user
-        rescue => e
-          errors << { "rom" => file_path, "error" => e.message }
-        end
-      end
-    end
-
-    { "added" => added, "skipped" => skipped, "errors" => errors }
-  end
-
-  private def import_rom(item)
-    game = Game.find_or_create_by!(title: item["title"], system: item["game_system"])
-
-    (item["save_files"] || []).each do |save_file|
-      next unless File.exist?(save_file["path"])
-
-      checksum = Digest::SHA256.file(save_file["path"]).hexdigest
-      next if GameSave.exists?(checksum: checksum)
-
-      profile = EmulatorProfile.where(user_selected: true)
-                               .find_by(save_extension: save_file["extension"])
-
-      game_save = game.game_saves.build(
-        emulator_profile: profile,
-        checksum: checksum,
-        saved_at: File.mtime(save_file["path"])
-      )
-      game_save.file.attach(
-        io: File.open(save_file["path"], "rb"),
-        filename: File.basename(save_file["path"])
-      )
-      game_save.save!
-    end
-
-    game
+    count = user.notifications.where(read_at: nil).count
+    Turbo::StreamsChannel.broadcast_replace_later_to(
+      "notifications_#{user.id}",
+      targets: "[data-notification-badge]",
+      partial: "shared/notification_badge",
+      locals: { count: count }
+    )
   end
 
   # --- Broadcasts ---
@@ -216,28 +60,18 @@ class GameScanJob < ApplicationJob
   private def broadcast_scan_start(user)
     user.update!(last_scan_result: { "status" => "scanning" })
 
-    html = ApplicationController.render(
-      partial: "games/scan_progress",
-      layout: false
-    )
-
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
       target: "scan-progress",
-      html: html
+      html: ApplicationController.render(partial: "games/scan_progress", layout: false)
     )
   end
 
   private def broadcast_game_added(user, game)
-    html = ApplicationController.render(
-      partial: "games/onboarding_game_list_item",
-      locals: { game: game }
-    )
-
     Turbo::StreamsChannel.broadcast_append_to(
       "scans_#{user.id}",
       target: "onboarding-games-list",
-      html: html
+      html: ApplicationController.render(partial: "games/onboarding_game_list_item", locals: { game: game })
     )
   end
 
@@ -254,67 +88,25 @@ class GameScanJob < ApplicationJob
     Turbo::StreamsChannel.broadcast_append_to(
       "scans_#{user.id}",
       target: "flash-container",
-      html: ApplicationController.render(
-        Layouts::FlashComponent::Item.new(type: :notice, message: message),
-        layout: false
-      )
-    )
-
-    # Update onboarding banner to show Complete Setup if games exist
-    banner_html = ApplicationController.render(
-      partial: "shared/onboarding_banner",
-      locals: {
-        step: 2,
-        title: "Add your games",
-        description: "Configure scan paths to discover games automatically, or add them manually.",
-        back_path: Rails.application.routes.url_helpers.onboarding_emulator_profiles_path,
-        next_path: (Rails.application.routes.url_helpers.onboarding_completion_path if Game.exists?),
-        next_label: "Complete Setup",
-        next_method: (Game.exists? ? :post : nil)
-      },
-      layout: false
+      html: ApplicationController.render(Layouts::FlashComponent::Item.new(type: :notice, message: message), layout: false)
     )
 
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
       target: "onboarding-banner",
-      html: banner_html
+      html: ApplicationController.render(
+        partial: "shared/onboarding_banner",
+        locals: {
+          step: 2,
+          title: "Add your games",
+          description: "Configure scan paths to discover games automatically, or add them manually.",
+          back_path: Rails.application.routes.url_helpers.onboarding_emulator_profiles_path,
+          next_path: (Rails.application.routes.url_helpers.onboarding_completion_path if Game.exists?),
+          next_label: "Complete Setup",
+          next_method: (Game.exists? ? :post : nil)
+        },
+        layout: false
+      )
     )
-  end
-
-  # --- Helpers ---
-
-  # Look for save files alongside a ROM with matching base name.
-  private def find_save_files(rom_path, save_extensions)
-    dir = File.dirname(rom_path)
-    base_name = File.basename(rom_path, ".*")
-    found = []
-
-    save_extensions.each do |ext|
-      candidate = File.join(dir, "#{base_name}.#{ext}")
-      next unless File.exist?(candidate)
-
-      found << {
-        "path"      => candidate,
-        "extension" => ext,
-        "size"      => File.size(candidate)
-      }
-    end
-
-    found
-  end
-
-  private def active_save_extensions
-    EmulatorProfile.where(user_selected: true).pluck(:save_extension).uniq
-  end
-
-  private def titleize(file_path)
-    File.basename(file_path, ".*")
-        .gsub(/[_\-]/, " ")
-        .gsub(/\s+/, " ")
-        .strip
-        .split
-        .map(&:capitalize)
-        .join(" ")
   end
 end

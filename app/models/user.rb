@@ -58,6 +58,18 @@ class User < ApplicationRecord
 
   before_create :generate_api_token
 
+  def scan_due?
+    return true if last_scanned_at.nil?
+
+    interval = case scan_interval.to_s
+    when "every_6_hours" then 6.hours
+    when "daily"         then 1.day
+    else                      1.hour
+    end
+
+    last_scanned_at < interval.ago
+  end
+
   def regenerate_api_token!
     update!(api_token: SecureRandom.hex(32))
   end
