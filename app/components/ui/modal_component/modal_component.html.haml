@@ -1,5 +1,5 @@
 - if has_dialog_controller?
-  %div{ data: { controller: "dialog" } }
+  %div{ data: { controller: "dialog", dialog_auto_open_value: @auto_open } }
     = trigger
 
     %div{ id: @id, aria: { hidden: "true" }, data: { dialog_target: "container" }, class: "dialog-container" }

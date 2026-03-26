@@ -62,15 +62,18 @@
         - else
           = render "games/game_list", games: @games
 
-  -# Scan review modal — opens immediately on scan, body updated via broadcast
-  = render ::UI::ModalComponent.new(id: "scan-review-dialog", title: "Scan Review", subtitle: "Select the games you want to add to your library") do |modal|
+  -# Scan review modal — opens on scan or when pending auto-scan results exist
+  = render ::UI::ModalComponent.new(id: "scan-review-dialog", title: "Scan Review", subtitle: "Select the games you want to add to your library", auto_open: @pending_scan) do |modal|
     = modal.with_body do
-      %div{ id: "scan-review-content" }
-        = render "games/scan_progress"
+      = turbo_frame_tag "scan-review-content" do
+        - if @pending_scan
+          = render "games/scans/review_content", found: @scan_found, already_in_lib: @scan_already_in_lib, skipped_paths: @scan_skipped_paths, grouped: @scan_grouped
+        - else
+          = render "games/scan_progress"
     = modal.with_footer do
-      %div{ id: "scan-review-footer" }
-        = render ::UI::ActionComponent.new(variant: :primary,
-          size: :sm,
-          type: :submit,
-          form: "scan-confirm-form") do
-          = "Add to library"
+      = render ::UI::ActionComponent.new(variant: :primary,
+        size: :sm,
+        type: :submit,
+        form: "scan-confirm-form") do
+        = "Add to library"
+

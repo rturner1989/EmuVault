@@ -17,6 +17,15 @@ class GamesController < MainController
     end
 
     @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| Game.distinct.pluck(:system).compact.include?(value) }
+
+    scan_result = current_user.last_scan_result || {}
+    @pending_scan = scan_result["status"] == "pending_review"
+    if @pending_scan
+      @scan_found = scan_result["found"] || []
+      @scan_already_in_lib = scan_result["already_in_lib"] || 0
+      @scan_skipped_paths = scan_result["skipped_paths"] || []
+      @scan_grouped = @scan_found.group_by { |item| item["game_system"] }
+    end
   end
 
   def show

@@ -137,6 +137,23 @@ RSpec.describe GameScanJob do
       create(:scan_path, path: scan_dir, game_system: :gba, auto_scan: true)
     end
 
+    it "does not import games directly" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto")
+
+      expect(Game.count).to eq(0)
+    end
+
+    it "stores results as pending_review" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto")
+
+      expect(User.first.last_scan_result["status"]).to eq("pending_review")
+      expect(User.first.last_scan_result["found"].size).to eq(1)
+    end
+
     it "sends a notification when games are found" do
       FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
 
@@ -149,7 +166,7 @@ RSpec.describe GameScanJob do
         .not_to change(Noticed::Notification, :count)
     end
 
-    it "notification message includes game count" do
+    it "notification message includes game count and review prompt" do
       FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
       FileUtils.touch(File.join(scan_dir, "Pokemon.gba"))
 
@@ -157,6 +174,7 @@ RSpec.describe GameScanJob do
 
       notification = Noticed::Notification.last
       expect(notification.message).to include("2 new games")
+      expect(notification.message).to include("review")
     end
   end
 

@@ -26,10 +26,10 @@ class GameScanJob < ApplicationJob
     when "auto"
       return unless user.scan_enabled? && user.scan_due?
 
-      result = scanner.import_all(ScanPath.for_auto_scan)
-      result["status"] = "completed"
+      result = scanner.collect(ScanPath.for_auto_scan)
+      result["status"] = "pending_review"
       user.update!(last_scanned_at: Time.current, last_scan_result: result)
-      notify_scan_complete(user, result) if (result["added"] || 0) > 0
+      notify_scan_results(user, result) if (result["found"] || []).any?
 
     when "auto_all"
       broadcast_scan_start(user)
@@ -43,9 +43,9 @@ class GameScanJob < ApplicationJob
 
   # --- Notifications ---
 
-  private def notify_scan_complete(user, result)
-    added = result["added"] || 0
-    ScanCompleteNotifier.with(added: added).deliver(user)
+  private def notify_scan_results(user, result)
+    found = (result["found"] || []).size
+    ScanCompleteNotifier.with(found: found).deliver(user)
 
     count = user.notifications.where(read_at: nil).count
     Turbo::StreamsChannel.broadcast_replace_later_to(

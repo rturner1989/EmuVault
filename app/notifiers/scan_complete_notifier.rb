@@ -3,8 +3,8 @@
 class ScanCompleteNotifier < ApplicationNotifier
   notification_methods do
     def message
-      added = event.params[:added] || 0
-      "Auto-scan found #{added} new #{"game".pluralize(added)}"
+      found = event.params[:found] || 0
+      "Auto-scan found #{found} new #{"game".pluralize(found)} — review and add to your library"
     end
   end
 end
