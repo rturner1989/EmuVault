@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-class GameEmulatorConfigsController < ApplicationController
+class GameEmulatorConfigsController < MainController
   before_action :set_game
 
   def update
-    authorize! @game, to: :update?
-
     configs_params.each do |emulator_profile_id, save_filename|
       config = @game.game_emulator_configs.find_or_initialize_by(emulator_profile_id: emulator_profile_id)
       if save_filename.blank?

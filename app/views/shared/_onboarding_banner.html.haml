@@ -1,0 +1,34 @@
+%div{ class: "rounded-lg border border-primary/30 px-4 py-3 mb-6", style: "background: color-mix(in srgb, oklch(var(--p)) 8%, transparent)" }
+  .flex.flex-col.gap-3{ class: "sm:flex-row sm:items-center sm:justify-between sm:gap-4" }
+    .min-w-0
+      .flex.items-center.gap-2.mb-1
+        - (1..2).each do |n|
+          - if n < step
+            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-success text-success-content shrink-0" }
+              = render ::UI::IconComponent.new(name: "fa-check")
+          - elsif n == step
+            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-primary text-primary-content shrink-0" }
+              = n
+          - else
+            %span{ class: "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-base-300 text-muted shrink-0" }
+              = n
+        %span.text-sm.font-medium
+          = title
+      %p.text-xs.text-muted
+        = description
+    .flex.items-center.gap-2.shrink-0
+      - if local_assigns[:back_path]
+        = render ::UI::ActionComponent.new(href: back_path,
+          variant: :ghost,
+          size: :sm,
+          data: { turbo_frame: "_top" }) do |a|
+          - a.with_leading_icon(name: "fa-arrow-left")
+          = "Back"
+      - if local_assigns[:next_path]
+        = render ::UI::ActionComponent.new(href: next_path,
+          variant: :primary,
+          size: :sm,
+          method: local_assigns[:next_method],
+          data: { turbo_frame: "_top" }) do |a|
+          = local_assigns[:next_label] || "Next"
+          - a.with_trailing_icon(name: "fa-arrow-right")

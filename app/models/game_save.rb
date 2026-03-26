@@ -36,6 +36,42 @@ class GameSave < ApplicationRecord
 
   after_create_commit :notify_new_save, if: -> { Current.user.present? }
 
+  def emulator_label
+    return "Unknown emulator" unless emulator_profile
+
+    "#{emulator_profile.name} — #{emulator_profile.platform_label}"
+  end
+
+  def file_size_label
+    return "—" unless file.attached?
+
+    ActiveSupport::NumberHelper.number_to_human_size(file.byte_size)
+  end
+
+  def uploaded_at_label
+    created_at.strftime("%b %-d, %Y at %H:%M")
+  end
+
+  def download_filename(target_profile = nil)
+    profile = target_profile || emulator_profile
+    ext = profile&.save_extension || "sav"
+    base = if profile
+      config = emulator_configs_map[profile.id]
+      config&.save_filename.presence || game.default_save_base_name
+    else
+      game.default_save_base_name
+    end
+    "#{base}.#{ext}"
+  end
+
+  def save_path_hint(target_profile = nil)
+    profile = target_profile || emulator_profile
+    return nil unless profile&.default_save_path.present?
+
+    dir = profile.default_save_path.chomp("/")
+    "#{dir}/#{download_filename(target_profile)}"
+  end
+
   private def notify_new_save
     user = Current.user
     NewSaveNotifier.with(game_save: self).deliver(user)
@@ -46,5 +82,9 @@ class GameSave < ApplicationRecord
       partial: "shared/notification_badge",
       locals: { count: count }
     )
+  end
+
+  private def emulator_configs_map
+    @emulator_configs_map ||= game.game_emulator_configs.index_by(&:emulator_profile_id)
   end
 end

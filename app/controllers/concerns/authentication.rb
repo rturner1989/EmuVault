@@ -4,6 +4,7 @@ module Authentication
   included do
     before_action :require_authentication
     helper_method :authenticated?
+    helper_method :current_user
   end
 
   class_methods do
@@ -12,12 +13,16 @@ module Authentication
     end
   end
 
+  private def require_authentication
+    resume_session || request_authentication
+  end
+
   private def authenticated?
     resume_session
   end
 
-  private def require_authentication
-    resume_session || request_authentication
+  private def current_user
+    Current.user
   end
 
   private def resume_session

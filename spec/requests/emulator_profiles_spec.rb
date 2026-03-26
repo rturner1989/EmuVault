@@ -57,14 +57,25 @@ RSpec.describe "EmulatorProfiles" do
   end
 
   describe "PATCH /emulator_profiles/:id" do
-    let(:profile) { create(:emulator_profile, name: "Old Name") }
+    it "updates a custom profile" do
+      profile = create(:emulator_profile, name: "Old Name", is_default: false)
 
-    it "updates the profile" do
       patch emulator_profile_path(profile), params: {
         emulator_profile: { name: "New Name" }
       }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(profile.reload.name).to eq("New Name")
+    end
+
+    it "blocks editing a default profile" do
+      profile = create(:emulator_profile, :default_profile, name: "RetroArch")
+
+      patch emulator_profile_path(profile), params: {
+        emulator_profile: { name: "Hacked" }
+      }, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(response).to have_http_status(:forbidden)
+      expect(profile.reload.name).to eq("RetroArch")
     end
   end
 
@@ -99,11 +110,11 @@ RSpec.describe "EmulatorProfiles" do
     end
   end
 
-  describe "DELETE /emulator_profiles/bulk_destroy" do
+  describe "POST /emulator_profiles/bulk_destroy" do
     it "bulk deletes custom profiles" do
       profiles = create_list(:emulator_profile, 3, is_default: false)
 
-      delete bulk_destroy_emulator_profiles_path, params: { profile_ids: profiles.map(&:id) },
+      post emulator_profiles_bulk_destroy_path, params: { profile_ids: profiles.map(&:id) },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(EmulatorProfile.where(id: profiles.map(&:id))).to be_empty
@@ -113,10 +124,53 @@ RSpec.describe "EmulatorProfiles" do
       profile = create(:emulator_profile, game_system: :snes)
       create(:game, system: :snes)
 
-      delete bulk_destroy_emulator_profiles_path, params: { profile_ids: [ profile.id ] },
+      post emulator_profiles_bulk_destroy_path, params: { profile_ids: [ profile.id ] },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(EmulatorProfile.exists?(profile.id)).to be(true)
+    end
+  end
+
+  describe "POST /emulator_profiles/library (add from library)" do
+    let!(:profile) { create(:emulator_profile, :default_profile, :unselected, game_system: :gba) }
+
+    it "selects profiles from the library" do
+      post emulator_profiles_library_index_path,
+        params: { profile_ids: [ profile.id ], game_system: "gba" },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(profile.reload.user_selected).to be(true)
+    end
+
+    it "deselects profiles that are unchecked" do
+      selected = create(:emulator_profile, :default_profile, game_system: :gba, name: "Selected", user_selected: true)
+
+      post emulator_profiles_library_index_path,
+        params: { profile_ids: [ profile.id ], game_system: "gba" },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(profile.reload.user_selected).to be(true)
+      expect(selected.reload.user_selected).to be(false)
+    end
+
+    it "deselects all when no profiles are checked" do
+      profile.update!(user_selected: true)
+
+      post emulator_profiles_library_index_path,
+        params: { profile_ids: [], game_system: "gba" },
+        headers: { "Accept" => "text/vnd.turbo-stream.html" }
+
+      expect(profile.reload.user_selected).to be(false)
+    end
+  end
+
+  describe "GET /emulator_profiles during onboarding" do
+    it "redirects setup-incomplete users to onboarding" do
+      user.update!(setup_completed: false)
+
+      get emulator_profiles_path
+
+      expect(response).to redirect_to(onboarding_emulator_profiles_path)
     end
   end
 end

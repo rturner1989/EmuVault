@@ -14,10 +14,13 @@ import { lockScroll, unlockScroll } from "../utils/scroll_lock"
 //         = yield
 export default class extends Controller {
   static targets = ["container"]
+  static values = { autoOpen: Boolean }
 
   connect() {
     this.dialog = new A11yDialog(this.containerTarget)
     this.containerTarget.addEventListener("dialog:close", () => this.dialog.hide())
+    this.containerTarget.addEventListener("dialog:open", () => this.dialog.show())
+
     // Hook into a11y-dialog events so Escape key, backdrop click, and button
     // close all go through the same animation path.
     this.dialog.on("show", () => {
@@ -25,11 +28,20 @@ export default class extends Controller {
       requestAnimationFrame(() => this.containerTarget.classList.add("dialog--open"))
       this.containerTarget.querySelectorAll("turbo-frame[src]").forEach(frame => frame.reload())
     })
+
+    // Reset scroll position when turbo frame content updates inside the dialog
+    this.containerTarget.addEventListener("turbo:frame-load", () => {
+      this.containerTarget.querySelectorAll(".overflow-y-auto, .dialog-content").forEach(el => {
+        el.scrollTop = 0
+      })
+    })
+
     this.dialog.on("hide", () => {
       this.containerTarget.classList.remove("dialog--open")
       this._resetForms()
       setTimeout(() => unlockScroll(), 250)
     })
+
     // Belt-and-suspenders: a11y-dialog's keydown listener is scoped to the
     // container element, so ESC can silently fail if focus drifts outside it.
     // This document-level handler ensures ESC always closes the dialog.
@@ -37,6 +49,8 @@ export default class extends Controller {
       if (event.key === "Escape" && this.dialog.shown) this.dialog.hide()
     }
     document.addEventListener("keydown", this._handleEscape)
+
+    if (this.autoOpenValue) this.dialog.show()
   }
 
   disconnect() {

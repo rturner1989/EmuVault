@@ -42,6 +42,30 @@ RSpec.describe "Games" do
 
       expect(response.body.index("Zeta")).to be < response.body.index("Alpha")
     end
+
+    context "with pending auto-scan results" do
+      before do
+        user.update!(last_scan_result: {
+          "status" => "pending_review",
+          "found" => [ { "title" => "Zelda", "game_system" => "gba", "rom_path" => "/roms/Zelda.gba", "save_files" => [] } ],
+          "already_in_lib" => 0,
+          "skipped_paths" => []
+        })
+      end
+
+      it "includes the review modal content" do
+        get games_path
+
+        expect(response.body).to include("Zelda")
+        expect(response.body).to include("scan-review-dialog")
+      end
+
+      it "sets auto_open on the review modal" do
+        get games_path
+
+        expect(response.body).to include("auto-open-value")
+      end
+    end
   end
 
   describe "GET /games/:id" do

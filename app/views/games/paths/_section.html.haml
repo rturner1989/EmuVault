@@ -1,0 +1,17 @@
+= render "shared/scan_paths_list", scan_paths: scan_paths
+
+%details{ class: scan_paths.any? ? "mt-4" : nil }
+  %summary.text-sm.text-primary.cursor-pointer.font-medium
+    = render UI::IconComponent.new(name: "fa-plus", class: "mr-1")
+    = "Add scan path"
+  .mt-3
+    = render "games/paths/form"
+
+- if local_assigns[:show_scan_button] && scan_paths.any?
+  .mt-4.pt-4.border-t.border-base-300
+    = render ::UI::ActionComponent.new(href: local_assigns.fetch(:scan_path, game_scan_path),
+      method: :post,
+      variant: :primary,
+      size: :sm) do |a|
+      - a.with_leading_icon(name: "fa-magnifying-glass")
+      = "Scan Now"

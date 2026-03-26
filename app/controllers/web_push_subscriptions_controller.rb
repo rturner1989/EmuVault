@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class WebPushSubscriptionsController < ApplicationController
+class WebPushSubscriptionsController < MainController
   def create
-    authorize! current_user
-
     current_user.web_push_subscriptions.find_or_create_by!(
       endpoint: subscription_params[:endpoint]
     ) do |sub|
@@ -15,8 +13,6 @@ class WebPushSubscriptionsController < ApplicationController
   end
 
   def destroy
-    authorize! current_user
-
     current_user.web_push_subscriptions
            .find_by(endpoint: params[:endpoint])
            &.destroy

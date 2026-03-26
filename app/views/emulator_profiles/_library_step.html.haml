@@ -1,16 +1,23 @@
 - if @systems.any?
-  = form_with url: library_system_emulator_profiles_path,
+  = form_with url: emulator_profiles_library_index_path,
     method: :get,
     id: "library-step-form",
     data: { turbo_frame: :library_modal_frame } do |f|
     .grid.gap-2{ style: "grid-template-columns: repeat(auto-fill, minmax(120px, 1fr))" }
       - @systems.each do |system|
-        - already_has = @selected_systems.include?(system.value.to_sym)
-        %label{ class: "flex flex-col items-center gap-1.5 px-3 py-4 rounded-lg border text-center cursor-pointer transition-all border-base-300 hover:border-primary hover:bg-base-200 has-[:checked]:border-primary has-[:checked]:bg-base-200" }
-          %input{ type: "checkbox", name: "systems[]", value: system.value, class: "peer sr-only", checked: already_has }
+        - already_has = @selected_systems.include?(system[:value].to_sym)
+        - in_use = @in_use_systems&.include?(system[:value].to_sym)
+        %label{ class: "flex flex-col items-center gap-1.5 px-3 py-4 rounded-lg border text-center transition-all #{in_use ? 'border-primary bg-base-200 cursor-not-allowed opacity-60' : 'cursor-pointer border-base-300 hover:border-primary hover:bg-base-200 has-[:checked]:border-primary has-[:checked]:bg-base-200'}",
+          title: (in_use ? "Games exist for this system" : nil) }
+          - if in_use
+            %input{ type: "hidden", name: "systems[]", value: system[:value] }
+          %input{ type: "checkbox", name: "systems[]", value: system[:value], class: "peer sr-only", checked: already_has || in_use, disabled: in_use }
           %span.text-sm.font-medium
-            = system.text
-          = render ::UI::IconComponent.new(name: "fa-check", class: "text-xs text-primary invisible peer-checked:visible")
+            = system[:text]
+          - if in_use
+            = render ::UI::IconComponent.new(name: "fa-lock", class: "text-xs text-muted")
+          - else
+            = render ::UI::IconComponent.new(name: "fa-check", class: "text-xs text-primary invisible peer-checked:visible")
 - else
   %p.text-sm.text-muted
     = "All available emulators from the library are already added."

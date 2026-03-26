@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class NotificationsController < ApplicationController
+class NotificationsController < MainController
   def index
-    authorize! current_user
-
     @notifications = current_user.notifications
                             .where(read_at: nil)
                             .includes(event: {})
@@ -13,8 +11,6 @@ class NotificationsController < ApplicationController
 
   def show
     notification = current_user.notifications.find(params[:id])
-    authorize! current_user
-
     notification.update!(read_at: Time.current) unless notification.read_at
 
     count = current_user.notifications.where(read_at: nil).count
@@ -25,21 +21,6 @@ class NotificationsController < ApplicationController
       locals: { count: count }
     )
 
-    redirect_to game_path(notification.game)
-  end
-
-  def mark_all_read
-    authorize! current_user
-
-    current_user.notifications.where(read_at: nil).update_all(read_at: Time.current)
-
-    Turbo::StreamsChannel.broadcast_replace_to(
-      "notifications_#{current_user.id}",
-      targets: "[data-notification-badge]",
-      partial: "shared/notification_badge",
-      locals: { count: 0 }
-    )
-
-    head :ok
+    redirect_to notification.game ? game_path(notification.game) : games_path
   end
 end

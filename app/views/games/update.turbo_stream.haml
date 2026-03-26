@@ -1,3 +1,3 @@
-= turbo_stream.replace "game_header", partial: "games/header", locals: { game: @decorated_game }
-= turbo_stream.update "emulator_filenames", partial: "games/emulator_filenames", locals: { game: @decorated_game, user_profiles: @user_profiles, emulator_configs: @emulator_configs }
+= turbo_stream.replace "game_header", partial: "games/header", locals: { game: @game }
+= turbo_stream.update "emulator_filenames", partial: "games/emulator_filenames", locals: { game: @game, user_profiles: @user_profiles, emulator_configs: @emulator_configs }
 = turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} updated.")

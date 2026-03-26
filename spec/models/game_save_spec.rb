@@ -39,4 +39,100 @@ RSpec.describe GameSave do
       end
     end
   end
+
+  describe "#emulator_label" do
+    it "returns emulator name and platform" do
+      profile = create(:emulator_profile, name: "RetroArch", platform: :linux)
+      game_save = create(:game_save, emulator_profile: profile)
+
+      expect(game_save.emulator_label).to eq("RetroArch — Linux")
+    end
+
+    it "returns unknown when no profile" do
+      game_save = create(:game_save, emulator_profile: nil)
+
+      expect(game_save.emulator_label).to eq("Unknown emulator")
+    end
+  end
+
+  describe "#file_size_label" do
+    it "formats bytes" do
+      game_save = create(:game_save)
+      allow(game_save.file).to receive(:byte_size).and_return(512)
+
+      expect(game_save.file_size_label).to eq("512 Bytes")
+    end
+
+    it "formats kilobytes" do
+      game_save = create(:game_save)
+      allow(game_save.file).to receive(:byte_size).and_return(2048)
+
+      expect(game_save.file_size_label).to eq("2 KB")
+    end
+
+    it "formats megabytes" do
+      game_save = create(:game_save)
+      allow(game_save.file).to receive(:byte_size).and_return(5_242_880)
+
+      expect(game_save.file_size_label).to eq("5 MB")
+    end
+  end
+
+  describe "#uploaded_at_label" do
+    it "formats the timestamp" do
+      game_save = create(:game_save, created_at: Time.zone.parse("2026-03-15 14:30"))
+
+      expect(game_save.uploaded_at_label).to eq("Mar 15, 2026 at 14:30")
+    end
+  end
+
+  describe "#download_filename" do
+    let(:profile) { create(:emulator_profile, name: "RetroArch", platform: :linux, save_extension: "srm") }
+    let(:game) { create(:game, title: "Zelda") }
+
+    it "uses the profile extension" do
+      game_save = create(:game_save, game: game, emulator_profile: profile)
+
+      expect(game_save.download_filename).to eq("Zelda.srm")
+    end
+
+    it "uses a target profile when provided" do
+      game_save = create(:game_save, game: game, emulator_profile: profile)
+      other_profile = create(:emulator_profile, save_extension: "sav", game_system: :snes)
+
+      expect(game_save.download_filename(other_profile)).to eq("Zelda.sav")
+    end
+
+    it "uses custom filename from game_emulator_config" do
+      game_save = create(:game_save, game: game, emulator_profile: profile)
+      create(:game_emulator_config, game: game, emulator_profile: profile, save_filename: "custom_name")
+
+      expect(game_save.download_filename).to eq("custom_name.srm")
+    end
+
+    it "falls back to sav when no profile" do
+      game_save = create(:game_save, game: game, emulator_profile: nil)
+
+      expect(game_save.download_filename).to eq("Zelda.sav")
+    end
+  end
+
+  describe "#save_path_hint" do
+    let(:profile) { create(:emulator_profile, name: "RetroArch", platform: :linux, save_extension: "srm") }
+    let(:game) { create(:game, title: "Zelda") }
+
+    it "returns nil when profile has no save path" do
+      game_save = create(:game_save, game: game, emulator_profile: profile)
+      profile.update!(default_save_path: nil)
+
+      expect(game_save.save_path_hint).to be_nil
+    end
+
+    it "returns full path when profile has a save path" do
+      game_save = create(:game_save, game: game, emulator_profile: profile)
+      profile.update!(default_save_path: "~/.config/retroarch/saves")
+
+      expect(game_save.save_path_hint).to eq("~/.config/retroarch/saves/Zelda.srm")
+    end
+  end
 end

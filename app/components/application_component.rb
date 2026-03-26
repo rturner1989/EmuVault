@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationComponent < ViewComponent::Base
-  include Styleable
-
   # Converts class name to Stimulus controller identifier.
   # e.g. Layouts::AppShellComponent -> "layouts--app-shell-component"
   def js_controller_name

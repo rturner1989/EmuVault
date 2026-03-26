@@ -1,56 +1,34 @@
-class GameSavesController < ApplicationController
+class GameSavesController < MainController
   before_action :set_game
-  before_action :set_game_save, only: %i[destroy download]
+  before_action :set_game_save, only: [ :destroy ]
 
   def create
-    authorize! GameSave, to: :create?
-
     @game_save_form = GameSaveForm.new(game_save_params)
     if @game_save_form.save(game: @game, request: request)
       redirect_back_or_to game_path(@game), notice: "Save uploaded."
     else
-      @game = GameDecorator.new(@game)
-      @latest_save = GameSaveDecorator.decorate(@game.game_saves.latest_first.first) if @game.game_saves.exists?
-      @history = @game.game_saves.latest_first.offset(1).includes(:emulator_profile).limit(19)
+      @latest_save = @game.game_saves
+        .latest_first
+        .first
+      @history = @game.game_saves
+        .latest_first
+        .offset(1)
+        .includes(:emulator_profile)
+        .limit(19)
       @new_save = @game_save_form
       @user_profiles = EmulatorProfile.where(user_selected: true).ordered
       @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)
-      @form = GameForm.from(@game)
 
       render "games/show", status: :unprocessable_entity
     end
   end
 
   def destroy
-    authorize! @game_save
-
     if @game_save.destroy
       redirect_to @game, notice: "Save removed.", status: :see_other
     else
       redirect_back_or_to game_path(@game), alert: "Could not remove save."
     end
-  end
-
-  def download
-    authorize! @game_save, to: :show?
-
-    target_profile_id = params.dig(:game_save, :target_profile_id)
-    target_profile = target_profile_id.present? ? EmulatorProfile.find(target_profile_id) : nil
-    decorated = GameSaveDecorator.new(@game_save)
-
-    SyncEvent.create!(
-      game_save: @game_save,
-      action: :pull,
-      status: :success,
-      performed_at: Time.current,
-      ip_address: request.remote_ip,
-      user_agent: request.user_agent
-    )
-
-    filename = decorated.download_filename(target_profile)
-    response.headers["Content-Type"] = "application/octet-stream"
-    response.headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
-    render body: @game_save.file.download
   end
 
   private def set_game

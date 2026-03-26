@@ -42,7 +42,7 @@ export default class extends Controller {
     this.upButtonTarget.dataset.path = parent
     this.upButtonTarget.disabled     = path === "/"
 
-    fetch(`/directory_browser?path=${encodeURIComponent(path)}`)
+    fetch(`/scan_paths/browser?path=${encodeURIComponent(path)}`)
       .then(response => response.json())
       .then(data => {
         if (data.error) {

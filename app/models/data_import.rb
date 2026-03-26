@@ -15,9 +15,15 @@
 #
 class DataImport < ApplicationRecord
   include HasFileSizeLimit
-  extend Enumerize
 
-  enumerize :status, in: %i[pending analyzing conflicts_pending importing complete failed]
+  enum :status, {
+    pending: "pending",
+    analyzing: "analyzing",
+    conflicts_pending: "conflicts_pending",
+    importing: "importing",
+    complete: "complete",
+    failed: "failed"
+  }
 
   has_one_attached :file
   max_file_size 500.megabytes

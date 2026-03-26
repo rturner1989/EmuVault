@@ -13,9 +13,7 @@ A cross-platform emulator save file manager. Allows users to sync game saves bet
 - **ViewComponent** for reusable UI components
 - **SimpleForm** for form building — use `simple_form_for` for model-backed forms. For non-model forms (e.g. filters), use `form_with url: ..., method: :get`
 - **Font Awesome Free 6** for icons — served from `public/fontawesome/` (copied there by the `postinstall` npm script). Use `%i.fa-solid.fa-icon-name` (solid), `%i.fa-regular.fa-icon-name` (regular). Add `fa-fw` for fixed-width icons. Linked in the layout before the app stylesheet.
-- **Enumerize** for i18n-aware enums on models (not Rails enums)
-- **ActionPolicy** for authorization
-- **SimpleDelegator** for decorators (no Draper gem)
+- **Rails enums** for model enum fields (string-backed, with label constants in models/concerns)
 - **ActiveModel::API + ActiveModel::Attributes** for form objects
 - **Sidekiq** + **sidekiq-scheduler** for background jobs and recurring tasks
 - **Redis** for Sidekiq queue
@@ -60,12 +58,9 @@ docker compose run --rm -u root app chown -R 1000:1000 /emu-vault/app/assets/bui
 - Use HAML for all views, never ERB
 - Use ViewComponent for any UI element used in more than one place
 - Use `simple_form_for` for model-backed forms, `form_with url:` for non-model forms (filters, search)
-- Use Enumerize for model enum fields — gives i18n support
-- Use ActionPolicy for any authorization logic — all policies in `app/policies/`
-- Use `ApplicationDecorator < SimpleDelegator` for view-layer decoration — `app/decorators/`
-- Decorate in controllers, never in views
-- Use form objects (`ApplicationForm` with `ActiveModel::API`) for non-trivial form handling — `app/forms/`
-- Controllers are thin — logic lives in models, decorators, or form objects
+- Use Rails `enum` for model enum fields — string-backed with label constants (e.g. `GAME_SYSTEM_LABELS`, `PLATFORM_LABELS`)
+- Use form objects (`ActiveModel::API` + `ActiveModel::Attributes`) for multi-step form logic — `app/forms/`
+- Controllers are thin — logic lives in models or form objects
 - Use `private def method_name` (inline) instead of a standalone `private` keyword with methods below
 - Prefer Turbo Frames for partial page updates — wrap sections that change independently (e.g. form results, filtered lists) in `turbo_frame_tag`. Use `turbo_frame_tag` (not plain `%div` with `id:`) when the element is a target for `turbo_stream.update` or `turbo_stream.replace`
 - For turbo_stream flash messages, append a `::Layouts::FlashComponent::Item` to `flash-container` — see FlashComponent below
@@ -172,7 +167,6 @@ Fixed bottom nav on mobile with 5 items: Dashboard, Games, Quick Sync (centre fl
 
 Base classes in `app/components/`:
 - `ApplicationComponent < ViewComponent::Base` — provides `js_controller_name` (Stimulus controller name from class name)
-- `Styleable` module — CSS class management DSL, included in ApplicationComponent
 
 Component namespaces:
 - `app/components/layouts/` — layout-level components (`AppShellComponent`, `FlashComponent`)
@@ -216,48 +210,33 @@ All controllers in `app/javascript/controllers/`:
 - `save-hint` — shows suggested save file path on download profile selection. Targets: `select`, `hint`, `note`, `copyBtn`.
 - `theme` — live theme preview with revert on navigation. Targets: `dialog`. Values: `current`.
 
-## Decorator pattern
-
-```ruby
-# app/decorators/application_decorator.rb
-class ApplicationDecorator < SimpleDelegator
-  def self.decorate(record_or_collection)
-    record_or_collection.respond_to?(:map) ? record_or_collection.map { new(_1) } : new(record_or_collection)
-  end
-  def object = __getobj__
-end
-```
-
-Decorators live in `app/decorators/`. Use `DecoratorClass.decorate(@record)` in controllers. Never decorate in views.
-
 ## Form object pattern
 
 ```ruby
-# app/forms/application_form.rb
-class ApplicationForm
+# app/forms/game_save_form.rb
+class GameSaveForm
   include ActiveModel::API
   include ActiveModel::Attributes
-  def self.model_name = ActiveModel::Name.new(self, nil, "ModelName")
-  def self.from(record)  # builds form populated from AR record
-  def persist(record)    # validates, then assigns attrs and saves
+  def self.model_name = ActiveModel::Name.new(self, nil, "GameSave")
+  def save(game:, request:)  # validates, builds record, records sync event
 end
 ```
 
-Form objects live in `app/forms/`. Views use `url:` explicitly (don't rely on polymorphic routing).
+Form objects live in `app/forms/`. Used for multi-step logic (checksum computation, sync event creation) that doesn't belong on the model.
 
 ## Data model
 
-- `EmulatorProfile` — library of known emulators. Seeded defaults have `is_default: true` (can't be deleted, only deselected). User-activated ones have `user_selected: true`. Fields: `name`, `platform` (Enumerize), `save_extension`, `default_save_path`, `is_default`, `user_selected`.
-- `Game` — a game in the user's library. Has `system` enum via Enumerize.
+- `EmulatorProfile` — library of known emulators. Seeded defaults have `is_default: true` (can't be deleted, only deselected). User-activated ones have `user_selected: true`. Fields: `name`, `platform` (enum), `save_extension`, `default_save_path`, `is_default`, `user_selected`.
+- `Game` — a game in the user's library. Has `system` enum (string-backed).
 - `GameSave` — a save file version, linked to a game and optional emulator profile. Latest = most recent by `created_at`. No slot concept. File stored via Active Storage. Fields: `game_id`, `emulator_profile_id` (optional), `checksum`, `saved_at`.
-- `SyncEvent` — passive audit log of uploads/downloads. Auto-created on every upload/download. Fields: `game_save_id`, `action` (push/pull), `status` (success/failed), `performed_at`, `ip_address`, `user_agent`. No manual device registration — device type is inferred from `user_agent` in `SyncEventDecorator`.
+- `SyncEvent` — passive audit log of uploads/downloads. Auto-created on every upload/download. Fields: `game_save_id`, `action` (push/pull), `status` (success/failed), `performed_at`, `ip_address`, `user_agent`. No manual device registration — device type is inferred from `user_agent` via `SyncEvent#device_type`.
 - `User` — has `setup_completed` boolean (false until wizard is finished), `theme` string (default `"dracula"`), `current_game_id` for quick sync.
 
 ## Activity log
 
 `SyncEvent` records are created automatically by `GameSavesController` on every upload (`action: :push`) and download (`action: :pull`), capturing `request.remote_ip` and `request.user_agent`. No manual device management.
 
-`SyncEventDecorator` infers device type from UA:
+`SyncEvent#device_type` infers device type from UA:
 - iPad/Android Tablet/Kindle → `:tablet`
 - Mobile/Android/iPhone/iPod → `:phone`
 - Anything else → `:desktop`
@@ -424,7 +403,7 @@ SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrappe
 - [x] Stage 2 — Data model (EmulatorProfile, Game, GameSave, SyncEvent, Device migrations)
 - [x] Stage 3 — Authentication (Rails 8 native auth, single-user, seeded admin)
 - [x] Stage 4 — Seeds (28 EmulatorProfile records across RetroArch, Delta, mGBA, Dolphin, PPSSPP, melonDS, Snes9x, OpenEmu, DuckStation)
-- [x] Stage 5 — Core UI (ViewComponents, Dracula theme, controllers, views, ActionPolicy, decorators, form objects)
+- [x] Stage 5 — Core UI (ViewComponents, Dracula theme, controllers, views, form objects)
 - [x] Stage 6 — Save file upload/download (Active Storage, GameSave management)
 - [x] Stage 7 — Sync logic (push/pull, SyncEvent history)
 - [x] Mobile UI redesign — card-based layouts, full-width tap targets, no tables
@@ -435,7 +414,7 @@ SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrappe
 - [x] JS stack — Hotwire + a11y-dialog wired via esbuild; Stimulus controllers: dialog, save-hint
 - [x] Game show redesign — current save card, save path hint, upload toggle, history panel
 - [x] Emulator profiles CRUD — index shows selected only, edit/new via a11y-dialog modals
-- [x] Activity log — auto-tracked SyncEvents (ip_address + user_agent), Device model removed, UA-based device type inference in SyncEventDecorator, /activity page
+- [x] Activity log — auto-tracked SyncEvents (ip_address + user_agent), Device model removed, UA-based device type inference in SyncEvent model, /activity page
 - [x] Nav/settings cleanup — removed duplicate Change Password nav link, password form restyled
 - [x] Notifications — real-time badge via ActionCable, slide-in panel, click-to-read, mark all read, web push (VAPID)
 - [x] Production deployment — Dockerfile.prod, docker-compose.prod.yml, Docker Hub image, TrueNAS Scale support

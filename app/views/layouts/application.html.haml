@@ -35,9 +35,6 @@
   %body
     = render ::Layouts::FlashComponent.new(flash: flash)
 
-    - if authenticated?
-      = render ::Layouts::AppShellComponent.new(current_path: request.path, onboarding: @show_onboarding) do |shell|
-        - shell.with_content_body do
-          = yield
-    - else
-      = yield
+    = render ::Layouts::AppShellComponent.new(current_path: request.path, onboarding: @show_onboarding) do |shell|
+      - shell.with_content_body do
+        = yield

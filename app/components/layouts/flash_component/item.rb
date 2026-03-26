@@ -14,7 +14,7 @@ module Layouts
       @message = message
       @kwargs = {
         role: :alert,
-        class: "alert #{variant[:css]} shadow-lg overflow-hidden relative",
+        class: "alert #{variant[:css]} shadow-lg overflow-hidden relative pointer-events-auto",
         data: { controller: "flash", flash_duration_value: "4000" }
       }
     end

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-class GameSaveForm < ApplicationForm
+class GameSaveForm
+  include ActiveModel::API
+  include ActiveModel::Attributes
+
   attribute :emulator_profile_id, :integer
   attribute :file
 

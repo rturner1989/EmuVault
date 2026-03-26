@@ -8,13 +8,14 @@ module UI
     renders_many :footer_actions, "UI::ActionComponent"
     renders_one :page_content
 
-    def initialize(id:, title:, subtitle: nil, variant: :default, container_data: {}, swipeable: true)
+    def initialize(id:, title:, subtitle: nil, variant: :default, container_data: {}, swipeable: true, auto_open: false)
       @id = id
       @title = title
       @subtitle = subtitle
       @variant = variant
       @container_data = container_data
       @swipeable = swipeable
+      @auto_open = auto_open
     end
 
     def has_dialog_controller?

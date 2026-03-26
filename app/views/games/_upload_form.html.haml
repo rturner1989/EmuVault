@@ -3,7 +3,7 @@
   method: :post,
   html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
   = f.select :emulator_profile_id,
-    user_profiles.map { |p| ["#{p.name} (#{p.platform.text}) (.#{p.save_extension})", p.id] },
+    user_profiles.map { |p| ["#{p.name} (#{p.platform_label}) (.#{p.save_extension})", p.id] },
     { include_blank: "Which emulator is this save from? (optional)" },
     { class: "select select-bordered w-full" }
   %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20", data: { controller: "file-picker" } }
