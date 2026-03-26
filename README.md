@@ -7,6 +7,18 @@ Designed to run on your own PC or home server and be accessed from any device vi
 ## Screenshots
 
 <details>
+<summary>Onboarding</summary>
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/onboarding_step1.png" width="400" /></td>
+    <td><img src="docs/screenshots/onboarding_step2.png" width="400" /></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
 <summary>Desktop</summary>
 
 <table>
@@ -20,7 +32,7 @@ Designed to run on your own PC or home server and be accessed from any device vi
   </tr>
   <tr>
     <td><img src="docs/screenshots/desktop_settings.png" width="400" /></td>
-    <td></td>
+    <td><img src="docs/screenshots/desktop_scan_review.png" width="400" /></td>
   </tr>
 </table>
 
@@ -79,15 +91,15 @@ Designed to run on your own PC or home server and be accessed from any device vi
 - **Automatic filename handling** — configure per-game filenames per emulator; downloads are renamed to match what each emulator expects (e.g. `Pokemon - Emerald Version.srm` for RetroArch, `Pokemon_Emerald.sav` for Delta)
 - **Save history** — every upload is versioned; previous saves are kept and can be re-downloaded
 - **Save path hints** — shows the exact path to place the downloaded file based on your emulator's configured save directory
-- **Library scan** — point EmuVault at your emulator saves directories and it will automatically discover and import save files, grouped by game system. Works like Plex: mount a dataset, configure the path per profile, scan.
-- **Auto-scan** — optionally run library scans automatically in the background (hourly, every 6 hours, or daily)
+- **Library scan** — point EmuVault at your ROM/save directories and it discovers games automatically, grouped by system. Scan results appear in a review modal where you choose which to import. Games appear in real-time via ActionCable as they're imported
+- **Auto-scan** — scheduled scans run in the background (hourly, every 6 hours, or daily). When new games are found, a notification is sent and the review modal auto-opens on your next visit to the games page
 - **Multi-emulator support** — ships with profiles for RetroArch, Delta, mGBA, Dolphin, PPSSPP, melonDS, Snes9x, OpenEmu, DuckStation and more (28 profiles across Linux, Windows, macOS, iOS, Android)
 - **Export / Import** — export your entire library (games, saves, emulator configs) as a ZIP archive; restore from a previous export with conflict resolution
 - **Quick Sync** — set a game as "Now Playing" for one-tap upload and download from the mobile nav
 - **Activity log** — every upload and download is recorded with timestamp, device type (inferred from user agent), and IP address
 - **Themes** — 22 selectable themes (dark and light), applied instantly with live preview
-- **First-run setup wizard** — guided 3-step flow: choose your emulators → configure save directories → library scan paths
-- **Notifications** — in-app notification panel with live badge updates; web push to iPhone (when installed as a home screen app) via the Web Push API
+- **First-run onboarding** — guided 2-step setup: choose your emulators from the built-in library → add games (scan or manual). Dedicated onboarding layout with step progress indicator
+- **Notifications** — in-app notification panel with live badge updates via ActionCable; web push to iPhone (when installed as a home screen app) via the Web Push API. Notifies on new save uploads and auto-scan discoveries
 - **Mobile-first UI** — works on iPhone with safe-area insets, installable as a home screen app (PWA)
 - **Single-user** — self-hosted, no accounts or cloud services
 
@@ -279,15 +291,14 @@ All configuration is via environment variables. Key variables:
 
 See `.env.example` for the full list.
 
-## First-run setup wizard
+## First-run onboarding
 
-On first login you'll be walked through:
+On first login you'll be walked through a 2-step onboarding flow in a dedicated layout:
 
-1. **Emulators** — pick which emulators you use from the built-in library
-2. **Save paths** — configure where each emulator stores saves on your system (used for download path hints)
-3. **Library scan** — configure scan paths and auto-scan settings
+1. **Select emulators** — choose which emulators you use from the built-in library (28 profiles across 10 emulators). Toggle profiles on/off per system. Systems with games in your library are locked.
+2. **Add games** — configure scan paths to discover games automatically, or add them manually. Games imported via scan appear in real-time. Click "Complete Setup" when ready.
 
-After completing setup you'll be taken to your games library.
+After completing setup you'll be taken to the dashboard with an optional guided tour (driver.js).
 
 ## Usage
 
@@ -337,13 +348,13 @@ EmuVault can automatically discover and import save files from your emulator dir
 
    EmuVault matches files to profiles by directory prefix, so each profile should point to a specific system subdirectory — the same way Plex uses separate folders for Movies and TV Shows.
 
-3. **Scan** — go to **Settings → Library Scan** and click **Scan now**. EmuVault walks each configured directory, finds save files matching the profile's extension, and shows a review page grouped by game system. Deselect anything you don't want, then confirm to import.
+3. **Scan** — on the **Games** page, click **Scan Library**. A review modal opens showing discovered games grouped by system. Deselect anything you don't want, then click **Add to library**. Games appear in real-time as they're imported via ActionCable broadcasts.
 
 **Auto-scan:**
 
-Turn on **Auto-scan** in Settings to have EmuVault check for new saves automatically. Choose an interval (hourly, every 6 hours, or daily). Auto-scan runs silently in the background via Sidekiq — no review step, only new files are imported.
+Turn on **Auto-scan** in Settings to have EmuVault check for new games automatically. Choose an interval (hourly, every 6 hours, or daily). When new games are found, a notification is sent. On your next visit to the Games page, the review modal auto-opens with the discovered games for your approval — nothing is imported without review.
 
-> **Note:** Files already in EmuVault (matched by checksum) are always skipped, so re-scanning is safe.
+> **Note:** Games already in EmuVault (matched by title and system) are always skipped, so re-scanning is safe.
 
 ### Export and Import
 
@@ -361,12 +372,15 @@ The `/activity` page shows a full history of all uploads and downloads, includin
 ## Tech stack
 
 - **Ruby on Rails 8.1** + PostgreSQL 17
-- **Hotwire** (Turbo + Stimulus) for reactive UI
+- **Hotwire** (Turbo + Stimulus) for reactive UI — Turbo Frames, Turbo Streams, ActionCable broadcasts
 - **Tailwind CSS v4** + **DaisyUI 5** for styling and theming (22 selectable themes)
-- **HAML** templates, **ViewComponent** for UI components
+- **HAML** templates, **ViewComponent** for UI components, **SimpleForm** for forms
 - **Active Storage** for save file storage
-- **Sidekiq** + Redis for background jobs
-- **Docker** for deployment
+- **Sidekiq** + Redis for background jobs and scheduled scans
+- **Noticed** for in-app notifications + web push
+- **a11y-dialog** for accessible modals
+- **RSpec** + Capybara + Playwright for testing (430+ specs)
+- **Docker** for development and deployment
 
 ## Contributing
 

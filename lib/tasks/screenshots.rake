@@ -2,33 +2,21 @@
 
 desc "Take screenshots of key pages for the README"
 task screenshots: :environment do
-  require "selenium/webdriver"
+  require "playwright"
   require "fileutils"
 
-  output_dir = Rails.root.join("tmp/screenshots")
+  output_dir = Rails.root.join("docs/screenshots")
   FileUtils.mkdir_p(output_dir)
 
-  hub_url = ENV.fetch("HUB_URL", "http://selenium-hub:4444/wd/hub")
-  # Selenium browser connects to the app — use the Docker service name
-  # so the Chrome node in the selenium container can reach the app container
-  app_host = "http://#{ENV.fetch("SCREENSHOT_APP_HOST", "app")}:3000"
+  app_host = ENV.fetch("SCREENSHOT_APP_HOST", "http://app:3000")
 
-  browser = ENV.fetch("SCREENSHOT_BROWSER", "firefox").to_sym
-
-  options = case browser
-  when :chrome
-    opts = Selenium::WebDriver::Chrome::Options.new
-    opts.add_argument("--headless=new")
-    opts.add_argument("--no-sandbox")
-    opts.add_argument("--disable-dev-shm-usage")
-    opts.add_argument("--disable-features=HttpsUpgrades,HttpsFirstBalancedMode,HttpsFirstModeV2,HttpsFirstMode")
-    opts
-  when :firefox
-    opts = Selenium::WebDriver::Firefox::Options.new
-    opts.add_argument("-headless")
-    opts.add_preference("security.mixed_content.block_active_content", false)
-    opts
+  user = User.first
+  unless user
+    puts "No user found. Create one first by visiting the app."
+    exit 1
   end
+
+  password = ENV.fetch("SCREENSHOT_PASSWORD") { abort "Set SCREENSHOT_PASSWORD env var" }
 
   pages = {
     desktop: {
@@ -54,57 +42,84 @@ task screenshots: :environment do
     }
   }
 
-  # Ensure a user exists
-  user = User.first
-  unless user
-    puts "No user found. Create one first by visiting the app."
-    exit 1
-  end
+  onboarding_pages = {
+    onboarding_step1: { path: "/onboarding/emulator_profiles", width: 1400, height: 900 },
+    onboarding_step2: { path: "/onboarding/games", width: 1400, height: 900 }
+  }
 
-  driver = Selenium::WebDriver.for(:remote, url: hub_url, capabilities: [ options ])
-  puts "Using #{browser} browser"
+  Playwright.create(playwright_cli_executable_path: "npx playwright") do |playwright|
+    browser = playwright.chromium.launch(headless: true)
 
-  begin
-    # Log in
-    puts "Navigating to: #{app_host}/session/new"
-    driver.navigate.to("#{app_host}/session/new")
-    sleep 2
-    puts "Current URL: #{driver.current_url}"
-    puts "Page title: #{driver.title}"
+    begin
+      pages.each do |viewport, config|
+        context = browser.new_context(viewport: { width: config[:width], height: config[:height] })
+        page = context.new_page
 
-    password = ENV.fetch("SCREENSHOT_PASSWORD") { abort "Set SCREENSHOT_PASSWORD env var" }
-
-    # Save debug screenshot if login page has an error
-    if driver.title.include?("Exception")
-      driver.save_screenshot(output_dir.join("debug_error.png").to_s)
-      puts "Error page detected — saved debug_error.png"
-      puts "Page source (first 500 chars): #{driver.page_source[0..500]}"
-    end
-
-    wait = Selenium::WebDriver::Wait.new(timeout: 10)
-    username_field = wait.until { driver.find_element(:css, "input[name='session[username]']") }
-    username_field.send_keys(user.username)
-    driver.find_element(:css, "input[name='session[password]']").send_keys(password)
-    driver.find_element(:css, "input[type='submit'], button[type='submit']").click
-    sleep 2
-    puts "Logged in. Current URL: #{driver.current_url}"
-
-    pages.each do |viewport, config|
-      driver.manage.window.resize_to(config[:width], config[:height])
-
-      config[:routes].each do |name, path|
-        driver.navigate.to("#{app_host}#{path}")
+        # Log in
+        puts "Logging in as #{user.username}..."
+        page.goto("#{app_host}/session/new")
+        page.fill("input[name='session[username]']", user.username)
+        page.fill("input[name='session[password]']", password)
+        page.expect_navigation do
+          page.click("button[type='submit']")
+        end
         sleep 2
+        puts "Current URL after login: #{page.url}"
 
-        filename = "#{viewport}_#{name}.png"
-        filepath = output_dir.join(filename)
-        driver.save_screenshot(filepath.to_s)
-        puts "Saved #{filename}"
+        config[:routes].each do |name, path|
+          page.goto("#{app_host}#{path}")
+          page.wait_for_load_state(state: "networkidle")
+          sleep 1
+
+          filename = "#{viewport}_#{name}.png"
+          filepath = output_dir.join(filename).to_s
+          page.screenshot(path: filepath, fullPage: false)
+          puts "Saved #{filename}"
+        end
+
+        context.close
       end
+
+      # Onboarding screenshots (need a setup-incomplete user)
+      onboarding_user = User.find_or_create_by!(username: "screenshot_onboarding") do |u|
+        u.password = password
+        u.password_confirmation = password
+        u.setup_completed = false
+      end
+      onboarding_user.update!(setup_completed: false)
+
+      # Select some profiles for step 1 to look populated
+      EmulatorProfile.where(is_default: true).limit(5).update_all(user_selected: true)
+
+      context = browser.new_context(viewport: { width: 1400, height: 900 })
+      page = context.new_page
+
+      page.goto("#{app_host}/session/new")
+      page.fill("input[name='session[username]']", onboarding_user.username)
+      page.fill("input[name='session[password]']", password)
+      page.expect_navigation do
+        page.click("button[type='submit']")
+      end
+      page.wait_for_selector("text=Select your emulators", timeout: 10_000) rescue nil
+
+      onboarding_pages.each do |name, config|
+        page.goto("#{app_host}#{config[:path]}")
+        page.wait_for_load_state(state: "networkidle")
+        sleep 1
+
+        filepath = output_dir.join("#{name}.png").to_s
+        page.screenshot(path: filepath, fullPage: false)
+        puts "Saved #{name}.png"
+      end
+
+      # Clean up onboarding user
+      onboarding_user.destroy
+      context.close
+
+    ensure
+      browser.close
     end
 
     puts "\nScreenshots saved to #{output_dir}"
-  ensure
-    driver.quit
   end
 end
