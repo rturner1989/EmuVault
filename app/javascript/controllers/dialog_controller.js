@@ -29,6 +29,12 @@ export default class extends Controller {
       this.containerTarget.querySelectorAll("turbo-frame[src]").forEach(frame => frame.reload())
     })
 
+    // Reset scroll position when turbo frame content updates inside the dialog
+    this.containerTarget.addEventListener("turbo:frame-load", () => {
+      const scrollable = this.containerTarget.querySelector(".overflow-y-auto")
+      if (scrollable) scrollable.scrollTop = 0
+    })
+
     this.dialog.on("hide", () => {
       this.containerTarget.classList.remove("dialog--open")
       this._resetForms()
