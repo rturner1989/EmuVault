@@ -4,8 +4,15 @@ export default class extends Controller {
   static targets = ["listView", "cardView", "listBtn", "cardBtn"]
 
   connect () {
-    const saved = localStorage.getItem("games-view") || "card"
-    this.show(saved)
+    this.applyView()
+  }
+
+  listViewTargetConnected () {
+    this.applyView()
+  }
+
+  cardViewTargetConnected () {
+    this.applyView()
   }
 
   showList () {
@@ -18,11 +25,26 @@ export default class extends Controller {
 
   show (view) {
     localStorage.setItem("games-view", view)
+    this.applyView()
+  }
 
-    this.listViewTarget.classList.toggle("hidden", view !== "list")
-    this.cardViewTarget.classList.toggle("hidden", view !== "card")
+  applyView () {
+    const view = localStorage.getItem("games-view") || "card"
 
-    this.listBtnTarget.classList.toggle("btn-active", view === "list")
-    this.cardBtnTarget.classList.toggle("btn-active", view === "card")
+    if (this.hasListViewTarget) {
+      this.listViewTarget.classList.toggle("hidden", view !== "list")
+    }
+
+    if (this.hasCardViewTarget) {
+      this.cardViewTarget.classList.toggle("hidden", view !== "card")
+    }
+
+    if (this.hasListBtnTarget) {
+      this.listBtnTarget.classList.toggle("btn-active", view === "list")
+    }
+
+    if (this.hasCardBtnTarget) {
+      this.cardBtnTarget.classList.toggle("btn-active", view === "card")
+    }
   }
 }

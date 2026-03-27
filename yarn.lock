@@ -156,6 +156,11 @@ a11y-dialog@^8.1.5:
   dependencies:
     focusable-selectors "^0.8.0"
 
+cropperjs@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.npmjs.org/cropperjs/-/cropperjs-1.6.2.tgz"
+  integrity sha512-nhymn9GdnV3CqiEHJVai54TULFAE3VshJTXSqSJKa8yXAKyBKDWdhHarnlIPrshJ0WMFTGuFvG02YjLXfPiuOA==
+
 daisyui@^5.5.19:
   version "5.5.19"
   resolved "https://registry.npmjs.org/daisyui/-/daisyui-5.5.19.tgz"
