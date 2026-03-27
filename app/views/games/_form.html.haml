@@ -22,3 +22,21 @@
         input_html: { class: "input input-bordered w-full font-mono" },
         label_html: { class: "label-text text-xs font-medium" },
         hint_html: { class: "mt-1 text-xs text-muted" }
+
+    .space-y-1
+      %label.label-text.text-xs.font-medium
+        = "Cover Image (optional)"
+      %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20",
+        data: { controller: "file-picker" } }
+        %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
+          = "Choose file"
+        %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } }
+          - if game.cover_image.attached?
+            = game.cover_image.filename
+          - else
+            = "No file selected"
+        = f.file_field :cover_image, class: "hidden",
+          accept: "image/png,image/jpeg,image/webp",
+          data: { file_picker_target: "input", action: "change->file-picker#update" }
+      %p.text-xs.text-muted
+        = "PNG, JPEG, or WebP. Max 5 MB."

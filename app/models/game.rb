@@ -37,11 +37,13 @@ class Game < ApplicationRecord
 
   enum :system, GAME_SYSTEMS.index_with(&:to_s)
 
+  has_one_attached :cover_image
   has_many :game_saves, dependent: :destroy
   has_many :game_emulator_configs, dependent: :destroy
 
   validates :title, presence: true
   validates :system, presence: true
+  validate :acceptable_cover_image, if: -> { cover_image.attached? }
 
   def system_label
     self.class.game_system_label(system)
@@ -53,5 +55,15 @@ class Game < ApplicationRecord
 
   def default_save_base_name
     title.gsub(/[^0-9A-Za-z\-_ .()]/, "").strip.squeeze(" ")
+  end
+
+  private def acceptable_cover_image
+    unless cover_image.content_type.in?(%w[image/png image/jpeg image/webp])
+      errors.add(:cover_image, "must be PNG, JPEG, or WebP")
+    end
+
+    if cover_image.byte_size > 5.megabytes
+      errors.add(:cover_image, "must be less than 5 MB")
+    end
   end
 end

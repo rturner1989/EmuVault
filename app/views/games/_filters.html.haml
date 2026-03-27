@@ -19,3 +19,11 @@
             class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
             - a.with_leading_icon(name: "fa-xmark")
             = "Clear"
+
+        .ml-auto.flex
+          %button.btn.btn-ghost.btn-sm{ type: "button",
+            data: { view_toggle_target: "cardBtn", action: "click->view-toggle#showCard" } }
+            = render ::UI::IconComponent.new(name: "fa-grip")
+          %button.btn.btn-ghost.btn-sm{ type: "button",
+            data: { view_toggle_target: "listBtn", action: "click->view-toggle#showList" } }
+            = render ::UI::IconComponent.new(name: "fa-list")
