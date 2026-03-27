@@ -94,6 +94,6 @@ class GamesController < MainController
   end
 
   private def game_params
-    params.require(:game).permit(:title, :system, :rom_hash)
+    params.require(:game).permit(:title, :system, :rom_hash, :cover_image)
   end
 end

@@ -43,3 +43,6 @@ application.register("swipe-dismiss", SwipeDismissController)
 
 import ThemeController from "./theme_controller"
 application.register("theme", ThemeController)
+
+import ViewToggleController from "./view_toggle_controller"
+application.register("view-toggle", ViewToggleController)
