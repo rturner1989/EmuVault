@@ -57,6 +57,63 @@ RSpec.describe "Current Game" do
     end
   end
 
+  describe "switching current game on games index" do
+    let!(:game2) { create(:game, title: "Mario", system: :gba) }
+
+    it "clears the previous game styling in list view" do
+      visit games_path
+      find("[data-view-toggle-target='listBtn']").click
+
+      within("#game_#{game.id}") do
+        find("[title='Set as current game']").click
+      end
+
+      expect(page).to have_text("Now playing: Zelda")
+      expect(page).to have_css("#game_#{game.id}.border-primary")
+
+      within("#game_#{game2.id}") do
+        find("[title='Set as current game']").click
+      end
+
+      expect(page).to have_text("Now playing: Mario")
+      expect(page).to have_css("#game_#{game2.id}.border-primary")
+      expect(page).to have_no_css("#game_#{game.id}.border-primary")
+    end
+
+    it "clears the previous game styling in card view" do
+      visit games_path
+
+      find("#card_#{game.id}").hover
+      within("#card_#{game.id}") do
+        find("[title='Set as current game']").click
+      end
+
+      expect(page).to have_text("Now playing: Zelda")
+      expect(page).to have_css("#card_#{game.id} .border-primary")
+
+      find("#card_#{game2.id}").hover
+      within("#card_#{game2.id}") do
+        find("[title='Set as current game']").click
+      end
+
+      expect(page).to have_text("Now playing: Mario")
+      expect(page).to have_css("#card_#{game2.id} .border-primary")
+      expect(page).to have_no_css("#card_#{game.id} .border-primary")
+    end
+
+    it "updates the now playing banner when switching games" do
+      visit games_path
+
+      first(".group").hover
+      find("[title='Set as current game']", match: :first).click
+      expect(page).to have_text("Now playing:")
+
+      within("#now-playing-banner") do
+        expect(page).to have_text("Now Playing")
+      end
+    end
+  end
+
   describe "now playing on dashboard" do
     before do
       user.update!(current_game: game)
