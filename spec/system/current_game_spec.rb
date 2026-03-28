@@ -40,6 +40,7 @@ RSpec.describe "Current Game" do
     before { visit games_path }
 
     it "sets a game as now playing via the rotate icon" do
+      first(".group").hover
       find("[title='Set as current game']").click
 
       expect(page).to have_text("Now playing: Zelda")

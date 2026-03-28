@@ -118,6 +118,7 @@ export default class extends Controller {
     this.modal.addEventListener("click", (e) => {
       if (e.target.matches("[data-action='cancel']")) this.cancel()
       if (e.target.matches("[data-action='confirm']")) this.confirm()
+      if (e.target === this.overlay) this.cancel()
     })
 
     this.escHandler = (e) => {

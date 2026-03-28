@@ -1,7 +1,7 @@
 - selected_sort = local_assigns.fetch(:selected_sort, nil)
 - selected_system = local_assigns.fetch(:selected_system, nil)
 
-%div{ data: { view_toggle_target: "listView" } }
+%div{ class: "hidden", data: { view_toggle_target: "listView" } }
   - if selected_sort == "system"
     .space-y-6
       - games.group_by(&:system).each do |system_key, system_games|
@@ -22,7 +22,7 @@
     .space-y-2
       = render "games/game_list", games: games
 
-%div{ data: { view_toggle_target: "cardView" } }
+%div{ class: "hidden", data: { view_toggle_target: "cardView" } }
   - if selected_sort == "system"
     .space-y-6
       - games.group_by(&:system).each do |system_key, system_games|
