@@ -33,15 +33,14 @@ RSpec.describe "Games Scan" do
 
     it "shows empty state after removing the last game" do
       game = create(:game, title: "Zelda", system: :gba)
-      visit games_path
+      visit game_path(game)
 
-      expect(page).to have_text("Zelda")
-
-      find("[aria-label='Remove']").click
-      within("[id*='remove-game']:not([aria-hidden])") do
+      click_on "Remove"
+      within("[id='remove-game-dialog']:not([aria-hidden])") do
         click_on "Remove"
       end
 
+      expect(page).to have_current_path(games_path)
       expect(page).to have_text("Zelda removed")
       expect(page).to have_text("No games yet")
     end
