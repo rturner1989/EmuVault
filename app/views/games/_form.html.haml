@@ -1,6 +1,6 @@
 - game = local_assigns.fetch(:game, @game)
 = turbo_frame_tag :game_form do
-  = simple_form_for game, url: form_url, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
+  = simple_form_for game, url: form_url, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top", persist_values: game.persisted? || nil } } do |f|
     = f.input :title,
         label: "Title",
         input_html: { class: "input input-bordered w-full" },

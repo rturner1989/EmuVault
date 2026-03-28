@@ -76,7 +76,7 @@ export default class extends Controller {
   }
 
   _resetForms() {
-    this.containerTarget.querySelectorAll("form").forEach(form => {
+    this.containerTarget.querySelectorAll("form:not([data-persist-values])").forEach(form => {
       form.reset()
       form.querySelectorAll("input:not([type=hidden])").forEach(input => { input.value = "" })
       form.querySelectorAll("select").forEach(select => { select.selectedIndex = 0 })
