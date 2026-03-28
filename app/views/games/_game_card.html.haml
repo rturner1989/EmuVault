@@ -31,5 +31,5 @@
       variant: :default,
       title: "Set as current game",
       class: "absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-base-100 text-muted hover:text-primary border border-base-300 shadow-lg lg:opacity-0 lg:group-hover:opacity-100 transition-opacity cursor-pointer",
-      params: { game_id: game.id, inline: true, previous_game_id: current_user&.current_game_id }) do
+      params: { game_id: game.id, inline: true }) do
       = render ::UI::IconComponent.new(name: "fa-rotate", fw: false, class: "text-xs")

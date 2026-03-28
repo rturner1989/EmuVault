@@ -163,29 +163,17 @@ RSpec.describe "Games view toggle" do
       create_list(:game, 11, system: :gba)
     end
 
-    it "loads more games when scrolling to the bottom in list view" do
+    it "loads all games across pages in list view" do
       visit games_path
       find("[data-view-toggle-target='listBtn']").click
-
-      within("[data-view-toggle-target='listView']") do
-        expect(page).to have_css("[id^='game_']", count: 12)
-      end
-
-      page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
 
       within("[data-view-toggle-target='listView']") do
         expect(page).to have_css("[id^='game_']", count: 13, wait: 5)
       end
     end
 
-    it "loads more cards when scrolling in card view" do
+    it "loads all games across pages in card view" do
       visit games_path
-
-      within("[data-load-more-target='cardContainer']") do
-        expect(page).to have_css(".group", count: 12)
-      end
-
-      page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
 
       within("[data-load-more-target='cardContainer']") do
         expect(page).to have_css(".group", count: 13, wait: 5)
