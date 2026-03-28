@@ -2,6 +2,7 @@ class CurrentGameController < MainController
   before_action :set_game
 
   def update
+    @previous_game = current_user.current_game
     current_user.update!(current_game: @game)
     respond_with_game("Now playing: #{@game.title}")
   end
@@ -19,7 +20,6 @@ class CurrentGameController < MainController
   private def respond_with_game(notice)
     if params[:inline]
       load_quick_sync_data
-      @previous_game = Game.find_by(id: params[:previous_game_id])
       @notice = notice
     else
       redirect_back_or_to root_path, notice: notice

@@ -20,7 +20,7 @@
         variant: :secondary,
         size: :sm,
         class: "btn-outline",
-        params: { game_id: game.id, inline: true, previous_game_id: current_user&.current_game_id }) do |a|
+        params: { game_id: game.id, inline: true }) do |a|
         - a.with_leading_icon(name: "fa-rotate")
         = "Set as current"
 
