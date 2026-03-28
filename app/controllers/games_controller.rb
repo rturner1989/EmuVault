@@ -8,12 +8,19 @@ class GamesController < MainController
 
     games = Game.all
     games = games.where(system: @selected_system) if @selected_system
-    @games = case @selected_sort
+    sorted = case @selected_sort
     when "title_desc" then games.order(title: :desc)
     when "newest"     then games.order(created_at: :desc)
     when "oldest"     then games.order(created_at: :asc)
     when "system"     then games.order(:system, :title)
     else                   games.order(:title)
+    end
+
+    @pagy, @games = pagy(sorted)
+
+    if params[:append]
+      render partial: "games/games_append", locals: { games: @games }, layout: false
+      return
     end
 
     systems_in_use = Game.distinct.pluck(:system).compact
@@ -47,10 +54,10 @@ class GamesController < MainController
   def create
     @game = Game.new(game_params)
     if @game.save
-      @games = Game.order(:title).to_a
-      @games_count = @games.size
+      @pagy, @games = pagy(Game.order(:title))
+      @games_count = Game.count
       @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count
-      systems_in_use = @games.map(&:system).compact.uniq
+      systems_in_use = Game.distinct.pluck(:system).compact
       @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| systems_in_use.include?(value) }
       @selected_sort = "title_asc"
     else
