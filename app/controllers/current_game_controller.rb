@@ -19,7 +19,7 @@ class CurrentGameController < MainController
   private def respond_with_game(notice)
     if params[:inline]
       load_quick_sync_data
-      @games = Game.order(:title)
+      @previous_game = Game.find_by(id: params[:previous_game_id])
       @notice = notice
     else
       redirect_back_or_to root_path, notice: notice

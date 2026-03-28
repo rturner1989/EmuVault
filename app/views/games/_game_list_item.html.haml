@@ -31,7 +31,7 @@
         variant: :default,
         title: "Set as current game",
         class: "h-full px-3 flex items-center text-muted hover:text-primary transition-colors cursor-pointer",
-        params: { game_id: game.id, inline: true }) do
+        params: { game_id: game.id, inline: true, previous_game_id: current_user&.current_game_id }) do
         = render ::UI::IconComponent.new(name: "fa-rotate")
 
     = render ::UI::ConfirmComponent.new(id: "remove-game-#{game.id}-dialog",

@@ -1,5 +1,6 @@
 - selected_sort = local_assigns.fetch(:selected_sort, nil)
 - selected_system = local_assigns.fetch(:selected_system, nil)
+- pagy = local_assigns.fetch(:pagy, nil)
 
 %div{ class: "hidden", data: { view_toggle_target: "listView" } }
   - if selected_sort == "system"
@@ -16,10 +17,10 @@
     %div
       %p.text-sm.font-medium.mb-2
         = system_label
-      .space-y-2
+      .space-y-2{ data: { load_more_target: "listContainer" } }
         = render "games/game_list", games: games
   - else
-    .space-y-2
+    .space-y-2{ data: { load_more_target: "listContainer" } }
       = render "games/game_list", games: games
 
 %div{ class: "hidden", data: { view_toggle_target: "cardView" } }
@@ -39,3 +40,6 @@
       = render "games/game_card_grid", games: games
   - else
     = render "games/game_card_grid", games: games
+
+- if pagy && pagy.page < pagy.pages
+  %div{ data: { load_more_target: "sentinel" } }

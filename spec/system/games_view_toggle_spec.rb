@@ -5,6 +5,7 @@ require "rails_helper"
 RSpec.describe "Games view toggle" do
   let!(:user) { create(:user, username: "admin", password: "password123", setup_completed: true) }
   let!(:profile) { create(:emulator_profile, name: "RetroArch", platform: :linux, game_system: :gba, save_extension: "srm") }
+  let!(:profile2) { create(:emulator_profile, name: "mGBA", platform: :linux, game_system: :gbc, save_extension: "sav", user_selected: true) }
   let!(:game) { create(:game, title: "Zelda", system: :gba) }
   let!(:game2) { create(:game, title: "Mario", system: :gba) }
 
@@ -121,6 +122,84 @@ RSpec.describe "Games view toggle" do
       expect(page).to have_text("Now playing:")
       expect(page).to have_css("[data-view-toggle-target='listView']:not(.hidden)")
       expect(page).to have_css("[data-view-toggle-target='cardView'].hidden", visible: :all)
+    end
+  end
+
+  describe "now playing banner" do
+    it "shows the banner when a game is set as current" do
+      user.update!(current_game: game)
+      visit games_path
+
+      within("#now-playing-banner") do
+        expect(page).to have_text("Now Playing")
+        expect(page).to have_text("Zelda")
+        expect(page).to have_text("Clear")
+      end
+    end
+
+    it "does not show the banner when no game is current" do
+      visit games_path
+
+      within("#now-playing-banner") do
+        expect(page).to have_no_text("Now Playing")
+      end
+    end
+
+    it "clears the current game from the banner" do
+      user.update!(current_game: game)
+      visit games_path
+
+      within("#now-playing-banner") do
+        click_on "Clear"
+      end
+
+      expect(page).to have_text("Cleared current game")
+      expect(page).to have_no_css("#now-playing-banner .btn")
+    end
+  end
+
+  describe "infinite scroll" do
+    before do
+      create_list(:game, 11, system: :gba)
+    end
+
+    it "loads more games when scrolling to the bottom in list view" do
+      visit games_path
+      find("[data-view-toggle-target='listBtn']").click
+
+      within("[data-view-toggle-target='listView']") do
+        expect(page).to have_css("[id^='game_']", count: 12)
+      end
+
+      page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+
+      within("[data-view-toggle-target='listView']") do
+        expect(page).to have_css("[id^='game_']", count: 13, wait: 5)
+      end
+    end
+
+    it "loads more cards when scrolling in card view" do
+      visit games_path
+
+      within("[data-load-more-target='cardContainer']") do
+        expect(page).to have_css(".group", count: 12)
+      end
+
+      page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+
+      within("[data-load-more-target='cardContainer']") do
+        expect(page).to have_css(".group", count: 13, wait: 5)
+      end
+    end
+
+    it "resets pagination when filter changes" do
+      create(:game, title: "Tetris GBC", system: :gbc)
+      visit games_path
+
+      select "Game Boy Color", from: "system"
+
+      expect(page).to have_text("Tetris GBC")
+      expect(page).to have_no_css("[data-load-more-target='sentinel']", visible: :all)
     end
   end
 end

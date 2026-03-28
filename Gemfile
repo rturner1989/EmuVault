@@ -32,6 +32,9 @@ gem "pghero"
 gem "rubyzip"
 gem "webpush"
 
+gem "bcrypt", "~> 3.1"
+gem "pagy", "~> 43.4"
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "bundler-audit", require: false
@@ -62,5 +65,3 @@ group :test do
   gem "shoulda-matchers"
   gem "database_cleaner-active_record"
 end
-
-gem "bcrypt", "~> 3.1"

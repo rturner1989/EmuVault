@@ -44,6 +44,8 @@ class GameScanJob < ApplicationJob
   # --- Notifications ---
 
   private def notify_scan_results(user, result)
+    return if unread_scan_notification?(user)
+
     found = (result["found"] || []).size
     ScanCompleteNotifier.with(found: found).deliver(user)
 
@@ -54,6 +56,14 @@ class GameScanJob < ApplicationJob
       partial: "shared/notification_badge",
       locals: { count: count }
     )
+  end
+
+  private def unread_scan_notification?(user)
+    user.notifications
+      .joins(:event)
+      .where(read_at: nil)
+      .where(noticed_events: { type: "ScanCompleteNotifier" })
+      .exists?
   end
 
   # --- Broadcasts ---

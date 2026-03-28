@@ -1,0 +1,19 @@
+- if current_user.current_game.present?
+  - game = current_user.current_game
+  .flex.items-center.gap-3.rounded-lg.border.border-primary.bg-base-100.px-4.py-3.mb-4
+    = render ::UI::IconComponent.new(name: "fa-rotate", class: "text-primary shrink-0")
+    = render ::UI::ActionComponent.new(href: game_path(game),
+      variant: :default,
+      class: "flex-1 min-w-0 hover:opacity-80 transition-opacity",
+      data: { turbo_frame: "_top" }) do
+      %p.text-xs.text-muted.leading-none
+        = "Now Playing"
+      %p.text-sm.font-medium.truncate
+        = game.title
+    = render ::UI::ActionComponent.new(href: current_game_path,
+      method: :delete,
+      variant: :danger,
+      size: :sm,
+      class: "shrink-0",
+      params: { game_id: game.id, inline: true }) do
+      = "Clear"

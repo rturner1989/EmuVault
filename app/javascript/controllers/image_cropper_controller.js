@@ -87,34 +87,67 @@ export default class extends Controller {
   createModal () {
     this.removeModal()
 
-    this.modal = document.createElement("div")
-    this.modal.className = "fixed inset-0 flex items-center justify-center"
-    this.modal.style.zIndex = "80"
+    this.imageEl = this.buildElement("img", "w-full block", { maxHeight: "100%" })
+    this.overlay = this.buildElement("div", "absolute inset-0 bg-black transition-opacity duration-250 ease-out opacity-0")
+    this.panel = this.buildPanel()
+    this.modal = this.buildElement("div", "fixed inset-0 flex items-center justify-center", { zIndex: "80" })
 
-    this.imageEl = document.createElement("img")
-    this.imageEl.className = "w-full block"
-    this.imageEl.style.maxHeight = "100%"
+    this.modal.append(this.overlay, this.panel)
+    this.bindModalEvents()
 
-    this.overlay = document.createElement("div")
-    this.overlay.className = "absolute inset-0 bg-black transition-opacity duration-250 ease-out opacity-0"
-    this.modal.appendChild(this.overlay)
+    document.body.appendChild(this.modal)
+    document.body.style.overflow = "hidden"
 
-    this.panel = document.createElement("div")
-    this.panel.className = "relative bg-base-100 rounded-lg border-2 border-base-300 p-4 mx-4 w-full transition-all duration-250 ease-out opacity-0"
-    this.panel.style.maxWidth = "42rem"
-    this.panel.style.transform = "translateY(6px) scale(0.98)"
-    this.panel.innerHTML = `
-      <h3 class="text-base font-semibold mb-3">Crop Cover Image</h3>
-      <div style="max-height: 65vh; overflow: hidden;" data-cropper-container></div>
-      <div class="flex justify-end gap-2 mt-4">
-        <button type="button" class="btn btn-ghost btn-sm" data-action="cancel">Cancel</button>
-        <button type="button" class="btn btn-primary btn-sm" data-action="confirm">Crop & Use</button>
-      </div>
-    `
-    this.modal.appendChild(this.panel)
+    requestAnimationFrame(() => {
+      this.overlay.classList.replace("opacity-0", "opacity-70")
+      this.panel.classList.replace("opacity-0", "opacity-100")
+      this.panel.style.transform = "translateY(0) scale(1)"
+    })
+  }
 
-    this.panel.querySelector("[data-cropper-container]").appendChild(this.imageEl)
+  buildPanel () {
+    const panel = this.buildElement(
+      "div",
+      "relative bg-base-100 rounded-lg border-2 border-base-300 p-4 mx-4 w-full transition-all duration-250 ease-out opacity-0",
+      { maxWidth: "42rem", transform: "translateY(6px) scale(0.98)" }
+    )
 
+    const heading = this.buildElement("h3", "text-base font-semibold mb-3")
+    heading.textContent = "Crop Cover Image"
+
+    const cropperContainer = this.buildElement("div", "", { maxHeight: "65vh", overflow: "hidden" })
+    cropperContainer.appendChild(this.imageEl)
+
+    panel.append(heading, cropperContainer, this.buildFooter())
+    return panel
+  }
+
+  buildFooter () {
+    const footer = this.buildElement("div", "flex justify-end gap-2 mt-4")
+
+    const cancelBtn = this.buildButton("Cancel", "btn btn-ghost btn-sm", "cancel")
+    const confirmBtn = this.buildButton("Crop & Use", "btn btn-primary btn-sm", "confirm")
+
+    footer.append(cancelBtn, confirmBtn)
+    return footer
+  }
+
+  buildElement (tag, className, styles = {}) {
+    const el = document.createElement(tag)
+    if (className) el.className = className
+    Object.assign(el.style, styles)
+    return el
+  }
+
+  buildButton (text, className, action) {
+    const btn = this.buildElement("button", className)
+    btn.type = "button"
+    btn.textContent = text
+    btn.dataset.action = action
+    return btn
+  }
+
+  bindModalEvents () {
     this.modal.addEventListener("click", (e) => {
       if (e.target.matches("[data-action='cancel']")) this.cancel()
       if (e.target.matches("[data-action='confirm']")) this.confirm()
@@ -129,16 +162,6 @@ export default class extends Controller {
       }
     }
     document.addEventListener("keydown", this.escHandler, true)
-
-    document.body.appendChild(this.modal)
-    document.body.style.overflow = "hidden"
-
-    // Trigger enter animation on next frame
-    requestAnimationFrame(() => {
-      this.overlay.classList.replace("opacity-0", "opacity-70")
-      this.panel.classList.replace("opacity-0", "opacity-100")
-      this.panel.style.transform = "translateY(0) scale(1)"
-    })
   }
 
   closeModal () {

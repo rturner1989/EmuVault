@@ -29,7 +29,10 @@
         = "Add Game"
 
     = modal.with_page_content do
-      %div{ data: { controller: "view-toggle" } }
+      = turbo_frame_tag "now-playing-banner", style: "display: contents" do
+        = render "games/now_playing_banner"
+
+      %div{ data: { controller: "view-toggle load-more", load_more_page_value: @pagy&.page || 1, load_more_total_pages_value: @pagy&.pages || 1 } }
         = turbo_frame_tag "games-filters", style: "display: contents", target: "_top" do
           = render "games/filters",
             games_count: @games.size,
@@ -47,6 +50,7 @@
           - else
             = render "games/games_content",
               games: @games,
+              pagy: @pagy,
               selected_sort: @selected_sort,
               selected_system: @selected_system
 

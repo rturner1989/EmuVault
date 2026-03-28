@@ -176,6 +176,28 @@ RSpec.describe GameScanJob do
       expect(notification.message).to include("2 new games")
       expect(notification.message).to include("review")
     end
+
+    it "does not create a duplicate notification if an unread scan notification exists" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto")
+      expect(Noticed::Notification.count).to eq(1)
+
+      user.update!(last_scanned_at: 2.hours.ago)
+      described_class.perform_now("auto")
+      expect(Noticed::Notification.count).to eq(1)
+    end
+
+    it "creates a new notification after the previous one is read" do
+      FileUtils.touch(File.join(scan_dir, "Zelda.gba"))
+
+      described_class.perform_now("auto")
+      Noticed::Notification.last.update!(read_at: Time.current)
+
+      user.update!(last_scanned_at: 2.hours.ago)
+      described_class.perform_now("auto")
+      expect(Noticed::Notification.count).to eq(2)
+    end
   end
 
   describe "confirm mode" do
