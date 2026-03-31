@@ -2,11 +2,12 @@
 
 .p-4.lg:p-6.space-y-4
   -# Back breadcrumb
-  = render ::UI::ActionComponent.new(href: games_path,
-    variant: :link,
-    class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
-    - a.with_leading_icon(name: "fa-arrow-left")
-    = "Games"
+  .mb-4
+    = render ::UI::ActionComponent.new(href: games_path,
+      variant: :link,
+      class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
+      - a.with_leading_icon(name: "fa-arrow-left")
+      = "Games"
 
   = render "games/header", game: @game
 
@@ -19,8 +20,10 @@
           .flex.items-center.justify-between
             %h2.text-sm.font-semibold
               = "Current Save"
-            .text-xs.text-muted
-              = @latest_save.uploaded_at_label
+              %span.text-xs.font-normal.text-muted.ml-2
+                = "v#{@latest_save.version_number}"
+            .text-xs.text-muted{ title: @latest_save.uploaded_at_label }
+              = time_ago_in_words(@latest_save.created_at) + " ago"
 
           .flex.items-center.gap-2.mt-1.text-xs.text-muted
             - if @latest_save.emulator_profile
@@ -80,8 +83,8 @@
           = render "games/upload_form", game: @game, user_profiles: @user_profiles, new_save: @new_save, submit_label: "Upload Save"
 
     -# History
-    - if @history.exists?
-      - history_all = @history.to_a
+    - if @history.any?
+      - history_all = @history
       - history_preview = history_all.first(5)
       .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300{ data: { controller: "iframe-download" } }
         - if history_all.size > 5

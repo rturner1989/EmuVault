@@ -52,6 +52,12 @@ class GameSave < ApplicationRecord
     created_at.strftime("%b %-d, %Y at %H:%M")
   end
 
+  attr_writer :version_number
+
+  def version_number
+    @version_number ||= game.game_saves.where("created_at <= ?", created_at).count
+  end
+
   def download_filename(target_profile = nil)
     profile = target_profile || emulator_profile
     ext = profile&.save_extension || "sav"
