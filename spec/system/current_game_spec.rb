@@ -105,7 +105,7 @@ RSpec.describe "Current Game" do
       visit games_path
 
       first(".group").hover
-      find("[title='Set as current game']", match: :first).click
+      first("[title='Set as current game']").click
       expect(page).to have_text("Now playing:")
 
       within("#now-playing-banner") do

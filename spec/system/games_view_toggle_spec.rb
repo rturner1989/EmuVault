@@ -4,12 +4,12 @@ require "rails_helper"
 
 RSpec.describe "Games view toggle" do
   let!(:user) { create(:user, username: "admin", password: "password123", setup_completed: true) }
-  let!(:profile) { create(:emulator_profile, name: "RetroArch", platform: :linux, game_system: :gba, save_extension: "srm") }
-  let!(:profile2) { create(:emulator_profile, name: "mGBA", platform: :linux, game_system: :gbc, save_extension: "sav", user_selected: true) }
   let!(:game) { create(:game, title: "Zelda", system: :gba) }
-  let!(:game2) { create(:game, title: "Mario", system: :gba) }
 
   before do
+    create(:game, title: "Mario", system: :gba)
+    create(:emulator_profile, name: "RetroArch", platform: :linux, game_system: :gba, save_extension: "srm")
+    create(:emulator_profile, name: "mGBA", platform: :linux, game_system: :gbc, save_extension: "sav", user_selected: true)
     visit new_session_path
     fill_in "Username", with: "admin"
     fill_in "Password", with: "password123"
@@ -63,7 +63,7 @@ RSpec.describe "Games view toggle" do
     it "sets a game as current from the card view" do
       within("[data-view-toggle-target='cardView']") do
         first(".group").hover
-        find("[title='Set as current game']", match: :first).click
+        first("[title='Set as current game']").click
       end
 
       expect(page).to have_text("Now playing:")
@@ -83,7 +83,7 @@ RSpec.describe "Games view toggle" do
     it "preserves card view after setting current game" do
       within("[data-view-toggle-target='cardView']") do
         first(".group").hover
-        find("[title='Set as current game']", match: :first).click
+        first("[title='Set as current game']").click
       end
 
       expect(page).to have_text("Now playing:")
@@ -108,7 +108,7 @@ RSpec.describe "Games view toggle" do
 
     it "sets a game as current from the list view" do
       within("[data-view-toggle-target='listView']") do
-        find("[title='Set as current game']", match: :first).click
+        first("[title='Set as current game']").click
       end
 
       expect(page).to have_text("Now playing:")
@@ -116,7 +116,7 @@ RSpec.describe "Games view toggle" do
 
     it "preserves list view after setting current game" do
       within("[data-view-toggle-target='listView']") do
-        find("[title='Set as current game']", match: :first).click
+        first("[title='Set as current game']").click
       end
 
       expect(page).to have_text("Now playing:")
@@ -160,7 +160,8 @@ RSpec.describe "Games view toggle" do
 
   describe "infinite scroll" do
     before do
-      create_list(:game, 11, system: :gba)
+      create_list(:game, 10, system: :gba)
+      create(:game, title: "Extra Game", system: :gba)
     end
 
     it "loads all games across pages in list view" do

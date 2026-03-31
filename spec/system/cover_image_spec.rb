@@ -3,13 +3,13 @@
 require "rails_helper"
 
 RSpec.describe "Cover image" do
-  let!(:user) { create(:user, username: "admin", password: "password123", setup_completed: true) }
-  let!(:profile) { create(:emulator_profile, name: "RetroArch", platform: :linux, game_system: :gba, save_extension: "srm") }
   let!(:game) { create(:game, title: "Zelda", system: :gba) }
 
   let(:cover_image_path) { Rails.root.join("spec/fixtures/files/cover.png").to_s }
 
   before do
+    create(:user, username: "admin", password: "password123", setup_completed: true)
+    create(:emulator_profile, name: "RetroArch", platform: :linux, game_system: :gba, save_extension: "srm")
     visit new_session_path
     fill_in "Username", with: "admin"
     fill_in "Password", with: "password123"
