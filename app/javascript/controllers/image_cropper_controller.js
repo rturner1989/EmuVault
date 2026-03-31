@@ -15,6 +15,7 @@ export default class extends Controller {
   disconnect () {
     this.destroyCropper()
     this.removeModal()
+    this.revokePreview()
   }
 
   select () {
@@ -84,6 +85,7 @@ export default class extends Controller {
   cancel () {
     this.inputTarget.value = ""
     this.filenameTarget.textContent = "No file selected"
+    this.revokePreview()
     this.closeModal()
   }
 
@@ -200,6 +202,12 @@ export default class extends Controller {
     if (this.cropper) {
       this.cropper.destroy()
       this.cropper = null
+    }
+  }
+
+  revokePreview () {
+    if (this.hasPreviewTarget && this.previewTarget.src.startsWith("blob:")) {
+      URL.revokeObjectURL(this.previewTarget.src)
     }
   }
 }
