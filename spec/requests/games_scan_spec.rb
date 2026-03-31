@@ -12,7 +12,7 @@ RSpec.describe "Games Scan" do
       post game_scan_path,
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-      expect(GameScanJob).to have_received(:perform_later).with("dry_run")
+      expect(GameScanJob).to have_received(:perform_later).with("dry_run", user_id: user.id)
     end
 
     it "opens the review modal with spinner via turbo stream" do
@@ -47,7 +47,7 @@ RSpec.describe "Games Scan" do
 
       expect(GameScanJob).to have_received(:perform_later).with("confirm", [
         { "rom_path" => "/roms/Zelda.gba", "title" => "Zelda", "game_system" => "gba", "save_files" => [] }
-      ])
+      ], user_id: user.id)
     end
 
     it "closes the review modal via turbo stream" do

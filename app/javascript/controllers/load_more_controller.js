@@ -63,9 +63,13 @@ export default class extends Controller {
         if (this.pageValue >= this.totalPagesValue) {
           this.observer.disconnect()
           this.sentinelTarget.remove()
+        } else {
+          this.observer.unobserve(this.sentinelTarget)
+          this.observer.observe(this.sentinelTarget)
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Load more failed:", error)
         this.loading = false
       })
   }

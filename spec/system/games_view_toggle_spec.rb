@@ -171,6 +171,8 @@ RSpec.describe "Games view toggle" do
       within("[data-view-toggle-target='listView']") do
         expect(page).to have_css("[id^='game_']", count: 13, wait: 5)
       end
+
+      expect(page).to have_no_css("[data-load-more-target='sentinel']", visible: :all)
     end
 
     it "loads all games across pages in card view" do
@@ -179,6 +181,8 @@ RSpec.describe "Games view toggle" do
       within("[data-load-more-target='cardContainer']") do
         expect(page).to have_css(".group", count: 13, wait: 5)
       end
+
+      expect(page).to have_no_css("[data-load-more-target='sentinel']", visible: :all)
     end
 
     it "resets pagination when filter changes" do

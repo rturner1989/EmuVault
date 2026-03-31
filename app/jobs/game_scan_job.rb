@@ -5,8 +5,8 @@ class GameScanJob < ApplicationJob
   # mode: "confirm"  — import a specific list of items (from review step)
   # mode: "auto"     — import all new ROMs from auto_scan paths (scheduled)
   # mode: "auto_all" — import all ROMs from all paths (onboarding)
-  def perform(mode = "auto", items = nil)
-    user = User.first
+  def perform(mode = "auto", items = nil, user_id: nil)
+    user = user_id ? User.find(user_id) : User.first
     scanner = GameScanner.new
 
     case mode
@@ -107,58 +107,74 @@ class GameScanJob < ApplicationJob
 
   private def broadcast_import_complete(user, result)
     added = result["added"] || 0
-    message = added > 0 ? "#{added} #{"game".pluralize(added)} imported." : "No new games found."
 
-    # Clear onboarding scan spinner (no-op if not on onboarding page)
+    broadcast_clear_scan_progress(user)
+    broadcast_flash(user, added)
+    broadcast_games_list(user, added)
+    broadcast_filters(user)
+    broadcast_game_stats(user)
+    broadcast_onboarding_banner(user)
+  end
+
+  private def broadcast_clear_scan_progress(user)
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
       target: "scan-progress",
       html: ""
     )
+  end
 
-    # Flash message
+  private def broadcast_flash(user, added)
+    message = added > 0 ? "#{added} #{"game".pluralize(added)} imported." : "No new games found."
+
     Turbo::StreamsChannel.broadcast_append_to(
       "scans_#{user.id}",
       target: "flash-container",
       html: ApplicationController.render(Layouts::FlashComponent::Item.new(type: :notice, message: message), layout: false)
     )
+  end
 
-    # Replace games list to remove empty state (no-op if not on games index)
-    games = Game.order(:title)
-    games_count = games.size
-    system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| games.map(&:system).compact.uniq.include?(value) }
+  private def broadcast_games_list(user, added)
+    return unless added > 0
 
-    if added > 0
-      Turbo::StreamsChannel.broadcast_update_to(
-        "scans_#{user.id}",
-        target: "games-list",
-        html: ApplicationController.render(
-          partial: "games/game_list",
-          locals: { games: games },
-          layout: false
-        )
+    Turbo::StreamsChannel.broadcast_update_to(
+      "scans_#{user.id}",
+      target: "games-list",
+      html: ApplicationController.render(
+        partial: "games/game_list",
+        locals: { games: Game.order(:title) },
+        layout: false
       )
-    end
+    )
+  end
+
+  private def broadcast_filters(user)
+    games = Game.order(:title)
+    systems_in_use = Game.distinct.pluck(:system).compact
+    system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| systems_in_use.include?(value) }
 
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
       target: "games-filters",
       html: ApplicationController.render(
         partial: "games/filters",
-        locals: { games_count: games_count, system_options: system_options, selected_system: nil, selected_sort: "title_asc" }
+        locals: { games_count: games.size, system_options: system_options, selected_system: nil, selected_sort: "title_asc" }
       )
     )
+  end
 
+  private def broadcast_game_stats(user)
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
       target: "game_stats",
       html: ApplicationController.render(
         partial: "shared/game_stats",
-        locals: { games_count: games_count, games_without_save: Game.left_joins(:game_saves).where(game_saves: { id: nil }).count }
+        locals: { games_count: Game.count, games_without_save: Game.left_joins(:game_saves).where(game_saves: { id: nil }).count }
       )
     )
+  end
 
-    # Update onboarding banner (no-op if not on onboarding page)
+  private def broadcast_onboarding_banner(user)
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
       target: "onboarding-banner",

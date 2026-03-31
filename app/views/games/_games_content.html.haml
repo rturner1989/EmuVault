@@ -3,43 +3,22 @@
 - pagy = local_assigns.fetch(:pagy, nil)
 
 %div{ class: "hidden", data: { view_toggle_target: "listView" } }
-  - if selected_sort == "system"
-    .space-y-6
-      - games.group_by(&:system).each do |system_key, system_games|
-        - system_label = Game.game_system_label(system_key)
-        %div
-          %p.text-sm.font-medium.mb-2
-            = system_label
-          .space-y-2
-            = render "games/game_list", games: system_games
-  - elsif selected_system.present?
-    - system_label = Game.game_system_label(selected_system)
-    %div
-      %p.text-sm.font-medium.mb-2
-        = system_label
-      .space-y-2{ data: { load_more_target: "listContainer" } }
-        = render "games/game_list", games: games
-  - else
-    .space-y-2{ data: { load_more_target: "listContainer" } }
-      = render "games/game_list", games: games
+  = render "games/games_section",
+    games: games,
+    selected_sort: selected_sort,
+    selected_system: selected_system,
+    item_partial: "games/game_list",
+    container_class: "space-y-2",
+    container_data: { load_more_target: "listContainer" }
 
 %div{ class: "hidden", data: { view_toggle_target: "cardView" } }
-  - if selected_sort == "system"
-    .space-y-6
-      - games.group_by(&:system).each do |system_key, system_games|
-        - system_label = Game.game_system_label(system_key)
-        %div
-          %p.text-sm.font-medium.mb-2
-            = system_label
-          = render "games/game_card_grid", games: system_games
-  - elsif selected_system.present?
-    - system_label = Game.game_system_label(selected_system)
-    %div
-      %p.text-sm.font-medium.mb-2
-        = system_label
-      = render "games/game_card_grid", games: games
-  - else
-    = render "games/game_card_grid", games: games
+  = render "games/games_section",
+    games: games,
+    selected_sort: selected_sort,
+    selected_system: selected_system,
+    item_partial: "games/game_card_grid",
+    container_data: {}
 
 - if pagy && pagy.page < pagy.pages
-  %div{ data: { load_more_target: "sentinel" } }
+  .flex.justify-center.py-4{ data: { load_more_target: "sentinel" } }
+    %span.loading.loading-spinner.loading-md.text-primary

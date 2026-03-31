@@ -83,22 +83,22 @@ RSpec.describe "Current Game" do
     it "clears the previous game styling in card view" do
       visit games_path
 
-      find("#card_#{game.id}").hover
-      within("#card_#{game.id}") do
+      find("#card_game_#{game.id}").hover
+      within("#card_game_#{game.id}") do
         find("[title='Set as current game']").click
       end
 
       expect(page).to have_text("Now playing: Zelda")
-      expect(page).to have_css("#card_#{game.id} .border-primary")
+      expect(page).to have_css("#card_game_#{game.id} .border-primary")
 
-      find("#card_#{game2.id}").hover
-      within("#card_#{game2.id}") do
+      find("#card_game_#{game2.id}").hover
+      within("#card_game_#{game2.id}") do
         find("[title='Set as current game']").click
       end
 
       expect(page).to have_text("Now playing: Mario")
-      expect(page).to have_css("#card_#{game2.id} .border-primary")
-      expect(page).to have_no_css("#card_#{game.id} .border-primary")
+      expect(page).to have_css("#card_game_#{game2.id} .border-primary")
+      expect(page).to have_no_css("#card_game_#{game.id} .border-primary")
     end
 
     it "updates the now playing banner when switching games" do

@@ -1,5 +1,5 @@
 - is_current = (local_assigns[:current_game_id] || current_user&.current_game_id) == game.id
-%div{ id: "card_#{game.id}", class: "relative group" }
+%div{ id: dom_id(game, :card), class: "relative group" }
   = render ::UI::ActionComponent.new(href: game_path(game),
     variant: :default,
     class: "rounded-lg border-2 overflow-hidden bg-base-100 hover:bg-base-200 transition-colors block #{is_current ? 'border-primary' : 'border-base-300'}",
