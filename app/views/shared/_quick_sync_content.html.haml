@@ -21,16 +21,14 @@
           = "Clear"
 
     - if @quick_sync_save
-      .text-xs.text-muted
-        = "Last save: "
-        %span
-          = @quick_sync_save.uploaded_at_label
+      .text-xs.text-muted{ title: @quick_sync_save.uploaded_at_label }
+        = "Last save: #{time_ago_in_words(@quick_sync_save.created_at)} ago"
 
     -# Download
     - if @quick_sync_save
       .rounded-lg.p-4.bg-base-200.border.border-base-300
-        %p.text-xs.font-medium.mb-3
-          = "Download to device"
+        %p.text-sm.font-semibold.mb-3
+          = "Download"
         = simple_form_for :game_save,
           url: game_game_save_download_path(@quick_sync_game, @quick_sync_save),
           method: :get,
@@ -38,7 +36,7 @@
           .space-y-3
             = f.select :target_profile_id,
               @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform_label}) (.#{p.save_extension})", p.id, { data: { path: @quick_sync_save.save_path_hint(p) } }] },
-              { include_blank: "Select emulator…" },
+              { include_blank: "Select emulator to download for…" },
               { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
             .hidden{ data: { save_hint_target: "note" } }
               %p.text-xs.text-muted.mb-1
@@ -61,15 +59,15 @@
 
     -# Upload
     .rounded-lg.p-4.bg-base-200.border.border-base-300
-      %p.text-xs.font-medium.mb-3
-        = "Upload new save"
+      %p.text-sm.font-semibold.mb-3
+        = "Upload New Version"
       = simple_form_for :game_save,
         url: game_game_saves_path(@quick_sync_game),
         method: :post,
         html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
         = f.select :emulator_profile_id,
           @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform_label}) (.#{p.save_extension})", p.id] },
-          { include_blank: "Source emulator (optional)" },
+          { include_blank: "Which emulator is this save from? (optional)" },
           { class: "select select-bordered w-full" }
         %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker" } }
           %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }

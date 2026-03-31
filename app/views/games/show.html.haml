@@ -38,12 +38,15 @@
               = "· #{@latest_save.file_size_label}"
 
         -# Download
-        .px-4.py-4
+        .px-4.py-3.border-t.border-base-300
+          %h2.text-sm.font-semibold
+            = "Download"
+        .px-4.pb-4
           = simple_form_for :game_save,
             url: game_game_save_download_path(@game, @latest_save),
             method: :get,
             html: { data: { controller: "save-hint iframe-download", action: "submit->iframe-download#submit", turbo: false } } do |f|
-            .space-y-2
+            .space-y-3
               = f.select :target_profile_id,
                 @user_profiles.map { |p| ["#{p.name} (#{p.platform_label}) (.#{p.save_extension})", p.id, { data: { path: @latest_save.save_path_hint(p) } }] },
                 { include_blank: "Select emulator to download for…" },
