@@ -150,14 +150,14 @@ RSpec.describe "Current Game" do
       it "shows the download section" do
         find("details", text: "Now Playing").click
 
-        expect(page).to have_text("Download to device")
+        expect(page).to have_text("Download")
         expect(page).to have_select("game_save[target_profile_id]")
       end
 
       it "shows the upload section" do
         find("details", text: "Now Playing").click
 
-        expect(page).to have_text("Upload new save")
+        expect(page).to have_text("Upload New Version")
         expect(page).to have_text("Choose file")
       end
     end
@@ -172,7 +172,7 @@ RSpec.describe "Current Game" do
       it "shows the upload section" do
         find("details", text: "Now Playing").click
 
-        expect(page).to have_text("Upload new save")
+        expect(page).to have_text("Upload New Version")
       end
     end
   end

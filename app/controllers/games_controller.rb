@@ -44,9 +44,12 @@ class GamesController < MainController
   end
 
   def show
-    saves = @game.game_saves.latest_first.includes(:emulator_profile)
+    saves = @game.game_saves.latest_first.includes(:emulator_profile).to_a
+    total = saves.size
+    saves.each_with_index { |save, i| save.version_number = total - i }
+
     @latest_save = saves.first
-    @history = saves.offset(1)
+    @history = saves.drop(1)
     @new_save = @game.game_saves.build
     @user_profiles = EmulatorProfile.selected_for_system(@game.system).ordered
     @emulator_configs = @game.game_emulator_configs.index_by(&:emulator_profile_id)

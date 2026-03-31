@@ -1,9 +1,12 @@
 .flex.items-center.gap-3.px-4.py-3
   .flex-1.min-w-0
-    .text-sm
-      = save.uploaded_at_label
+    .flex.items-center.gap-2
+      %span.text-sm.truncate
+        = save.download_filename
+      = render ::UI::BadgeComponent.new(color: :cyan, size: :xs) do
+        = "v#{save.version_number}"
     .text-xs.text-muted
-      = "#{save.emulator_label} · #{save.file_size_label}"
+      = "#{save.emulator_label} · #{save.file_size_label} · #{time_ago_in_words(save.created_at)} ago"
   = render ::UI::ActionComponent.new(href: game_game_save_download_path(game, save),
     variant: :info,
     size: :sm,
