@@ -50,7 +50,7 @@
         - a.with_leading_icon(name: "fa-bell")
         = "Notifications"
         - if unread_count > 0
-          %span{ class: "ml-auto min-w-5 h-5 bg-error text-white text-xs rounded-full flex items-center justify-center leading-none", data: { notification_badge: "" } }
+          %span.ml-auto.badge.badge-error.badge-xs.text-white{ data: { notification_badge: "" } }
             = unread_count
       = render ::UI::ActionComponent.new(href: settings_path,
         variant: :default,
@@ -84,14 +84,15 @@
           class: "relative inline-flex items-center justify-center w-8 h-8 text-muted hover:text-base-content transition-colors",
           aria: { label: "Settings" }) do |a|
           - a.with_leading_icon(name: "fa-gear")
-        = render ::UI::ActionComponent.new(type: :button,
-          variant: :default,
-          size: :md,
-          id: "mobile-nav-notifications",
-          class: "relative inline-flex items-center justify-center w-8 h-8 text-muted hover:text-base-content transition-colors cursor-pointer",
-          data: { action: "notifications#open" }) do |a|
-          - a.with_leading_icon(name: "fa-bell")
+        .indicator
           = render "shared/notification_badge", count: unread_count
+          = render ::UI::ActionComponent.new(type: :button,
+            variant: :default,
+            size: :md,
+            id: "mobile-nav-notifications",
+            class: "inline-flex items-center justify-center w-8 h-8 text-muted hover:text-base-content transition-colors cursor-pointer",
+            data: { action: "notifications#open" }) do |a|
+            - a.with_leading_icon(name: "fa-bell")
 
     .w-full.max-w-4xl.mx-auto.min-w-0
       = content_body

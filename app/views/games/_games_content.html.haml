@@ -42,4 +42,5 @@
     = render "games/game_card_grid", games: games
 
 - if pagy && pagy.page < pagy.pages
-  %div{ data: { load_more_target: "sentinel" } }
+  .flex.justify-center.py-4{ data: { load_more_target: "sentinel" } }
+    %span.loading.loading-spinner.loading-md.text-primary

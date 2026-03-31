@@ -1,3 +1,3 @@
-%span{ data: { notification_badge: "" }, class: "absolute -top-1 -right-1 min-w-[1rem] h-4 bg-error text-white text-xs rounded-full flex items-center justify-center leading-none px-0.5 pointer-events-none#{" hidden" if count.zero?}" }
+%span{ data: { notification_badge: "" }, class: "indicator-item badge badge-error badge-xs text-white #{count.zero? ? 'hidden' : ''}" }
   - unless count.zero?
     = count
