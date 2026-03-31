@@ -8,36 +8,11 @@
 
   - if @events.empty?
     = render ::UI::EmptyStateComponent.new(title: "No activity yet", description: "Uploads and downloads will appear here.")
-  - elsif @selected_game_id
-    = turbo_frame_tag dom_id(Game.new(id: @selected_game_id), :events) do
-      - if turbo_frame_request?
-        .divide-y.divide-base-300
-          = render partial: "activity/event_row", collection: @events, as: :event
-      - else
-        .rounded-lg.border.divide-y.bg-base-100.border-base-300.divide-base-300
-          = render partial: "activity/event_row", collection: @events, as: :event
-
   - else
-    .space-y-3
-      - @events.group_by { |e| [e.game_id, e.game_title] }.each do |(game_id, game_title), events|
-        - preview = events.first(ActivityController::PREVIEW_COUNT)
-        - remaining = events.size - preview.size
-        .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
-          .px-5.py-3.border-b.border-base-300
-            = render ::UI::ActionComponent.new(href: game_path(game_id),
-              variant: :link_primary,
-              class: "text-sm font-semibold") do
-              = game_title
+    .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
+      .divide-y.divide-base-300
+        = render partial: "activity/event_row", collection: @events, as: :event
 
-          - frame_id = dom_id(Game.new(id: game_id), :events)
-          = turbo_frame_tag frame_id do
-            .divide-y.divide-base-300
-              = render partial: "activity/event_row", collection: preview, as: :event
-              - if remaining > 0
-                .px-5.py-3
-                  = render ::UI::ActionComponent.new(href: activity_path(game_id: game_id, sort: @selected_sort),
-                    variant: :link_primary,
-                    class: "text-xs",
-                    data: { turbo_frame: frame_id }) do |a|
-                    - a.with_leading_icon(name: "fa-chevron-down")
-                    = "Show #{remaining} more"
+    = render ::UI::PaginationComponent.new(pagy: @pagy,
+      base_path: activity_path,
+      params: { game_id: params[:game_id], sort: params[:sort] })

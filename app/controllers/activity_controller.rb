@@ -1,6 +1,4 @@
 class ActivityController < MainController
-  PREVIEW_COUNT = 5
-
   def show
     @games = Game.joins(game_saves: :sync_events).distinct.order(:title)
     @selected_game_id = params[:game_id].presence
@@ -11,6 +9,6 @@ class ActivityController < MainController
     events = @selected_sort == "oldest" ? events.order(performed_at: :asc) : events.order(performed_at: :desc)
 
     @total_count = events.count
-    @events = events
+    @pagy, @events = pagy(events, limit: 20)
   end
 end
