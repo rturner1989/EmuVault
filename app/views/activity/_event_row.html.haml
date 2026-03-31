@@ -5,8 +5,8 @@
         - badge.with_icon(name: event.action_icon)
       = render ::UI::BadgeComponent.new(color: event.device_badge_color) do
         = event.device_label
-      %span.text-xs.text-muted
-        = event.performed_at_label
+      %span.text-xs.text-muted{ title: event.performed_at_label }
+        = time_ago_in_words(event.performed_at) + " ago"
   - if event.ip_address.present?
     %span{ class: "text-xs text-muted font-mono hidden lg:block" }
       = event.ip_address
