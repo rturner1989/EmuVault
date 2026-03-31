@@ -1,5 +1,5 @@
 = turbo_stream.replace @game, partial: "games/game_list_item", locals: { game: @game }
-= turbo_stream.replace "card_#{@game.to_param}", partial: "games/game_card", locals: { game: @game }
+= turbo_stream.replace dom_id(@game, :card), partial: "games/game_card", locals: { game: @game }
 = turbo_stream.update "now-playing-banner", partial: "games/now_playing_banner"
 = turbo_stream.replace "game_header", partial: "games/header", locals: { game: @game }
 = turbo_stream.update :quick_sync_content, partial: "shared/quick_sync_content"

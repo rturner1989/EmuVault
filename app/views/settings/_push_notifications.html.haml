@@ -1,21 +1,25 @@
-.rounded-lg.p-5.bg-base-100.border.border-base-300{ data: { controller: "push-subscription", "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s } }
-  %h2.text-sm.font-semibold.mb-1
-    = "Push Notifications"
-  %p.text-sm.text-muted.mb-4
-    = "Get notified on this device when a new save is uploaded. Works when EmuVault is installed as a home screen app."
-  = render ::UI::ActionComponent.new(variant: :primary, data: { action: "push-subscription#subscribe", "push-subscription-target": "button" }) do
-    = "Enable push notifications"
-  %p.text-xs.text-muted.mt-2{ data: { "push-subscription-target": "status" } }
+= render ::UI::CardComponent.new(data: { controller: "push-subscription",
+  "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s }) do |card|
+  = card.with_header do
+    %h2.text-sm.font-semibold.mb-1
+      = "Push Notifications"
+    %p.text-sm.text-muted
+      = "Get notified on this device when a new save is uploaded. Works when EmuVault is installed as a home screen app."
 
-  = render ::UI::ModalComponent.new(id: "push-notification-dialog",
-    title: "Push Notifications",
-    container_data: { "push-subscription-target": "dialog" }) do |modal|
-    = modal.with_body do
-      %p.text-sm.text-muted{ data: { "push-subscription-target": "dialogMessage" } }
-    = modal.with_footer do
-      .flex.justify-end
-        = render ::UI::ActionComponent.new(variant: :ghost,
-          size: :sm,
-          type: :button,
-          data: { action: "push-subscription#closeDialog" }) do
-          = "OK"
+  = card.with_body do
+    = render ::UI::ActionComponent.new(variant: :primary, data: { action: "push-subscription#subscribe", "push-subscription-target": "button" }) do
+      = "Enable push notifications"
+    %p.text-xs.text-muted.mt-2{ data: { "push-subscription-target": "status" } }
+
+    = render ::UI::ModalComponent.new(id: "push-notification-dialog",
+      title: "Push Notifications",
+      container_data: { "push-subscription-target": "dialog" }) do |modal|
+      = modal.with_body do
+        %p.text-sm.text-muted{ data: { "push-subscription-target": "dialogMessage" } }
+      = modal.with_footer do
+        .flex.justify-end
+          = render ::UI::ActionComponent.new(variant: :ghost,
+            size: :sm,
+            type: :button,
+            data: { action: "push-subscription#closeDialog" }) do
+            = "OK"

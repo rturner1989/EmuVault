@@ -9,7 +9,7 @@ module Games
         items = stored.select { |item| selected_roms.include?(item["rom_path"]) }
 
         if items.any?
-          GameScanJob.perform_later("confirm", items)
+          GameScanJob.perform_later("confirm", items, user_id: current_user.id)
           @notice_text = "#{pluralize(items.size, "game")} queued for import."
         else
           @alert_text = "No games selected."
