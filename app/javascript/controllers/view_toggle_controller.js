@@ -29,7 +29,8 @@ export default class extends Controller {
   }
 
   applyView () {
-    const view = localStorage.getItem("games-view") || "card"
+    const stored = localStorage.getItem("games-view")
+    const view = stored === "list" || stored === "card" ? stored : "card"
 
     if (this.hasListViewTarget) {
       this.listViewTarget.classList.toggle("hidden", view !== "list")

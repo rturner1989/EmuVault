@@ -29,15 +29,20 @@ export default class extends Controller {
     if (this.pageValue >= this.totalPagesValue) return
 
     this.loading = true
-    this.pageValue++
+    const nextPage = this.pageValue + 1
 
     const url = new URL(window.location.href)
-    url.searchParams.set("page", this.pageValue)
+    url.searchParams.set("page", nextPage)
     url.searchParams.set("append", "true")
 
     fetch(url, { headers: { "Accept": "text/html" } })
-      .then(response => response.text())
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        return response.text()
+      })
       .then(html => {
+        this.pageValue = nextPage
+
         const template = document.createElement("template")
         template.innerHTML = html.trim()
         const fragment = template.content
@@ -59,6 +64,9 @@ export default class extends Controller {
           this.observer.disconnect()
           this.sentinelTarget.remove()
         }
+      })
+      .catch(() => {
+        this.loading = false
       })
   }
 }

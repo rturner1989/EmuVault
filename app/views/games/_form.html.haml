@@ -27,7 +27,7 @@
       .space-y-1
         %label.label-text.text-xs.font-medium
           = "Cover Image (optional)"
-        %div{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20",
+        %button{ type: "button", class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20 w-full text-left",
           data: { action: "click->image-cropper#select" } }
           %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
             = "Choose file"
