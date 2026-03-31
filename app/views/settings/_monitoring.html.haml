@@ -1,65 +1,68 @@
-= turbo_frame_tag "monitoring" do
-  .rounded-lg.p-5.bg-base-100.border.border-base-300
-    %h2.text-sm.font-semibold.mb-1
-      = "Monitoring"
-    %p.text-sm.text-muted.mb-4
-      = "Internal dashboards for your self-hosted instance."
-    .space-y-2
-      = render ::UI::ActionComponent.new(href: "/pghero",
-        variant: :default,
-        class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300",
-        target: "_blank") do |a|
-        .min-w-0
-          %p.text-sm.font-medium
-            = "PgHero"
-          %p.text-xs.text-muted
-            = "Database performance — slow queries, index usage, table sizes"
-        - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
-      = render ::UI::ActionComponent.new(href: "/sidekiq",
-        variant: :default,
-        class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300",
-        target: "_blank") do |a|
-        .min-w-0
-          %p.text-sm.font-medium
-            = "Sidekiq"
-          %p.text-xs.text-muted
-            = "Background job queues, failures, and throughput"
-        - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
+= turbo_frame_tag "monitoring", class: "block" do
+  = render ::UI::CardComponent.new do |card|
+    = card.with_header do
+      %h2.text-sm.font-semibold.mb-1
+        = "Monitoring"
+      %p.text-sm.text-muted
+        = "Internal dashboards for your self-hosted instance."
 
-      - if user.kuma_url_in_database.present?
-        = render ::UI::ActionComponent.new(href: user.kuma_url,
+    = card.with_body do
+      .space-y-2
+        = render ::UI::ActionComponent.new(href: "/pghero",
           variant: :default,
           class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300",
           target: "_blank") do |a|
           .min-w-0
             %p.text-sm.font-medium
-              = "Uptime Kuma"
+              = "PgHero"
             %p.text-xs.text-muted
-              = "Uptime monitoring — health checks, alerts, and status pages"
+              = "Database performance — slow queries, index usage, table sizes"
           - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
-      - else
-        .flex.items-center.justify-between.rounded-lg.border.px-4.py-3.border-base-300
+        = render ::UI::ActionComponent.new(href: "/sidekiq",
+          variant: :default,
+          class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300",
+          target: "_blank") do |a|
           .min-w-0
             %p.text-sm.font-medium
-              = "Uptime Kuma"
+              = "Sidekiq"
             %p.text-xs.text-muted
-              = "Run as a standalone app on your server. Monitor EmuVault at "
-              %span.font-mono.break-all
-                = "#{request.host}/up"
+              = "Background job queues, failures, and throughput"
+          - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
 
-    -# Kuma URL setting
-    .mt-4.border-t.border-base-300.pt-4
-      = form_with model: user, url: settings_path, method: :patch, html: { class: "flex flex-col gap-2" } do |f|
-        .flex.items-center.gap-3
-          .flex-1.min-w-0
-            = f.text_field :kuma_url,
-              placeholder: "https://kuma.example.com",
-              class: "input input-bordered input-sm w-full font-mono"
-          = render ::UI::ActionComponent.new(variant: :primary,
-            size: :sm,
-            type: :submit,
-            class: "shrink-0") do
-            = "Save"
-        - if user.errors[:kuma_url].any?
-          %p.text-xs.text-error
-            = user.errors[:kuma_url].first
+        - if user.kuma_url_in_database.present?
+          = render ::UI::ActionComponent.new(href: user.kuma_url,
+            variant: :default,
+            class: "flex items-center justify-between rounded-lg border px-4 py-3 hover:border-primary transition-colors group border-base-300",
+            target: "_blank") do |a|
+            .min-w-0
+              %p.text-sm.font-medium
+                = "Uptime Kuma"
+              %p.text-xs.text-muted
+                = "Uptime monitoring — health checks, alerts, and status pages"
+            - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
+        - else
+          .flex.items-center.justify-between.rounded-lg.border.px-4.py-3.border-base-300
+            .min-w-0
+              %p.text-sm.font-medium
+                = "Uptime Kuma"
+              %p.text-xs.text-muted
+                = "Run as a standalone app on your server. Monitor EmuVault at "
+                %span.font-mono.break-all
+                  = "#{request.host}/up"
+
+      -# Kuma URL setting
+      .mt-4.border-t.border-base-300.pt-4
+        = form_with model: user, url: settings_path, method: :patch, html: { class: "flex flex-col gap-2" } do |f|
+          .flex.items-center.gap-3
+            .flex-1.min-w-0
+              = f.text_field :kuma_url,
+                placeholder: "https://kuma.example.com",
+                class: "input input-bordered input-sm w-full font-mono"
+            = render ::UI::ActionComponent.new(variant: :primary,
+              size: :sm,
+              type: :submit,
+              class: "shrink-0") do
+              = "Save"
+          - if user.errors[:kuma_url].any?
+            %p.text-xs.text-error
+              = user.errors[:kuma_url].first
