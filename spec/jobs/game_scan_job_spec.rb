@@ -183,7 +183,7 @@ RSpec.describe GameScanJob do
       described_class.perform_now("auto")
       expect(Noticed::Notification.count).to eq(1)
 
-      user.update!(last_scanned_at: 2.hours.ago)
+      User.first.update!(last_scanned_at: 2.hours.ago)
       described_class.perform_now("auto")
       expect(Noticed::Notification.count).to eq(1)
     end
@@ -194,7 +194,7 @@ RSpec.describe GameScanJob do
       described_class.perform_now("auto")
       Noticed::Notification.last.update!(read_at: Time.current)
 
-      user.update!(last_scanned_at: 2.hours.ago)
+      User.first.update!(last_scanned_at: 2.hours.ago)
       described_class.perform_now("auto")
       expect(Noticed::Notification.count).to eq(2)
     end

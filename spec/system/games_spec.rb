@@ -79,8 +79,10 @@ RSpec.describe "Games" do
 
       expect(page).to have_field("Title", with: "Zelda")
 
-      find("[id='edit-game-dialog'] [data-a11y-dialog-hide]", match: :first).click
-      page.has_no_css?("[id='edit-game-dialog']:not([aria-hidden])")
+      within("[id='edit-game-dialog']:not([aria-hidden])") do
+        click_on "Cancel"
+      end
+      page.has_css?("[id='edit-game-dialog'][aria-hidden='true']", visible: :all)
 
       click_on "Edit"
 
@@ -118,8 +120,11 @@ RSpec.describe "Games" do
 
       click_on "Add Game"
       fill_in "Title", with: "Temporary"
-      find("[id='add-game-dialog'] [data-a11y-dialog-hide]", match: :first).click
-      page.has_no_css?("[id='add-game-dialog']:not([aria-hidden])")
+
+      within("[id='add-game-dialog']:not([aria-hidden])") do
+        click_on "Cancel"
+      end
+      page.has_css?("[id='add-game-dialog'][aria-hidden='true']", visible: :all)
 
       click_on "Add Game"
 
