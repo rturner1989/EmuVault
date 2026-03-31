@@ -16,7 +16,12 @@ class GamesController < MainController
     else                   games.order(:title)
     end
 
-    @pagy, @games = pagy(sorted)
+    if @selected_sort == "system"
+      @games = sorted.to_a
+      @pagy = nil
+    else
+      @pagy, @games = pagy(sorted)
+    end
 
     if params[:append]
       render partial: "games/games_append", locals: { games: @games }, layout: false

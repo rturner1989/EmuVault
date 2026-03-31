@@ -70,6 +70,9 @@ export default class extends Controller {
       this.filenameTarget.textContent = fileName
 
       if (this.hasPreviewTarget) {
+        if (this.previewTarget.src.startsWith("blob:")) {
+          URL.revokeObjectURL(this.previewTarget.src)
+        }
         this.previewTarget.src = URL.createObjectURL(blob)
         this.previewTarget.classList.remove("hidden")
       }
