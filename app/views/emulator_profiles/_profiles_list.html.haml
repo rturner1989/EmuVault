@@ -57,7 +57,7 @@
                         = "No save path set"
                   .flex.items-center.gap-2.shrink-0
                     - unless profile.is_default
-                      = render ::UI::ModalComponent.new(id: "edit-profile-#{profile.id}", title: "Edit Profile") do |modal|
+                      = render ::UI::ModalComponent.new(id: dom_id(profile, :edit), title: "Edit Profile") do |modal|
                         = modal.with_trigger do
                           = render ::UI::ActionComponent.new(variant: :secondary,
                             size: :xs,
@@ -67,12 +67,12 @@
                           = render "emulator_profiles/form", profile: profile,
                             url: emulator_profile_path(profile),
                             method: :patch,
-                            form_id: "edit-profile-#{profile.id}-form"
+                            form_id: dom_id(profile, :edit_form)
                         = modal.with_footer do
                           = render ::UI::ActionComponent.new(variant: :primary,
                             size: :sm,
                             type: :submit,
-                            form: "edit-profile-#{profile.id}-form") do
+                            form: dom_id(profile, :edit_form)) do
                             = "Save"
                     - if profile_in_use
                       = render ::UI::ActionComponent.new(variant: :danger,
@@ -81,7 +81,7 @@
                         title: "Remove all #{system_label} games first") do
                         = "Remove"
                     - else
-                      = render ::UI::ConfirmComponent.new(id: "delete-profile-#{profile.id}",
+                      = render ::UI::ConfirmComponent.new(id: dom_id(profile, :delete),
                         title: profile.is_default ? "Remove profile?" : "Delete profile?",
                         message: profile.is_default ? "Remove this profile from your list? You can add it back later." : "Delete this profile permanently?",
                         url: emulator_profile_path(profile),

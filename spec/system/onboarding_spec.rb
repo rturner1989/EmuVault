@@ -43,7 +43,7 @@ RSpec.describe "Onboarding" do
 
       # Delete it
       click_on "Remove"
-      within("[id*='delete-profile']:not([aria-hidden])") do
+      within("[id*='delete_emulator_profile']:not([aria-hidden])") do
         click_on "Confirm"
       end
       expect(page).to have_text("Profile removed")
@@ -66,7 +66,7 @@ RSpec.describe "Onboarding" do
 
       # Delete it
       click_on "Remove"
-      within("[id*='delete-profile']:not([aria-hidden])") do
+      within("[id*='delete_emulator_profile']:not([aria-hidden])") do
         click_on "Confirm"
       end
       expect(page).to have_text("Profile removed")
@@ -196,7 +196,7 @@ RSpec.describe "Onboarding" do
 
       find("[aria-label='Remove']").click
       expect(page).to have_text("Remove game?")
-      within("[id*='remove-game']:not([aria-hidden])") do
+      within("[id*='remove_game']:not([aria-hidden])") do
         click_on "Remove"
       end
 
@@ -211,7 +211,7 @@ RSpec.describe "Onboarding" do
       expect(page).to have_text("Complete Setup")
 
       find("[aria-label='Remove']").click
-      within("[id*='remove-game']:not([aria-hidden])") do
+      within("[id*='remove_game']:not([aria-hidden])") do
         click_on "Remove"
       end
       expect(page).to have_text("Pokemon Emerald removed")

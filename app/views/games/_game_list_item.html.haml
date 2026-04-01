@@ -34,7 +34,7 @@
         params: { game_id: game.id }) do
         = render ::UI::IconComponent.new(name: "fa-rotate")
 
-    = render ::UI::ConfirmComponent.new(id: "remove-game-#{game.id}-dialog",
+    = render ::UI::ConfirmComponent.new(id: dom_id(game, :remove),
       title: "Remove game?",
       message: "Remove #{game.title} from your library? This will also delete all saved versions.",
       url: game_path(game),

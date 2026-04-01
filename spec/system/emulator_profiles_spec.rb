@@ -109,14 +109,14 @@ RSpec.describe "Emulator Profiles" do
     it "opens the edit modal" do
       click_on "Edit"
 
-      expect(page).to have_css("[id='edit-profile-#{profile.id}']:not([aria-hidden])")
+      expect(page).to have_css("[id='edit_emulator_profile_#{profile.id}']:not([aria-hidden])")
       expect(page).to have_field("Emulator name", with: "RetroArch")
     end
 
     it "shows validation errors when name is cleared" do
       click_on "Edit"
       fill_in "Emulator name", with: ""
-      find("[form='edit-profile-#{profile.id}-form'][type='submit']").click
+      find("[form='edit_form_emulator_profile_#{profile.id}'][type='submit']").click
 
       expect(page).to have_text("can't be blank")
     end
@@ -124,7 +124,7 @@ RSpec.describe "Emulator Profiles" do
     it "updates a profile successfully" do
       click_on "Edit"
       fill_in "Emulator name", with: "RetroArch Updated"
-      find("[form='edit-profile-#{profile.id}-form'][type='submit']").click
+      find("[form='edit_form_emulator_profile_#{profile.id}'][type='submit']").click
 
       expect(page).to have_text("Profile updated")
       expect(page).to have_text("RetroArch Updated")
@@ -135,12 +135,12 @@ RSpec.describe "Emulator Profiles" do
 
       # Clear and submit — expect errors
       fill_in "Emulator name", with: ""
-      find("[form='edit-profile-#{profile.id}-form'][type='submit']").click
+      find("[form='edit_form_emulator_profile_#{profile.id}'][type='submit']").click
       expect(page).to have_text("can't be blank")
 
       # Fix and resubmit
       fill_in "Emulator name", with: "RetroArch Fixed"
-      find("[form='edit-profile-#{profile.id}-form'][type='submit']").click
+      find("[form='edit_form_emulator_profile_#{profile.id}'][type='submit']").click
 
       expect(page).to have_text("Profile updated")
       expect(page).to have_text("RetroArch Fixed")
@@ -175,7 +175,7 @@ RSpec.describe "Emulator Profiles" do
       click_on "Remove"
       expect(page).to have_text("Delete profile?")
 
-      within("[id*='delete-profile']:not([aria-hidden])") do
+      within("[id*='delete_emulator_profile']:not([aria-hidden])") do
         click_on "Cancel"
       end
 
@@ -186,7 +186,7 @@ RSpec.describe "Emulator Profiles" do
       click_on "Remove"
       expect(page).to have_text("Delete profile?")
 
-      within("[id*='delete-profile']:not([aria-hidden])") do
+      within("[id*='delete_emulator_profile']:not([aria-hidden])") do
         click_on "Confirm"
       end
 

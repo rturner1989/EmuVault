@@ -1,4 +1,4 @@
-= turbo_stream.action :close_dialog, "delete-profile-#{@profile.id}"
+= turbo_stream.action :close_dialog, dom_id(@profile, :delete)
 - if @destroy_failed
   - @alert_text = @destroy_error == :in_use ? "Can't remove — you have games for this system. Remove those games first." : "Could not remove profile."
 - else
