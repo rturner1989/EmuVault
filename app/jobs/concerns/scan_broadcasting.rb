@@ -88,7 +88,10 @@ module ScanBroadcasting
       target: "game_stats",
       html: ApplicationController.render(
         partial: "shared/game_stats",
-        locals: { games_count: Game.count, games_without_save: Game.left_joins(:game_saves).where(game_saves: { id: nil }).count }
+        locals: {
+          games_count: Game.count,
+          games_without_save: Game.without_saves.count
+        }
       )
     )
   end

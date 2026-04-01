@@ -45,6 +45,23 @@ class Game < ApplicationRecord
   validates :system, presence: true
   validate :acceptable_cover_image, if: -> { cover_image.attached? }
 
+  scope :without_saves, -> { left_joins(:game_saves).where(game_saves: { id: nil }) }
+
+  def self.storage_used_bytes
+    ActiveStorage::Attachment.joins(:blob)
+      .where(record_type: "GameSave", name: "file")
+      .sum("active_storage_blobs.byte_size")
+  end
+
+  def self.top_by_sync_events(limit: 5)
+    SyncEvent.joins(game_save: :game)
+      .group("games.id", "games.title")
+      .order(Arel.sql("COUNT(*) DESC"))
+      .limit(limit)
+      .count("games.id")
+      .map { |(id, title), count| { id:, title:, count: } }
+  end
+
   def system_label
     self.class.game_system_label(system)
   end

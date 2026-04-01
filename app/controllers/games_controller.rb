@@ -57,7 +57,7 @@ class GamesController < MainController
     if @game.save
       @pagy, @games = pagy(Game.order(:title))
       @games_count = Game.count
-      @games_without_save = Game.left_joins(:game_saves).where(game_saves: { id: nil }).count
+      @games_without_save = Game.without_saves.count
       systems_in_use = Game.distinct.pluck(:system).compact
       @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| systems_in_use.include?(value) }
       @selected_sort = "title_asc"
