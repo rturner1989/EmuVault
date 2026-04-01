@@ -37,6 +37,8 @@ class SyncEvent < ApplicationRecord
   validates :performed_at, presence: true
 
   scope :recent, -> { order(performed_at: :desc) }
+  scope :oldest_first, -> { order(performed_at: :asc) }
+  scope :for_game, ->(game_id) { joins(game_save: :game).where(games: { id: game_id }) }
 
   def device_type
     ua = user_agent.to_s

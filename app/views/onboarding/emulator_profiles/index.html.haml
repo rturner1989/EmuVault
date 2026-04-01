@@ -6,7 +6,7 @@
       step: 1,
       title: "Select your emulators",
       description: "Add the emulators you use from the library or create custom profiles.",
-      next_path: (onboarding_games_path if EmulatorProfile.where(user_selected: true).exists?),
+      next_path: (onboarding_games_path if EmulatorProfile.user_selected.exists?),
       next_label: "Next: Add Games"
 
   = render "emulator_profiles/profiles_list", selected_by_system: @selected_by_system, in_use_systems: @in_use_systems

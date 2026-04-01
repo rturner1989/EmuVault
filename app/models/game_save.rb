@@ -81,7 +81,7 @@ class GameSave < ApplicationRecord
   private def notify_new_save
     user = Current.user
     NewSaveNotifier.with(game_save: self).deliver(user)
-    count = user.notifications.where(read_at: nil).count
+    count = user.unread_notifications_count
     Turbo::StreamsChannel.broadcast_replace_later_to(
       "notifications_#{user.id}",
       targets: "[data-notification-badge]",

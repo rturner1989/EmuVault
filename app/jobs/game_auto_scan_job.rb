@@ -19,7 +19,7 @@ class GameAutoScanJob < ApplicationJob
     found = (result["found"] || []).size
     ScanCompleteNotifier.with(found: found).deliver(user)
 
-    count = user.notifications.where(read_at: nil).count
+    count = user.unread_notifications_count
     Turbo::StreamsChannel.broadcast_replace_later_to(
       "notifications_#{user.id}",
       targets: "[data-notification-badge]",

@@ -105,6 +105,50 @@ RSpec.describe User do
     end
   end
 
+  describe "#unread_notifications" do
+    let(:user) { create(:user) }
+
+    it "returns only unread notifications" do
+      ScanCompleteNotifier.with(found: 1).deliver(user)
+      ScanCompleteNotifier.with(found: 2).deliver(user)
+      user.notifications.first.update!(read_at: Time.current)
+
+      expect(user.unread_notifications.count).to eq(1)
+    end
+  end
+
+  describe "#unread_notifications_count" do
+    let(:user) { create(:user) }
+
+    it "returns the count of unread notifications" do
+      ScanCompleteNotifier.with(found: 1).deliver(user)
+      ScanCompleteNotifier.with(found: 2).deliver(user)
+
+      expect(user.unread_notifications_count).to eq(2)
+    end
+
+    it "returns zero when all are read" do
+      ScanCompleteNotifier.with(found: 1).deliver(user)
+      user.notifications.update_all(read_at: Time.current)
+
+      expect(user.unread_notifications_count).to eq(0)
+    end
+  end
+
+  describe "#mark_all_notifications_read!" do
+    let(:user) { create(:user) }
+
+    it "marks all unread notifications as read" do
+      ScanCompleteNotifier.with(found: 1).deliver(user)
+      ScanCompleteNotifier.with(found: 2).deliver(user)
+
+      user.mark_all_notifications_read!
+
+      expect(user.unread_notifications_count).to eq(0)
+      expect(user.notifications.where.not(read_at: nil).count).to eq(2)
+    end
+  end
+
   describe "THEMES" do
     it "includes dracula as a dark theme" do
       expect(User::THEMES["Dark"]).to include("dracula")

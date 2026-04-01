@@ -54,16 +54,28 @@ module ScanBroadcasting
     return unless added > 0
 
     games = Game.order(:title)
-    partial = user.games_view_preference == "list" ? "games/game_list" : "games/game_card_grid"
+
+    if user.games_view_preference == "list"
+      html = ApplicationController.render(
+        partial: "games/game_list",
+        locals: { games: games },
+        layout: false
+      )
+    else
+      html = ApplicationController.render(
+        partial: "games/game_card",
+        collection: games,
+        as: :game,
+        locals: { current_game_id: user.current_game_id },
+        layout: false
+      )
+      html = %(<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">#{html}</div>)
+    end
 
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
       target: "games-list",
-      html: ApplicationController.render(
-        partial: partial,
-        locals: { games: games },
-        layout: false
-      )
+      html: html
     )
   end
 

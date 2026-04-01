@@ -35,4 +35,38 @@ RSpec.describe GameScanConfirmJob do
       html: include("Zelda")
     )
   end
+
+  it "broadcasts updated games list on completion" do
+    described_class.perform_now(items, user_id: user.id)
+
+    expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
+      "scans_#{user.id}",
+      target: "games-list",
+      html: include("Zelda")
+    )
+  end
+
+  it "broadcasts card view for card preference" do
+    user.update!(games_view_preference: "card")
+
+    described_class.perform_now(items, user_id: user.id)
+
+    expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
+      "scans_#{user.id}",
+      target: "games-list",
+      html: include("grid")
+    )
+  end
+
+  it "broadcasts list view for list preference" do
+    user.update!(games_view_preference: "list")
+
+    described_class.perform_now(items, user_id: user.id)
+
+    expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
+      "scans_#{user.id}",
+      target: "games-list",
+      html: include("Zelda")
+    )
+  end
 end

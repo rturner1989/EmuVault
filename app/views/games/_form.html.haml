@@ -6,7 +6,7 @@
         input_html: { class: "input input-bordered w-full" },
         label_html: { class: "label-text text-xs font-medium" }
 
-    - allowed = (Array(@available_systems) + [game.system.to_s]).map(&:presence).uniq.compact
+    - allowed = (Array(@available_systems).map(&:to_s) + [game.system.to_s]).map(&:presence).uniq.compact
     - system_options = allowed.any? ? Game::GAME_SYSTEM_OPTIONS.select { |_label, value| allowed.include?(value) } : Game::GAME_SYSTEM_OPTIONS
     = f.input :system,
         label: "System",

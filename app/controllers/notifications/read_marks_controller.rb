@@ -1,7 +1,7 @@
 module Notifications
   class ReadMarksController < MainController
     def create
-      current_user.notifications.where(read_at: nil).update_all(read_at: Time.current)
+      current_user.mark_all_notifications_read!
 
       Turbo::StreamsChannel.broadcast_replace_to(
         "notifications_#{current_user.id}",

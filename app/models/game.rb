@@ -46,6 +46,7 @@ class Game < ApplicationRecord
   validate :acceptable_cover_image, if: -> { cover_image.attached? }
 
   scope :without_saves, -> { left_joins(:game_saves).where(game_saves: { id: nil }) }
+  scope :with_activity, -> { joins(game_saves: :sync_events).distinct.order(:title) }
 
   def self.systems_in_use
     distinct.pluck(:system).compact.map(&:to_sym).to_set

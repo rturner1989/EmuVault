@@ -62,6 +62,18 @@ class User < ApplicationRecord
 
   before_create :generate_api_token
 
+  def unread_notifications
+    notifications.where(read_at: nil)
+  end
+
+  def unread_notifications_count
+    unread_notifications.count
+  end
+
+  def mark_all_notifications_read!
+    unread_notifications.update_all(read_at: Time.current)
+  end
+
   def scan_due?
     return true if last_scanned_at.nil?
 

@@ -31,7 +31,7 @@ class ExportGenerator
       exported_at: Time.current.iso8601,
       app_version: Rails.application.config.app_version,
       games: @games.map { |game| serialize_game(game) },
-      emulator_profiles: EmulatorProfile.where(user_selected: true).map { |profile| serialize_profile(profile) }
+      emulator_profiles: EmulatorProfile.user_selected.map { |profile| serialize_profile(profile) }
     }
   end
 
