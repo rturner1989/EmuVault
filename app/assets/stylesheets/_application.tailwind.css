@@ -79,6 +79,22 @@
   flex-direction: column;
 }
 
+#crop-cover-dialog {
+  z-index: 80;
+}
+
+#crop-cover-dialog .dialog-overlay {
+  z-index: 80;
+}
+
+#crop-cover-dialog .dialog-content {
+  z-index: 90;
+}
+
+#crop-cover-dialog .dialog-content > * {
+  max-width: 42rem;
+}
+
 /* Sheet wrapper passes layout through to the card */
 .dialog-sheet {
   display: flex;

@@ -2,20 +2,21 @@
 #
 # Table name: users
 #
-#  id               :bigint           not null, primary key
-#  api_token        :string
-#  kuma_url         :string
-#  last_scan_result :jsonb
-#  last_scanned_at  :datetime
-#  password_digest  :string           not null
-#  scan_enabled     :boolean          default(FALSE), not null
-#  scan_interval    :string           default("hourly"), not null
-#  setup_completed  :boolean          default(FALSE), not null
-#  theme            :string           default("dracula"), not null
-#  username         :string           not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  current_game_id  :bigint
+#  id                    :bigint           not null, primary key
+#  api_token             :string
+#  games_view_preference :string           default("card"), not null
+#  kuma_url              :string
+#  last_scan_result      :jsonb
+#  last_scanned_at       :datetime
+#  password_digest       :string           not null
+#  scan_enabled          :boolean          default(FALSE), not null
+#  scan_interval         :string           default("hourly"), not null
+#  setup_completed       :boolean          default(FALSE), not null
+#  theme                 :string           default("dracula"), not null
+#  username              :string           not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  current_game_id       :bigint
 #
 # Indexes
 #
@@ -36,6 +37,8 @@ class User < ApplicationRecord
 
   ALL_THEMES = THEMES.values.flatten.freeze
 
+  GAMES_VIEW_PREFERENCES = %w[card list].freeze
+
   SCAN_INTERVAL_LABELS = {
     hourly: "Every hour",
     every_6_hours: "Every 6 hours",
@@ -45,6 +48,7 @@ class User < ApplicationRecord
   enum :scan_interval, { hourly: "hourly", every_6_hours: "every_6_hours", daily: "daily" }
 
   validates :theme, inclusion: { in: ALL_THEMES }
+  validates :games_view_preference, inclusion: { in: GAMES_VIEW_PREFERENCES }
   validates :kuma_url, format: { with: /\Ahttps?:\/\/\S+\z/i, message: "must be an HTTP or HTTPS URL" }, allow_blank: true
 
   has_secure_password
@@ -57,6 +61,18 @@ class User < ApplicationRecord
   normalizes :username, with: ->(e) { e.strip.downcase }
 
   before_create :generate_api_token
+
+  def unread_notifications
+    notifications.where(read_at: nil)
+  end
+
+  def unread_notifications_count
+    unread_notifications.count
+  end
+
+  def mark_all_notifications_read!
+    unread_notifications.update_all(read_at: Time.current)
+  end
 
   def scan_due?
     return true if last_scanned_at.nil?

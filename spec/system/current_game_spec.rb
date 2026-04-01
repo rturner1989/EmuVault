@@ -40,6 +40,7 @@ RSpec.describe "Current Game" do
     before { visit games_path }
 
     it "sets a game as now playing via the rotate icon" do
+      first(".group").hover
       find("[title='Set as current game']").click
 
       expect(page).to have_text("Now playing: Zelda")
@@ -53,6 +54,63 @@ RSpec.describe "Current Game" do
 
       expect(page).to have_text("Cleared current game")
       expect(page).to have_no_css("[title='Clear current game']")
+    end
+  end
+
+  describe "switching current game on games index" do
+    let!(:game2) { create(:game, title: "Mario", system: :gba) }
+
+    it "clears the previous game styling in list view" do
+      user.update!(games_view_preference: "list")
+      visit games_path
+
+      within("#game_#{game.id}") do
+        find("[title='Set as current game']").click
+      end
+
+      expect(page).to have_text("Now playing: Zelda")
+      expect(page).to have_css("#game_#{game.id}.border-primary")
+
+      within("#game_#{game2.id}") do
+        find("[title='Set as current game']").click
+      end
+
+      expect(page).to have_text("Now playing: Mario")
+      expect(page).to have_css("#game_#{game2.id}.border-primary")
+      expect(page).to have_no_css("#game_#{game.id}.border-primary")
+    end
+
+    it "clears the previous game styling in card view" do
+      visit games_path
+
+      find("#card_game_#{game.id}").hover
+      within("#card_game_#{game.id}") do
+        find("[title='Set as current game']").click
+      end
+
+      expect(page).to have_text("Now playing: Zelda")
+      expect(page).to have_css("#card_game_#{game.id} .border-primary")
+
+      find("#card_game_#{game2.id}").hover
+      within("#card_game_#{game2.id}") do
+        find("[title='Set as current game']").click
+      end
+
+      expect(page).to have_text("Now playing: Mario")
+      expect(page).to have_css("#card_game_#{game2.id} .border-primary")
+      expect(page).to have_no_css("#card_game_#{game.id} .border-primary")
+    end
+
+    it "updates the now playing banner when switching games" do
+      visit games_path
+
+      first(".group").hover
+      first("[title='Set as current game']").click
+      expect(page).to have_text("Now playing:")
+
+      within("#now-playing-banner") do
+        expect(page).to have_text("Now Playing")
+      end
     end
   end
 
@@ -92,14 +150,14 @@ RSpec.describe "Current Game" do
       it "shows the download section" do
         find("details", text: "Now Playing").click
 
-        expect(page).to have_text("Download to device")
+        expect(page).to have_text("Download")
         expect(page).to have_select("game_save[target_profile_id]")
       end
 
       it "shows the upload section" do
         find("details", text: "Now Playing").click
 
-        expect(page).to have_text("Upload new save")
+        expect(page).to have_text("Upload New Version")
         expect(page).to have_text("Choose file")
       end
     end
@@ -114,7 +172,7 @@ RSpec.describe "Current Game" do
       it "shows the upload section" do
         find("details", text: "Now Playing").click
 
-        expect(page).to have_text("Upload new save")
+        expect(page).to have_text("Upload New Version")
       end
     end
   end

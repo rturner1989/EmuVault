@@ -1,59 +1,61 @@
-.rounded-lg.p-5.bg-base-100.border.border-base-300
-  %h2.text-sm.font-semibold.mb-1
-    = "Account"
-  %p.text-sm.text-muted
-    = user.username
+= render ::UI::CardComponent.new do |card|
+  = card.with_header do
+    %h2.text-sm.font-semibold.mb-1
+      = "Account"
+    %p.text-sm.text-muted
+      = user.username
 
-  .mt-3.flex.items-center.gap-3
-    = render ::UI::ModalComponent.new(id: "change-password-dialog",
-      title: "Change Password") do |modal|
-      = modal.with_trigger do
-        = render ::UI::ActionComponent.new(variant: :outline,
-          size: :sm,
-          data: { action: "dialog#open" }) do
-          = "Change Password"
+  = card.with_body do
+    .flex.items-center.gap-3
+      = render ::UI::ModalComponent.new(id: "change-password-dialog",
+        title: "Change Password") do |modal|
+        = modal.with_trigger do
+          = render ::UI::ActionComponent.new(variant: :outline,
+            size: :sm,
+            data: { action: "dialog#open" }) do
+            = "Change Password"
 
-      = modal.with_body do
-        = form_with url: settings_password_path, method: :patch,
-          id: "change-password-form",
-          html: { class: "space-y-4" } do |f|
+        = modal.with_body do
+          = form_with url: settings_password_path, method: :patch,
+            id: "change-password-form",
+            html: { class: "space-y-4" } do |f|
 
-          .space-y-1
-            %label.block.text-sm.font-medium{ for: "current_password" }
-              = "Current password"
-            %input.input.input-bordered.w-full{ type: "password",
-              name: "current_password",
-              id: "current_password",
-              required: true,
-              autocomplete: "current-password" }
+            .space-y-1
+              %label.block.text-sm.font-medium{ for: "current_password" }
+                = "Current password"
+              %input.input.input-bordered.w-full{ type: "password",
+                name: "current_password",
+                id: "current_password",
+                required: true,
+                autocomplete: "current-password" }
 
-          .space-y-1
-            %label.block.text-sm.font-medium{ for: "password" }
-              = "New password"
-            %input.input.input-bordered.w-full{ type: "password",
-              name: "password",
-              id: "password",
-              required: true,
-              autocomplete: "new-password" }
+            .space-y-1
+              %label.block.text-sm.font-medium{ for: "password" }
+                = "New password"
+              %input.input.input-bordered.w-full{ type: "password",
+                name: "password",
+                id: "password",
+                required: true,
+                autocomplete: "new-password" }
 
-          .space-y-1
-            %label.block.text-sm.font-medium{ for: "password_confirmation" }
-              = "Confirm new password"
-            %input.input.input-bordered.w-full{ type: "password",
-              name: "password_confirmation",
-              id: "password_confirmation",
-              required: true,
-              autocomplete: "new-password" }
+            .space-y-1
+              %label.block.text-sm.font-medium{ for: "password_confirmation" }
+                = "Confirm new password"
+              %input.input.input-bordered.w-full{ type: "password",
+                name: "password_confirmation",
+                id: "password_confirmation",
+                required: true,
+                autocomplete: "new-password" }
 
-      = modal.with_footer do
-        = render ::UI::ActionComponent.new(variant: :primary,
-          size: :sm,
-          type: :submit,
-          form: "change-password-form") do
-          = "Update Password"
+        = modal.with_footer do
+          = render ::UI::ActionComponent.new(variant: :primary,
+            size: :sm,
+            type: :submit,
+            form: "change-password-form") do
+            = "Update Password"
 
-  .mt-4.lg:hidden
-    = render ::UI::ActionComponent.new(href: session_path,
-      variant: :danger,
-      data: { turbo_method: :delete }) do
-      = "Sign Out"
+    .mt-4.lg:hidden
+      = render ::UI::ActionComponent.new(href: session_path,
+        variant: :danger,
+        data: { turbo_method: :delete }) do
+        = "Sign Out"

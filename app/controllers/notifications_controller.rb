@@ -3,17 +3,17 @@
 class NotificationsController < MainController
   def index
     @notifications = current_user.notifications
-                            .where(read_at: nil)
-                            .includes(event: {})
-                            .order(created_at: :desc)
-                            .limit(20)
+      .where(read_at: nil)
+      .includes(event: {})
+      .order(created_at: :desc)
+      .limit(20)
   end
 
   def show
     notification = current_user.notifications.find(params[:id])
     notification.update!(read_at: Time.current) unless notification.read_at
 
-    count = current_user.notifications.where(read_at: nil).count
+    count = current_user.unread_notifications_count
     Turbo::StreamsChannel.broadcast_replace_later_to(
       "notifications_#{current_user.id}",
       targets: "[data-notification-badge]",

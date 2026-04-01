@@ -1,0 +1,35 @@
+- is_current = (local_assigns[:current_game_id] || current_user&.current_game_id) == game.id
+%div{ id: dom_id(game, :card), class: "relative group" }
+  = render ::UI::ActionComponent.new(href: game_path(game),
+    variant: :default,
+    class: "rounded-lg border-2 overflow-hidden bg-base-100 hover:bg-base-200 transition-colors block #{is_current ? 'border-primary' : 'border-base-300'}",
+    data: { turbo_frame: "_top" }) do
+    %div{ class: "aspect-3/4 w-full overflow-hidden bg-base-300" }
+      - if game.cover_image.attached?
+        = image_tag game.cover_image, class: "w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-200", alt: game.title
+      - else
+        .w-full.h-full.flex.items-center.justify-center.text-muted
+          = render ::UI::IconComponent.new(name: "fa-gamepad", class: "text-3xl")
+    .p-2
+      .text-sm.font-semibold.truncate
+        = game.title
+      %div{ class: "mt-0.5" }
+        = render ::UI::BadgeComponent.new(color: game.system_badge_color, size: :xs) do
+          = game.system_label
+
+  - if is_current
+    = render ::UI::ActionComponent.new(href: current_game_path,
+      method: :delete,
+      variant: :default,
+      title: "Clear current game",
+      class: "absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-content shadow-lg cursor-pointer",
+      params: { game_id: game.id }) do
+      = render ::UI::IconComponent.new(name: "fa-rotate", fw: false, class: "text-xs")
+  - else
+    = render ::UI::ActionComponent.new(href: current_game_path,
+      method: :patch,
+      variant: :default,
+      title: "Set as current game",
+      class: "absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-base-100 text-muted hover:text-primary border border-base-300 shadow-lg lg:opacity-0 lg:group-hover:opacity-100 lg:focus:opacity-100 transition-opacity cursor-pointer",
+      params: { game_id: game.id }) do
+      = render ::UI::IconComponent.new(name: "fa-rotate", fw: false, class: "text-xs")

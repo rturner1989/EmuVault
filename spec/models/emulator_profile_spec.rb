@@ -54,6 +54,111 @@ RSpec.describe EmulatorProfile do
         expect(described_class.selected_for_system(:gba)).to contain_exactly(selected_gba)
       end
     end
+
+    describe ".user_selected" do
+      it "returns only user-selected profiles" do
+        expect(described_class.user_selected).to include(selected_gba)
+        expect(described_class.user_selected).not_to include(unselected_gba)
+      end
+    end
+
+    describe ".defaults" do
+      let!(:default_profile) { create(:emulator_profile, :default_profile, game_system: :nes) }
+
+      it "returns only default profiles" do
+        expect(described_class.defaults).to include(default_profile)
+        expect(described_class.defaults).not_to include(selected_gba)
+      end
+    end
+
+    describe ".defaults_for_system" do
+      let!(:default_gba) { create(:emulator_profile, :default_profile, game_system: :gba) }
+      let!(:default_snes) { create(:emulator_profile, :default_profile, game_system: :snes, name: "Snes9x") }
+
+      it "returns only default profiles for the given system" do
+        expect(described_class.defaults_for_system(:gba)).to include(default_gba)
+        expect(described_class.defaults_for_system(:gba)).not_to include(default_snes)
+      end
+    end
+  end
+
+  describe ".selected_game_systems" do
+    it "returns distinct game systems for selected profiles" do
+      create(:emulator_profile, game_system: :gba, user_selected: true, name: "P1")
+      create(:emulator_profile, game_system: :gba, user_selected: true, name: "P2", platform: :windows)
+      create(:emulator_profile, game_system: :snes, user_selected: true, name: "P3")
+      create(:emulator_profile, game_system: :nes, user_selected: false, name: "P4")
+
+      expect(described_class.selected_game_systems).to contain_exactly(:gba, :snes)
+    end
+  end
+
+  describe ".default_game_systems" do
+    it "returns distinct game systems for default profiles" do
+      create(:emulator_profile, :default_profile, game_system: :gba, name: "D1")
+      create(:emulator_profile, :default_profile, game_system: :snes, name: "D2")
+      create(:emulator_profile, game_system: :nes, is_default: false, name: "D3")
+
+      expect(described_class.default_game_systems).to contain_exactly(:gba, :snes)
+    end
+  end
+
+  describe ".selected_by_system" do
+    it "groups selected profiles by system symbol" do
+      gba = create(:emulator_profile, game_system: :gba, user_selected: true, name: "RA")
+      snes = create(:emulator_profile, game_system: :snes, user_selected: true, name: "S9x")
+      create(:emulator_profile, game_system: :nes, user_selected: false, name: "Other")
+
+      result = described_class.selected_by_system
+
+      expect(result.keys).to contain_exactly(:gba, :snes)
+      expect(result[:gba]).to include(gba)
+      expect(result[:snes]).to include(snes)
+    end
+  end
+
+  describe ".selected_default_ids_for_system" do
+    it "returns IDs of selected default profiles for a system" do
+      selected_default = create(:emulator_profile, :default_profile, game_system: :gba, user_selected: true)
+      create(:emulator_profile, :default_profile, game_system: :gba, user_selected: false, name: "Other")
+      create(:emulator_profile, game_system: :gba, user_selected: true, is_default: false, name: "Custom")
+
+      result = described_class.selected_default_ids_for_system(:gba)
+
+      expect(result).to eq(Set[selected_default.id])
+    end
+  end
+
+  describe ".update_selections_for_system" do
+    let!(:profile_a) { create(:emulator_profile, :default_profile, game_system: :gba, user_selected: true) }
+    let!(:profile_b) { create(:emulator_profile, :default_profile, game_system: :gba, user_selected: true, name: "Other") }
+
+    it "deselects all defaults then selects specified ones" do
+      described_class.update_selections_for_system(:gba, selected_ids: [ profile_b.id ])
+
+      expect(profile_a.reload.user_selected).to be false
+      expect(profile_b.reload.user_selected).to be true
+    end
+
+    it "deselects all when no IDs provided" do
+      described_class.update_selections_for_system(:gba)
+
+      expect(profile_a.reload.user_selected).to be false
+      expect(profile_b.reload.user_selected).to be false
+    end
+  end
+
+  describe ".visible_system_options" do
+    it "returns combined selected and default systems as options" do
+      create(:emulator_profile, game_system: :gba, user_selected: true, name: "P1")
+      create(:emulator_profile, :default_profile, game_system: :snes, name: "P2")
+
+      result = described_class.visible_system_options
+
+      values = result.map { |option| option[:value] }
+      expect(values).to include("gba", "snes")
+      expect(result.first).to have_key(:text)
+    end
   end
 
   describe "#deletable?" do

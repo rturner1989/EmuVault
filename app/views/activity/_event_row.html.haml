@@ -1,12 +1,16 @@
 .flex.items-center.gap-4.px-5.py-3
   .flex-1.min-w-0
-    .flex.items-center.gap-2
+    .flex.items-center.gap-2.flex-wrap
+      = render ::UI::ActionComponent.new(href: game_path(event.game_id),
+        variant: :link_primary,
+        class: "text-sm font-medium truncate") do
+        = event.game_title
       = render ::UI::BadgeComponent.new(color: event.action_badge_color) do |badge|
         - badge.with_icon(name: event.action_icon)
       = render ::UI::BadgeComponent.new(color: event.device_badge_color) do
         = event.device_label
-      %span.text-xs.text-muted
-        = event.performed_at_label
+    .text-xs.text-muted.mt-1{ title: event.performed_at_label }
+      = time_ago_in_words(event.performed_at) + " ago"
   - if event.ip_address.present?
     %span{ class: "text-xs text-muted font-mono hidden lg:block" }
       = event.ip_address

@@ -7,7 +7,7 @@
         = render ::UI::BadgeComponent.new(color: game.system_badge_color) do
           = game.system_label
 
-  = render ::UI::ConfirmComponent.new(id: "remove-game-#{game.id}-dialog",
+  = render ::UI::ConfirmComponent.new(id: dom_id(game, :remove),
     title: "Remove game?",
     message: "Remove #{game.title} from your library?",
     url: onboarding_game_path(game),

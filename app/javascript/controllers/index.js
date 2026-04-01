@@ -43,3 +43,10 @@ application.register("swipe-dismiss", SwipeDismissController)
 
 import ThemeController from "./theme_controller"
 application.register("theme", ThemeController)
+
+import ImageCropperController from "./image_cropper_controller"
+application.register("image-cropper", ImageCropperController)
+
+import PaginationController from "./pagination_controller"
+application.register("pagination", PaginationController)
+

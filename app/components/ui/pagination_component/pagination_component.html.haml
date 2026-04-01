@@ -1,0 +1,29 @@
+%nav.flex.justify-center.mt-4{ aria: { label: "Pagination" } }
+  .join
+    - if @pagy.previous
+      = render ::UI::ActionComponent.new(href: page_url(@pagy.previous),
+        variant: :default,
+        class: "btn btn-sm join-item") do |a|
+        - a.with_leading_icon(name: "fa-chevron-left", class: "text-xs")
+    - else
+      = render ::UI::ActionComponent.new(variant: :default,
+        class: "btn btn-sm join-item btn-disabled",
+        disabled: true) do |a|
+        - a.with_leading_icon(name: "fa-chevron-left", class: "text-xs")
+
+    - (1..@pagy.pages).each do |page_num|
+      = render ::UI::ActionComponent.new(href: page_url(page_num),
+        variant: :default,
+        class: "btn btn-sm join-item #{page_num == @pagy.page ? 'btn-active' : ''}") do
+        = page_num
+
+    - if @pagy.next
+      = render ::UI::ActionComponent.new(href: page_url(@pagy.next),
+        variant: :default,
+        class: "btn btn-sm join-item") do |a|
+        - a.with_leading_icon(name: "fa-chevron-right", class: "text-xs")
+    - else
+      = render ::UI::ActionComponent.new(variant: :default,
+        class: "btn btn-sm join-item btn-disabled",
+        disabled: true) do |a|
+        - a.with_leading_icon(name: "fa-chevron-right", class: "text-xs")

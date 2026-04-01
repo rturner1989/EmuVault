@@ -1,12 +1,12 @@
 - game = local_assigns.fetch(:game, @game)
 = turbo_frame_tag :game_form do
-  = simple_form_for game, url: form_url, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
+  = simple_form_for game, url: form_url, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top", persist_values: game.persisted? || nil } } do |f|
     = f.input :title,
         label: "Title",
         input_html: { class: "input input-bordered w-full" },
         label_html: { class: "label-text text-xs font-medium" }
 
-    - allowed = (Array(@available_systems) + [game.system.to_s]).map(&:presence).uniq.compact
+    - allowed = (Array(@available_systems).map(&:to_s) + [game.system.to_s]).map(&:presence).uniq.compact
     - system_options = allowed.any? ? Game::GAME_SYSTEM_OPTIONS.select { |_label, value| allowed.include?(value) } : Game::GAME_SYSTEM_OPTIONS
     = f.input :system,
         label: "System",
@@ -22,3 +22,27 @@
         input_html: { class: "input input-bordered w-full font-mono" },
         label_html: { class: "label-text text-xs font-medium" },
         hint_html: { class: "mt-1 text-xs text-muted" }
+
+    %div{ data: { controller: "image-cropper" } }
+      .space-y-1
+        %label.label-text.text-xs.font-medium
+          = "Cover Image (optional)"
+        %button{ type: "button", class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20 w-full text-left",
+          data: { action: "click->image-cropper#select" } }
+          %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
+            = "Choose file"
+          %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { image_cropper_target: "filename" } }
+            - if game.cover_image.attached? && game.cover_image.blob&.persisted?
+              = game.cover_image.filename
+            - else
+              = "No file selected"
+        = f.file_field :cover_image, class: "hidden",
+          accept: "image/png,image/jpeg,image/webp",
+          data: { image_cropper_target: "input", action: "change->image-cropper#fileSelected" }
+        - if game.cover_image.attached? && game.cover_image.blob&.persisted?
+          %img.rounded.mt-2.w-20{ src: url_for(game.cover_image), alt: "Current cover",
+            data: { image_cropper_target: "preview" } }
+        - else
+          %img.rounded.mt-2.w-20.hidden{ data: { image_cropper_target: "preview" } }
+        %p.text-xs.text-muted
+          = "PNG, JPEG, or WebP. Max 5 MB."

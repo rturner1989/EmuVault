@@ -43,6 +43,16 @@ RSpec.describe "Games" do
       expect(response.body.index("Zeta")).to be < response.body.index("Alpha")
     end
 
+    it "returns paginated content for paginate param" do
+      create_list(:game, 10)
+      create(:game, title: "Extra Game")
+
+      get games_path, params: { page: 2, paginate: true }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("<html")
+    end
+
     context "with pending auto-scan results" do
       before do
         user.update!(last_scan_result: {

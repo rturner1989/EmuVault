@@ -1,0 +1,21 @@
+- container_class = local_assigns.fetch(:container_class, nil)
+
+- if selected_sort == "system"
+  .space-y-6
+    - games.group_by(&:system).each do |system_key, system_games|
+      - system_label = Game.game_system_label(system_key)
+      %div
+        %p.text-sm.font-medium.mb-2
+          = system_label
+        %div{ class: container_class }
+          = render item_partial, games: system_games
+- elsif selected_system.present?
+  - system_label = Game.game_system_label(selected_system)
+  %div
+    %p.text-sm.font-medium.mb-2
+      = system_label
+    %div{ class: container_class }
+      = render item_partial, games: games
+- else
+  %div{ class: container_class }
+    = render item_partial, games: games

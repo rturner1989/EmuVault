@@ -1,12 +1,14 @@
-.rounded-lg.p-5.bg-base-100.border.border-base-300
-  %h2.text-sm.font-semibold.mb-1
-    = "Scan Paths"
-  %p.text-sm.text-muted.mb-4
-    = "Directories where your game files are stored. EmuVault scans these to discover games automatically."
+= render ::UI::CardComponent.new do |card|
+  = card.with_header do
+    %h2.text-sm.font-semibold.mb-1
+      = "Scan Paths"
+    %p.text-sm.text-muted
+      = "Directories where your game files are stored. EmuVault scans these to discover games automatically."
 
-  = turbo_frame_tag "scan_paths" do
-    = render "games/paths/section", scan_paths: scan_paths
+  = card.with_body do
+    = turbo_frame_tag "scan_paths" do
+      = render "games/paths/section", scan_paths: scan_paths
 
-  -# Auto-scan schedule
-  .border-t.mt-5.pt-5.border-base-300
-    = render "shared/auto_scan_schedule", user: user, form_url: settings_path, form_id: nil
+    -# Auto-scan schedule
+    .border-t.mt-5.pt-5.border-base-300
+      = render "shared/auto_scan_schedule", user: user, form_url: settings_path, form_id: nil

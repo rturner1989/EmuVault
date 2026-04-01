@@ -1,4 +1,5 @@
 require "rails_helper"
+require "zip"
 
 RSpec.describe DataImport do
   describe "enum" do
@@ -6,6 +7,131 @@ RSpec.describe DataImport do
       expect(described_class.statuses.keys).to eq(
         %w[pending analyzing conflicts_pending importing complete failed]
       )
+    end
+  end
+
+  describe ".analyze_zip" do
+    it "returns manifest and empty conflicts for a valid zip" do
+      zip_data = build_export_zip([ { "title" => "Zelda", "system" => "gba" } ])
+      uploaded = fake_upload(zip_data)
+
+      manifest, conflicts = described_class.analyze_zip(uploaded)
+
+      expect(manifest["games"].size).to eq(1)
+      expect(manifest["games"].first["title"]).to eq("Zelda")
+      expect(conflicts).to be_empty
+    end
+
+    it "detects conflicts with existing games" do
+      create(:game, title: "Zelda", system: :gba)
+      zip_data = build_export_zip([ { "title" => "Zelda", "system" => "gba" } ])
+      uploaded = fake_upload(zip_data)
+
+      _manifest, conflicts = described_class.analyze_zip(uploaded)
+
+      expect(conflicts.size).to eq(1)
+      expect(conflicts.first["title"]).to eq("Zelda")
+    end
+
+    it "returns nil manifest when manifest.json is missing" do
+      zip_data = build_export_zip(nil)
+      uploaded = fake_upload(zip_data)
+
+      manifest, conflicts = described_class.analyze_zip(uploaded)
+
+      expect(manifest).to be_nil
+      expect(conflicts).to be_empty
+    end
+
+    it "returns nil manifest for a corrupted zip" do
+      uploaded = fake_upload("not a zip")
+
+      manifest, conflicts = described_class.analyze_zip(uploaded)
+
+      expect(manifest).to be_nil
+      expect(conflicts).to be_empty
+    end
+
+    private
+
+    def build_export_zip(games)
+      buffer = Zip::OutputStream.write_buffer do |zip|
+        if games
+          zip.put_next_entry("manifest.json")
+          zip.write({ "games" => games }.to_json)
+        end
+      end
+      buffer.string
+    end
+
+    def fake_upload(content)
+      tempfile = Tempfile.new([ "test", ".zip" ])
+      tempfile.binmode
+      tempfile.write(content)
+      tempfile.rewind
+
+      uploaded = ActionDispatch::Http::UploadedFile.new(
+        tempfile: tempfile,
+        filename: "export.zip",
+        type: "application/zip"
+      )
+      uploaded
+    end
+  end
+
+  describe "#new_games" do
+    it "returns games not in the conflicts list" do
+      import = build(:data_import,
+        manifest: { "games" => [
+          { "export_id" => "1", "title" => "Zelda" },
+          { "export_id" => "2", "title" => "Mario" },
+          { "export_id" => "3", "title" => "Pokemon" }
+        ] },
+        conflicts: [ { "export_id" => "2", "title" => "Mario" } ])
+
+      expect(import.new_games.map { |g| g["title"] }).to eq(%w[Zelda Pokemon])
+    end
+
+    it "returns all games when there are no conflicts" do
+      import = build(:data_import,
+        manifest: { "games" => [ { "export_id" => "1", "title" => "Zelda" } ] },
+        conflicts: [])
+
+      expect(import.new_games.size).to eq(1)
+    end
+  end
+
+  describe "#emulator_profiles" do
+    it "returns profiles from the manifest" do
+      import = build(:data_import,
+        manifest: { "games" => [], "emulator_profiles" => [ { "name" => "RetroArch" } ] })
+
+      expect(import.emulator_profiles).to eq([ { "name" => "RetroArch" } ])
+    end
+
+    it "returns empty array when no profiles key exists" do
+      import = build(:data_import, manifest: { "games" => [] })
+
+      expect(import.emulator_profiles).to eq([])
+    end
+  end
+
+  describe "#total_saves" do
+    it "sums saves across all games" do
+      import = build(:data_import,
+        manifest: { "games" => [
+          { "title" => "Zelda", "saves" => [ {}, {} ] },
+          { "title" => "Mario", "saves" => [ {} ] }
+        ] })
+
+      expect(import.total_saves).to eq(3)
+    end
+
+    it "returns zero when no games have saves" do
+      import = build(:data_import,
+        manifest: { "games" => [ { "title" => "Zelda", "saves" => [] } ] })
+
+      expect(import.total_saves).to eq(0)
     end
   end
 

@@ -73,6 +73,22 @@ RSpec.describe "Games" do
       expect(page).to have_text("Zelda Updated")
     end
 
+    it "preserves edit form values after closing and reopening the modal" do
+      visit game_path(game)
+      click_on "Edit"
+
+      expect(page).to have_field("Title", with: "Zelda")
+
+      within("[id='edit-game-dialog']:not([aria-hidden])") do
+        click_on "Cancel"
+      end
+      page.has_css?("[id='edit-game-dialog'][aria-hidden='true']", visible: :all)
+
+      click_on "Edit"
+
+      expect(page).to have_field("Title", with: "Zelda")
+    end
+
     it "removes a game" do
       visit game_path(game)
       click_on "Remove"
@@ -97,6 +113,22 @@ RSpec.describe "Games" do
 
       expect(page).to have_text("Pokemon added")
       expect(page).to have_text("Pokemon")
+    end
+
+    it "resets the add game form after closing the modal" do
+      visit games_path
+
+      click_on "Add Game"
+      fill_in "Title", with: "Temporary"
+
+      within("[id='add-game-dialog']:not([aria-hidden])") do
+        click_on "Cancel"
+      end
+      page.has_css?("[id='add-game-dialog'][aria-hidden='true']", visible: :all)
+
+      click_on "Add Game"
+
+      expect(page).to have_field("Title", with: "")
     end
 
     it "shows validation errors" do

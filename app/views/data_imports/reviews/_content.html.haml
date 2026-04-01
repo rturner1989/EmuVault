@@ -1,0 +1,126 @@
+- if import.analyzing?
+  .flex.flex-col.items-center.justify-center.py-12
+    %span.loading.loading-spinner.loading-lg.text-primary
+    %p.text-sm.text-muted.mt-4
+      = "Analyzing export file…"
+
+- elsif import.failed?
+  = render ::UI::EmptyStateComponent.new(title: "Invalid export file",
+    description: "Could not read the manifest from the uploaded file.") do |c|
+    - c.with_action do
+      = render ::UI::ActionComponent.new(href: settings_path, variant: :primary) do
+        = "Back to Settings"
+
+- else
+  - new_games = import.new_games
+  - profiles = import.emulator_profiles
+
+  -# Summary banner
+  .rounded-lg.px-5.py-4.bg-base-100.border.border-base-300
+    .flex.flex-wrap.gap-x-6.gap-y-1
+      .flex.items-center.gap-2
+        = render ::UI::IconComponent.new(name: "fa-gamepad", class: "text-primary")
+        %span.text-sm
+          %strong
+            = import.manifest["games"].size
+          = " #{"game".pluralize(import.manifest["games"].size)}"
+      .flex.items-center.gap-2
+        = render ::UI::IconComponent.new(name: "fa-floppy-disk", class: "text-primary")
+        %span.text-sm
+          %strong
+            = import.total_saves
+          = " #{"save".pluralize(import.total_saves)}"
+      .flex.items-center.gap-2
+        = render ::UI::IconComponent.new(name: "fa-microchip", class: "text-primary")
+        %span.text-sm
+          %strong
+            = profiles.size
+          = " #{"profile".pluralize(profiles.size)}"
+      - if import.conflicts.any?
+        .flex.items-center.gap-2
+          = render ::UI::IconComponent.new(name: "fa-triangle-exclamation", class: "text-accent")
+          %span.text-sm.text-accent
+            %strong
+              = import.conflicts.size
+            = " #{"conflict".pluralize(import.conflicts.size)}"
+
+  = form_with url: data_import_resolution_path(import), class: "space-y-3" do |f|
+    -# New games
+    - if new_games.any?
+      .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
+        .flex.items-center.gap-2.px-4.py-3.border-b.border-base-300
+          = render ::UI::IconComponent.new(name: "fa-circle-plus", class: "text-success")
+          %h2.text-sm.font-semibold
+            = "#{new_games.size} New #{"Game".pluralize(new_games.size)}"
+          %span.text-xs.text-muted
+            = "Will be added to your library"
+        .divide-y.divide-base-300
+          - new_games.each do |game|
+            .flex.items-center.justify-between.px-4.py-2.5
+              %p.text-sm
+                = game["title"]
+              .flex.items-center.gap-3
+                %span.text-xs.text-muted
+                  = game["system"].upcase
+                %span.text-xs.text-muted
+                  = "#{game["saves"].size} #{"save".pluralize(game["saves"].size)}"
+
+    -# Conflicts
+    - if import.conflicts.any?
+      .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
+        .flex.items-center.gap-2.px-4.py-3.border-b.border-base-300
+          = render ::UI::IconComponent.new(name: "fa-triangle-exclamation", class: "text-accent")
+          %h2.text-sm.font-semibold
+            = "#{import.conflicts.size} #{"Conflict".pluralize(import.conflicts.size)}"
+          %span.text-xs.text-muted
+            = "These games already exist in your library"
+        .divide-y.divide-base-300
+          - import.conflicts.each do |game|
+            .px-4.py-3
+              .flex.items-center.justify-between.mb-2.5
+                .min-w-0
+                  %p.text-sm.font-medium
+                    = game["title"]
+                  %p.text-xs.text-muted.mt-0.5
+                    = "#{game["system"].upcase} · #{game["saves"].size} #{"save".pluralize(game["saves"].size)}"
+                = render ::UI::BadgeComponent.new(color: :orange, class: "ml-3 shrink-0") do
+                  = "Exists"
+              .flex.gap-6
+                %label.flex.items-center.gap-2.cursor-pointer
+                  %input{ type: "radio", name: "resolutions[#{game["export_id"]}]", value: "skip", checked: true, class: "accent-primary" }
+                  .min-w-0
+                    %p.text-sm
+                      = "Keep existing"
+                    %p.text-xs.text-muted
+                      = "Imported saves are discarded"
+                %label.flex.items-center.gap-2.cursor-pointer
+                  %input{ type: "radio", name: "resolutions[#{game["export_id"]}]", value: "replace", class: "accent-primary" }
+                  .min-w-0
+                    %p.text-sm
+                      = "Replace"
+                    %p.text-xs.text-muted
+                      = "Overwrites all existing saves"
+
+    -# Emulator profiles
+    - if profiles.any?
+      .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
+        .flex.items-center.gap-2.px-4.py-3.border-b.border-base-300
+          = render ::UI::IconComponent.new(name: "fa-microchip", class: "text-info")
+          %h2.text-sm.font-semibold
+            = "#{profiles.size} Emulator #{"Profile".pluralize(profiles.size)}"
+          %span.text-xs.text-muted
+            = "Existing profiles with the same name will be skipped"
+        .divide-y.divide-base-300
+          - profiles.each do |profile|
+            .flex.items-center.justify-between.px-4.py-2.5
+              %p.text-sm
+                = profile["name"]
+              %span.text-xs.text-muted
+                = profile["platform"].to_s.capitalize
+
+    -# Actions
+    .flex.items-center.justify-between.pt-1
+      = render ::UI::ActionComponent.new(href: settings_path, variant: :ghost) do
+        = "Cancel"
+      = render ::UI::ActionComponent.new(variant: :primary, type: :submit) do
+        = "Start Import"

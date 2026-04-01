@@ -1,7 +1,7 @@
 module Onboarding
   class ScansController < StepController
     def create
-      GameScanJob.perform_later("auto_all")
+      GameScanImportAllJob.perform_later(user_id: current_user.id)
     end
   end
 end

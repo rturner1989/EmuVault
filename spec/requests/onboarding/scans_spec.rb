@@ -7,16 +7,16 @@ RSpec.describe "Onboarding::Scans" do
 
   describe "POST /onboarding/scan" do
     it "enqueues scan job" do
-      allow(GameScanJob).to receive(:perform_later).with("auto_all")
+      allow(GameScanImportAllJob).to receive(:perform_later).with(user_id: user.id)
 
       post onboarding_scan_path,
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-      expect(GameScanJob).to have_received(:perform_later).with("auto_all")
+      expect(GameScanImportAllJob).to have_received(:perform_later).with(user_id: user.id)
     end
 
     it "shows scanning indicator via turbo stream" do
-      allow(GameScanJob).to receive(:perform_later).with("auto_all")
+      allow(GameScanImportAllJob).to receive(:perform_later).with(user_id: user.id)
 
       post onboarding_scan_path,
         headers: { "Accept" => "text/vnd.turbo-stream.html" }

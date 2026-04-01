@@ -5,5 +5,5 @@ prune_sync_events:
 
 game_scan_check:
   cron: "0 * * * *"
-  class: GameScanJob
+  class: GameAutoScanJob
   description: "Run auto-scan if enabled and interval has elapsed"

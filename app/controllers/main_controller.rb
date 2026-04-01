@@ -25,7 +25,7 @@ class MainController < ApplicationController
   end
 
   private def load_available_systems
-    @available_systems = EmulatorProfile.where(user_selected: true).distinct.pluck(:game_system).compact
+    @available_systems = EmulatorProfile.selected_game_systems
   end
 
   private def load_quick_sync_data

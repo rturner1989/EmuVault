@@ -3,4 +3,4 @@
 .p-4.lg:p-6.space-y-6
   = turbo_frame_tag "page_header", style: "display: contents" do
     = render "emulator_profiles/page_header"
-  = render "profiles_list", selected_by_system: @selected_by_system
+  = render "profiles_list", selected_by_system: @selected_by_system, in_use_systems: @in_use_systems

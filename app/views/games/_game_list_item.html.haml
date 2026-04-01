@@ -2,13 +2,17 @@
 %div{ id: dom_id(game), class: "rounded-lg border transition-colors flex overflow-hidden bg-base-100 #{is_current ? 'border-primary' : 'border-base-300'}" }
   = render ::UI::ActionComponent.new(href: game_path(game),
     variant: :default,
-    class: "flex-1 min-w-0 p-4 flex items-center justify-between gap-3 hover:bg-base-200 transition-colors",
+    class: "flex-1 min-w-0 py-2 px-3 flex items-center justify-between gap-3 hover:bg-base-200 transition-colors",
     data: { turbo_frame: "_top" }) do
     .min-w-0
-      .text-base.font-semibold.truncate
-        = game.title
-      .mt-1
-        = render ::UI::BadgeComponent.new(color: game.system_badge_color) do
+      %div{ class: "flex items-center gap-2" }
+        .text-sm.font-semibold.truncate
+          = game.title
+        .hidden.lg:block.shrink-0
+          = render ::UI::BadgeComponent.new(color: game.system_badge_color, size: :xs) do
+            = game.system_label
+      %div{ class: "lg:hidden mt-0.5" }
+        = render ::UI::BadgeComponent.new(color: game.system_badge_color, size: :xs) do
           = game.system_label
     = render ::UI::IconComponent.new(name: "fa-chevron-right", class: "text-muted shrink-0")
 
@@ -18,19 +22,19 @@
         method: :delete,
         variant: :default,
         title: "Clear current game",
-        class: "h-full px-4 flex items-center text-primary hover:opacity-70 transition-opacity cursor-pointer",
-        params: { game_id: game.id, inline: true }) do
+        class: "h-full px-3 flex items-center text-primary hover:opacity-70 transition-opacity cursor-pointer",
+        params: { game_id: game.id }) do
         = render ::UI::IconComponent.new(name: "fa-rotate")
     - else
       = render ::UI::ActionComponent.new(href: current_game_path,
         method: :patch,
         variant: :default,
         title: "Set as current game",
-        class: "h-full px-4 flex items-center text-muted hover:text-primary transition-colors cursor-pointer",
-        params: { game_id: game.id, inline: true }) do
+        class: "h-full px-3 flex items-center text-muted hover:text-primary transition-colors cursor-pointer",
+        params: { game_id: game.id }) do
         = render ::UI::IconComponent.new(name: "fa-rotate")
 
-    = render ::UI::ConfirmComponent.new(id: "remove-game-#{game.id}-dialog",
+    = render ::UI::ConfirmComponent.new(id: dom_id(game, :remove),
       title: "Remove game?",
       message: "Remove #{game.title} from your library? This will also delete all saved versions.",
       url: game_path(game),

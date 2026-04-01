@@ -1,9 +1,16 @@
-.flex.flex-wrap.items-start.justify-between.gap-3{ id: "game_header" }
-  .min-w-0
-    %h1.text-xl.font-bold
-      = game.title
-    = render ::UI::BadgeComponent.new(color: game.system_badge_color) do
-      = game.system_label
+.flex.flex-wrap.items-start.justify-between.gap-3{ id: dom_id(game, :header) }
+  .flex.items-start.gap-3.min-w-0
+    %div{ class: "w-16 shrink-0 aspect-3/4 rounded overflow-hidden bg-base-300" }
+      - if game.cover_image.attached?
+        = image_tag game.cover_image, class: "w-full h-full object-cover", alt: game.title
+      - else
+        .w-full.h-full.flex.items-center.justify-center.text-muted
+          = render ::UI::IconComponent.new(name: "fa-gamepad", class: "text-lg")
+    .min-w-0
+      %h1.text-xl.font-bold
+        = game.title
+      = render ::UI::BadgeComponent.new(color: game.system_badge_color) do
+        = game.system_label
   .flex.gap-2.shrink-0
     - if current_user.current_game_id == game.id
       = render ::UI::ActionComponent.new(href: current_game_path,
@@ -11,7 +18,7 @@
         variant: :primary,
         size: :sm,
         class: "btn-outline",
-        params: { game_id: game.id, inline: true }) do |a|
+        params: { game_id: game.id }) do |a|
         - a.with_leading_icon(name: "fa-rotate")
         = "Now Playing"
     - else
@@ -20,7 +27,7 @@
         variant: :secondary,
         size: :sm,
         class: "btn-outline",
-        params: { game_id: game.id, inline: true }) do |a|
+        params: { game_id: game.id }) do |a|
         - a.with_leading_icon(name: "fa-rotate")
         = "Set as current"
 

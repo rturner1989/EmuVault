@@ -1,0 +1,19 @@
+= render ::UI::ModalComponent.new(id: "crop-cover-dialog",
+  title: "Crop Cover Image",
+  container_data: { cropper_dialog: true },
+  swipeable: false) do |modal|
+  = modal.with_body do
+    %div{ class: "overflow-hidden", style: "max-height: 70vh" }
+      %img.w-full.block{ data: { cropper_image: true } }
+  = modal.with_footer do
+    .flex.items-center.gap-3
+      = render ::UI::ActionComponent.new(variant: :primary,
+        size: :sm,
+        type: :button,
+        data: { cropper_action: "confirm" }) do
+        = "Crop & Use"
+      = render ::UI::ActionComponent.new(variant: :ghost,
+        size: :sm,
+        type: :button,
+        data: { cropper_action: "cancel" }) do
+        = "Cancel"

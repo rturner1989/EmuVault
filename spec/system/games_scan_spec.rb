@@ -33,15 +33,14 @@ RSpec.describe "Games Scan" do
 
     it "shows empty state after removing the last game" do
       game = create(:game, title: "Zelda", system: :gba)
-      visit games_path
+      visit game_path(game)
 
-      expect(page).to have_text("Zelda")
-
-      find("[aria-label='Remove']").click
-      within("[id*='remove-game']:not([aria-hidden])") do
+      click_on "Remove"
+      within("[id='remove-game-dialog']:not([aria-hidden])") do
         click_on "Remove"
       end
 
+      expect(page).to have_current_path(games_path)
       expect(page).to have_text("Zelda removed")
       expect(page).to have_text("No games yet")
     end
@@ -49,7 +48,7 @@ RSpec.describe "Games Scan" do
 
   describe "scan library button" do
     it "shows scanning indicator when clicked" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanDryRunJob).to receive(:perform_later)
       visit games_path
 
       click_on "Scan Library"
@@ -66,7 +65,7 @@ RSpec.describe "Games Scan" do
       FileUtils.touch(File.join(scan_dir, "Pokemon.gba"))
 
       # Run dry_run synchronously to populate last_scan_result
-      GameScanJob.perform_now("dry_run")
+      GameScanDryRunJob.perform_now(user_id: User.first.id)
       visit games_path
     end
 
@@ -110,11 +109,11 @@ RSpec.describe "Games Scan" do
       expect(page).to have_text("Pokemon")
     end
 
-    it "does not auto-open the modal on subsequent visits" do
+    it "does not auto-open the modal on subsequent visits after dismissal" do
       visit games_path
       expect(page).to have_css("[id='scan-review-dialog']:not([aria-hidden])")
 
-      find("[id='scan-review-dialog'] [aria-label='Close']").click
+      click_on "Dismiss"
       expect(page).to have_css("[id='scan-review-dialog'][aria-hidden='true']", visible: :all)
 
       visit games_path
@@ -168,7 +167,7 @@ RSpec.describe "Games Scan" do
 
   describe "manual scan does not persist review state" do
     it "does not auto-open modal on refresh after manual scan" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanDryRunJob).to receive(:perform_later)
       visit games_path
 
       click_on "Scan Library"

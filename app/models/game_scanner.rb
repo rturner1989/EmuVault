@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Discovers and imports ROM files from scan paths.
-# Used by GameScanJob for all scan modes.
+# Used by scan jobs (GameScanDryRunJob, GameScanConfirmJob, GameAutoScanJob, GameScanImportAllJob).
 class GameScanner
   ROM_EXTENSIONS = {
     "nes"     => %w[nes],
@@ -125,8 +125,7 @@ class GameScanner
       checksum = Digest::SHA256.file(save_file["path"]).hexdigest
       next if GameSave.exists?(checksum: checksum)
 
-      profile = EmulatorProfile.where(user_selected: true)
-                               .find_by(save_extension: save_file["extension"])
+      profile = EmulatorProfile.user_selected.find_by(save_extension: save_file["extension"])
 
       game_save = game.game_saves.build(
         emulator_profile: profile,
@@ -169,7 +168,7 @@ class GameScanner
   end
 
   private def active_save_extensions
-    EmulatorProfile.where(user_selected: true).pluck(:save_extension).uniq
+    EmulatorProfile.user_selected.pluck(:save_extension).uniq
   end
 
   private def titleize(file_path)

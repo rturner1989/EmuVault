@@ -16,6 +16,7 @@
     "@rails/actioncable": "^8.1.200",
     "@tailwindcss/cli": "^4.2.1",
     "a11y-dialog": "^8.1.5",
+    "cropperjs": "^1.6.2",
     "daisyui": "^5.5.19",
     "driver.js": "^1.4.0",
     "playwright": "^1.58.2",
