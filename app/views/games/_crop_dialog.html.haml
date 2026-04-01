@@ -7,7 +7,13 @@
       %img.w-full.block{ data: { cropper_image: true } }
   = modal.with_footer do
     .flex.items-center.gap-3
-      %button.btn.btn-primary.btn-sm{ type: "button", data: { cropper_action: "confirm" } }
+      = render ::UI::ActionComponent.new(variant: :primary,
+        size: :sm,
+        type: :button,
+        data: { cropper_action: "confirm" }) do
         = "Crop & Use"
-      %button.btn.btn-ghost.btn-sm{ type: "button", data: { cropper_action: "cancel" } }
+      = render ::UI::ActionComponent.new(variant: :ghost,
+        size: :sm,
+        type: :button,
+        data: { cropper_action: "cancel" }) do
         = "Cancel"
