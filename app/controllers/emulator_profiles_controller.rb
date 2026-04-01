@@ -4,9 +4,7 @@ class EmulatorProfilesController < ApplicationController
   def index
     return redirect_to onboarding_emulator_profiles_path unless current_user.setup_completed?
 
-    @selected_by_system = EmulatorProfile.where(user_selected: true)
-      .ordered
-      .group_by { |p| p.game_system&.to_sym }
+    load_profiles_list
   end
 
   def new
@@ -59,6 +57,7 @@ class EmulatorProfilesController < ApplicationController
     @selected_by_system = EmulatorProfile.where(user_selected: true)
       .ordered
       .group_by { |p| p.game_system&.to_sym }
+    @in_use_systems = Game.systems_in_use
   end
 
   private def set_profile

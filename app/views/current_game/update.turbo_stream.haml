@@ -4,7 +4,7 @@
   = turbo_stream.replace @previous_game, partial: "games/game_list_item", locals: { game: @previous_game }
   = turbo_stream.replace dom_id(@previous_game, :card), partial: "games/game_card", locals: { game: @previous_game }
 = turbo_stream.update "now-playing-banner", partial: "games/now_playing_banner"
-= turbo_stream.replace "game_header", partial: "games/header", locals: { game: @game }
+= turbo_stream.replace dom_id(@game, :header), partial: "games/header", locals: { game: @game }
 = turbo_stream.update :quick_sync_content, partial: "shared/quick_sync_content"
 = turbo_stream.update :now_playing, partial: "shared/now_playing"
 = turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: @notice)

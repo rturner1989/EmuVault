@@ -47,9 +47,13 @@ class Game < ApplicationRecord
 
   scope :without_saves, -> { left_joins(:game_saves).where(game_saves: { id: nil }) }
 
+  def self.systems_in_use
+    distinct.pluck(:system).compact.map(&:to_sym).to_set
+  end
+
   def self.system_options_in_use
-    systems = distinct.pluck(:system).compact
-    GAME_SYSTEM_OPTIONS.select { |_text, value| systems.include?(value) }
+    systems = systems_in_use
+    GAME_SYSTEM_OPTIONS.select { |_text, value| systems.include?(value.to_sym) }
   end
 
   def self.storage_used_bytes

@@ -2,7 +2,7 @@
 - if @destroy_failed
   - @alert_text = @destroy_error == :in_use ? "Can't remove — you have games for this system. Remove those games first." : "Could not remove profile."
 - else
-  = turbo_stream.replace "profiles_list", partial: "emulator_profiles/profiles_list", locals: { selected_by_system: @selected_by_system }
+  = turbo_stream.replace "profiles_list", partial: "emulator_profiles/profiles_list", locals: { selected_by_system: @selected_by_system, in_use_systems: @in_use_systems }
   = turbo_stream.update "page_header", partial: "emulator_profiles/page_header"
   = turbo_stream.update "onboarding-banner" do
     = render "shared/onboarding_banner",

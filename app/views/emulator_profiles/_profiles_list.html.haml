@@ -22,7 +22,7 @@
             - a.with_leading_icon(name: "fa-trash-can")
             = "Delete selected"
 
-      - in_use_systems = Game.distinct.pluck(:system).map(&:to_sym).to_set
+      - in_use_systems = local_assigns.fetch(:in_use_systems, Game.systems_in_use)
       .space-y-4
         - selected_by_system.each do |system_key, profiles|
           - system_label = system_key.present? ? EmulatorProfile.game_system_label(system_key) : "Unknown System"

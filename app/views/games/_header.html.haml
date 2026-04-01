@@ -1,4 +1,4 @@
-.flex.flex-wrap.items-start.justify-between.gap-3{ id: "game_header" }
+.flex.flex-wrap.items-start.justify-between.gap-3{ id: dom_id(game, :header) }
   .flex.items-start.gap-3.min-w-0
     %div{ class: "w-16 shrink-0 aspect-3/4 rounded overflow-hidden bg-base-300" }
       - if game.cover_image.attached?
