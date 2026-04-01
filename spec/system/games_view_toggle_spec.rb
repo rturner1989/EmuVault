@@ -21,29 +21,29 @@ RSpec.describe "Games view toggle" do
     it "defaults to card view" do
       visit games_path
 
-      expect(page).to have_css("[data-view-toggle-target='cardView']:not(.hidden)")
-      expect(page).to have_css("[data-view-toggle-target='listView'].hidden", visible: :all)
+      expect(page).to have_css(".grid")
+      expect(page).to have_css("[title='Set as current game']", visible: :all)
     end
 
     it "switches to list view" do
       visit games_path
 
-      find("[data-view-toggle-target='listBtn']").click
+      click_on_list_view_toggle
 
-      expect(page).to have_css("[data-view-toggle-target='listView']:not(.hidden)")
-      expect(page).to have_css("[data-view-toggle-target='cardView'].hidden", visible: :all)
+      expect(page).to have_css(".space-y-2")
+      expect(page).to have_css(".fa-chevron-right")
     end
 
     it "persists the view preference across page loads" do
       visit games_path
-      find("[data-view-toggle-target='listBtn']").click
+      click_on_list_view_toggle
 
-      expect(page).to have_css("[data-view-toggle-target='listView']:not(.hidden)")
+      expect(page).to have_css(".fa-chevron-right")
 
       visit games_path
 
-      expect(page).to have_css("[data-view-toggle-target='listView']:not(.hidden)")
-      expect(page).to have_css("[data-view-toggle-target='cardView'].hidden", visible: :all)
+      expect(page).to have_css(".fa-chevron-right")
+      expect(page).to have_no_css(".grid .group")
     end
   end
 
@@ -53,15 +53,15 @@ RSpec.describe "Games view toggle" do
     it "shows games as cards in a grid" do
       expect(page).to have_text("Zelda")
       expect(page).to have_text("Mario")
-      expect(page).to have_css("[data-view-toggle-target='cardView'] .grid")
+      expect(page).to have_css(".grid")
     end
 
     it "shows placeholder icon when no cover image" do
-      expect(page).to have_css("[data-view-toggle-target='cardView'] .fa-gamepad")
+      expect(page).to have_css(".grid .fa-gamepad")
     end
 
     it "sets a game as current from the card view" do
-      within("[data-view-toggle-target='cardView']") do
+      within(".grid") do
         first(".group").hover
         first("[title='Set as current game']").click
       end
@@ -73,7 +73,7 @@ RSpec.describe "Games view toggle" do
       user.update!(current_game: game)
       visit games_path
 
-      within("[data-view-toggle-target='cardView']") do
+      within(".grid") do
         find("[title='Clear current game']").click
       end
 
@@ -81,47 +81,39 @@ RSpec.describe "Games view toggle" do
     end
 
     it "preserves card view after setting current game" do
-      within("[data-view-toggle-target='cardView']") do
+      within(".grid") do
         first(".group").hover
         first("[title='Set as current game']").click
       end
 
       expect(page).to have_text("Now playing:")
-      expect(page).to have_css("[data-view-toggle-target='cardView']:not(.hidden)")
-      expect(page).to have_css("[data-view-toggle-target='listView'].hidden", visible: :all)
+      expect(page).to have_css(".grid")
     end
   end
 
   describe "list view" do
     before do
       visit games_path
-      find("[data-view-toggle-target='listBtn']").click
+      click_on_list_view_toggle
     end
 
     it "shows games in a compact list" do
-      within("[data-view-toggle-target='listView']") do
-        expect(page).to have_text("Zelda")
-        expect(page).to have_text("Mario")
-        expect(page).to have_css(".fa-chevron-right", minimum: 2)
-      end
+      expect(page).to have_text("Zelda")
+      expect(page).to have_text("Mario")
+      expect(page).to have_css(".fa-chevron-right", minimum: 2)
     end
 
     it "sets a game as current from the list view" do
-      within("[data-view-toggle-target='listView']") do
-        first("[title='Set as current game']").click
-      end
+      first("[title='Set as current game']").click
 
       expect(page).to have_text("Now playing:")
     end
 
     it "preserves list view after setting current game" do
-      within("[data-view-toggle-target='listView']") do
-        first("[title='Set as current game']").click
-      end
+      first("[title='Set as current game']").click
 
       expect(page).to have_text("Now playing:")
-      expect(page).to have_css("[data-view-toggle-target='listView']:not(.hidden)")
-      expect(page).to have_css("[data-view-toggle-target='cardView'].hidden", visible: :all)
+      expect(page).to have_css(".fa-chevron-right")
     end
   end
 
@@ -158,31 +150,25 @@ RSpec.describe "Games view toggle" do
     end
   end
 
-  describe "infinite scroll" do
+  describe "pagination" do
     before do
       create_list(:game, 10, system: :gba)
       create(:game, title: "Extra Game", system: :gba)
     end
 
     it "loads all games across pages in list view" do
+      user.update!(games_view_preference: "list")
       visit games_path
-      find("[data-view-toggle-target='listBtn']").click
 
-      within("[data-view-toggle-target='listView']") do
-        expect(page).to have_css("[id^='game_']", count: 13, wait: 5)
-      end
-
-      expect(page).to have_no_css("[data-load-more-target='sentinel']", visible: :all)
+      expect(page).to have_css("[id^='game_']", count: 13, wait: 5)
+      expect(page).to have_no_css(".loading-spinner")
     end
 
     it "loads all games across pages in card view" do
       visit games_path
 
-      within("[data-load-more-target='cardContainer']") do
-        expect(page).to have_css(".group", count: 13, wait: 5)
-      end
-
-      expect(page).to have_no_css("[data-load-more-target='sentinel']", visible: :all)
+      expect(page).to have_css(".group", count: 13, wait: 5)
+      expect(page).to have_no_css(".loading-spinner")
     end
 
     it "resets pagination when filter changes" do
@@ -192,7 +178,13 @@ RSpec.describe "Games view toggle" do
       select "Game Boy Color", from: "system"
 
       expect(page).to have_text("Tetris GBC")
-      expect(page).to have_no_css("[data-load-more-target='sentinel']", visible: :all)
+      expect(page).to have_no_css(".loading-spinner")
     end
+  end
+
+  private
+
+  def click_on_list_view_toggle
+    first("button .fa-list").ancestor("button").click
   end
 end

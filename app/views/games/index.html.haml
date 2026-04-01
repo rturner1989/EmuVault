@@ -32,27 +32,28 @@
       = turbo_frame_tag "now-playing-banner", style: "display: contents" do
         = render "games/now_playing_banner"
 
-      %div{ data: { controller: "view-toggle load-more", load_more_page_value: @pagy&.page || 1, load_more_total_pages_value: @pagy&.pages || 1 } }
-        = turbo_frame_tag "games-filters", style: "display: contents", target: "_top" do
-          = render "games/filters",
-            games_count: @games.size,
-            system_options: @system_options,
-            selected_system: @selected_system,
-            selected_sort: @selected_sort
+      = turbo_frame_tag "games-filters", style: "display: contents", target: "_top" do
+        = render "games/filters",
+          games_count: @games.size,
+          system_options: @system_options,
+          selected_system: @selected_system,
+          selected_sort: @selected_sort
 
-        = turbo_frame_tag "games-list", class: "block" do
-          - if @games.empty?
-            = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
-              - c.with_action do
-                = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
-                  - a.with_leading_icon(name: "fa-plus")
-                  = "Add Game"
-          - else
-            = render "games/games_content",
-              games: @games,
-              pagy: @pagy,
-              selected_sort: @selected_sort,
-              selected_system: @selected_system
+      = turbo_frame_tag "games-list", class: "block" do
+        - if @games.empty?
+          = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
+            - c.with_action do
+              = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
+                - a.with_leading_icon(name: "fa-plus")
+                = "Add Game"
+        - else
+          = render "games/games_content",
+            games: @games,
+            pagy: @pagy,
+            selected_sort: @selected_sort,
+            selected_system: @selected_system
+
+  = render "games/crop_dialog"
 
   -# Scan review modal — opens on scan or when pending auto-scan results exist
   = render ::UI::ModalComponent.new(id: "scan-review-dialog", title: "Scan Review", subtitle: "Select the games you want to add to your library", auto_open: @pending_scan) do |modal|
@@ -68,3 +69,10 @@
         type: :submit,
         form: "scan-confirm-form") do
         = "Add to library"
+      - if @pending_scan
+        = render ::UI::ActionComponent.new(href: game_scan_dismissal_path,
+          method: :post,
+          variant: :ghost,
+          size: :sm,
+          form: { data: { turbo_frame: "_top" } }) do
+          = "Dismiss"

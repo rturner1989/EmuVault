@@ -5,11 +5,14 @@ module Games
 
       def create
         selected_roms = Set.new(params[:selected_roms] || [])
-        stored = current_user.last_scan_result&.dig("found") || []
+        scan_result = current_user.last_scan_result || {}
+        stored = scan_result.dig("found") || []
         items = stored.select { |item| selected_roms.include?(item["rom_path"]) }
 
+        current_user.update!(last_scan_result: scan_result.merge("status" => "reviewed"))
+
         if items.any?
-          GameScanJob.perform_later("confirm", items, user_id: current_user.id)
+          GameScanConfirmJob.perform_later(items, user_id: current_user.id)
           @notice_text = "#{pluralize(items.size, "game")} queued for import."
         else
           @alert_text = "No games selected."

@@ -7,16 +7,16 @@ RSpec.describe "Games Scan" do
 
   describe "POST /game_scan (scan library)" do
     it "enqueues a dry_run scan job" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanDryRunJob).to receive(:perform_later)
 
       post game_scan_path,
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-      expect(GameScanJob).to have_received(:perform_later).with("dry_run", user_id: user.id)
+      expect(GameScanDryRunJob).to have_received(:perform_later).with(user_id: user.id)
     end
 
     it "opens the review modal with spinner via turbo stream" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanDryRunJob).to receive(:perform_later)
 
       post game_scan_path,
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
@@ -39,19 +39,19 @@ RSpec.describe "Games Scan" do
     end
 
     it "enqueues confirm job with selected items" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanConfirmJob).to receive(:perform_later)
 
       post game_scan_confirmation_path,
         params: { selected_roms: [ "/roms/Zelda.gba" ] },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
-      expect(GameScanJob).to have_received(:perform_later).with("confirm", [
+      expect(GameScanConfirmJob).to have_received(:perform_later).with([
         { "rom_path" => "/roms/Zelda.gba", "title" => "Zelda", "game_system" => "gba", "save_files" => [] }
       ], user_id: user.id)
     end
 
     it "closes the review modal via turbo stream" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanConfirmJob).to receive(:perform_later)
 
       post game_scan_confirmation_path,
         params: { selected_roms: [ "/roms/Zelda.gba" ] },
@@ -62,7 +62,7 @@ RSpec.describe "Games Scan" do
     end
 
     it "shows flash with queued count" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanConfirmJob).to receive(:perform_later)
 
       post game_scan_confirmation_path,
         params: { selected_roms: [ "/roms/Zelda.gba", "/roms/Pokemon.gba" ] },
@@ -72,7 +72,7 @@ RSpec.describe "Games Scan" do
     end
 
     it "shows queued flash message" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanConfirmJob).to receive(:perform_later)
 
       post game_scan_confirmation_path,
         params: { selected_roms: [ "/roms/Zelda.gba" ] },
@@ -82,14 +82,14 @@ RSpec.describe "Games Scan" do
     end
 
     it "shows alert when no games selected" do
-      allow(GameScanJob).to receive(:perform_later)
+      allow(GameScanConfirmJob).to receive(:perform_later)
 
       post game_scan_confirmation_path,
         params: { selected_roms: [] },
         headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(response.body).to include("No games selected")
-      expect(GameScanJob).not_to have_received(:perform_later)
+      expect(GameScanConfirmJob).not_to have_received(:perform_later)
     end
   end
 end

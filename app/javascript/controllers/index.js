@@ -47,8 +47,6 @@ application.register("theme", ThemeController)
 import ImageCropperController from "./image_cropper_controller"
 application.register("image-cropper", ImageCropperController)
 
-import LoadMoreController from "./load_more_controller"
-application.register("load-more", LoadMoreController)
+import PaginationController from "./pagination_controller"
+application.register("pagination", PaginationController)
 
-import ViewToggleController from "./view_toggle_controller"
-application.register("view-toggle", ViewToggleController)

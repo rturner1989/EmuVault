@@ -1,107 +1,23 @@
-class GameScanJob < ApplicationJob
-  queue_as :default
+# frozen_string_literal: true
 
-  # mode: "dry_run"  — discover ROMs, store findings, no DB writes
-  # mode: "confirm"  — import a specific list of items (from review step)
-  # mode: "auto"     — import all new ROMs from auto_scan paths (scheduled)
-  # mode: "auto_all" — import all ROMs from all paths (onboarding)
-  def perform(mode = "auto", items = nil, user_id: nil)
-    user = user_id ? User.find(user_id) : User.first
-    scanner = GameScanner.new
-
-    case mode
-    when "dry_run"
-      result = scanner.collect(ScanPath.ordered)
-      result["status"] = "reviewed"
-      user.update!(last_scan_result: result)
-      broadcast_dry_run_complete(user, result)
-
-    when "confirm"
-      broadcast_scan_start(user)
-      result = scanner.import_items(items || []) { |game| broadcast_game_added(user, game) }
-      result["status"] = "completed"
-      user.update!(last_scanned_at: Time.current, last_scan_result: result)
-      broadcast_import_complete(user, result)
-
-    when "auto"
-      return unless user.scan_enabled? && user.scan_due?
-
-      result = scanner.collect(ScanPath.for_auto_scan)
-      result["status"] = "pending_review"
-      user.update!(last_scanned_at: Time.current, last_scan_result: result)
-      notify_scan_results(user, result) if (result["found"] || []).any?
-
-    when "auto_all"
-      broadcast_scan_start(user)
-      result = scanner.import_all(ScanPath.ordered) { |game| broadcast_game_added(user, game) }
-      result["status"] = "completed"
-      user.update!(last_scanned_at: Time.current, last_scan_result: result)
-      broadcast_import_complete(user, result)
-      result
-    end
-  end
-
-  # --- Notifications ---
-
-  private def notify_scan_results(user, result)
-    return if unread_scan_notification?(user)
-
-    found = (result["found"] || []).size
-    ScanCompleteNotifier.with(found: found).deliver(user)
-
-    count = user.notifications.where(read_at: nil).count
-    Turbo::StreamsChannel.broadcast_replace_later_to(
-      "notifications_#{user.id}",
-      targets: "[data-notification-badge]",
-      partial: "shared/notification_badge",
-      locals: { count: count }
-    )
-  end
-
-  private def unread_scan_notification?(user)
-    user.notifications
-      .joins(:event)
-      .where(read_at: nil)
-      .where(noticed_events: { type: "ScanCompleteNotifier" })
-      .exists?
-  end
-
-  # --- Broadcasts ---
+module ScanBroadcasting
+  extend ActiveSupport::Concern
 
   private def broadcast_scan_start(user)
     user.update!(last_scan_result: { "status" => "scanning" })
   end
 
   private def broadcast_game_added(user, game)
-    # Append to onboarding game list (no-op if not on onboarding page)
     Turbo::StreamsChannel.broadcast_append_to(
       "scans_#{user.id}",
       target: "onboarding-games-list",
       html: ApplicationController.render(partial: "games/onboarding_game_list_item", locals: { game: game })
     )
 
-    # Append to main game list (no-op if not on games index)
     Turbo::StreamsChannel.broadcast_append_to(
       "scans_#{user.id}",
       target: "games-list",
       html: ApplicationController.render(partial: "games/game_list_item", locals: { game: game, current_game_id: user.current_game_id })
-    )
-  end
-
-  private def broadcast_dry_run_complete(user, result)
-    found = result["found"] || []
-    already_in_lib = result["already_in_lib"] || 0
-    skipped_paths = result["skipped_paths"] || []
-    grouped = found.group_by { |item| item["game_system"] }
-
-    # Replace spinner with review content inside the modal
-    Turbo::StreamsChannel.broadcast_update_to(
-      "scans_#{user.id}",
-      target: "scan-review-content",
-      html: ApplicationController.render(
-        partial: "games/scans/review_content",
-        locals: { found: found, already_in_lib: already_in_lib, skipped_paths: skipped_paths, grouped: grouped }
-      )
     )
   end
 
@@ -137,12 +53,15 @@ class GameScanJob < ApplicationJob
   private def broadcast_games_list(user, added)
     return unless added > 0
 
+    games = Game.order(:title)
+    partial = user.games_view_preference == "list" ? "games/game_list" : "games/game_card_grid"
+
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",
       target: "games-list",
       html: ApplicationController.render(
-        partial: "games/game_list",
-        locals: { games: Game.order(:title) },
+        partial: partial,
+        locals: { games: games },
         layout: false
       )
     )

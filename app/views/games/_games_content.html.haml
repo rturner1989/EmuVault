@@ -1,24 +1,35 @@
 - selected_sort = local_assigns.fetch(:selected_sort, nil)
 - selected_system = local_assigns.fetch(:selected_system, nil)
 - pagy = local_assigns.fetch(:pagy, nil)
+- view = current_user.games_view_preference
+- next_url = pagy && pagy.page < pagy.pages ? games_path(page: pagy.page + 1, sort: selected_sort, system: selected_system, paginate: true) : nil
+- grouped = selected_sort == "system"
 
-%div{ class: "hidden", data: { view_toggle_target: "listView" } }
+- if view == "list"
+  %div{ data: next_url ? { controller: "pagination", pagination_url_value: next_url } : {} }
+    .space-y-2{ data: { pagination_target: "container" } }
+      = render "games/games_section",
+        games: games,
+        selected_sort: selected_sort,
+        selected_system: selected_system,
+        item_partial: "games/game_list",
+        container_class: "space-y-2"
+
+    - if next_url
+      .flex.justify-center.py-4{ data: { pagination_target: "sentinel" } }
+        %span.loading.loading-spinner.loading-md.text-primary
+- elsif grouped
   = render "games/games_section",
     games: games,
     selected_sort: selected_sort,
     selected_system: selected_system,
-    item_partial: "games/game_list",
-    container_class: "space-y-2",
-    container_data: { load_more_target: "listContainer" }
+    item_partial: "games/game_card_grid"
+- else
+  %div{ data: next_url ? { controller: "pagination", pagination_url_value: next_url } : {} }
+    %div{ class: "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3",
+      data: { pagination_target: "container" } }
+      = render partial: "games/game_card", collection: games, as: :game
 
-%div{ class: "hidden", data: { view_toggle_target: "cardView" } }
-  = render "games/games_section",
-    games: games,
-    selected_sort: selected_sort,
-    selected_system: selected_system,
-    item_partial: "games/game_card_grid",
-    container_data: {}
-
-- if pagy && pagy.page < pagy.pages
-  .flex.justify-center.py-4{ data: { load_more_target: "sentinel" } }
-    %span.loading.loading-spinner.loading-md.text-primary
+    - if next_url
+      .flex.justify-center.py-4{ data: { pagination_target: "sentinel" } }
+        %span.loading.loading-spinner.loading-md.text-primary

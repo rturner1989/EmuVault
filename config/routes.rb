@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   resource :game_scan, only: [:create], controller: "games/scans" do
     resource :confirmation, only: [:create], controller: "games/scans/confirmations"
+    resource :dismissal, only: [:create], controller: "games/scans/dismissals"
   end
   resources :scan_paths, only: %i[create update destroy], controller: "games/paths", as: :scan_paths do
     collection do
@@ -42,6 +43,8 @@ Rails.application.routes.draw do
     resource :review, only: [:show], controller: "data_imports/reviews"
     resource :resolution, only: [:create], controller: "data_imports/resolutions"
   end
+
+  resource :games_view_preference, only: [:update], controller: "games/view_preferences"
 
   resources :games do
     resource :emulator_configs, only: [:update], controller: "game_emulator_configs"

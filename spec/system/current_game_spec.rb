@@ -61,8 +61,8 @@ RSpec.describe "Current Game" do
     let!(:game2) { create(:game, title: "Mario", system: :gba) }
 
     it "clears the previous game styling in list view" do
+      user.update!(games_view_preference: "list")
       visit games_path
-      find("[data-view-toggle-target='listBtn']").click
 
       within("#game_#{game.id}") do
         find("[title='Set as current game']").click

@@ -1,29 +1,40 @@
+- active_view = local_assigns.fetch(:active_view, current_user&.games_view_preference || "card")
+
 - if games_count > 1 || selected_system.present?
   .mb-4
-    = form_with url: games_path, method: :get, data: { controller: "auto-submit" } do
-      .flex.items-center.gap-2.flex-wrap
-        - if system_options.size > 1
-          = select_tag :system,
-            options_for_select([["All systems", ""], *system_options], selected_system),
+    .flex.items-center.gap-2.flex-wrap
+      = form_with url: games_path, method: :get, data: { controller: "auto-submit" } do
+        .flex.items-center.gap-2.flex-wrap
+          - if system_options.size > 1
+            = select_tag :system,
+              options_for_select([["All systems", ""], *system_options], selected_system),
+              class: "select select-bordered select-sm w-44",
+              data: { action: "change->auto-submit#submit" }
+
+          = select_tag :sort,
+            options_for_select(game_sort_options, selected_sort),
             class: "select select-bordered select-sm w-44",
             data: { action: "change->auto-submit#submit" }
 
-        = select_tag :sort,
-          options_for_select(game_sort_options, selected_sort),
-          class: "select select-bordered select-sm w-44",
-          data: { action: "change->auto-submit#submit" }
+          - if selected_system.present?
+            = render ::UI::ActionComponent.new(href: games_path(sort: selected_sort),
+              variant: :link,
+              class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
+              - a.with_leading_icon(name: "fa-xmark")
+              = "Clear"
 
-        - if selected_system.present?
-          = render ::UI::ActionComponent.new(href: games_path(sort: selected_sort),
-            variant: :link,
-            class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
-            - a.with_leading_icon(name: "fa-xmark")
-            = "Clear"
-
-        .ml-auto.flex
-          %button.btn.btn-ghost.btn-sm{ type: "button",
-            data: { view_toggle_target: "cardBtn", action: "click->view-toggle#showCard" } }
-            = render ::UI::IconComponent.new(name: "fa-grip")
-          %button.btn.btn-ghost.btn-sm{ type: "button",
-            data: { view_toggle_target: "listBtn", action: "click->view-toggle#showList" } }
-            = render ::UI::IconComponent.new(name: "fa-list")
+      .ml-auto.flex
+        = render ::UI::ActionComponent.new(href: games_view_preference_path(view: "card", sort: selected_sort, system: selected_system),
+          method: :patch,
+          variant: :ghost,
+          size: :sm,
+          class: "#{'btn-active' if active_view == 'card'}",
+          form: { data: { turbo_frame: "_top" } }) do
+          = render ::UI::IconComponent.new(name: "fa-grip")
+        = render ::UI::ActionComponent.new(href: games_view_preference_path(view: "list", sort: selected_sort, system: selected_system),
+          method: :patch,
+          variant: :ghost,
+          size: :sm,
+          class: "#{'btn-active' if active_view == 'list'}",
+          form: { data: { turbo_frame: "_top" } }) do
+          = render ::UI::IconComponent.new(name: "fa-list")

@@ -1,0 +1,12 @@
+%div{ data: { items: true } }
+  - view = current_user.games_view_preference
+
+  - if view == "list"
+    = render partial: "games/game_list_item", collection: games, as: :game
+  - else
+    = render partial: "games/game_card", collection: games, as: :game
+
+- if pagy.page < pagy.pages
+  .flex.justify-center.py-4{ data: { pagination_target: "sentinel",
+    pagination_next: games_path(page: pagy.page + 1, sort: selected_sort, system: selected_system, paginate: true) } }
+    %span.loading.loading-spinner.loading-md.text-primary

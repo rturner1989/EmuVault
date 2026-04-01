@@ -22,7 +22,7 @@ RSpec.describe "Cover image" do
     click_on "Edit"
     expect(page).to have_text("Cover Image")
     find("input[type='file'][accept*='image']", visible: :all).set(cover_image_path)
-    expect(page).to have_text("Crop Cover Image")
+    expect(page).to have_css("#crop-cover-dialog:not([aria-hidden])")
     expect(page).to have_css(".cropper-container")
   end
 
@@ -37,9 +37,11 @@ RSpec.describe "Cover image" do
     it "closes the cropper when Cancel is clicked" do
       open_edit_and_select_cover
 
-      page.execute_script("document.querySelector('[data-action=\"cancel\"]').click()")
+      within("#crop-cover-dialog") do
+        click_button "Cancel"
+      end
 
-      expect(page).to have_no_text("Crop Cover Image")
+      expect(page).to have_css("#crop-cover-dialog[aria-hidden='true']", visible: :all)
       expect(page).to have_text("No file selected")
     end
 
@@ -48,7 +50,7 @@ RSpec.describe "Cover image" do
 
       page.execute_script("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))")
 
-      expect(page).to have_no_text("Crop Cover Image")
+      expect(page).to have_css("#crop-cover-dialog[aria-hidden='true']", visible: :all)
       expect(page).to have_text("No file selected")
     end
 
@@ -57,16 +59,16 @@ RSpec.describe "Cover image" do
 
       page.execute_script("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))")
 
-      expect(page).to have_no_text("Crop Cover Image")
+      expect(page).to have_css("#crop-cover-dialog[aria-hidden='true']", visible: :all)
       expect(page).to have_css("[id='edit-game-dialog']:not([aria-hidden])")
     end
 
     it "closes the cropper when clicking outside the panel" do
       open_edit_and_select_cover
 
-      page.execute_script("document.querySelector('.bg-black').click()")
+      page.execute_script("document.querySelector('#crop-cover-dialog .dialog-overlay').click()")
 
-      expect(page).to have_no_text("Crop Cover Image")
+      expect(page).to have_css("#crop-cover-dialog[aria-hidden='true']", visible: :all)
       expect(page).to have_text("No file selected")
     end
 
@@ -75,7 +77,7 @@ RSpec.describe "Cover image" do
 
       click_button "Crop & Use"
 
-      expect(page).to have_no_text("Crop Cover Image")
+      expect(page).to have_css("#crop-cover-dialog[aria-hidden='true']", visible: :all)
       expect(page).to have_text("cover.webp")
     end
 
@@ -111,7 +113,7 @@ RSpec.describe "Cover image" do
 
       visit games_path
 
-      within("[data-view-toggle-target='cardView']") do
+      within(".grid") do
         expect(page).to have_css("img[alt='Zelda']")
         expect(page).to have_no_css(".fa-gamepad")
       end

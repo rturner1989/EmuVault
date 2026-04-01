@@ -16,7 +16,7 @@ class GamesController < MainController
     else games.order(:title)
     end
 
-    # System sort groups games by system with headers — infinite scroll appends
+    # System sort groups games by system with headers — pagination appends
     # flat items which breaks the grouping, so load all games for this sort.
     if @selected_sort == "system"
       @games = sorted.to_a
@@ -25,8 +25,8 @@ class GamesController < MainController
       @pagy, @games = pagy(sorted)
     end
 
-    if params[:append]
-      render partial: "games/games_append", locals: { games: @games }, layout: false
+    if params[:paginate]
+      render partial: "games/games_page", locals: { games: @games, pagy: @pagy, selected_sort: @selected_sort, selected_system: @selected_system }, layout: false
       return
     end
 
@@ -108,13 +108,12 @@ class GamesController < MainController
   private def load_pending_scan
     scan_result = current_user.last_scan_result || {}
     @pending_scan = scan_result["status"] == "pending_review" && (scan_result["found"] || []).any?
+
     return unless @pending_scan
 
     @scan_found = scan_result["found"] || []
     @scan_already_in_lib = scan_result["already_in_lib"] || 0
     @scan_skipped_paths = scan_result["skipped_paths"] || []
     @scan_grouped = @scan_found.group_by { |item| item["game_system"] }
-
-    current_user.update!(last_scan_result: scan_result.merge("status" => "reviewed"))
   end
 end

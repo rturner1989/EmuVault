@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Discovers and imports ROM files from scan paths.
-# Used by GameScanJob for all scan modes.
+# Used by scan jobs (GameScanDryRunJob, GameScanConfirmJob, GameAutoScanJob, GameScanImportAllJob).
 class GameScanner
   ROM_EXTENSIONS = {
     "nes"     => %w[nes],

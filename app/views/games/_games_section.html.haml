@@ -1,5 +1,4 @@
 - container_class = local_assigns.fetch(:container_class, nil)
-- container_data = local_assigns.fetch(:container_data, {})
 
 - if selected_sort == "system"
   .space-y-6
@@ -15,8 +14,8 @@
   %div
     %p.text-sm.font-medium.mb-2
       = system_label
-    %div{ class: container_class, data: container_data }
+    %div{ class: container_class }
       = render item_partial, games: games
 - else
-  %div{ class: container_class, data: container_data }
+  %div{ class: container_class }
     = render item_partial, games: games
