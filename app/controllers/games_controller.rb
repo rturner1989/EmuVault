@@ -30,8 +30,7 @@ class GamesController < MainController
       return
     end
 
-    systems_in_use = Game.distinct.pluck(:system).compact
-    @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| systems_in_use.include?(value) }
+    @system_options = Game.system_options_in_use
 
     load_pending_scan
   end
@@ -58,8 +57,7 @@ class GamesController < MainController
       @pagy, @games = pagy(Game.order(:title))
       @games_count = Game.count
       @games_without_save = Game.without_saves.count
-      systems_in_use = Game.distinct.pluck(:system).compact
-      @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| systems_in_use.include?(value) }
+      @system_options = Game.system_options_in_use
       @selected_sort = "title_asc"
     else
       render :new, status: :unprocessable_entity
@@ -87,8 +85,7 @@ class GamesController < MainController
 
       if params[:source] == "index"
         @games_count = Game.count
-        systems_in_use = Game.distinct.pluck(:system).compact
-        @system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| systems_in_use.include?(value) }
+        @system_options = Game.system_options_in_use
       else
         redirect_to games_path, notice: @notice_text, status: :see_other
       end

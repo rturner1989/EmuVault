@@ -47,6 +47,11 @@ class Game < ApplicationRecord
 
   scope :without_saves, -> { left_joins(:game_saves).where(game_saves: { id: nil }) }
 
+  def self.system_options_in_use
+    systems = distinct.pluck(:system).compact
+    GAME_SYSTEM_OPTIONS.select { |_text, value| systems.include?(value) }
+  end
+
   def self.storage_used_bytes
     ActiveStorage::Attachment.joins(:blob)
       .where(record_type: "GameSave", name: "file")

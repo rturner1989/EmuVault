@@ -79,6 +79,62 @@ RSpec.describe DataImport do
     end
   end
 
+  describe "#new_games" do
+    it "returns games not in the conflicts list" do
+      import = build(:data_import,
+        manifest: { "games" => [
+          { "export_id" => "1", "title" => "Zelda" },
+          { "export_id" => "2", "title" => "Mario" },
+          { "export_id" => "3", "title" => "Pokemon" }
+        ] },
+        conflicts: [ { "export_id" => "2", "title" => "Mario" } ])
+
+      expect(import.new_games.map { |g| g["title"] }).to eq(%w[Zelda Pokemon])
+    end
+
+    it "returns all games when there are no conflicts" do
+      import = build(:data_import,
+        manifest: { "games" => [ { "export_id" => "1", "title" => "Zelda" } ] },
+        conflicts: [])
+
+      expect(import.new_games.size).to eq(1)
+    end
+  end
+
+  describe "#emulator_profiles" do
+    it "returns profiles from the manifest" do
+      import = build(:data_import,
+        manifest: { "games" => [], "emulator_profiles" => [ { "name" => "RetroArch" } ] })
+
+      expect(import.emulator_profiles).to eq([ { "name" => "RetroArch" } ])
+    end
+
+    it "returns empty array when no profiles key exists" do
+      import = build(:data_import, manifest: { "games" => [] })
+
+      expect(import.emulator_profiles).to eq([])
+    end
+  end
+
+  describe "#total_saves" do
+    it "sums saves across all games" do
+      import = build(:data_import,
+        manifest: { "games" => [
+          { "title" => "Zelda", "saves" => [ {}, {} ] },
+          { "title" => "Mario", "saves" => [ {} ] }
+        ] })
+
+      expect(import.total_saves).to eq(3)
+    end
+
+    it "returns zero when no games have saves" do
+      import = build(:data_import,
+        manifest: { "games" => [ { "title" => "Zelda", "saves" => [] } ] })
+
+      expect(import.total_saves).to eq(0)
+    end
+  end
+
   describe "file size limit" do
     it "rejects files over 500MB" do
       import = build(:data_import)

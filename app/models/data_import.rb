@@ -28,6 +28,19 @@ class DataImport < ApplicationRecord
   has_one_attached :file
   max_file_size 500.megabytes
 
+  def new_games
+    conflict_ids = conflicts.map { |c| c["export_id"] }.to_set
+    manifest["games"].reject { |g| conflict_ids.include?(g["export_id"]) }
+  end
+
+  def emulator_profiles
+    manifest.fetch("emulator_profiles", [])
+  end
+
+  def total_saves
+    manifest["games"].sum { |g| g["saves"].size }
+  end
+
   def self.analyze_zip(uploaded_file)
     require "zip"
 

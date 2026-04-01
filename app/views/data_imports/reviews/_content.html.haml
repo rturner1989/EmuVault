@@ -12,12 +12,8 @@
         = "Back to Settings"
 
 - else
-  - manifest = import.manifest
-  - conflict_ids = import.conflicts.map { |c| c["export_id"] }.to_set
-  - new_games = manifest["games"].reject { |g| conflict_ids.include?(g["export_id"]) }
-  - conflicts = import.conflicts
-  - profiles = manifest.fetch("emulator_profiles", [])
-  - total_saves = manifest["games"].sum { |g| g["saves"].size }
+  - new_games = import.new_games
+  - profiles = import.emulator_profiles
 
   -# Summary banner
   .rounded-lg.px-5.py-4.bg-base-100.border.border-base-300
@@ -26,27 +22,27 @@
         = render ::UI::IconComponent.new(name: "fa-gamepad", class: "text-primary")
         %span.text-sm
           %strong
-            = manifest["games"].size
-          = " #{"game".pluralize(manifest["games"].size)}"
+            = import.manifest["games"].size
+          = " #{"game".pluralize(import.manifest["games"].size)}"
       .flex.items-center.gap-2
         = render ::UI::IconComponent.new(name: "fa-floppy-disk", class: "text-primary")
         %span.text-sm
           %strong
-            = total_saves
-          = " #{"save".pluralize(total_saves)}"
+            = import.total_saves
+          = " #{"save".pluralize(import.total_saves)}"
       .flex.items-center.gap-2
         = render ::UI::IconComponent.new(name: "fa-microchip", class: "text-primary")
         %span.text-sm
           %strong
             = profiles.size
           = " #{"profile".pluralize(profiles.size)}"
-      - if conflicts.any?
+      - if import.conflicts.any?
         .flex.items-center.gap-2
           = render ::UI::IconComponent.new(name: "fa-triangle-exclamation", class: "text-accent")
           %span.text-sm.text-accent
             %strong
-              = conflicts.size
-            = " #{"conflict".pluralize(conflicts.size)}"
+              = import.conflicts.size
+            = " #{"conflict".pluralize(import.conflicts.size)}"
 
   = form_with url: data_import_resolution_path(import), class: "space-y-3" do |f|
     -# New games
@@ -70,16 +66,16 @@
                   = "#{game["saves"].size} #{"save".pluralize(game["saves"].size)}"
 
     -# Conflicts
-    - if conflicts.any?
+    - if import.conflicts.any?
       .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
         .flex.items-center.gap-2.px-4.py-3.border-b.border-base-300
           = render ::UI::IconComponent.new(name: "fa-triangle-exclamation", class: "text-accent")
           %h2.text-sm.font-semibold
-            = "#{conflicts.size} #{"Conflict".pluralize(conflicts.size)}"
+            = "#{import.conflicts.size} #{"Conflict".pluralize(import.conflicts.size)}"
           %span.text-xs.text-muted
             = "These games already exist in your library"
         .divide-y.divide-base-300
-          - conflicts.each do |game|
+          - import.conflicts.each do |game|
             .px-4.py-3
               .flex.items-center.justify-between.mb-2.5
                 .min-w-0

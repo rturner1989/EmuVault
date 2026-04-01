@@ -69,8 +69,7 @@ module ScanBroadcasting
 
   private def broadcast_filters(user)
     games = Game.order(:title)
-    systems_in_use = Game.distinct.pluck(:system).compact
-    system_options = Game::GAME_SYSTEM_OPTIONS.select { |_text, value| systems_in_use.include?(value) }
+    system_options = Game.system_options_in_use
 
     Turbo::StreamsChannel.broadcast_update_to(
       "scans_#{user.id}",

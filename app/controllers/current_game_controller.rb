@@ -4,25 +4,26 @@ class CurrentGameController < MainController
   def update
     @previous_game = current_user.current_game
     current_user.update!(current_game: @game)
-    respond_with_game("Now playing: #{@game.title}")
+    @notice = "Now playing: #{@game.title}"
+
+    respond_to do |format|
+      format.turbo_stream { load_quick_sync_data }
+      format.html { redirect_back_or_to root_path, notice: @notice }
+    end
   end
 
   def destroy
     current_user.update!(current_game: nil)
     current_user.reload
-    respond_with_game("Cleared current game")
+    @notice = "Cleared current game"
+
+    respond_to do |format|
+      format.turbo_stream { load_quick_sync_data }
+      format.html { redirect_back_or_to root_path, notice: @notice }
+    end
   end
 
   private def set_game
     @game = Game.find(params[:game_id])
-  end
-
-  private def respond_with_game(notice)
-    if params[:inline]
-      load_quick_sync_data
-      @notice = notice
-    else
-      redirect_back_or_to root_path, notice: notice
-    end
   end
 end
