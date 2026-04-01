@@ -3,10 +3,10 @@
 class NotificationsController < MainController
   def index
     @notifications = current_user.notifications
-                            .where(read_at: nil)
-                            .includes(event: {})
-                            .order(created_at: :desc)
-                            .limit(20)
+      .where(read_at: nil)
+      .includes(event: {})
+      .order(created_at: :desc)
+      .limit(20)
   end
 
   def show
