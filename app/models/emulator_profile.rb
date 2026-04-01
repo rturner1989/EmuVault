@@ -50,6 +50,14 @@ class EmulatorProfile < ApplicationRecord
   scope :for_system, ->(system) { where(game_system: system) }
   scope :selected_for_system, ->(system) { where(user_selected: true, game_system: system) }
 
+  def self.selected_game_systems
+    where(user_selected: true).distinct.pluck(:game_system).compact.map(&:to_sym)
+  end
+
+  def self.default_game_systems
+    where(is_default: true).distinct.pluck(:game_system).compact.map(&:to_sym)
+  end
+
   def platform_label
     PLATFORM_LABELS[platform&.to_sym] || platform.to_s.capitalize
   end

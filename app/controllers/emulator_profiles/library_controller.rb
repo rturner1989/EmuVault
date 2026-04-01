@@ -8,26 +8,11 @@ module EmulatorProfiles
         return
       end
 
-      selected_systems = EmulatorProfile.where(user_selected: true)
-        .distinct
-        .pluck(:game_system)
-        .compact
-        .map(&:to_sym)
-      available_systems = EmulatorProfile.where(is_default: true)
-        .distinct
-        .pluck(:game_system)
-        .compact
-        .map(&:to_sym)
-      visible_systems = (selected_systems + available_systems).uniq
-      @systems = visible_systems
-        .map { |s| { value: s.to_s, text: EmulatorProfile.game_system_label(s) } }
-        .sort_by { |s| s[:text] }
+      selected_systems = EmulatorProfile.selected_game_systems
+      visible_systems = (selected_systems + EmulatorProfile.default_game_systems).uniq
+      @systems = visible_systems.map { |s| { value: s.to_s, text: EmulatorProfile.game_system_label(s) } }.sort_by { |s| s[:text] }
       @selected_systems = selected_systems
-      @in_use_systems = Game.distinct
-        .pluck(:system)
-        .compact
-        .map(&:to_sym)
-        .to_set
+      @in_use_systems = Game.systems_in_use
     end
 
     def show
