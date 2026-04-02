@@ -52,6 +52,10 @@ en:
       create:
         started: "Import started — your library will be restored shortly."
   games:
+    create:
+      added: "%{title} added."
+    update:
+      updated: "%{title} updated."
     index:
       page_title: "Games — EmuVault"
       add_game: "Add Game"
@@ -82,6 +86,22 @@ en:
     destroy:
       success: "%{title} removed."
       failure: "Could not remove %{title}."
+    scans:
+      review_content:
+        skipped_paths:
+          one: "%{count} path could not be read"
+          other: "%{count} paths could not be read"
+        no_new_games: "No new games found"
+        check_paths: "Check your scan paths in Settings."
+        already_in_lib:
+          one: "%{count} game already in library"
+          other: "%{count} games already in library"
+        games_found:
+          one: "%{count} game"
+          other: "%{count} games"
+        saves_found:
+          one: "%{count} save file found"
+          other: "%{count} save files found"
     show:
       page_title: "%{title} — EmuVault"
       breadcrumb: "Games"
@@ -147,6 +167,27 @@ en:
         show:
           not_found: "Directory not found"
           permission_denied: "Permission denied"
+      section:
+        add_path: "Add scan path"
+        scan_now: "Scan Now"
+      form:
+        directory_label: "Directory path"
+        directory_placeholder: "/saves/gba/"
+        browse: "Browse"
+        directory_hint: "Enter the path to your games directory. On a NAS or Docker setup, mount the directory as a volume first (e.g. /saves). On a local install, use the full path directly (e.g. /home/user/games/gba)."
+        system_label: "Game system"
+        system_prompt: "Select system"
+        auto_scan: "Include in auto-scan"
+        submit: "Add path"
+      edit_form:
+        directory_label: "Directory path"
+        browse: "Browse"
+        system_label: "Game system"
+        submit: "Save changes"
+      directory_browser:
+        select: "Select folder"
+        jump_to: "Jump to:"
+        placeholder: "Click Browse to explore"
   current_game:
     update:
       success: "Now playing: %{title}"

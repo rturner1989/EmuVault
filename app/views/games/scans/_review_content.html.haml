@@ -3,7 +3,7 @@
   %div{ class: "rounded-lg border px-4 py-3 mb-4 border-warning/40", style: "background: color-mix(in srgb, oklch(var(--wa)) 5%, transparent)" }
     %p.text-sm.font-medium.text-warning
       = render ::UI::IconComponent.new(name: "fa-triangle-exclamation", class: "mr-1")
-      = "#{skipped_paths.size} #{"path".pluralize(skipped_paths.size)} could not be read"
+      = t("games.scans.review_content.skipped_paths", count: skipped_paths.size)
     %ul.mt-2.space-y-1
       - skipped_paths.each do |sp|
         %li.text-xs.font-mono.text-muted
@@ -13,14 +13,14 @@
   .py-6.text-center
     = render ::UI::IconComponent.new(name: "fa-box-open", class: "text-2xl text-muted mb-3")
     %p.text-muted.mb-1
-      = "No new games found"
+      = t("games.scans.review_content.no_new_games")
     %p.text-xs.text-muted
-      = "Check your scan paths in Settings."
+      = t("games.scans.review_content.check_paths")
 - else
   - total_found = found.size
   - if already_in_lib > 0
     %p.text-xs.text-muted.mb-3
-      = "#{already_in_lib} #{"game".pluralize(already_in_lib)} already in library"
+      = t("games.scans.review_content.already_in_lib", count: already_in_lib)
   = form_with url: game_scan_confirmation_path, method: :post, id: "scan-confirm-form" do |f|
     .space-y-3
       - grouped.each do |system_key, items|
@@ -32,7 +32,7 @@
               %span.text-sm.font-semibold
                 = system_label
             %span.text-xs.text-muted
-              = "#{items.size} #{"game".pluralize(items.size)}"
+              = t("games.scans.review_content.games_found", count: items.size)
           .divide-y.divide-base-300.border-t.border-base-300
             - items.each do |item|
               %label.flex.items-start.gap-3.px-4.py-3.cursor-pointer{ class: "hover:bg-base-200 transition-colors" }
@@ -45,4 +45,4 @@
                   - if item["save_files"]&.any?
                     %p.text-xs.mt-1.text-success
                       = render ::UI::IconComponent.new(name: "fa-floppy-disk", class: "mr-1")
-                      = "#{item["save_files"].size} save #{"file".pluralize(item["save_files"].size)} found"
+                      = t("games.scans.review_content.saves_found", count: item["save_files"].size)
