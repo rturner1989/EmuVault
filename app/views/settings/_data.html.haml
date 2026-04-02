@@ -1,42 +1,42 @@
 = render ::UI::CardComponent.new do |card|
   = card.with_header do
     %h2.text-sm.font-semibold.mb-1
-      = "Data"
+      = t(".title")
     %p.text-sm.text-muted
-      = "Export your games and save files, or restore from a previous export."
+      = t(".description")
 
   = card.with_body do
     .space-y-4
       .flex.items-center.justify-between
         .min-w-0
           %p.text-sm.font-medium
-            = "Export library"
+            = t(".export_title")
           %p.text-xs.text-muted
-            = "Downloads all games and save files as a ZIP archive"
+            = t(".export_description")
         = render ::UI::ActionComponent.new(href: data_exports_path,
           method: :post,
           variant: :primary,
           size: :sm,
           class: "ml-4 shrink-0",
           form: { data: { turbo: false, controller: "iframe-download", action: "submit->iframe-download#submit" } }) do
-          = "Export"
+          = t(".export_button")
       .border-t.pt-4.border-base-300
         = form_with url: data_imports_path, multipart: true do |f|
           .flex.items-center.justify-between.mb-3
             .min-w-0
               %p.text-sm.font-medium
-                = "Import library"
+                = t(".import_title")
               %p.text-xs.text-muted
-                = "Restore from a previous EmuVault export ZIP"
+                = t(".import_description")
           .flex.items-center.gap-3.min-w-0
             %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer flex-1 min-w-0 border-base-content/20", data: { controller: "file-picker" } }
               %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
-                = "Choose file"
+                = t(".choose_file")
               %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } }
-                = "No file selected"
+                = t(".no_file")
               = f.file_field :file, accept: ".zip", class: "hidden", data: { file_picker_target: "input", action: "change->file-picker#update" }
             = render ::UI::ActionComponent.new(variant: :info,
               size: :sm,
               type: :submit,
               class: "shrink-0") do
-              = "Import"
+              = t(".import_button")

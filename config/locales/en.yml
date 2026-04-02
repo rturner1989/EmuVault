@@ -40,6 +40,59 @@ en:
       success: "Save removed."
       failure: "Could not remove save."
   settings:
+    show:
+      page_title: "Settings — EmuVault"
+      title: "Settings"
+    account:
+      title: "Account"
+      change_password: "Change Password"
+      current_password: "Current password"
+      new_password: "New password"
+      confirm_password: "Confirm new password"
+      update_password: "Update Password"
+      sign_out: "Sign Out"
+    theme:
+      title: "Theme"
+      description: "Choose the look and feel of EmuVault."
+      save: "Save theme"
+      unsaved_title: "Unsaved theme change"
+      unsaved_message: "You have an unsaved theme change. Leave and save it, or stay to continue editing."
+      leave_and_save: "Leave and save"
+      stay: "Stay"
+    library_scan:
+      title: "Scan Paths"
+      description: "Directories where your game files are stored. EmuVault scans these to discover games automatically."
+    push_notifications:
+      title: "Push Notifications"
+      description: "Get notified on this device when a new save is uploaded. Works when EmuVault is installed as a home screen app."
+      enable: "Enable push notifications"
+      dialog_title: "Push Notifications"
+      ok: "OK"
+    data:
+      title: "Data"
+      description: "Export your games and save files, or restore from a previous export."
+      export_title: "Export library"
+      export_description: "Downloads all games and save files as a ZIP archive"
+      export_button: "Export"
+      import_title: "Import library"
+      import_description: "Restore from a previous EmuVault export ZIP"
+      choose_file: "Choose file"
+      no_file: "No file selected"
+      import_button: "Import"
+    monitoring:
+      title: "Monitoring"
+      description: "Internal dashboards for your self-hosted instance."
+      pghero_title: "PgHero"
+      pghero_description: "Database performance — slow queries, index usage, table sizes"
+      sidekiq_title: "Sidekiq"
+      sidekiq_description: "Background job queues, failures, and throughput"
+      kuma_title: "Uptime Kuma"
+      kuma_description: "Uptime monitoring — health checks, alerts, and status pages"
+      kuma_setup_title: "Uptime Kuma"
+      kuma_setup_hint: "Run as a standalone app on your server. Monitor EmuVault at "
+      kuma_endpoint: "%{host}/up"
+    update:
+      success: "Settings saved."
     passwords:
       update:
         success: "Password updated."

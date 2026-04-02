@@ -1,19 +1,19 @@
 = render ::UI::CardComponent.new do |card|
   = card.with_header do
     %h2.text-sm.font-semibold.mb-1
-      = "Account"
+      = t(".title")
     %p.text-sm.text-muted
       = user.username
 
   = card.with_body do
     .flex.items-center.gap-3
       = render ::UI::ModalComponent.new(id: "change-password-dialog",
-        title: "Change Password") do |modal|
+        title: t(".change_password")) do |modal|
         = modal.with_trigger do
           = render ::UI::ActionComponent.new(variant: :outline,
             size: :sm,
             data: { action: "dialog#open" }) do
-            = "Change Password"
+            = t(".change_password")
 
         = modal.with_body do
           = form_with url: settings_password_path, method: :patch,
@@ -22,7 +22,7 @@
 
             .space-y-1
               %label.block.text-sm.font-medium{ for: "current_password" }
-                = "Current password"
+                = t(".current_password")
               %input.input.input-bordered.w-full{ type: "password",
                 name: "current_password",
                 id: "current_password",
@@ -31,7 +31,7 @@
 
             .space-y-1
               %label.block.text-sm.font-medium{ for: "password" }
-                = "New password"
+                = t(".new_password")
               %input.input.input-bordered.w-full{ type: "password",
                 name: "password",
                 id: "password",
@@ -40,7 +40,7 @@
 
             .space-y-1
               %label.block.text-sm.font-medium{ for: "password_confirmation" }
-                = "Confirm new password"
+                = t(".confirm_password")
               %input.input.input-bordered.w-full{ type: "password",
                 name: "password_confirmation",
                 id: "password_confirmation",
@@ -52,10 +52,10 @@
             size: :sm,
             type: :submit,
             form: "change-password-form") do
-            = "Update Password"
+            = t(".update_password")
 
     .mt-4.lg:hidden
       = render ::UI::ActionComponent.new(href: session_path,
         variant: :danger,
         data: { turbo_method: :delete }) do
-        = "Sign Out"
+        = t(".sign_out")
