@@ -52,6 +52,33 @@ en:
       create:
         started: "Import started — your library will be restored shortly."
   games:
+    index:
+      page_title: "Games — EmuVault"
+      add_game: "Add Game"
+      scan_library: "Scan Library"
+      empty_title: "No games yet"
+      empty_description: "Add your first game to start syncing saves."
+      scan_review_title: "Scan Review"
+      scan_review_description: "Select the games you want to add to your library"
+      add_to_library: "Add to library"
+      dismiss: "Dismiss"
+    filters:
+      all_systems: "All systems"
+      clear: "Clear"
+    game_card:
+      clear_current: "Clear current game"
+      set_current: "Set as current game"
+    game_list_item:
+      clear_current: "Clear current game"
+      set_current: "Set as current game"
+      remove_title: "Remove game?"
+      remove_message: "Remove %{title} from your library? This will also delete all saved versions."
+      remove: "Remove"
+    now_playing_banner:
+      now_playing: "Now Playing"
+      clear: "Clear"
+    scan_progress:
+      scanning: "Scanning your library..."
     destroy:
       success: "%{title} removed."
       failure: "Could not remove %{title}."

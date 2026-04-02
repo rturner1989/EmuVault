@@ -1,9 +1,9 @@
-- content_for :title, "Games — EmuVault"
+- content_for :title, t(".page_title")
 
 = turbo_stream_from "scans_#{current_user.id}"
 
 .p-4.lg:p-6
-  = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
+  = render ::UI::ModalComponent.new(id: "add-game-dialog", title: t(".add_game")) do |modal|
     = modal.with_trigger do
       = render ::UI::PageHeaderComponent.new(title: "Games") do |header|
         - header.with_action do
@@ -13,10 +13,10 @@
               variant: :ghost,
               size: :sm) do |a|
               - a.with_leading_icon(name: "fa-magnifying-glass")
-              = "Scan Library"
+              = t(".scan_library")
             = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
               - a.with_leading_icon(name: "fa-plus")
-              = "Add Game"
+              = t(".add_game")
 
     = modal.with_body do
       = render "games/form", form_url: games_path, form_id: "add-game-form"
@@ -26,7 +26,7 @@
         size: :sm,
         type: :submit,
         form: "add-game-form") do
-        = "Add Game"
+        = t(".add_game")
 
     = modal.with_page_content do
       = turbo_frame_tag "now-playing-banner", style: "display: contents" do
@@ -41,11 +41,11 @@
 
       = turbo_frame_tag "games-list", class: "block" do
         - if @games.empty?
-          = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
+          = render ::UI::EmptyStateComponent.new(title: t(".empty_title"), description: t(".empty_description")) do |c|
             - c.with_action do
               = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
                 - a.with_leading_icon(name: "fa-plus")
-                = "Add Game"
+                = t(".add_game")
         - else
           = render "games/games_content",
             games: @games,
@@ -56,7 +56,7 @@
   = render "games/crop_dialog"
 
   -# Scan review modal — opens on scan or when pending auto-scan results exist
-  = render ::UI::ModalComponent.new(id: "scan-review-dialog", title: "Scan Review", subtitle: "Select the games you want to add to your library", auto_open: @pending_scan) do |modal|
+  = render ::UI::ModalComponent.new(id: "scan-review-dialog", title: t(".scan_review_title"), subtitle: t(".scan_review_description"), auto_open: @pending_scan) do |modal|
     = modal.with_body do
       = turbo_frame_tag "scan-review-content" do
         - if @pending_scan
@@ -68,11 +68,11 @@
         size: :sm,
         type: :submit,
         form: "scan-confirm-form") do
-        = "Add to library"
+        = t(".add_to_library")
       - if @pending_scan
         = render ::UI::ActionComponent.new(href: game_scan_dismissal_path,
           method: :post,
           variant: :ghost,
           size: :sm,
           form: { data: { turbo_frame: "_top" } }) do
-          = "Dismiss"
+          = t(".dismiss")

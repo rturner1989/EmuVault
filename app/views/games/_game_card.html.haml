@@ -21,7 +21,7 @@
     = render ::UI::ActionComponent.new(href: current_game_path,
       method: :delete,
       variant: :default,
-      title: "Clear current game",
+      title: t(".clear_current"),
       class: "absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-content shadow-lg cursor-pointer",
       params: { game_id: game.id }) do
       = render ::UI::IconComponent.new(name: "fa-rotate", fw: false, class: "text-xs")
@@ -29,7 +29,7 @@
     = render ::UI::ActionComponent.new(href: current_game_path,
       method: :patch,
       variant: :default,
-      title: "Set as current game",
+      title: t(".set_current"),
       class: "absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full bg-base-100 text-muted hover:text-primary border border-base-300 shadow-lg lg:opacity-0 lg:group-hover:opacity-100 lg:focus:opacity-100 transition-opacity cursor-pointer",
       params: { game_id: game.id }) do
       = render ::UI::IconComponent.new(name: "fa-rotate", fw: false, class: "text-xs")
