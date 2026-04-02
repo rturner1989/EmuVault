@@ -2,18 +2,18 @@
 %html{ lang: "en", "data-theme": current_user&.theme || "dracula" }
   %head
     %title
-      = content_for(:title) || "EmuVault"
+      = content_for(:title) || t("layouts.application.title")
     -# Meta
     %meta{ name: "viewport", content: "width=device-width,initial-scale=1,viewport-fit=cover" }
     %meta{ name: "theme-color", content: "#282a36" }
-    %meta{ name: "application-name", content: "EmuVault" }
+    %meta{ name: "application-name", content: t("layouts.application.title") }
     = csrf_meta_tags
     = csp_meta_tag
     = yield :head
 
     -# PWA / iOS
     %meta{ name: "apple-mobile-web-app-capable", content: "yes" }
-    %meta{ name: "apple-mobile-web-app-title", content: "EmuVault" }
+    %meta{ name: "apple-mobile-web-app-title", content: t("layouts.application.title") }
     %meta{ name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" }
     %meta{ name: "mobile-web-app-capable", content: "yes" }
 

@@ -7,7 +7,7 @@
   = render UI::ActionComponent.new(type: :button,
     variant: :ghost,
     class: "btn-circle shrink-0",
-    aria: { label: "Dismiss" },
+    aria: { label: t("components.flash_item.dismiss") },
     data: { action: "flash#dismiss" }) do |a|
     - a.with_trailing_icon(name: "fa-xmark")
 

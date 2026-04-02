@@ -1,14 +1,44 @@
 en:
+  layouts:
+    application:
+      title: "EmuVault"
+  components:
+    app_shell:
+      dashboard: "Dashboard"
+      games: "Games"
+      activity: "Activity"
+      emulator_profiles: "Emulator Profiles"
+      notifications: "Notifications"
+      settings: "Settings"
+      sign_out: "Sign Out"
+      quick_sync: "Quick Sync"
+      mark_all_read: "Mark all as read"
+    flash_item:
+      dismiss: "Dismiss"
+  sessions:
+    new:
+      page_title: "Sign in — EmuVault"
+      heading: "Sign in to your vault"
+      username: "Username"
+      password: "Password"
+      sign_in: "Sign in"
+    create:
+      rate_limited: "Try again later."
+      failure: "Try another username or password."
+  registrations:
+    new:
+      page_title: "Create Account — EmuVault"
+      heading: "Create your account to get started"
+      username: "Username"
+      password: "Password"
+      password_confirmation: "Confirm password"
+      submit: "Create account"
   game_saves:
     create:
       success: "Save uploaded."
     destroy:
       success: "Save removed."
       failure: "Could not remove save."
-  sessions:
-    create:
-      rate_limited: "Try again later."
-      failure: "Try another username or password."
   settings:
     passwords:
       update:

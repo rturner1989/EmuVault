@@ -15,28 +15,28 @@
         size: :md,
         class: nav_link_class("/")) do |a|
         - a.with_leading_icon(name: "fa-house")
-        = "Dashboard"
+        = t("components.app_shell.dashboard")
       = render ::UI::ActionComponent.new(href: games_path,
         variant: :default,
         size: :md,
         id: "nav-games",
         class: nav_link_class("/games")) do |a|
         - a.with_leading_icon(name: "fa-gamepad")
-        = "Games"
+        = t("components.app_shell.games")
       = render ::UI::ActionComponent.new(href: activity_path,
         variant: :default,
         size: :md,
         id: "nav-activity",
         class: nav_link_class("/activity")) do |a|
         - a.with_leading_icon(name: "fa-clock-rotate-left")
-        = "Activity"
+        = t("components.app_shell.activity")
       = render ::UI::ActionComponent.new(href: emulator_profiles_path,
         variant: :default,
         size: :md,
         id: "nav-profiles",
         class: nav_link_class("/emulator_profiles")) do |a|
         - a.with_leading_icon(name: "fa-microchip")
-        = "Emulator Profiles"
+        = t("components.app_shell.emulator_profiles")
 
     .p-3.space-y-1.border-t.border-base-300
       .px-3.py-1.text-xs.text-muted.truncate
@@ -48,7 +48,7 @@
         class: "flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-base-content transition-colors cursor-pointer",
         data: { action: "notifications#open" }) do |a|
         - a.with_leading_icon(name: "fa-bell")
-        = "Notifications"
+        = t("components.app_shell.notifications")
         - if unread_count > 0
           %span.ml-auto.badge.badge-error.badge-xs.text-white{ data: { notification_badge: "" } }
             = unread_count
@@ -58,7 +58,7 @@
         id: "nav-settings",
         class: "flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-base-content transition-colors") do |a|
         - a.with_leading_icon(name: "fa-gear")
-        = "Settings"
+        = t("components.app_shell.settings")
       = render ::UI::ActionComponent.new(href: session_path,
         method: :delete,
         form: { data: { turbo: false } },
@@ -66,7 +66,7 @@
         size: :md,
         class: "w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted hover:bg-base-300 hover:text-error transition-colors cursor-pointer") do |a|
         - a.with_leading_icon(name: "fa-right-from-bracket")
-        = "Sign Out"
+        = t("components.app_shell.sign_out")
 
   .flex-1.min-w-0.flex.flex-col.min-h-screen.mobile-bottom-content-pad.lg:pl-64.lg:pt-0.lg:pb-0
     .lg:hidden.flex.items-center.pb-2.mobile-top-bar.bg-base-100.border-b.border-base-300
@@ -82,7 +82,7 @@
           size: :md,
           id: "mobile-nav-settings",
           class: "relative inline-flex items-center justify-center w-8 h-8 text-muted hover:text-base-content transition-colors",
-          aria: { label: "Settings" }) do |a|
+          aria: { label: t("components.app_shell.settings") }) do |a|
           - a.with_leading_icon(name: "fa-gear")
         .indicator
           = render "shared/notification_badge", count: unread_count
@@ -103,19 +103,19 @@
         variant: :default,
         size: :md,
         class: mobile_nav_class("/"),
-        aria: { label: "Dashboard" }) do |a|
+        aria: { label: t("components.app_shell.dashboard") }) do |a|
         - a.with_leading_icon(name: "fa-house")
       = render ::UI::ActionComponent.new(href: games_path,
         variant: :default,
         size: :md,
         id: "mobile-nav-games",
-        class: mobile_nav_class("/games"), aria: { label: "Games" }) do |a|
+        class: mobile_nav_class("/games"), aria: { label: t("components.app_shell.games") }) do |a|
         - a.with_leading_icon(name: "fa-gamepad")
       = render ::UI::ActionComponent.new(variant: :default,
         size: :md,
         id: "mobile-nav-quick-sync",
         class: "flex-1 flex flex-col items-center justify-center py-2 cursor-pointer",
-        aria: { label: "Quick Sync" },
+        aria: { label: t("components.app_shell.quick_sync") },
         data: { action: "quick-sync#open" }) do
         .relative.flex.items-center.justify-center.w-10.h-10.rounded-full.bg-primary.-mt-5.shadow-lg
           = render ::UI::IconComponent.new(name: "fa-rotate", class: "text-primary-content", fw: false)
@@ -124,19 +124,19 @@
         size: :md,
         id: "mobile-nav-activity",
         class: mobile_nav_class("/activity"),
-        aria: { label: "Activity" }) do |a|
+        aria: { label: t("components.app_shell.activity") }) do |a|
         - a.with_leading_icon(name: "fa-clock-rotate-left")
       = render ::UI::ActionComponent.new(href: emulator_profiles_path,
         variant: :default,
         size: :md,
         id: "mobile-nav-profiles",
         class: mobile_nav_class("/emulator_profiles"),
-        aria: { label: "Emulator Profiles" }) do |a|
+        aria: { label: t("components.app_shell.emulator_profiles") }) do |a|
         - a.with_leading_icon(name: "fa-microchip")
 
   -# Quick sync
   = render ::UI::ModalComponent.new(id: "quick-sync-sheet",
-    title: "Quick Sync",
+    title: t("components.app_shell.quick_sync"),
     variant: :bottom_sheet,
     container_data: { quick_sync_target: "container" }) do |modal|
     = modal.with_body do
@@ -149,7 +149,7 @@
     .absolute.right-0.top-0.h-full.w-full.flex.flex-col.translate-x-full.transition-transform.duration-300.ease-out.lg:max-w-sm.bg-base-100.border-l.border-base-300{ data: { notifications_target: "panel" } }
       .flex.items-center.justify-between.px-4.py-3.notification-panel-top.border-b.border-base-300
         %h2.font-semibold
-          = "Notifications"
+          = t("components.app_shell.notifications")
         = render ::UI::ActionComponent.new(variant: :ghost,
           class: "btn-circle",
           data: { action: "click->notifications#close" }) do |a|
@@ -164,4 +164,4 @@
           size: :md,
           class: "text-xs text-muted w-full text-left py-1 hover:text-base-content transition-colors cursor-pointer",
           data: { action: "click->notifications#markAllRead" }) do
-          = "Mark all as read"
+          = t("components.app_shell.mark_all_read")
