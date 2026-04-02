@@ -4,12 +4,12 @@
       label: "Emulator name",
       input_html: { class: "input input-bordered w-full" }
     = f.input :platform,
-      collection: EmulatorProfile::PLATFORM_LABELS.map { |value, label| [label, value] },
+      collection: EmulatorProfile.platforms.keys.map { |k| [I18n.t("models.platform.#{k}"), k] },
       include_blank: "Select platform",
       label: "Platform",
       input_html: { class: "select select-bordered w-full" }
     = f.input :game_system,
-      collection: EmulatorProfile::GAME_SYSTEM_OPTIONS,
+      collection: EmulatorProfile.game_system_options,
       include_blank: "Select game system",
       label: "Game system",
       hint: "Required for library scanning", input_html: { class: "select select-bordered w-full" }

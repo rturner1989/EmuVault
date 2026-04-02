@@ -42,3 +42,53 @@ en:
       success: "Now playing: %{title}"
     destroy:
       success: "Cleared current game"
+  models:
+    game_system:
+      nes: "NES"
+      snes: "SNES"
+      gb: "Game Boy"
+      gbc: "Game Boy Color"
+      gba: "Game Boy Advance"
+      nds: "Nintendo DS"
+      genesis: "Sega Genesis"
+      sms: "Sega Master System"
+      gg: "Game Gear"
+      psx: "PlayStation"
+      ps2: "PlayStation 2"
+      psp: "PlayStation Portable"
+      n64: "Nintendo 64"
+      gc: "GameCube"
+      wii: "Wii"
+      arcade: "Arcade"
+    platform:
+      linux: "Linux"
+      windows: "Windows"
+      macos: "macOS"
+      ios: "iOS"
+      android: "Android"
+    scan_interval:
+      hourly: "Every hour"
+      every_6_hours: "Every 6 hours"
+      daily: "Daily"
+    device:
+      phone: "Phone"
+      tablet: "Tablet"
+      desktop: "Desktop"
+    sync_action:
+      push: "Upload"
+      pull: "Download"
+  helpers:
+    games:
+      sort:
+        title_asc: "Title A→Z"
+        title_desc: "Title Z→A"
+        newest: "Newest first"
+        oldest: "Oldest first"
+        system: "By system"
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            kuma_url:
+              invalid_url: "must be an HTTP or HTTPS URL"

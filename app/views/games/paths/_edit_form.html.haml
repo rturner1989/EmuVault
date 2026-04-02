@@ -15,7 +15,7 @@
   = render "games/paths/directory_browser"
 
   = f.label :game_system, "Game system", class: "block text-sm mb-1"
-  = f.select :game_system, ScanPath::GAME_SYSTEM_OPTIONS, {}, class: "select select-bordered w-full", required: true
+  = f.select :game_system, ScanPath.game_system_options, {}, class: "select select-bordered w-full", required: true
 
   .pt-1
     = render ::UI::ActionComponent.new(variant: :primary,

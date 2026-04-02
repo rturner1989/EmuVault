@@ -20,14 +20,6 @@
 class EmulatorProfile < ApplicationRecord
   include HasGameSystem
 
-  PLATFORM_LABELS = {
-    linux: "Linux",
-    windows: "Windows",
-    macos: "macOS",
-    ios: "iOS",
-    android: "Android"
-  }.freeze
-
   enum :platform, {
     linux: "linux",
     windows: "windows",
@@ -84,7 +76,7 @@ class EmulatorProfile < ApplicationRecord
   end
 
   def platform_label
-    PLATFORM_LABELS[platform&.to_sym] || platform.to_s.capitalize
+    I18n.t("models.platform.#{platform}", default: platform.to_s.capitalize)
   end
 
   def deletable?
