@@ -1,11 +1,11 @@
 .rounded-lg.bg-base-100.border.border-base-300
   .px-5.py-4.border-b.border-base-300
     %h2.text-sm.font-semibold
-      = "Systems"
+      = t(".title")
 
   - if system_counts.empty?
     .px-5.py-6.text-center.text-sm.text-muted
-      = "No games yet."
+      = t(".empty")
   - else
     %ul.divide-y.divide-base-300
       - system_counts.sort_by { |_system, count| -count }.each do |system, count|
@@ -13,4 +13,4 @@
           .text-sm
             = system.to_s.upcase
           .text-xs.text-muted
-            = "#{count} game#{"s" if count != 1}"
+            = t(".game_count", count: count)

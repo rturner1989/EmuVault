@@ -107,6 +107,29 @@ en:
     sync_action:
       push: "Upload"
       pull: "Download"
+  dashboard:
+    index:
+      page_title: "Dashboard — EmuVault"
+      add_game: "Add Game"
+      storage_used: "Storage Used"
+      save_files: "Save files"
+      sync_events: "Sync Events"
+    top_games:
+      title: "Most Active Games"
+      empty: "No syncs yet."
+      sync_count:
+        one: "1 sync"
+        other: "%{count} syncs"
+    systems:
+      title: "Systems"
+      empty: "No games yet."
+      game_count:
+        one: "1 game"
+        other: "%{count} games"
+    recent_activity:
+      title: "Recent Activity"
+      view_all: "View all"
+      empty: "No activity yet."
   helpers:
     games:
       sort:

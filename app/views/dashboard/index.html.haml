@@ -1,4 +1,4 @@
-- content_for :title, "Dashboard — EmuVault"
+- content_for :title, t(".page_title")
 
 .p-4.lg:p-6.space-y-6
   = render ::UI::PageHeaderComponent.new(title: "Dashboard") do |header|
@@ -9,7 +9,7 @@
             id: "add-game-btn",
             data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
-            = "Add Game"
+            = t(".add_game")
 
         = modal.with_body do
           = render "games/form", form_url: games_path, form_id: "add-game-form"
@@ -19,7 +19,7 @@
             size: :sm,
             type: :submit,
             form: "add-game-form") do
-            = "Add Game"
+            = t(".add_game")
 
   = turbo_frame_tag :now_playing, class: "block space-y-4" do
     = render "shared/now_playing"
@@ -29,10 +29,10 @@
     = turbo_frame_tag "game_stats", style: "display: contents" do
       = render "shared/game_stats", games_count: @games_count, games_without_save: @games_without_save
 
-    = render ::UI::StatComponent.new(title: "Storage Used", value: number_to_human_size(@storage_used_bytes), description: "Save files") do |stat|
+    = render ::UI::StatComponent.new(title: t(".storage_used"), value: number_to_human_size(@storage_used_bytes), description: t(".save_files")) do |stat|
       - stat.with_icon(name: "fa-hard-drive", class: "text-info fa-lg", fw: false)
 
-    = render ::UI::StatComponent.new(title: "Sync Events", value: @sync_events_count) do |stat|
+    = render ::UI::StatComponent.new(title: t(".sync_events"), value: @sync_events_count) do |stat|
       - stat.with_icon(name: "fa-rotate", class: "text-secondary fa-lg", fw: false)
       - stat.with_action(href: activity_path)
 

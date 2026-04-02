@@ -1,16 +1,16 @@
 .rounded-lg.bg-base-100.border.border-base-300
   .px-5.py-4.flex.items-center.justify-between.border-b.border-base-300
     %h2.text-sm.font-semibold
-      = "Recent Activity"
+      = t(".title")
     = render ::UI::ActionComponent.new(href: activity_path,
       variant: :link_primary,
       class: "text-xs") do |a|
-      = "View all"
+      = t(".view_all")
       - a.with_trailing_icon(name: "fa-arrow-right")
 
   - if recent_sync_events.empty?
     .px-5.py-8.text-center.text-sm.text-muted
-      = "No activity yet."
+      = t(".empty")
   - else
     %ul.divide-y.divide-base-300
       - recent_sync_events.each do |event|
