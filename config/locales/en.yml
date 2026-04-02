@@ -82,6 +82,59 @@ en:
     destroy:
       success: "%{title} removed."
       failure: "Could not remove %{title}."
+    show:
+      page_title: "%{title} — EmuVault"
+      breadcrumb: "Games"
+      current_save: "Current Save"
+      unknown_source: "Unknown source"
+      download: "Download"
+      place_file: "Place the downloaded file at:"
+      download_note: "Your browser will save it to Downloads — move it to the path above."
+      upload_title: "Upload New Version"
+      upload_button: "Upload Save File"
+      previous_versions: "Previous Versions"
+      view_all: "View all %{count}"
+      emulator_filenames: "Emulator Save Filenames"
+    header:
+      now_playing: "Now Playing"
+      set_current: "Set as current"
+      edit_game: "Edit Game"
+      edit: "Edit"
+      save_changes: "Save Changes"
+      remove_title: "Remove game?"
+      remove_message: "Remove %{title} from your library? This will also delete all saved versions."
+      remove: "Remove"
+    new:
+      page_title: "Add Game — EmuVault"
+      heading: "Add Game"
+      submit: "Add Game"
+    edit:
+      page_title: "Edit %{title} — EmuVault"
+      heading: "Edit Game"
+      submit: "Save Changes"
+    form:
+      title_label: "Title"
+      system_label: "System"
+      system_prompt: "— select a system —"
+      rom_hash_label: "ROM Hash (optional)"
+      rom_hash_hint: "SHA-256 or MD5 of the ROM file — used to uniquely identify the game."
+      cover_label: "Cover Image (optional)"
+      choose_file: "Choose file"
+      no_file: "No file selected"
+      cover_hint: "PNG, JPEG, or WebP. Max 5 MB."
+    upload_form:
+      emulator_hint: "Which emulator is this save from? (optional)"
+      choose_file: "Choose file"
+      no_file: "No file selected"
+    emulator_filenames:
+      title: "Emulator Save Filenames"
+      description: "Set the filename each emulator expects for this game. Leave blank to use a default based on the game title."
+      save_button: "Save Filenames"
+      empty: "No emulators selected. Add emulators from the Profiles page."
+    crop_dialog:
+      title: "Crop Cover Image"
+      confirm: "Crop & Use"
+      cancel: "Cancel"
     paths:
       create:
         success: "Scan path added."

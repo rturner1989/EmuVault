@@ -2,23 +2,23 @@
 = turbo_frame_tag :game_form do
   = simple_form_for game, url: form_url, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top", persist_values: game.persisted? || nil } } do |f|
     = f.input :title,
-        label: "Title",
+        label: t(".title_label"),
         input_html: { class: "input input-bordered w-full" },
         label_html: { class: "label-text text-xs font-medium" }
 
     - allowed = (Array(@available_systems).map(&:to_s) + [game.system.to_s]).map(&:presence).uniq.compact
     - system_options = allowed.any? ? Game.game_system_options.select { |_label, value| allowed.include?(value) } : Game.game_system_options
     = f.input :system,
-        label: "System",
+        label: t(".system_label"),
         as: :select,
         collection: system_options,
-        include_blank: "— select a system —",
+        include_blank: t(".system_prompt"),
         input_html: { class: "select select-bordered w-full" },
         label_html: { class: "label-text text-xs font-medium" }
 
     = f.input :rom_hash,
-        label: "ROM Hash (optional)",
-        hint: "SHA-256 or MD5 of the ROM file — used to uniquely identify the game.",
+        label: t(".rom_hash_label"),
+        hint: t(".rom_hash_hint"),
         input_html: { class: "input input-bordered w-full font-mono" },
         label_html: { class: "label-text text-xs font-medium" },
         hint_html: { class: "mt-1 text-xs text-muted" }
@@ -26,16 +26,16 @@
     %div{ data: { controller: "image-cropper" } }
       .space-y-1
         %label.label-text.text-xs.font-medium
-          = "Cover Image (optional)"
+          = t(".cover_label")
         %button{ type: "button", class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20 w-full text-left",
           data: { action: "click->image-cropper#select" } }
           %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
-            = "Choose file"
+            = t(".choose_file")
           %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { image_cropper_target: "filename" } }
             - if game.cover_image.attached? && game.cover_image.blob&.persisted?
               = game.cover_image.filename
             - else
-              = "No file selected"
+              = t(".no_file")
         = f.file_field :cover_image, class: "hidden",
           accept: "image/png,image/jpeg,image/webp",
           data: { image_cropper_target: "input", action: "change->image-cropper#fileSelected" }
@@ -45,4 +45,4 @@
         - else
           %img.rounded.mt-2.w-20.hidden{ data: { image_cropper_target: "preview" } }
         %p.text-xs.text-muted
-          = "PNG, JPEG, or WebP. Max 5 MB."
+          = t(".cover_hint")

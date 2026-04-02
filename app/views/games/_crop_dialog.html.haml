@@ -1,5 +1,5 @@
 = render ::UI::ModalComponent.new(id: "crop-cover-dialog",
-  title: "Crop Cover Image",
+  title: t(".title"),
   container_data: { cropper_dialog: true },
   swipeable: false) do |modal|
   = modal.with_body do
@@ -11,9 +11,9 @@
         size: :sm,
         type: :button,
         data: { cropper_action: "confirm" }) do
-        = "Crop & Use"
+        = t(".confirm")
       = render ::UI::ActionComponent.new(variant: :ghost,
         size: :sm,
         type: :button,
         data: { cropper_action: "cancel" }) do
-        = "Cancel"
+        = t(".cancel")

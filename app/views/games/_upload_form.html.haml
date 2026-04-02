@@ -4,13 +4,13 @@
   html: { multipart: true, class: "space-y-3", data: { turbo: false } } do |f|
   = f.select :emulator_profile_id,
     user_profiles.map { |p| ["#{p.name} (#{p.platform_label}) (.#{p.save_extension})", p.id] },
-    { include_blank: "Which emulator is this save from? (optional)" },
+    { include_blank: t(".emulator_hint") },
     { class: "select select-bordered w-full" }
   %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20", data: { controller: "file-picker" } }
     %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
-      = "Choose file"
+      = t(".choose_file")
     %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } }
-      = "No file selected"
+      = t(".no_file")
     = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
 
   - if new_save&.errors&.any?

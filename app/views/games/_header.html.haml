@@ -20,7 +20,7 @@
         class: "btn-outline",
         params: { game_id: game.id }) do |a|
         - a.with_leading_icon(name: "fa-rotate")
-        = "Now Playing"
+        = t(".now_playing")
     - else
       = render ::UI::ActionComponent.new(href: current_game_path,
         method: :patch,
@@ -29,12 +29,12 @@
         class: "btn-outline",
         params: { game_id: game.id }) do |a|
         - a.with_leading_icon(name: "fa-rotate")
-        = "Set as current"
+        = t(".set_current")
 
-    = render ::UI::ModalComponent.new(id: "edit-game-dialog", title: "Edit Game") do |modal|
+    = render ::UI::ModalComponent.new(id: "edit-game-dialog", title: t(".edit_game")) do |modal|
       = modal.with_trigger do
         = render ::UI::ActionComponent.new(variant: :secondary, data: { action: "dialog#open" }) do
-          = "Edit"
+          = t(".edit")
       = modal.with_body do
         = render "games/form", form_url: game_path(game), form_id: "edit-game-form"
       = modal.with_footer do
@@ -42,12 +42,12 @@
           size: :sm,
           type: :submit,
           form: "edit-game-form") do
-          = "Save Changes"
+          = t(".save_changes")
 
     = render ::UI::ConfirmComponent.new(id: "remove-game-dialog",
-      title: "Remove game?",
-      message: "Remove #{game.title} from your library? This will also delete all saved versions.",
+      title: t(".remove_title"),
+      message: t(".remove_message", title: game.title),
       url: game_path(game),
       method: :delete,
-      trigger_label: "Remove",
-      confirm_label: "Remove")
+      trigger_label: t(".remove"),
+      confirm_label: t(".remove"))
