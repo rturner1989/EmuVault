@@ -72,6 +72,10 @@ en:
     game_card:
       clear_current: "Clear current game"
       set_current: "Set as current game"
+    onboarding_game_list_item:
+      remove_title: "Remove game?"
+      remove_message: "Remove %{title} from your library?"
+      remove: "Remove"
     game_list_item:
       clear_current: "Clear current game"
       set_current: "Set as current game"
@@ -318,6 +322,30 @@ en:
         select_description: "Add the emulators you use from the library or create custom profiles."
         next_step: "Next: Add Games"
         success: "Emulators added."
+  onboarding:
+    emulator_profiles:
+      index:
+        page_title: "Select Emulators — EmuVault"
+        title: "Select your emulators"
+        description: "Add the emulators you use from the library or create custom profiles."
+        next_step: "Next: Add Games"
+    games:
+      index:
+        page_title: "Add Games — EmuVault"
+        title: "Add your games"
+        description: "Configure scan paths to discover games automatically, or add them manually."
+        complete: "Complete Setup"
+        scan_paths: "Scan Paths"
+        scan_paths_hint: "Point EmuVault at directories where your game files are stored."
+        add_game: "Add Game"
+        add_game_hint: "Manually add a game to your library."
+        add_game_button: "Add game"
+        scanning: "Scanning your library..."
+      create:
+        added: "%{title} added."
+    scans:
+      create:
+        scanning: "Scanning your library..."
   activerecord:
     errors:
       models:
