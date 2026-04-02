@@ -43,6 +43,10 @@ module EmuVault
 
     config.middleware.use Rack::Attack
 
+    config.i18n.default_locale = ENV.fetch("DEFAULT_LOCALE", "en").to_sym
+    config.i18n.available_locales = %i[en fr de es it]
+    config.i18n.fallbacks = true
+
     config.app_version = ENV.fetch("APP_VERSION", "dev")
   end
 end

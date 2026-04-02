@@ -36,6 +36,7 @@ services:
     environment:
       RAILS_ENV: production
       RAILS_LOG_TO_STDOUT: "true"
+      DEFAULT_LOCALE: en
       RAILS_SERVE_STATIC_FILES: "true"
       DB_HOST: postgres
       DB_USERNAME: emuvault
@@ -63,6 +64,7 @@ services:
         condition: service_healthy
     environment:
       RAILS_ENV: production
+      DEFAULT_LOCALE: en
       DB_HOST: postgres
       DB_USERNAME: emuvault
       DB_PASSWORD: YOUR_DB_PASSWORD
