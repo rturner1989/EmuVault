@@ -1,6 +1,6 @@
 = turbo_frame_tag "profiles_list" do
   - if selected_by_system.any?
-    %div{ data: { controller: "profile-select" } }
+    %div{ data: { controller: "profile-select", profile_select_selected_text_value: t("javascript.profile_select.selected") } }
       = form_with url: emulator_profiles_bulk_destroy_path,
         method: :post,
         data: { profile_select_target: "bulkForm" } do |f|

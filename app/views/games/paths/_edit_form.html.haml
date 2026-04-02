@@ -1,7 +1,9 @@
 = form_with model: sp,
   url: scan_path_path(sp),
   method: :patch,
-  html: { class: "space-y-4", data: { controller: "directory-browser" } } do |f|
+  html: { class: "space-y-4", data: { controller: "directory-browser",
+    "directory-browser-no-subdirectories-text-value": t("javascript.directory_browser.no_subdirectories"),
+    "directory-browser-error-text-value": t("javascript.directory_browser.error") } } do |f|
   = f.label :path, t(".directory_label"), class: "block text-sm mb-1"
   .flex.items-center.gap-2
     = f.text_field :path, required: true, class: "input input-bordered input-sm flex-1 min-w-0 font-mono", data: { "directory-browser-target": "input" }

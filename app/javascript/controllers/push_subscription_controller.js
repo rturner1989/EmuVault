@@ -3,7 +3,13 @@ import A11yDialog from "a11y-dialog"
 import { lockScroll, unlockScroll } from "../utils/scroll_lock"
 
 export default class extends Controller {
-  static values = { vapidPublicKey: String }
+  static values = {
+    vapidPublicKey: String,
+    notSupportedText: { type: String, default: "Push notifications are not supported on this browser." },
+    permissionDeniedText: { type: String, default: "Notification permission was denied. You can enable it in your browser settings." },
+    enabledText: { type: String, default: "Push notifications enabled." },
+    errorText: { type: String, default: "Could not subscribe: %{message}" }
+  }
   static targets = ["button", "status", "dialog", "dialogMessage"]
 
   dialogTargetConnected() {
@@ -20,13 +26,13 @@ export default class extends Controller {
 
   async subscribe() {
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-      this.showDialog("Push notifications are not supported on this browser.")
+      this.showDialog(this.notSupportedTextValue)
       return
     }
 
     const permission = await Notification.requestPermission()
     if (permission !== "granted") {
-      this.showDialog("Notification permission was denied. You can enable it in your browser settings.")
+      this.showDialog(this.permissionDeniedTextValue)
       return
     }
 
@@ -53,11 +59,11 @@ export default class extends Controller {
       })
 
       if (response.ok) {
-        this.setStatus("Push notifications enabled.")
+        this.setStatus(this.enabledTextValue)
         if (this.hasButtonTarget) this.buttonTarget.disabled = true
       }
     } catch (err) {
-      this.showDialog("Could not subscribe: " + err.message)
+      this.showDialog(this.errorTextValue.replace("%{message}", err.message))
     }
   }
 

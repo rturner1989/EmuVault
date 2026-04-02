@@ -504,6 +504,21 @@ en:
     scans:
       create:
         scanning: "Scanning your library..."
+  javascript:
+    file_picker:
+      no_file: "No file selected"
+    push_subscription:
+      not_supported: "Push notifications are not supported on this browser."
+      permission_denied: "Notification permission was denied. You can enable it in your browser settings."
+      enabled: "Push notifications enabled."
+      error: "Could not subscribe: %{message}"
+    profile_select:
+      selected: "%{count} selected"
+    directory_browser:
+      no_subdirectories: "No subdirectories"
+      error: "Could not read directory"
+    image_cropper:
+      no_file: "No file selected"
   activerecord:
     errors:
       models:

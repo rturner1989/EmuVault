@@ -29,7 +29,7 @@
               %p.text-xs.text-muted
                 = t(".import_description")
           .flex.items-center.gap-3.min-w-0
-            %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer flex-1 min-w-0 border-base-content/20", data: { controller: "file-picker" } }
+            %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer flex-1 min-w-0 border-base-content/20", data: { controller: "file-picker", file_picker_no_file_text_value: t("javascript.file_picker.no_file") } }
               %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
                 = t(".choose_file")
               %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } }

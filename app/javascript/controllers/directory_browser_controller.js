@@ -2,7 +2,11 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["input", "browser", "list", "currentPath", "upButton", "shortcuts"]
-  static values  = { current: String }
+  static values = {
+    current: String,
+    noSubdirectoriesText: { type: String, default: "No subdirectories" },
+    errorText: { type: String, default: "Could not read directory" }
+  }
 
   // Toggle the browser panel open/closed
   toggle() {
@@ -53,7 +57,7 @@ export default class extends Controller {
         }
       })
       .catch(() => {
-        this._renderError("Could not read directory")
+        this._renderError(this.errorTextValue)
       })
   }
 
@@ -76,7 +80,7 @@ export default class extends Controller {
     if (entries.length === 0) {
       const p = document.createElement("p")
       p.className = "text-xs text-muted px-3 py-3 italic"
-      p.textContent = "No subdirectories"
+      p.textContent = this.noSubdirectoriesTextValue
       this.listTarget.replaceChildren(p)
       return
     }

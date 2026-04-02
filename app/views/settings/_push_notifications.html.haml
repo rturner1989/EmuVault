@@ -1,5 +1,9 @@
 = render ::UI::CardComponent.new(data: { controller: "push-subscription",
-  "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s }) do |card|
+  "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s,
+  "push-subscription-not-supported-text-value": t("javascript.push_subscription.not_supported"),
+  "push-subscription-permission-denied-text-value": t("javascript.push_subscription.permission_denied"),
+  "push-subscription-enabled-text-value": t("javascript.push_subscription.enabled"),
+  "push-subscription-error-text-value": t("javascript.push_subscription.error") }) do |card|
   = card.with_header do
     %h2.text-sm.font-semibold.mb-1
       = t(".title")

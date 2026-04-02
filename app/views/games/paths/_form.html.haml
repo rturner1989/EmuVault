@@ -1,7 +1,9 @@
 = form_with model: ScanPath.new,
   url: scan_paths_path,
   method: :post,
-  html: { class: "space-y-4", autocomplete: "off", data: { controller: "directory-browser" } } do |f|
+  html: { class: "space-y-4", autocomplete: "off", data: { controller: "directory-browser",
+    "directory-browser-no-subdirectories-text-value": t("javascript.directory_browser.no_subdirectories"),
+    "directory-browser-error-text-value": t("javascript.directory_browser.error") } } do |f|
 
   -# Path input + browse button
   = f.label :path, t(".directory_label"), class: "block text-sm mb-1"

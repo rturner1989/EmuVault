@@ -23,7 +23,7 @@
         label_html: { class: "label-text text-xs font-medium" },
         hint_html: { class: "mt-1 text-xs text-muted" }
 
-    %div{ data: { controller: "image-cropper" } }
+    %div{ data: { controller: "image-cropper", image_cropper_no_file_text_value: t("javascript.image_cropper.no_file") } }
       .space-y-1
         %label.label-text.text-xs.font-medium
           = t(".cover_label")
