@@ -1,0 +1,511 @@
+---
+de:
+  common:
+    choose_file: Datei auswählen
+    no_file: Keine Datei ausgewählt
+    add_game: Spiel hinzufügen
+    clear: Löschen
+    now_playing: Aktuelles Spiel
+    remove: Entfernen
+    scanning: Bibliothek wird durchsucht…
+    browse: Durchsuchen
+    sign_out: Abmelden
+    game_system: Spielsystem
+    clear_current_game: Aktuelles Spiel zurücksetzen
+    set_current_game: Als aktuelles Spiel festlegen
+    select_emulators_title: Emulatoren auswählen
+    select_emulators_description: Füge Emulatoren aus der Bibliothek hinzu oder erstelle
+      eigene Profile.
+    next_add_games: 'Weiter: Spiele hinzufügen'
+  layouts:
+    application:
+      title: EmuVault
+  components:
+    app_shell:
+      dashboard: Übersicht
+      games: Spiele
+      activity: Aktivität
+      emulator_profiles: Emulator-Profile
+      notifications: Benachrichtigungen
+      settings: Einstellungen
+      quick_sync: Schnellsync
+      mark_all_read: Alle als gelesen markieren
+    flash_item:
+      dismiss: Schließen
+  sessions:
+    new:
+      page_title: Anmelden — EmuVault
+      heading: In deinem Vault anmelden
+      username: Benutzername
+      password: Passwort
+      sign_in: Anmelden
+    create:
+      rate_limited: Bitte später erneut versuchen.
+      failure: Benutzername oder Passwort falsch.
+  registrations:
+    new:
+      page_title: Konto erstellen — EmuVault
+      heading: Erstelle dein Konto, um loszulegen
+      username: Benutzername
+      password: Passwort
+      password_confirmation: Passwort bestätigen
+      submit: Konto erstellen
+  shared:
+    game_stats:
+      games: Spiele
+      needs_upload: Upload nötig
+      all_synced: Alles synchronisiert
+      games_without_save:
+        one: "%{count} Spiel ohne Speicherstand"
+        other: "%{count} Spiele ohne Speicherstand"
+    auto_scan_schedule:
+      title: Automatischer Scan-Zeitplan
+      enable: Automatischen Scan aktivieren
+      hint: Pfade mit aktiviertem Auto-Scan werden automatisch durchsucht
+      interval: Intervall
+      save: Speichern
+    onboarding_banner:
+      back: Zurück
+      next: Weiter
+    scan_paths_list:
+      auto_scan_on: Auto-Scan an
+      auto_scan_off: Auto-Scan aus
+      edit_path: Pfad bearbeiten
+    quick_sync_content:
+      view: Anzeigen →
+      last_save: 'Letzter Speicherstand: vor %{time}'
+      download: Herunterladen
+      select_emulator: Emulator zum Herunterladen auswählen…
+      place_file: 'Datei ablegen unter:'
+      copy_path: Pfad kopieren
+      no_save: Noch kein Speicherstand hochgeladen. Lade einen hoch.
+      upload_title: Neue Version hochladen
+      emulator_hint: Von welchem Emulator stammt dieser Speicherstand? (optional)
+      upload_button: Hochladen
+      no_game_title: Kein Spiel als aktuell festgelegt.
+      no_game_hint: Öffne ein Spiel und tippe auf „Als aktuelles Spiel festlegen",
+        um Schnellsync zu aktivieren.
+  game_saves:
+    create:
+      success: Speicherstand hochgeladen.
+    destroy:
+      success: Speicherstand entfernt.
+      failure: Speicherstand konnte nicht entfernt werden.
+    form:
+      select_emulator: Emulator auswählen…
+      emulator_label: Emulator-Profil
+      slot_label: Slot (0 = Auto-Save)
+      file_label: Speicherdatei
+      submit: Speicherstand hochladen
+  settings:
+    show:
+      page_title: Einstellungen — EmuVault
+      title: Einstellungen
+    account:
+      title: Konto
+      change_password: Passwort ändern
+      current_password: Aktuelles Passwort
+      new_password: Neues Passwort
+      confirm_password: Neues Passwort bestätigen
+      update_password: Passwort aktualisieren
+    theme:
+      title: Design
+      description: Wähle das Erscheinungsbild von EmuVault.
+      save: Design speichern
+      unsaved_title: Ungespeicherte Design-Änderung
+      unsaved_message: Du hast eine ungespeicherte Design-Änderung. Verlassen und
+        speichern, oder bleiben und weiter bearbeiten.
+      leave_and_save: Verlassen und speichern
+      stay: Bleiben
+    library_scan:
+      title: Scan-Pfade
+      description: Verzeichnisse, in denen deine Spieldateien gespeichert sind. EmuVault
+        durchsucht diese, um Spiele automatisch zu erkennen.
+    push_notifications:
+      title: Push-Benachrichtigungen
+      description: Werde auf diesem Gerät benachrichtigt, wenn ein neuer Speicherstand
+        hochgeladen wird. Funktioniert, wenn EmuVault als Homescreen-App installiert
+        ist.
+      enable: Push-Benachrichtigungen aktivieren
+      dialog_title: Push-Benachrichtigungen
+      ok: OK
+    data:
+      title: Daten
+      description: Exportiere deine Spiele und Speicherdateien oder stelle sie aus
+        einem früheren Export wieder her.
+      export_title: Bibliothek exportieren
+      export_description: Lädt alle Spiele und Speicherdateien als ZIP-Archiv herunter
+      export_button: Exportieren
+      import_title: Bibliothek importieren
+      import_description: Aus einem früheren EmuVault-Export-ZIP wiederherstellen
+      import_button: Importieren
+    monitoring:
+      title: Monitoring
+      description: Interne Dashboards für deine selbst gehostete Instanz.
+      pghero_title: PgHero
+      pghero_description: Datenbankleistung — langsame Abfragen, Index-Nutzung, Tabellengrößen
+      sidekiq_title: Sidekiq
+      sidekiq_description: Hintergrund-Job-Warteschlangen, Fehler und Durchsatz
+      kuma_title: Uptime Kuma
+      kuma_description: Verfügbarkeitsüberwachung — Health-Checks, Alarme und Statusseiten
+      kuma_setup_title: Uptime Kuma
+      kuma_setup_hint: 'Als eigenständige App auf deinem Server ausführen. EmuVault
+        überwachen unter '
+      kuma_endpoint: "%{host}/up"
+    update:
+      success: Einstellungen gespeichert.
+    passwords:
+      update:
+        success: Passwort aktualisiert.
+        incorrect: Aktuelles Passwort ist falsch.
+  activity:
+    show:
+      page_title: Aktivität — EmuVault
+      subtitle: Letzte Uploads und Downloads
+      empty_title: Noch keine Aktivität
+      empty_description: Uploads und Downloads werden hier angezeigt.
+    filters:
+      all_games: Alle Spiele
+      newest: Neueste zuerst
+      oldest: Älteste zuerst
+      event_count:
+        one: "%{count} Ereignis"
+        other: "%{count} Ereignisse"
+  notifications:
+    index:
+      empty: Noch keine Benachrichtigungen
+  data_imports:
+    create:
+      no_file: Bitte eine Exportdatei auswählen.
+      invalid: Ungültige Exportdatei — Manifest konnte nicht gelesen werden.
+    resolutions:
+      create:
+        started: Import gestartet — deine Bibliothek wird in Kürze wiederhergestellt.
+    reviews:
+      show:
+        page_title: Import überprüfen — EmuVault
+        title: Import überprüfen
+      content:
+        analyzing: Exportdatei wird analysiert…
+        invalid_title: Ungültige Exportdatei
+        invalid_description: Das Manifest der hochgeladenen Datei konnte nicht gelesen
+          werden.
+        back_to_settings: Zurück zu Einstellungen
+        game_count:
+          one: "%{count} Spiel"
+          other: "%{count} Spiele"
+        save_count:
+          one: "%{count} Speicherstand"
+          other: "%{count} Speicherstände"
+        profile_count:
+          one: "%{count} Profil"
+          other: "%{count} Profile"
+        conflict_count:
+          one: "%{count} Konflikt"
+          other: "%{count} Konflikte"
+        new_games:
+          one: "%{count} Neues Spiel"
+          other: "%{count} Neue Spiele"
+        new_games_hint: Wird deiner Bibliothek hinzugefügt
+        existing_title:
+          one: "%{count} Konflikt"
+          other: "%{count} Konflikte"
+        existing_hint: Diese Spiele existieren bereits in deiner Bibliothek
+        exists: Vorhanden
+        keep_existing: Vorhandene behalten
+        keep_hint: Importierte Speicherstände werden verworfen
+        replace: Ersetzen
+        replace_hint: Überschreibt alle vorhandenen Speicherstände
+        profiles_title:
+          one: "%{count} Emulator-Profil"
+          other: "%{count} Emulator-Profile"
+        profiles_hint: Vorhandene Profile mit gleichem Namen werden übersprungen
+        cancel: Abbrechen
+        start_import: Import starten
+  game_emulator_configs:
+    update:
+      success: Emulator-Dateinamen gespeichert.
+  games:
+    create:
+      added: "%{title} hinzugefügt."
+    update:
+      updated: "%{title} aktualisiert."
+    index:
+      page_title: Spiele — EmuVault
+      scan_library: Bibliothek durchsuchen
+      empty_title: Noch keine Spiele
+      empty_description: Füge dein erstes Spiel hinzu, um Speicherstände zu synchronisieren.
+      scan_review_title: Scan-Ergebnis
+      scan_review_description: Wähle die Spiele aus, die du deiner Bibliothek hinzufügen
+        möchtest
+      add_to_library: Zur Bibliothek hinzufügen
+      dismiss: Schließen
+    filters:
+      all_systems: Alle Systeme
+    onboarding_game_list_item:
+      remove_title: Spiel entfernen?
+      remove_message: "%{title} aus deiner Bibliothek entfernen?"
+    game_list_item:
+      remove_title: Spiel entfernen?
+      remove_message: "%{title} aus deiner Bibliothek entfernen? Alle gespeicherten
+        Versionen werden ebenfalls gelöscht."
+    destroy:
+      success: "%{title} entfernt."
+      failure: "%{title} konnte nicht entfernt werden."
+    scans:
+      review_content:
+        skipped_paths:
+          one: "%{count} Pfad konnte nicht gelesen werden"
+          other: "%{count} Pfade konnten nicht gelesen werden"
+        no_new_games: Keine neuen Spiele gefunden
+        check_paths: Überprüfe deine Scan-Pfade in den Einstellungen.
+        already_in_lib:
+          one: "%{count} Spiel bereits in der Bibliothek"
+          other: "%{count} Spiele bereits in der Bibliothek"
+        games_found:
+          one: "%{count} Spiel"
+          other: "%{count} Spiele"
+        saves_found:
+          one: "%{count} Speicherdatei gefunden"
+          other: "%{count} Speicherdateien gefunden"
+    show:
+      page_title: "%{title} — EmuVault"
+      breadcrumb: Spiele
+      current_save: Aktueller Speicherstand
+      unknown_source: Unbekannte Quelle
+      download: Herunterladen
+      place_file: 'Heruntergeladene Datei ablegen unter:'
+      download_note: Dein Browser speichert die Datei unter Downloads — verschiebe
+        sie in den oben angegebenen Pfad.
+      upload_title: Neue Version hochladen
+      upload_button: Speicherdatei hochladen
+      previous_versions: Frühere Versionen
+      view_all: Alle %{count} anzeigen
+      emulator_filenames: Emulator-Speicherdateinamen
+    header:
+      set_current: Als aktuell festlegen
+      edit_game: Spiel bearbeiten
+      edit: Bearbeiten
+      save_changes: Änderungen speichern
+      remove_title: Spiel entfernen?
+      remove_message: "%{title} aus deiner Bibliothek entfernen? Alle gespeicherten
+        Versionen werden ebenfalls gelöscht."
+    new:
+      page_title: Spiel hinzufügen — EmuVault
+    edit:
+      page_title: "%{title} bearbeiten — EmuVault"
+      heading: Spiel bearbeiten
+      submit: Änderungen speichern
+    form:
+      title_label: Titel
+      system_label: System
+      system_prompt: "— System auswählen —"
+      rom_hash_label: ROM-Hash (optional)
+      rom_hash_hint: SHA-256 oder MD5 der ROM-Datei — dient zur eindeutigen Identifizierung
+        des Spiels.
+      cover_label: Coverbild (optional)
+      cover_hint: PNG, JPEG oder WebP. Max. 5 MB.
+    upload_form:
+      emulator_hint: Von welchem Emulator stammt dieser Speicherstand? (optional)
+    emulator_filenames:
+      title: Emulator-Speicherdateinamen
+      description: Lege den Dateinamen fest, den jeder Emulator für dieses Spiel erwartet.
+        Leer lassen, um einen Standard basierend auf dem Spieltitel zu verwenden.
+      save_button: Dateinamen speichern
+      empty: Keine Emulatoren ausgewählt. Füge Emulatoren auf der Profilseite hinzu.
+    crop_dialog:
+      title: Coverbild zuschneiden
+      confirm: Zuschneiden & verwenden
+      cancel: Abbrechen
+    paths:
+      create:
+        success: Scan-Pfad hinzugefügt.
+      update:
+        success: Scan-Pfad aktualisiert.
+      destroy:
+        success: Scan-Pfad entfernt.
+        failure: Scan-Pfad konnte nicht entfernt werden.
+      browser:
+        show:
+          not_found: Verzeichnis nicht gefunden
+          permission_denied: Zugriff verweigert
+      section:
+        add_path: Scan-Pfad hinzufügen
+        scan_now: Jetzt scannen
+      form:
+        directory_label: Verzeichnispfad
+        directory_placeholder: "/saves/gba/"
+        directory_hint: Gib den Pfad zu deinem Spieleverzeichnis ein. Bei NAS- oder
+          Docker-Setups das Verzeichnis zuerst als Volume einbinden (z. B. /saves).
+          Bei lokaler Installation den vollständigen Pfad verwenden (z. B. /home/user/games/gba).
+        system_prompt: System auswählen
+        auto_scan: In Auto-Scan einbeziehen
+        submit: Pfad hinzufügen
+      edit_form:
+        directory_label: Verzeichnispfad
+        submit: Änderungen speichern
+      directory_browser:
+        select: Ordner auswählen
+        jump_to: 'Springen zu:'
+        placeholder: Klicke auf Durchsuchen, um zu erkunden
+  current_game:
+    update:
+      success: 'Aktuelles Spiel: %{title}'
+    destroy:
+      success: Aktuelles Spiel zurückgesetzt
+  models:
+    game_system:
+      nes: NES
+      snes: SNES
+      gb: Game Boy
+      gbc: Game Boy Color
+      gba: Game Boy Advance
+      nds: Nintendo DS
+      genesis: Sega Genesis
+      sms: Sega Master System
+      gg: Game Gear
+      psx: PlayStation
+      ps2: PlayStation 2
+      psp: PlayStation Portable
+      n64: Nintendo 64
+      gc: GameCube
+      wii: Wii
+      arcade: Arcade
+    platform:
+      linux: Linux
+      windows: Windows
+      macos: macOS
+      ios: iOS
+      android: Android
+    scan_interval:
+      hourly: Stündlich
+      every_6_hours: Alle 6 Stunden
+      daily: Täglich
+    device:
+      phone: Smartphone
+      tablet: Tablet
+      desktop: Desktop
+    sync_action:
+      push: Upload
+      pull: Download
+  dashboard:
+    index:
+      page_title: Übersicht — EmuVault
+      storage_used: Speicher belegt
+      save_files: Speicherdateien
+      sync_events: Sync-Ereignisse
+    top_games:
+      title: Aktivste Spiele
+      empty: Noch keine Syncs.
+      sync_count:
+        one: 1 Sync
+        other: "%{count} Syncs"
+    systems:
+      title: Systeme
+      empty: Noch keine Spiele.
+      game_count:
+        one: 1 Spiel
+        other: "%{count} Spiele"
+    recent_activity:
+      title: Letzte Aktivität
+      view_all: Alle anzeigen
+      empty: Noch keine Aktivität.
+  helpers:
+    games:
+      sort:
+        title_asc: Titel A→Z
+        title_desc: Titel Z→A
+        newest: Neueste zuerst
+        oldest: Älteste zuerst
+        system: Nach System
+  emulator_profiles:
+    index:
+      page_title: Emulator-Profile — EmuVault
+    page_header:
+      title: Emulator-Profile
+      subtitle: Deine konfigurierten Emulatoren nach Spielsystem
+    profiles_list:
+      deselect_all: Alle abwählen
+      delete_selected: Ausgewählte löschen
+      no_save_path: Kein Speicherpfad festgelegt
+      remove_games_first: Zuerst alle %{system}-Spiele entfernen
+      remove_profile_title: Profil entfernen?
+      remove_profile_message: Dieses Profil aus deiner Liste entfernen? Du kannst
+        es später wieder hinzufügen.
+      delete_profile_title: Profil löschen?
+      delete_profile_message: Dieses Profil dauerhaft löschen?
+      empty_title: Noch keine Emulatoren konfiguriert
+      empty_description: Füge Emulatoren aus der Bibliothek hinzu oder erstelle ein
+        eigenes Profil.
+      add_from_library: Aus Bibliothek hinzufügen
+      add_custom: Eigenes Profil erstellen
+      library_modal_title: Aus Bibliothek hinzufügen
+      library_modal_description: Wähle die Systeme aus, für die du Emulatoren hinzufügen
+        möchtest.
+      confirm: Bestätigen
+      custom_modal_title: Eigenes Profil erstellen
+      save: Speichern
+    form:
+      name_label: Emulator-Name
+      platform_prompt: Plattform auswählen
+      platform_label: Plattform
+      system_prompt: Spielsystem auswählen
+      system_hint: Erforderlich für Bibliotheks-Scan
+      extension_label: Speicher-Erweiterung (ohne Punkt)
+      extension_placeholder: z. B. srm
+      path_label: Speicherverzeichnis
+      path_placeholder: z. B. /games/retroarch/saves/gba/
+      path_hint: Pfad innerhalb des Containers — binde dein Speicherverzeichnis als
+        Volume ein
+    library_step:
+      all_added: Alle verfügbaren Emulatoren aus der Bibliothek sind bereits hinzugefügt.
+    library_system_step:
+      games_exist: Spiele für dieses System vorhanden
+    create:
+      success: Profil hinzugefügt.
+    update:
+      success: Profil aktualisiert.
+    destroy:
+      in_use: Entfernen nicht möglich — du hast Spiele für dieses System. Entferne
+        zuerst diese Spiele.
+      failure: Profil konnte nicht entfernt werden.
+    library:
+      create:
+        success: Emulatoren hinzugefügt.
+  onboarding:
+    emulator_profiles:
+      index:
+        page_title: Emulatoren auswählen — EmuVault
+    games:
+      index:
+        page_title: Spiele hinzufügen — EmuVault
+        title: Spiele hinzufügen
+        description: Konfiguriere Scan-Pfade, um Spiele automatisch zu erkennen, oder
+          füge sie manuell hinzu.
+        complete: Einrichtung abschließen
+        scan_paths: Scan-Pfade
+        scan_paths_hint: Verweise EmuVault auf Verzeichnisse, in denen deine Spieldateien
+          gespeichert sind.
+        add_game_hint: Füge ein Spiel manuell zu deiner Bibliothek hinzu.
+        add_game_button: Spiel hinzufügen
+      create:
+        added: "%{title} hinzugefügt."
+  javascript:
+    push_subscription:
+      not_supported: Push-Benachrichtigungen werden von diesem Browser nicht unterstützt.
+      permission_denied: Benachrichtigungsberechtigung wurde verweigert. Du kannst
+        sie in den Browsereinstellungen aktivieren.
+      enabled: Push-Benachrichtigungen aktiviert.
+      error: 'Abonnement fehlgeschlagen: %{message}'
+    profile_select:
+      selected: "%{count} ausgewählt"
+    directory_browser:
+      no_subdirectories: Keine Unterverzeichnisse
+      error: Verzeichnis konnte nicht gelesen werden
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            kuma_url:
+              invalid_url: muss eine HTTP- oder HTTPS-URL sein

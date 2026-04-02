@@ -1,0 +1,512 @@
+---
+fr:
+  common:
+    choose_file: Choisir un fichier
+    no_file: Aucun fichier sélectionné
+    add_game: Ajouter un jeu
+    clear: Effacer
+    now_playing: En cours
+    remove: Supprimer
+    scanning: Analyse de votre bibliothèque…
+    browse: Parcourir
+    sign_out: Déconnexion
+    game_system: Console
+    clear_current_game: Retirer le jeu en cours
+    set_current_game: Définir comme jeu en cours
+    select_emulators_title: Sélectionnez vos émulateurs
+    select_emulators_description: Ajoutez les émulateurs que vous utilisez depuis
+      la bibliothèque ou créez des profils personnalisés.
+    next_add_games: 'Suivant : Ajouter des jeux'
+  layouts:
+    application:
+      title: EmuVault
+  components:
+    app_shell:
+      dashboard: Tableau de bord
+      games: Jeux
+      activity: Activité
+      emulator_profiles: Profils d'émulateurs
+      notifications: Notifications
+      settings: Paramètres
+      quick_sync: Synchro rapide
+      mark_all_read: Tout marquer comme lu
+    flash_item:
+      dismiss: Fermer
+  sessions:
+    new:
+      page_title: Connexion — EmuVault
+      heading: Connectez-vous à votre coffre
+      username: Nom d'utilisateur
+      password: Mot de passe
+      sign_in: Se connecter
+    create:
+      rate_limited: Réessayez plus tard.
+      failure: Nom d'utilisateur ou mot de passe incorrect.
+  registrations:
+    new:
+      page_title: Créer un compte — EmuVault
+      heading: Créez votre compte pour commencer
+      username: Nom d'utilisateur
+      password: Mot de passe
+      password_confirmation: Confirmer le mot de passe
+      submit: Créer le compte
+  shared:
+    game_stats:
+      games: Jeux
+      needs_upload: À synchroniser
+      all_synced: Tout est synchronisé
+      games_without_save:
+        one: "%{count} jeu sans sauvegarde"
+        other: "%{count} jeux sans sauvegarde"
+    auto_scan_schedule:
+      title: Analyse automatique
+      enable: Activer l'analyse automatique
+      hint: Les chemins marqués « analyse auto activée » seront analysés automatiquement
+      interval: Intervalle
+      save: Enregistrer
+    onboarding_banner:
+      back: Retour
+      next: Suivant
+    scan_paths_list:
+      auto_scan_on: Analyse auto activée
+      auto_scan_off: Analyse auto désactivée
+      edit_path: Modifier le chemin
+    quick_sync_content:
+      view: Voir →
+      last_save: 'Dernière sauvegarde : il y a %{time}'
+      download: Télécharger
+      select_emulator: Sélectionnez un émulateur…
+      place_file: 'Placez le fichier dans :'
+      copy_path: Copier le chemin
+      no_save: Aucune sauvegarde envoyée. Envoyez-en une ci-dessous.
+      upload_title: Envoyer une nouvelle version
+      emulator_hint: De quel émulateur provient cette sauvegarde ? (facultatif)
+      upload_button: Envoyer
+      no_game_title: Aucun jeu défini comme En cours.
+      no_game_hint: Ouvrez un jeu et appuyez sur « Définir comme jeu en cours » pour
+        activer la synchro rapide.
+  game_saves:
+    create:
+      success: Sauvegarde envoyée.
+    destroy:
+      success: Sauvegarde supprimée.
+      failure: Impossible de supprimer la sauvegarde.
+    form:
+      select_emulator: Sélectionnez un émulateur…
+      emulator_label: Profil d'émulateur
+      slot_label: Emplacement (0 = sauvegarde auto)
+      file_label: Fichier de sauvegarde
+      submit: Envoyer la sauvegarde
+  settings:
+    show:
+      page_title: Paramètres — EmuVault
+      title: Paramètres
+    account:
+      title: Compte
+      change_password: Changer le mot de passe
+      current_password: Mot de passe actuel
+      new_password: Nouveau mot de passe
+      confirm_password: Confirmer le nouveau mot de passe
+      update_password: Mettre à jour le mot de passe
+    theme:
+      title: Thème
+      description: Choisissez l'apparence d'EmuVault.
+      save: Enregistrer le thème
+      unsaved_title: Thème non enregistré
+      unsaved_message: Vous avez un changement de thème non enregistré. Quittez et
+        enregistrez, ou restez pour continuer.
+      leave_and_save: Quitter et enregistrer
+      stay: Rester
+    library_scan:
+      title: Chemins d'analyse
+      description: Répertoires où vos fichiers de jeu sont stockés. EmuVault les analyse
+        pour découvrir les jeux automatiquement.
+    push_notifications:
+      title: Notifications push
+      description: Recevez une notification sur cet appareil lorsqu'une nouvelle sauvegarde
+        est envoyée. Fonctionne lorsqu'EmuVault est installé sur l'écran d'accueil.
+      enable: Activer les notifications push
+      dialog_title: Notifications push
+      ok: OK
+    data:
+      title: Données
+      description: Exportez vos jeux et sauvegardes, ou restaurez depuis un export
+        précédent.
+      export_title: Exporter la bibliothèque
+      export_description: Télécharge tous les jeux et sauvegardes dans une archive
+        ZIP
+      export_button: Exporter
+      import_title: Importer la bibliothèque
+      import_description: Restaurer depuis un export EmuVault précédent
+      import_button: Importer
+    monitoring:
+      title: Surveillance
+      description: Tableaux de bord internes pour votre instance auto-hébergée.
+      pghero_title: PgHero
+      pghero_description: Performances de la base de données — requêtes lentes, utilisation
+        des index, taille des tables
+      sidekiq_title: Sidekiq
+      sidekiq_description: Files de tâches en arrière-plan, échecs et débit
+      kuma_title: Uptime Kuma
+      kuma_description: Surveillance de la disponibilité — vérifications, alertes
+        et pages de statut
+      kuma_setup_title: Uptime Kuma
+      kuma_setup_hint: 'Exécutez-le comme application autonome sur votre serveur.
+        Surveillez EmuVault à '
+      kuma_endpoint: "%{host}/up"
+    update:
+      success: Paramètres enregistrés.
+    passwords:
+      update:
+        success: Mot de passe mis à jour.
+        incorrect: Le mot de passe actuel est incorrect.
+  activity:
+    show:
+      page_title: Activité — EmuVault
+      subtitle: Envois et téléchargements récents
+      empty_title: Aucune activité
+      empty_description: Les envois et téléchargements apparaîtront ici.
+    filters:
+      all_games: Tous les jeux
+      newest: Plus récents
+      oldest: Plus anciens
+      event_count:
+        one: "%{count} événement"
+        other: "%{count} événements"
+  notifications:
+    index:
+      empty: Aucune notification
+  data_imports:
+    create:
+      no_file: Veuillez sélectionner un fichier d'export.
+      invalid: Fichier d'export invalide — impossible de lire le manifeste.
+    resolutions:
+      create:
+        started: Import lancé — votre bibliothèque sera restaurée sous peu.
+    reviews:
+      show:
+        page_title: Vérifier l'import — EmuVault
+        title: Vérifier l'import
+      content:
+        analyzing: Analyse du fichier d'export…
+        invalid_title: Fichier d'export invalide
+        invalid_description: Impossible de lire le manifeste du fichier envoyé.
+        back_to_settings: Retour aux paramètres
+        game_count:
+          one: "%{count} jeu"
+          other: "%{count} jeux"
+        save_count:
+          one: "%{count} sauvegarde"
+          other: "%{count} sauvegardes"
+        profile_count:
+          one: "%{count} profil"
+          other: "%{count} profils"
+        conflict_count:
+          one: "%{count} conflit"
+          other: "%{count} conflits"
+        new_games:
+          one: "%{count} nouveau jeu"
+          other: "%{count} nouveaux jeux"
+        new_games_hint: Seront ajoutés à votre bibliothèque
+        existing_title:
+          one: "%{count} conflit"
+          other: "%{count} conflits"
+        existing_hint: Ces jeux existent déjà dans votre bibliothèque
+        exists: Existe
+        keep_existing: Garder l'existant
+        keep_hint: Les sauvegardes importées sont ignorées
+        replace: Remplacer
+        replace_hint: Écrase toutes les sauvegardes existantes
+        profiles_title:
+          one: "%{count} profil d'émulateur"
+          other: "%{count} profils d'émulateurs"
+        profiles_hint: Les profils existants avec le même nom seront ignorés
+        cancel: Annuler
+        start_import: Lancer l'import
+  game_emulator_configs:
+    update:
+      success: Noms de fichiers enregistrés.
+  games:
+    create:
+      added: "%{title} ajouté."
+    update:
+      updated: "%{title} mis à jour."
+    index:
+      page_title: Jeux — EmuVault
+      scan_library: Analyser la bibliothèque
+      empty_title: Aucun jeu
+      empty_description: Ajoutez votre premier jeu pour commencer à synchroniser vos
+        sauvegardes.
+      scan_review_title: Résultats de l'analyse
+      scan_review_description: Sélectionnez les jeux à ajouter à votre bibliothèque
+      add_to_library: Ajouter à la bibliothèque
+      dismiss: Fermer
+    filters:
+      all_systems: Toutes les consoles
+    onboarding_game_list_item:
+      remove_title: Supprimer le jeu ?
+      remove_message: Supprimer %{title} de votre bibliothèque ?
+    game_list_item:
+      remove_title: Supprimer le jeu ?
+      remove_message: Supprimer %{title} de votre bibliothèque ? Toutes les versions
+        sauvegardées seront également supprimées.
+    destroy:
+      success: "%{title} supprimé."
+      failure: Impossible de supprimer %{title}.
+    scans:
+      review_content:
+        skipped_paths:
+          one: "%{count} chemin n'a pas pu être lu"
+          other: "%{count} chemins n'ont pas pu être lus"
+        no_new_games: Aucun nouveau jeu trouvé
+        check_paths: Vérifiez vos chemins d'analyse dans les paramètres.
+        already_in_lib:
+          one: "%{count} jeu déjà dans la bibliothèque"
+          other: "%{count} jeux déjà dans la bibliothèque"
+        games_found:
+          one: "%{count} jeu"
+          other: "%{count} jeux"
+        saves_found:
+          one: "%{count} fichier de sauvegarde trouvé"
+          other: "%{count} fichiers de sauvegarde trouvés"
+    show:
+      page_title: "%{title} — EmuVault"
+      breadcrumb: Jeux
+      current_save: Sauvegarde actuelle
+      unknown_source: Source inconnue
+      download: Télécharger
+      place_file: 'Placez le fichier téléchargé dans :'
+      download_note: Votre navigateur l'enregistrera dans Téléchargements — déplacez-le
+        vers le chemin ci-dessus.
+      upload_title: Envoyer une nouvelle version
+      upload_button: Envoyer la sauvegarde
+      previous_versions: Versions précédentes
+      view_all: Voir les %{count}
+      emulator_filenames: Noms de fichiers par émulateur
+    header:
+      set_current: Définir comme en cours
+      edit_game: Modifier le jeu
+      edit: Modifier
+      save_changes: Enregistrer
+      remove_title: Supprimer le jeu ?
+      remove_message: Supprimer %{title} de votre bibliothèque ? Toutes les versions
+        sauvegardées seront également supprimées.
+    new:
+      page_title: Ajouter un jeu — EmuVault
+    edit:
+      page_title: Modifier %{title} — EmuVault
+      heading: Modifier le jeu
+      submit: Enregistrer
+    form:
+      title_label: Titre
+      system_label: Console
+      system_prompt: "— sélectionnez une console —"
+      rom_hash_label: Hash ROM (facultatif)
+      rom_hash_hint: SHA-256 ou MD5 du fichier ROM — utilisé pour identifier le jeu
+        de manière unique.
+      cover_label: Image de couverture (facultatif)
+      cover_hint: PNG, JPEG ou WebP. 5 Mo maximum.
+    upload_form:
+      emulator_hint: De quel émulateur provient cette sauvegarde ? (facultatif)
+    emulator_filenames:
+      title: Noms de fichiers par émulateur
+      description: Définissez le nom de fichier attendu par chaque émulateur pour
+        ce jeu. Laissez vide pour utiliser un nom basé sur le titre du jeu.
+      save_button: Enregistrer les noms de fichiers
+      empty: Aucun émulateur sélectionné. Ajoutez des émulateurs depuis la page Profils.
+    crop_dialog:
+      title: Recadrer l'image de couverture
+      confirm: Recadrer et utiliser
+      cancel: Annuler
+    paths:
+      create:
+        success: Chemin d'analyse ajouté.
+      update:
+        success: Chemin d'analyse mis à jour.
+      destroy:
+        success: Chemin d'analyse supprimé.
+        failure: Impossible de supprimer le chemin d'analyse.
+      browser:
+        show:
+          not_found: Répertoire introuvable
+          permission_denied: Accès refusé
+      section:
+        add_path: Ajouter un chemin d'analyse
+        scan_now: Analyser maintenant
+      form:
+        directory_label: Chemin du répertoire
+        directory_placeholder: "/saves/gba/"
+        directory_hint: Entrez le chemin vers votre répertoire de jeux. Sur un NAS
+          ou Docker, montez d'abord le répertoire comme volume (ex. /saves). En installation
+          locale, utilisez le chemin complet (ex. /home/user/games/gba).
+        system_prompt: Sélectionnez une console
+        auto_scan: Inclure dans l'analyse automatique
+        submit: Ajouter le chemin
+      edit_form:
+        directory_label: Chemin du répertoire
+        submit: Enregistrer
+      directory_browser:
+        select: Sélectionner le dossier
+        jump_to: 'Aller à :'
+        placeholder: Cliquez sur Parcourir pour explorer
+  current_game:
+    update:
+      success: 'En cours : %{title}'
+    destroy:
+      success: Jeu en cours retiré
+  models:
+    game_system:
+      nes: NES
+      snes: SNES
+      gb: Game Boy
+      gbc: Game Boy Color
+      gba: Game Boy Advance
+      nds: Nintendo DS
+      genesis: Sega Genesis
+      sms: Sega Master System
+      gg: Game Gear
+      psx: PlayStation
+      ps2: PlayStation 2
+      psp: PlayStation Portable
+      n64: Nintendo 64
+      gc: GameCube
+      wii: Wii
+      arcade: Arcade
+    platform:
+      linux: Linux
+      windows: Windows
+      macos: macOS
+      ios: iOS
+      android: Android
+    scan_interval:
+      hourly: Toutes les heures
+      every_6_hours: Toutes les 6 heures
+      daily: Quotidien
+    device:
+      phone: Téléphone
+      tablet: Tablette
+      desktop: Ordinateur
+    sync_action:
+      push: Envoi
+      pull: Téléchargement
+  dashboard:
+    index:
+      page_title: Tableau de bord — EmuVault
+      storage_used: Stockage utilisé
+      save_files: Fichiers de sauvegarde
+      sync_events: Événements de synchro
+    top_games:
+      title: Jeux les plus actifs
+      empty: Aucune synchro.
+      sync_count:
+        one: 1 synchro
+        other: "%{count} synchros"
+    systems:
+      title: Consoles
+      empty: Aucun jeu.
+      game_count:
+        one: 1 jeu
+        other: "%{count} jeux"
+    recent_activity:
+      title: Activité récente
+      view_all: Tout voir
+      empty: Aucune activité.
+  helpers:
+    games:
+      sort:
+        title_asc: Titre A→Z
+        title_desc: Titre Z→A
+        newest: Plus récents
+        oldest: Plus anciens
+        system: Par console
+  emulator_profiles:
+    index:
+      page_title: Profils d'émulateurs — EmuVault
+    page_header:
+      title: Profils d'émulateurs
+      subtitle: Vos émulateurs configurés par console
+    profiles_list:
+      deselect_all: Tout désélectionner
+      delete_selected: Supprimer la sélection
+      no_save_path: Aucun chemin de sauvegarde défini
+      remove_games_first: Supprimez d'abord tous les jeux %{system}
+      remove_profile_title: Retirer le profil ?
+      remove_profile_message: Retirer ce profil de votre liste ? Vous pourrez le rajouter
+        plus tard.
+      delete_profile_title: Supprimer le profil ?
+      delete_profile_message: Supprimer définitivement ce profil ?
+      empty_title: Aucun émulateur configuré
+      empty_description: Ajoutez des émulateurs depuis la bibliothèque ou créez un
+        profil personnalisé.
+      add_from_library: Ajouter depuis la bibliothèque
+      add_custom: Ajouter un profil personnalisé
+      library_modal_title: Ajouter depuis la bibliothèque
+      library_modal_description: Sélectionnez les consoles pour lesquelles ajouter
+        des émulateurs.
+      confirm: Confirmer
+      custom_modal_title: Ajouter un profil personnalisé
+      save: Enregistrer
+    form:
+      name_label: Nom de l'émulateur
+      platform_prompt: Sélectionnez une plateforme
+      platform_label: Plateforme
+      system_prompt: Sélectionnez une console
+      system_hint: Requis pour l'analyse de la bibliothèque
+      extension_label: Extension de sauvegarde (sans point)
+      extension_placeholder: ex. srm
+      path_label: Répertoire de sauvegarde
+      path_placeholder: ex. /games/retroarch/saves/gba/
+      path_hint: Chemin dans le conteneur — montez votre répertoire de sauvegardes
+        comme volume
+    library_step:
+      all_added: Tous les émulateurs disponibles de la bibliothèque sont déjà ajoutés.
+    library_system_step:
+      games_exist: Des jeux existent pour cette console
+    create:
+      success: Profil ajouté.
+    update:
+      success: Profil mis à jour.
+    destroy:
+      in_use: Impossible de retirer — vous avez des jeux pour cette console. Supprimez
+        d'abord ces jeux.
+      failure: Impossible de supprimer le profil.
+    library:
+      create:
+        success: Émulateurs ajoutés.
+  onboarding:
+    emulator_profiles:
+      index:
+        page_title: Sélection des émulateurs — EmuVault
+    games:
+      index:
+        page_title: Ajouter des jeux — EmuVault
+        title: Ajoutez vos jeux
+        description: Configurez des chemins d'analyse pour découvrir les jeux automatiquement,
+          ou ajoutez-les manuellement.
+        complete: Terminer la configuration
+        scan_paths: Chemins d'analyse
+        scan_paths_hint: Indiquez à EmuVault les répertoires où vos fichiers de jeu
+          sont stockés.
+        add_game_hint: Ajoutez manuellement un jeu à votre bibliothèque.
+        add_game_button: Ajouter un jeu
+      create:
+        added: "%{title} ajouté."
+  javascript:
+    push_subscription:
+      not_supported: Les notifications push ne sont pas prises en charge par ce navigateur.
+      permission_denied: L'autorisation de notification a été refusée. Vous pouvez
+        l'activer dans les paramètres du navigateur.
+      enabled: Notifications push activées.
+      error: 'Impossible de s''abonner : %{message}'
+    profile_select:
+      selected: "%{count} sélectionné(s)"
+    directory_browser:
+      no_subdirectories: Aucun sous-répertoire
+      error: Impossible de lire le répertoire
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            kuma_url:
+              invalid_url: doit être une URL HTTP ou HTTPS
