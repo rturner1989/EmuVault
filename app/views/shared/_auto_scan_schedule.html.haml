@@ -1,19 +1,19 @@
 %p.text-sm.font-medium.mb-3
-  = "Auto-scan schedule"
+  = t(".title")
 = form_with model: user, url: form_url, method: :patch, html: { id: form_id || nil, class: "space-y-3" } do |f|
   .flex.items-center.justify-between
     .min-w-0
       %p.text-sm
-        = "Enable auto-scan"
+        = t(".enable")
       %p.text-xs.text-muted
-        = "Paths marked \"auto-scan on\" will be scanned automatically"
+        = t(".hint")
     = f.check_box :scan_enabled, class: "checkbox checkbox-primary ml-4"
   .flex.items-center.justify-between.gap-4
     %label.text-sm.shrink-0{ for: "user_scan_interval" }
-      = "Interval"
+      = t(".interval")
     = f.select :scan_interval, User.scan_interval_options, {}, class: "select select-bordered select-sm w-auto"
   - if local_assigns[:show_submit] != false
     = render ::UI::ActionComponent.new(variant: :primary,
       size: :sm,
       type: :submit) do
-      = "Save"
+      = t(".save")

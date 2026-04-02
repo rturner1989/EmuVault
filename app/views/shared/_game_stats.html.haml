@@ -1,11 +1,11 @@
-= render ::UI::StatComponent.new(title: "Games", value: games_count) do |stat|
+= render ::UI::StatComponent.new(title: t(".games"), value: games_count) do |stat|
   - stat.with_icon(name: "fa-gamepad", class: "text-primary fa-lg", fw: false)
   - stat.with_action(href: games_path, data: { turbo_frame: "_top" })
 
-= render ::UI::StatComponent.new(title: "Needs Upload",
+= render ::UI::StatComponent.new(title: t(".needs_upload"),
   value: games_without_save,
   value_color: games_without_save > 0 ? "text-warning" : "text-success",
-  description: games_without_save == 0 ? "All synced" : "#{games_without_save} #{"game".pluralize(games_without_save)} with no save") do |stat|
+  description: games_without_save == 0 ? t(".all_synced") : t(".games_without_save", count: games_without_save)) do |stat|
   - stat.with_icon(name: "fa-cloud-arrow-up",
     class: "#{games_without_save > 0 ? 'text-warning' : 'text-success'} fa-lg",
     fw: false)

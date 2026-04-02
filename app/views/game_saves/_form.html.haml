@@ -11,21 +11,21 @@
       collection: EmulatorProfile.order(:name, :platform),
       label_method: ->(p) { "#{p.name} (#{p.platform_label})" },
       value_method: :id,
-      prompt: "Select emulator…",
-      label: "Emulator Profile",
+      prompt: t(".select_emulator"),
+      label: t(".emulator_label"),
       input_html: { class: "select select-bordered w-full" },
       label_html: { class: "label-text font-medium" }
     = f.input :slot,
       as: :integer,
-      label: "Slot (0 = auto-save)",
+      label: t(".slot_label"),
       input_html: { value: 0, min: 0, class: "input input-bordered w-full" },
       label_html: { class: "label-text font-medium" }
 
   = f.input :file,
     as: :file,
-    label: "Save File",
+    label: t(".file_label"),
     input_html: { class: "file-input file-input-bordered w-full" },
     label_html: { class: "label-text font-medium" }
 
   = render ::UI::ActionComponent.new(variant: :primary, type: :submit) do
-    = "Upload Save"
+    = t(".submit")

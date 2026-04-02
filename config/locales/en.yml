@@ -33,12 +33,57 @@ en:
       password: "Password"
       password_confirmation: "Confirm password"
       submit: "Create account"
+  shared:
+    now_playing:
+      title: "Now Playing"
+    game_stats:
+      games: "Games"
+      needs_upload: "Needs Upload"
+      all_synced: "All synced"
+      games_without_save:
+        one: "%{count} game with no save"
+        other: "%{count} games with no save"
+    auto_scan_schedule:
+      title: "Auto-scan schedule"
+      enable: "Enable auto-scan"
+      hint: "Paths marked \"auto-scan on\" will be scanned automatically"
+      interval: "Interval"
+      save: "Save"
+    onboarding_banner:
+      back: "Back"
+      next: "Next"
+    scan_paths_list:
+      auto_scan_on: "Auto-scan on"
+      auto_scan_off: "Auto-scan off"
+      edit_path: "Edit path"
+    quick_sync_content:
+      view: "View →"
+      clear: "Clear"
+      last_save: "Last save: %{time} ago"
+      download: "Download"
+      select_emulator: "Select emulator to download for…"
+      place_file: "Place file at:"
+      copy_path: "Copy path"
+      no_save: "No save uploaded yet. Upload one below."
+      upload_title: "Upload New Version"
+      emulator_hint: "Which emulator is this save from? (optional)"
+      choose_file: "Choose file"
+      no_file: "No file selected"
+      upload_button: "Upload"
+      no_game_title: "No game set as Now Playing."
+      no_game_hint: "Open a game and tap \"Set as current\" to enable quick sync."
   game_saves:
     create:
       success: "Save uploaded."
     destroy:
       success: "Save removed."
       failure: "Could not remove save."
+    form:
+      select_emulator: "Select emulator…"
+      emulator_label: "Emulator Profile"
+      slot_label: "Slot (0 = auto-save)"
+      file_label: "Save File"
+      submit: "Upload Save"
   settings:
     show:
       page_title: "Settings — EmuVault"

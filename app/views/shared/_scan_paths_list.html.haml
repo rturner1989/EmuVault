@@ -17,7 +17,7 @@
                 class: sp.auto_scan ? "btn-outline" : nil,
                 params: { scan_path: { auto_scan: !sp.auto_scan } }) do |a|
                 - a.with_leading_icon(name: "fa-rotate")
-                = sp.auto_scan ? "Auto-scan on" : "Auto-scan off"
+                = sp.auto_scan ? t(".auto_scan_on") : t(".auto_scan_off")
               = render ::UI::ActionComponent.new(href: scan_path_path(sp),
                 method: :delete,
                 variant: :danger,
@@ -27,6 +27,6 @@
           %details
             %summary.px-4.py-2.text-xs.text-muted.cursor-pointer{ class: "hover:text-base-content transition-colors" }
               = render ::UI::IconComponent.new(name: "fa-pencil", class: "mr-1")
-              = "Edit path"
+              = t(".edit_path")
             .px-4.pb-3
               = render "games/paths/edit_form", sp: sp
