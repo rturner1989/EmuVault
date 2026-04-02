@@ -1,1 +1,44 @@
-en: {}
+en:
+  game_saves:
+    create:
+      success: "Save uploaded."
+    destroy:
+      success: "Save removed."
+      failure: "Could not remove save."
+  sessions:
+    create:
+      rate_limited: "Try again later."
+      failure: "Try another username or password."
+  settings:
+    passwords:
+      update:
+        success: "Password updated."
+        incorrect: "Current password is incorrect."
+  data_imports:
+    create:
+      no_file: "Please select an export file."
+      invalid: "Invalid export file — could not read manifest."
+    resolutions:
+      create:
+        started: "Import started — your library will be restored shortly."
+  games:
+    destroy:
+      success: "%{title} removed."
+      failure: "Could not remove %{title}."
+    paths:
+      create:
+        success: "Scan path added."
+      update:
+        success: "Scan path updated."
+      destroy:
+        success: "Scan path removed."
+        failure: "Could not remove scan path."
+      browser:
+        show:
+          not_found: "Directory not found"
+          permission_denied: "Permission denied"
+  current_game:
+    update:
+      success: "Now playing: %{title}"
+    destroy:
+      success: "Cleared current game"

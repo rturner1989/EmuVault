@@ -1,6 +1,6 @@
 class SessionsController < OnboardingController
   allow_unauthenticated_access only: %i[new create]
-  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_path, alert: "Try again later." }
+  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_path, alert: I18n.t("sessions.create.rate_limited") }
 
   def new
     redirect_to new_registration_path unless User.exists?
@@ -11,7 +11,7 @@ class SessionsController < OnboardingController
       start_new_session_for user
       redirect_to after_authentication_url
     else
-      redirect_to new_session_path, alert: "Try another username or password."
+      redirect_to new_session_path, alert: t(".failure")
     end
   end
 

@@ -12,9 +12,9 @@ module Games
 
         render json: { path: path, entries: entries, shortcuts: shortcuts }
       rescue Errno::ENOENT
-        render json: { error: "Directory not found" }, status: :unprocessable_entity
+        render json: { error: t(".not_found") }, status: :unprocessable_entity
       rescue Errno::EACCES
-        render json: { error: "Permission denied" }, status: :unprocessable_entity
+        render json: { error: t(".permission_denied") }, status: :unprocessable_entity
       end
 
       private def shortcuts

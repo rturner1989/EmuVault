@@ -5,7 +5,7 @@ module DataImports
       @import.update!(resolutions: params.fetch(:resolutions, {}).to_unsafe_h, status: :importing)
       DataImportJob.perform_later(@import.id)
 
-      redirect_to settings_path, notice: "Import started — your library will be restored shortly."
+      redirect_to settings_path, notice: t(".started")
     end
   end
 end

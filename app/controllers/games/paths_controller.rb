@@ -9,7 +9,7 @@ module Games
         return redirect_to settings_path unless turbo_frame_request?
 
         @scan_paths = ScanPath.ordered
-        @notice_text = "Scan path added."
+        @notice_text = t(".success")
       else
         redirect_to settings_path, alert: @scan_path.errors.full_messages.to_sentence
       end
@@ -20,7 +20,7 @@ module Games
         return redirect_to settings_path unless turbo_frame_request?
 
         @scan_paths = ScanPath.ordered
-        @notice_text = "Scan path updated."
+        @notice_text = t(".success")
       else
         redirect_to settings_path, alert: @scan_path.errors.full_messages.to_sentence
       end
@@ -31,9 +31,9 @@ module Games
         return redirect_to settings_path unless turbo_frame_request?
 
         @scan_paths = ScanPath.ordered
-        @notice_text = "Scan path removed."
+        @notice_text = t(".success")
       else
-        redirect_to settings_path, alert: "Could not remove scan path."
+        redirect_to settings_path, alert: t(".failure")
       end
     end
 
