@@ -3,13 +3,13 @@
 .p-4.lg:p-6.space-y-6
   = render ::UI::PageHeaderComponent.new(title: "Dashboard") do |header|
     = header.with_action do
-      = render ::UI::ModalComponent.new(id: "add-game-dialog", title: "Add Game") do |modal|
+      = render ::UI::ModalComponent.new(id: "add-game-dialog", title: t("common.add_game")) do |modal|
         = modal.with_trigger do
           = render ::UI::ActionComponent.new(variant: :primary,
             id: "add-game-btn",
             data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
-            = t(".add_game")
+            = t("common.add_game")
 
         = modal.with_body do
           = render "games/form", form_url: games_path, form_id: "add-game-form"
@@ -19,7 +19,7 @@
             size: :sm,
             type: :submit,
             form: "add-game-form") do
-            = t(".add_game")
+            = t("common.add_game")
 
   = turbo_frame_tag :now_playing, class: "block space-y-4" do
     = render "shared/now_playing"

@@ -21,7 +21,7 @@
       = render ::UI::ActionComponent.new(href: current_game_path,
         method: :delete,
         variant: :default,
-        title: t(".clear_current"),
+        title: t("common.clear_current_game"),
         class: "h-full px-3 flex items-center text-primary hover:opacity-70 transition-opacity cursor-pointer",
         params: { game_id: game.id }) do
         = render ::UI::IconComponent.new(name: "fa-rotate")
@@ -29,7 +29,7 @@
       = render ::UI::ActionComponent.new(href: current_game_path,
         method: :patch,
         variant: :default,
-        title: t(".set_current"),
+        title: t("common.set_current_game"),
         class: "h-full px-3 flex items-center text-muted hover:text-primary transition-colors cursor-pointer",
         params: { game_id: game.id }) do
         = render ::UI::IconComponent.new(name: "fa-rotate")
@@ -39,8 +39,8 @@
       message: t(".remove_message", title: game.title),
       url: game_path(game),
       params: { source: "index" },
-      trigger_label: t(".remove"),
+      trigger_label: t("common.remove"),
       trigger_variant: :ghost,
       trigger_icon: "fa-trash-can",
       trigger_class: "text-error",
-      confirm_label: t(".remove"))
+      confirm_label: t("common.remove"))

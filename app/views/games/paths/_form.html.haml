@@ -23,7 +23,7 @@
       type: :button,
       data: { action: "click->directory-browser#toggle" }) do |a|
       - a.with_leading_icon(name: "fa-folder-open")
-      = t(".browse")
+      = t("common.browse")
 
   = render "games/paths/directory_browser"
 
@@ -31,7 +31,7 @@
     = t(".directory_hint")
 
   -# Game system
-  = f.label :game_system, t(".system_label"), class: "block text-sm mb-1"
+  = f.label :game_system, t("common.game_system"), class: "block text-sm mb-1"
   = f.select :game_system,
     ScanPath.game_system_options.select { |_label, value| @available_systems&.include?(value.to_sym) },
     { include_blank: t(".system_prompt") },

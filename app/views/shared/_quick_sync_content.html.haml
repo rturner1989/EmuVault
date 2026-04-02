@@ -18,7 +18,7 @@
           size: :sm,
           form: { data: { action: "turbo:submit-end->quick-sync#close" } },
           params: { game_id: @quick_sync_game.id, inline: true }) do
-          = t(".clear")
+          = t("common.clear")
 
     - if @quick_sync_save
       .text-xs.text-muted{ title: @quick_sync_save.uploaded_at_label }
@@ -69,11 +69,11 @@
           @quick_sync_profiles.map { |p| ["#{p.name} (#{p.platform_label}) (.#{p.save_extension})", p.id] },
           { include_blank: t(".emulator_hint") },
           { class: "select select-bordered w-full" }
-        %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker", file_picker_no_file_text_value: t("javascript.file_picker.no_file") } }
+        %label.flex.items-center.rounded-lg.border.overflow-hidden.cursor-pointer{ class: "border-base-content/20", data: { controller: "file-picker", file_picker_no_file_text_value: t("common.no_file") } }
           %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
-            = t(".choose_file")
+            = t("common.choose_file")
           %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } }
-            = t(".no_file")
+            = t("common.no_file")
           = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
         = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do |a|
           - a.with_leading_icon(name: "fa-upload")

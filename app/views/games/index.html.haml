@@ -3,7 +3,7 @@
 = turbo_stream_from "scans_#{current_user.id}"
 
 .p-4.lg:p-6
-  = render ::UI::ModalComponent.new(id: "add-game-dialog", title: t(".add_game")) do |modal|
+  = render ::UI::ModalComponent.new(id: "add-game-dialog", title: t("common.add_game")) do |modal|
     = modal.with_trigger do
       = render ::UI::PageHeaderComponent.new(title: "Games") do |header|
         - header.with_action do
@@ -16,7 +16,7 @@
               = t(".scan_library")
             = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
               - a.with_leading_icon(name: "fa-plus")
-              = t(".add_game")
+              = t("common.add_game")
 
     = modal.with_body do
       = render "games/form", form_url: games_path, form_id: "add-game-form"
@@ -26,7 +26,7 @@
         size: :sm,
         type: :submit,
         form: "add-game-form") do
-        = t(".add_game")
+        = t("common.add_game")
 
     = modal.with_page_content do
       = turbo_frame_tag "now-playing-banner", style: "display: contents" do
@@ -45,7 +45,7 @@
             - c.with_action do
               = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
                 - a.with_leading_icon(name: "fa-plus")
-                = t(".add_game")
+                = t("common.add_game")
         - else
           = render "games/games_content",
             games: @games,

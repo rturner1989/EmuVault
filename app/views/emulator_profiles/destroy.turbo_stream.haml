@@ -7,10 +7,10 @@
   = turbo_stream.update "onboarding-banner" do
     = render "shared/onboarding_banner",
       step: 1,
-      title: t(".select_title"),
-      description: t(".select_description"),
+      title: t("common.select_emulators_title"),
+      description: t("common.select_emulators_description"),
       next_path: (onboarding_games_path if EmulatorProfile.user_selected.exists?),
-      next_label: t(".next_step")
+      next_label: t("common.next_add_games")
 
 - flash_type = @notice_text ? :notice : :alert
 - flash_message = @notice_text || @alert_text

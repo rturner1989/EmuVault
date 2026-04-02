@@ -21,7 +21,7 @@
               variant: :link,
               class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
               - a.with_leading_icon(name: "fa-xmark")
-              = t(".clear")
+              = t("common.clear")
 
       .ml-auto.flex
         = render ::UI::ActionComponent.new(href: games_view_preference_path(view: "card", sort: selected_sort, system: selected_system),

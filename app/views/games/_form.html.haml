@@ -23,19 +23,19 @@
         label_html: { class: "label-text text-xs font-medium" },
         hint_html: { class: "mt-1 text-xs text-muted" }
 
-    %div{ data: { controller: "image-cropper", image_cropper_no_file_text_value: t("javascript.image_cropper.no_file") } }
+    %div{ data: { controller: "image-cropper", image_cropper_no_file_text_value: t("common.no_file") } }
       .space-y-1
         %label.label-text.text-xs.font-medium
           = t(".cover_label")
         %button{ type: "button", class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20 w-full text-left",
           data: { action: "click->image-cropper#select" } }
           %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
-            = t(".choose_file")
+            = t("common.choose_file")
           %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { image_cropper_target: "filename" } }
             - if game.cover_image.attached? && game.cover_image.blob&.persisted?
               = game.cover_image.filename
             - else
-              = t(".no_file")
+              = t("common.no_file")
         = f.file_field :cover_image, class: "hidden",
           accept: "image/png,image/jpeg,image/webp",
           data: { image_cropper_target: "input", action: "change->image-cropper#fileSelected" }

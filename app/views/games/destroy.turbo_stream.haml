@@ -6,7 +6,7 @@
         - c.with_action do
           = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
-            = t("games.index.add_game")
+            = t("common.add_game")
   = turbo_stream.update "games-filters", partial: "games/filters", locals: { games_count: @games_count, system_options: @system_options, selected_system: nil, selected_sort: @selected_sort }
   = turbo_stream.update :quick_sync_content, partial: "shared/quick_sync_content"
 

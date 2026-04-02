@@ -1,4 +1,20 @@
 en:
+  common:
+    choose_file: "Choose file"
+    no_file: "No file selected"
+    add_game: "Add Game"
+    clear: "Clear"
+    now_playing: "Now Playing"
+    remove: "Remove"
+    scanning: "Scanning your library..."
+    browse: "Browse"
+    sign_out: "Sign Out"
+    game_system: "Game system"
+    clear_current_game: "Clear current game"
+    set_current_game: "Set as current game"
+    select_emulators_title: "Select your emulators"
+    select_emulators_description: "Add the emulators you use from the library or create custom profiles."
+    next_add_games: "Next: Add Games"
   layouts:
     application:
       title: "EmuVault"
@@ -10,7 +26,6 @@ en:
       emulator_profiles: "Emulator Profiles"
       notifications: "Notifications"
       settings: "Settings"
-      sign_out: "Sign Out"
       quick_sync: "Quick Sync"
       mark_all_read: "Mark all as read"
     flash_item:
@@ -34,8 +49,6 @@ en:
       password_confirmation: "Confirm password"
       submit: "Create account"
   shared:
-    now_playing:
-      title: "Now Playing"
     game_stats:
       games: "Games"
       needs_upload: "Needs Upload"
@@ -58,7 +71,6 @@ en:
       edit_path: "Edit path"
     quick_sync_content:
       view: "View →"
-      clear: "Clear"
       last_save: "Last save: %{time} ago"
       download: "Download"
       select_emulator: "Select emulator to download for…"
@@ -67,8 +79,6 @@ en:
       no_save: "No save uploaded yet. Upload one below."
       upload_title: "Upload New Version"
       emulator_hint: "Which emulator is this save from? (optional)"
-      choose_file: "Choose file"
-      no_file: "No file selected"
       upload_button: "Upload"
       no_game_title: "No game set as Now Playing."
       no_game_hint: "Open a game and tap \"Set as current\" to enable quick sync."
@@ -95,7 +105,6 @@ en:
       new_password: "New password"
       confirm_password: "Confirm new password"
       update_password: "Update Password"
-      sign_out: "Sign Out"
     theme:
       title: "Theme"
       description: "Choose the look and feel of EmuVault."
@@ -121,8 +130,6 @@ en:
       export_button: "Export"
       import_title: "Import library"
       import_description: "Restore from a previous EmuVault export ZIP"
-      choose_file: "Choose file"
-      no_file: "No file selected"
       import_button: "Import"
     monitoring:
       title: "Monitoring"
@@ -152,7 +159,6 @@ en:
       all_games: "All games"
       newest: "Newest first"
       oldest: "Oldest first"
-      clear: "Clear"
       event_count:
         one: "%{count} event"
         other: "%{count} events"
@@ -216,7 +222,6 @@ en:
       updated: "%{title} updated."
     index:
       page_title: "Games — EmuVault"
-      add_game: "Add Game"
       scan_library: "Scan Library"
       empty_title: "No games yet"
       empty_description: "Add your first game to start syncing saves."
@@ -226,25 +231,12 @@ en:
       dismiss: "Dismiss"
     filters:
       all_systems: "All systems"
-      clear: "Clear"
-    game_card:
-      clear_current: "Clear current game"
-      set_current: "Set as current game"
     onboarding_game_list_item:
       remove_title: "Remove game?"
       remove_message: "Remove %{title} from your library?"
-      remove: "Remove"
     game_list_item:
-      clear_current: "Clear current game"
-      set_current: "Set as current game"
       remove_title: "Remove game?"
       remove_message: "Remove %{title} from your library? This will also delete all saved versions."
-      remove: "Remove"
-    now_playing_banner:
-      now_playing: "Now Playing"
-      clear: "Clear"
-    scan_progress:
-      scanning: "Scanning your library..."
     destroy:
       success: "%{title} removed."
       failure: "Could not remove %{title}."
@@ -278,18 +270,14 @@ en:
       view_all: "View all %{count}"
       emulator_filenames: "Emulator Save Filenames"
     header:
-      now_playing: "Now Playing"
       set_current: "Set as current"
       edit_game: "Edit Game"
       edit: "Edit"
       save_changes: "Save Changes"
       remove_title: "Remove game?"
       remove_message: "Remove %{title} from your library? This will also delete all saved versions."
-      remove: "Remove"
     new:
       page_title: "Add Game — EmuVault"
-      heading: "Add Game"
-      submit: "Add Game"
     edit:
       page_title: "Edit %{title} — EmuVault"
       heading: "Edit Game"
@@ -301,13 +289,9 @@ en:
       rom_hash_label: "ROM Hash (optional)"
       rom_hash_hint: "SHA-256 or MD5 of the ROM file — used to uniquely identify the game."
       cover_label: "Cover Image (optional)"
-      choose_file: "Choose file"
-      no_file: "No file selected"
       cover_hint: "PNG, JPEG, or WebP. Max 5 MB."
     upload_form:
       emulator_hint: "Which emulator is this save from? (optional)"
-      choose_file: "Choose file"
-      no_file: "No file selected"
     emulator_filenames:
       title: "Emulator Save Filenames"
       description: "Set the filename each emulator expects for this game. Leave blank to use a default based on the game title."
@@ -335,16 +319,12 @@ en:
       form:
         directory_label: "Directory path"
         directory_placeholder: "/saves/gba/"
-        browse: "Browse"
         directory_hint: "Enter the path to your games directory. On a NAS or Docker setup, mount the directory as a volume first (e.g. /saves). On a local install, use the full path directly (e.g. /home/user/games/gba)."
-        system_label: "Game system"
         system_prompt: "Select system"
         auto_scan: "Include in auto-scan"
         submit: "Add path"
       edit_form:
         directory_label: "Directory path"
-        browse: "Browse"
-        system_label: "Game system"
         submit: "Save changes"
       directory_browser:
         select: "Select folder"
@@ -393,7 +373,6 @@ en:
   dashboard:
     index:
       page_title: "Dashboard — EmuVault"
-      add_game: "Add Game"
       storage_used: "Storage Used"
       save_files: "Save files"
       sync_events: "Sync Events"
@@ -450,7 +429,6 @@ en:
       platform_prompt: "Select platform"
       platform_label: "Platform"
       system_prompt: "Select game system"
-      system_label: "Game system"
       system_hint: "Required for library scanning"
       extension_label: "Save extension (without dot)"
       extension_placeholder: "e.g. srm"
@@ -462,31 +440,19 @@ en:
     library_system_step:
       games_exist: "Games exist for this system"
     create:
-      select_title: "Select your emulators"
-      select_description: "Add the emulators you use from the library or create custom profiles."
-      next_step: "Next: Add Games"
       success: "Profile added."
     update:
       success: "Profile updated."
     destroy:
       in_use: "Can't remove — you have games for this system. Remove those games first."
       failure: "Could not remove profile."
-      select_title: "Select your emulators"
-      select_description: "Add the emulators you use from the library or create custom profiles."
-      next_step: "Next: Add Games"
     library:
       create:
-        select_title: "Select your emulators"
-        select_description: "Add the emulators you use from the library or create custom profiles."
-        next_step: "Next: Add Games"
         success: "Emulators added."
   onboarding:
     emulator_profiles:
       index:
         page_title: "Select Emulators — EmuVault"
-        title: "Select your emulators"
-        description: "Add the emulators you use from the library or create custom profiles."
-        next_step: "Next: Add Games"
     games:
       index:
         page_title: "Add Games — EmuVault"
@@ -495,18 +461,11 @@ en:
         complete: "Complete Setup"
         scan_paths: "Scan Paths"
         scan_paths_hint: "Point EmuVault at directories where your game files are stored."
-        add_game: "Add Game"
         add_game_hint: "Manually add a game to your library."
         add_game_button: "Add game"
-        scanning: "Scanning your library..."
       create:
         added: "%{title} added."
-    scans:
-      create:
-        scanning: "Scanning your library..."
   javascript:
-    file_picker:
-      no_file: "No file selected"
     push_subscription:
       not_supported: "Push notifications are not supported on this browser."
       permission_denied: "Notification permission was denied. You can enable it in your browser settings."
@@ -517,8 +476,6 @@ en:
     directory_browser:
       no_subdirectories: "No subdirectories"
       error: "Could not read directory"
-    image_cropper:
-      no_file: "No file selected"
   activerecord:
     errors:
       models:

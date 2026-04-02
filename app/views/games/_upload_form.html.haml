@@ -6,11 +6,11 @@
     user_profiles.map { |p| ["#{p.name} (#{p.platform_label}) (.#{p.save_extension})", p.id] },
     { include_blank: t(".emulator_hint") },
     { class: "select select-bordered w-full" }
-  %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20", data: { controller: "file-picker", file_picker_no_file_text_value: t("javascript.file_picker.no_file") } }
+  %label{ class: "flex items-center rounded-lg border overflow-hidden cursor-pointer border-base-content/20", data: { controller: "file-picker", file_picker_no_file_text_value: t("common.no_file") } }
     %span{ class: "flex items-center self-stretch shrink-0 px-4 text-sm border-r border-base-content/20" }
-      = t(".choose_file")
+      = t("common.choose_file")
     %span.text-sm.text-muted.flex-1.px-3.py-2.truncate{ data: { file_picker_target: "filename" } }
-      = t(".no_file")
+      = t("common.no_file")
     = f.file_field :file, class: "hidden", required: true, data: { file_picker_target: "input", action: "change->file-picker#update" }
 
   - if new_save&.errors&.any?

@@ -12,11 +12,11 @@
       type: :button,
       data: { action: "click->directory-browser#toggle" }) do |a|
       - a.with_leading_icon(name: "fa-folder-open")
-      = t(".browse")
+      = t("common.browse")
 
   = render "games/paths/directory_browser"
 
-  = f.label :game_system, t(".system_label"), class: "block text-sm mb-1"
+  = f.label :game_system, t("common.game_system"), class: "block text-sm mb-1"
   = f.select :game_system, ScanPath.game_system_options, {}, class: "select select-bordered w-full", required: true
 
   .pt-1

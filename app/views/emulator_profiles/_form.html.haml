@@ -11,7 +11,7 @@
     = f.input :game_system,
       collection: EmulatorProfile.game_system_options,
       include_blank: t(".system_prompt"),
-      label: t(".system_label"),
+      label: t("common.game_system"),
       hint: t(".system_hint"), input_html: { class: "select select-bordered w-full" }
     = f.input :save_extension,
       label: t(".extension_label"),

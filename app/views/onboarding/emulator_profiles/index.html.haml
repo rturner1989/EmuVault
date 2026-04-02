@@ -4,9 +4,9 @@
   = turbo_frame_tag "onboarding-banner", style: "display: contents" do
     = render "shared/onboarding_banner",
       step: 1,
-      title: t(".title"),
-      description: t(".description"),
+      title: t("common.select_emulators_title"),
+      description: t("common.select_emulators_description"),
       next_path: (onboarding_games_path if EmulatorProfile.user_selected.exists?),
-      next_label: t(".next_step")
+      next_label: t("common.next_add_games")
 
   = render "emulator_profiles/profiles_list", selected_by_system: @selected_by_system, in_use_systems: @in_use_systems
