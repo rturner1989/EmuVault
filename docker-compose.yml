@@ -15,8 +15,6 @@ services:
     stdin_open: true
     env_file:
       - .env
-    environment:
-      DEFAULT_LOCALE: ${DEFAULT_LOCALE:-en}
 
   postgres:
     image: postgres:17
