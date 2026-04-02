@@ -1,24 +1,24 @@
 = turbo_frame_tag dom_id(profile, :form) do
   = simple_form_for profile, url: url, method: method, html: { id: form_id, class: "space-y-4", autocomplete: "off", data: { turbo_frame: "_top" } } do |f|
     = f.input :name,
-      label: "Emulator name",
+      label: t(".name_label"),
       input_html: { class: "input input-bordered w-full" }
     = f.input :platform,
       collection: EmulatorProfile.platforms.keys.map { |k| [I18n.t("models.platform.#{k}"), k] },
-      include_blank: "Select platform",
-      label: "Platform",
+      include_blank: t(".platform_prompt"),
+      label: t(".platform_label"),
       input_html: { class: "select select-bordered w-full" }
     = f.input :game_system,
       collection: EmulatorProfile.game_system_options,
-      include_blank: "Select game system",
-      label: "Game system",
-      hint: "Required for library scanning", input_html: { class: "select select-bordered w-full" }
+      include_blank: t(".system_prompt"),
+      label: t(".system_label"),
+      hint: t(".system_hint"), input_html: { class: "select select-bordered w-full" }
     = f.input :save_extension,
-      label: "Save extension (without dot)",
-      placeholder: "e.g. srm",
+      label: t(".extension_label"),
+      placeholder: t(".extension_placeholder"),
       input_html: { class: "input input-bordered w-full" }
     = f.input :default_save_path,
-      label: "Save directory",
-      placeholder: "e.g. /games/retroarch/saves/gba/",
-      hint: "Path inside the container — mount your saves directory as a volume",
+      label: t(".path_label"),
+      placeholder: t(".path_placeholder"),
+      hint: t(".path_hint"),
       input_html: { class: "input input-bordered w-full font-mono" }

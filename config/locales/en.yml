@@ -259,6 +259,65 @@ en:
         newest: "Newest first"
         oldest: "Oldest first"
         system: "By system"
+  emulator_profiles:
+    index:
+      page_title: "Emulator Profiles — EmuVault"
+    page_header:
+      title: "Emulator Profiles"
+      subtitle: "Your configured emulators by game system"
+    profiles_list:
+      deselect_all: "Deselect all"
+      delete_selected: "Delete selected"
+      no_save_path: "No save path set"
+      remove_games_first: "Remove all %{system} games first"
+      remove_profile_title: "Remove profile?"
+      remove_profile_message: "Remove this profile from your list? You can add it back later."
+      delete_profile_title: "Delete profile?"
+      delete_profile_message: "Delete this profile permanently?"
+      empty_title: "No emulators configured yet"
+      empty_description: "Add emulators from the library or create a custom profile."
+      add_from_library: "Add from library"
+      add_custom: "Add custom profile"
+      library_modal_title: "Add from library"
+      library_modal_description: "Select the systems you want to add emulators for."
+      confirm: "Confirm"
+      custom_modal_title: "Add custom profile"
+      save: "Save"
+    form:
+      name_label: "Emulator name"
+      platform_prompt: "Select platform"
+      platform_label: "Platform"
+      system_prompt: "Select game system"
+      system_label: "Game system"
+      system_hint: "Required for library scanning"
+      extension_label: "Save extension (without dot)"
+      extension_placeholder: "e.g. srm"
+      path_label: "Save directory"
+      path_placeholder: "e.g. /games/retroarch/saves/gba/"
+      path_hint: "Path inside the container — mount your saves directory as a volume"
+    library_step:
+      all_added: "All available emulators from the library are already added."
+    library_system_step:
+      games_exist: "Games exist for this system"
+    create:
+      select_title: "Select your emulators"
+      select_description: "Add the emulators you use from the library or create custom profiles."
+      next_step: "Next: Add Games"
+      success: "Profile added."
+    update:
+      success: "Profile updated."
+    destroy:
+      in_use: "Can't remove — you have games for this system. Remove those games first."
+      failure: "Could not remove profile."
+      select_title: "Select your emulators"
+      select_description: "Add the emulators you use from the library or create custom profiles."
+      next_step: "Next: Add Games"
+    library:
+      create:
+        select_title: "Select your emulators"
+        select_description: "Add the emulators you use from the library or create custom profiles."
+        next_step: "Next: Add Games"
+        success: "Emulators added."
   activerecord:
     errors:
       models:
