@@ -1,13 +1,13 @@
-- content_for :title, "Activity — EmuVault"
+- content_for :title, t(".page_title")
 
 .p-4.lg:p-6
-  = render ::UI::PageHeaderComponent.new(title: "Activity", subtitle: "Recent uploads and downloads")
+  = render ::UI::PageHeaderComponent.new(title: "Activity", subtitle: t(".subtitle"))
 
   - if @games.any? || @events.any?
     = render "activity/filters", games: @games, selected_game_id: @selected_game_id, selected_sort: @selected_sort, total_count: @total_count
 
   - if @events.empty?
-    = render ::UI::EmptyStateComponent.new(title: "No activity yet", description: "Uploads and downloads will appear here.")
+    = render ::UI::EmptyStateComponent.new(title: t(".empty_title"), description: t(".empty_description"))
   - else
     .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
       .divide-y.divide-base-300

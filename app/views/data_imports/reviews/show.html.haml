@@ -1,6 +1,6 @@
-- content_for :title, "Review Import — EmuVault"
+- content_for :title, t(".page_title")
 
 .p-4.lg:p-6.max-w-2xl.space-y-4
-  = render ::UI::PageHeaderComponent.new(title: "Review Import")
+  = render ::UI::PageHeaderComponent.new(title: t(".title"))
 
   = render "data_imports/reviews/content", import: @import

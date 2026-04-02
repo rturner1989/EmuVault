@@ -97,6 +97,23 @@ en:
       update:
         success: "Password updated."
         incorrect: "Current password is incorrect."
+  activity:
+    show:
+      page_title: "Activity — EmuVault"
+      subtitle: "Recent uploads and downloads"
+      empty_title: "No activity yet"
+      empty_description: "Uploads and downloads will appear here."
+    filters:
+      all_games: "All games"
+      newest: "Newest first"
+      oldest: "Oldest first"
+      clear: "Clear"
+      event_count:
+        one: "%{count} event"
+        other: "%{count} events"
+  notifications:
+    index:
+      empty: "No notifications yet"
   data_imports:
     create:
       no_file: "Please select an export file."
@@ -104,6 +121,49 @@ en:
     resolutions:
       create:
         started: "Import started — your library will be restored shortly."
+    reviews:
+      show:
+        page_title: "Review Import — EmuVault"
+        title: "Review Import"
+      content:
+        analyzing: "Analyzing export file…"
+        invalid_title: "Invalid export file"
+        invalid_description: "Could not read the manifest from the uploaded file."
+        back_to_settings: "Back to Settings"
+        game_count:
+          one: "%{count} game"
+          other: "%{count} games"
+        save_count:
+          one: "%{count} save"
+          other: "%{count} saves"
+        profile_count:
+          one: "%{count} profile"
+          other: "%{count} profiles"
+        conflict_count:
+          one: "%{count} conflict"
+          other: "%{count} conflicts"
+        new_games:
+          one: "%{count} New Game"
+          other: "%{count} New Games"
+        new_games_hint: "Will be added to your library"
+        existing_title:
+          one: "%{count} Conflict"
+          other: "%{count} Conflicts"
+        existing_hint: "These games already exist in your library"
+        exists: "Exists"
+        keep_existing: "Keep existing"
+        keep_hint: "Imported saves are discarded"
+        replace: "Replace"
+        replace_hint: "Overwrites all existing saves"
+        profiles_title:
+          one: "%{count} Emulator Profile"
+          other: "%{count} Emulator Profiles"
+        profiles_hint: "Existing profiles with the same name will be skipped"
+        cancel: "Cancel"
+        start_import: "Start Import"
+  game_emulator_configs:
+    update:
+      success: "Emulator filenames saved."
   games:
     create:
       added: "%{title} added."
