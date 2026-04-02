@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Locale parity" do
+RSpec.describe "Locale parity" do # rubocop:disable RSpec/DescribeClass
   def flatten_keys(hash, prefix = "")
     hash.each_with_object([]) do |(key, value), keys|
       full_key = prefix.empty? ? key.to_s : "#{prefix}.#{key}"
