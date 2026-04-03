@@ -4,8 +4,8 @@
 = turbo_stream.update "onboarding-banner" do
   = render "shared/onboarding_banner",
     step: 1,
-    title: "Select your emulators",
-    description: "Add the emulators you use from the library or create custom profiles.",
+    title: t("common.select_emulators_title"),
+    description: t("common.select_emulators_description"),
     next_path: (onboarding_games_path if EmulatorProfile.user_selected.exists?),
-    next_label: "Next: Add Games"
-= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Profile added.")
+    next_label: t("common.next_add_games")
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: t(".success"))

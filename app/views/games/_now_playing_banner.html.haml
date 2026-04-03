@@ -7,7 +7,7 @@
       class: "flex-1 min-w-0 hover:opacity-80 transition-opacity",
       data: { turbo_frame: "_top" }) do
       %p.text-xs.text-muted.leading-none
-        = "Now Playing"
+        = t("common.now_playing")
       %p.text-sm.font-medium.truncate
         = game.title
     = render ::UI::ActionComponent.new(href: current_game_path,
@@ -16,4 +16,4 @@
       size: :sm,
       class: "shrink-0",
       params: { game_id: game.id }) do
-      = "Clear"
+      = t("common.clear")

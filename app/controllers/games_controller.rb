@@ -81,7 +81,7 @@ class GamesController < MainController
 
     if @game.destroy
       current_user.reload
-      @notice_text = "#{title} removed."
+      @notice_text = t(".success", title: title)
 
       if params[:source] == "index"
         @games_count = Game.count
@@ -90,7 +90,7 @@ class GamesController < MainController
         redirect_to games_path, notice: @notice_text, status: :see_other
       end
     else
-      @alert_text = "Could not remove #{title}."
+      @alert_text = t(".failure", title: title)
     end
   end
 

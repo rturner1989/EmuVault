@@ -5,7 +5,7 @@ class GameSavesController < MainController
   def create
     @game_save_form = GameSaveForm.new(game_save_params)
     if @game_save_form.save(game: @game, request: request)
-      redirect_back_or_to game_path(@game), notice: "Save uploaded."
+      redirect_back_or_to game_path(@game), notice: t(".success")
     else
       @latest_save = @game.game_saves
         .latest_first
@@ -25,9 +25,9 @@ class GameSavesController < MainController
 
   def destroy
     if @game_save.destroy
-      redirect_to @game, notice: "Save removed.", status: :see_other
+      redirect_to @game, notice: t(".success"), status: :see_other
     else
-      redirect_back_or_to game_path(@game), alert: "Could not remove save."
+      redirect_back_or_to game_path(@game), alert: t(".failure")
     end
   end
 

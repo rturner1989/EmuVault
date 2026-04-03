@@ -1,4 +1,4 @@
-- content_for :title, "#{@game.title} — EmuVault"
+- content_for :title, t(".page_title", title: @game.title)
 
 .p-4.lg:p-6.space-y-4
   -# Back breadcrumb
@@ -7,7 +7,7 @@
       variant: :link,
       class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
       - a.with_leading_icon(name: "fa-arrow-left")
-      = "Games"
+      = t(".breadcrumb")
 
   = render "games/header", game: @game
 
@@ -19,7 +19,7 @@
         .px-4.py-3.border-b.border-base-300
           .flex.items-center.justify-between
             %h2.text-sm.font-semibold
-              = "Current Save"
+              = t(".current_save")
               %span.text-xs.font-normal.text-muted.ml-2
                 = "v#{@latest_save.version_number}"
             .text-xs.text-muted{ title: @latest_save.uploaded_at_label }
@@ -33,14 +33,14 @@
                 = @latest_save.emulator_label
             - else
               %span
-                = "Unknown source"
+                = t(".unknown_source")
             %span
               = "· #{@latest_save.file_size_label}"
 
         -# Download
         .px-4.py-3.border-t.border-base-300
           %h2.text-sm.font-semibold
-            = "Download"
+            = t(".download")
         .px-4.pb-4
           = simple_form_for :game_save,
             url: game_game_save_download_path(@game, @latest_save),
@@ -53,7 +53,7 @@
                 { class: "select select-bordered w-full", data: { action: "change->save-hint#update", save_hint_target: "select" } }
               .hidden{ data: { save_hint_target: "note" } }
                 %p.text-xs.text-muted.mb-2
-                  = "Place the downloaded file at:"
+                  = t(".place_file")
                 .flex.items-center.gap-2.mb-2
                   %p.text-xs.font-mono.flex-1{ data: { save_hint_target: "hint" } }
                   = render ::UI::ActionComponent.new(variant: :default,
@@ -63,16 +63,16 @@
                     data: { action: "save-hint#copy", save_hint_target: "copyBtn" }) do |a|
                     - a.with_leading_icon(name: "fa-clipboard", style: "fa-regular")
                 %p.text-xs.text-muted
-                  = "Your browser will save it to Downloads — move it to the path above."
+                  = t(".download_note")
               .flex.justify-start
                 = render ::UI::ActionComponent.new(variant: :info, type: "submit") do |a|
                   - a.with_leading_icon(name: "fa-download")
-                  = "Download"
+                  = t(".download")
 
         -# Upload new version
         .px-4.py-3.border-t.border-base-300
           %h2.text-sm.font-semibold
-            = "Upload New Version"
+            = t(".upload_title")
         .px-4.pb-4
           = render "games/upload_form", game: @game, user_profiles: @user_profiles, new_save: @new_save, submit_label: "Upload"
 
@@ -81,7 +81,7 @@
       .rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
         .px-4.py-3.border-b.border-base-300
           %h2.text-sm.font-semibold
-            = "Upload Save File"
+            = t(".upload_button")
         .p-4
           = render "games/upload_form", game: @game, user_profiles: @user_profiles, new_save: @new_save, submit_label: "Upload Save"
 
@@ -96,10 +96,10 @@
             = modal.with_trigger do
               .px-4.py-3.flex.items-center.justify-between.border-b.border-base-300
                 %h2.text-sm.font-semibold
-                  = "Previous Versions"
+                  = t(".previous_versions")
                 = render ::UI::ActionComponent.new(variant: :ghost,
                   data: { action: "dialog#open" }) do
-                  = "View all #{history_all.size}"
+                  = t(".view_all", count: history_all.size)
             = modal.with_body do
               .divide-y.divide-base-300
                 - history_all.each do |save|
@@ -107,7 +107,7 @@
         - else
           .px-4.py-3.border-b.border-base-300
             %h2.text-sm.font-semibold
-              = "Previous Versions"
+              = t(".previous_versions")
 
         .divide-y.divide-base-300
           - history_preview.each do |save|

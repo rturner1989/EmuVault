@@ -3,7 +3,7 @@
 %details{ class: scan_paths.any? ? "mt-4" : nil }
   %summary.text-sm.text-primary.cursor-pointer.font-medium
     = render UI::IconComponent.new(name: "fa-plus", class: "mr-1")
-    = "Add scan path"
+    = t(".add_path")
   .mt-3
     = render "games/paths/form"
 
@@ -14,4 +14,4 @@
       variant: :primary,
       size: :sm) do |a|
       - a.with_leading_icon(name: "fa-magnifying-glass")
-      = "Scan Now"
+      = t(".scan_now")

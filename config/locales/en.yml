@@ -1,31 +1,485 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  common:
+    choose_file: "Choose file"
+    no_file: "No file selected"
+    add_game: "Add Game"
+    clear: "Clear"
+    now_playing: "Now Playing"
+    remove: "Remove"
+    scanning: "Scanning your library..."
+    browse: "Browse"
+    sign_out: "Sign Out"
+    game_system: "Game system"
+    clear_current_game: "Clear current game"
+    set_current_game: "Set as current game"
+    select_emulators_title: "Select your emulators"
+    select_emulators_description: "Add the emulators you use from the library or create custom profiles."
+    next_add_games: "Next: Add Games"
+  layouts:
+    application:
+      title: "EmuVault"
+  components:
+    app_shell:
+      dashboard: "Dashboard"
+      games: "Games"
+      activity: "Activity"
+      emulator_profiles: "Emulator Profiles"
+      notifications: "Notifications"
+      settings: "Settings"
+      quick_sync: "Quick Sync"
+      mark_all_read: "Mark all as read"
+    flash_item:
+      dismiss: "Dismiss"
+  sessions:
+    new:
+      page_title: "Sign in — EmuVault"
+      heading: "Sign in to your vault"
+      username: "Username"
+      password: "Password"
+      sign_in: "Sign in"
+    create:
+      rate_limited: "Try again later."
+      failure: "Try another username or password."
+  registrations:
+    new:
+      page_title: "Create Account — EmuVault"
+      heading: "Create your account to get started"
+      username: "Username"
+      password: "Password"
+      password_confirmation: "Confirm password"
+      submit: "Create account"
+  shared:
+    game_stats:
+      games: "Games"
+      needs_upload: "Needs Upload"
+      all_synced: "All synced"
+      games_without_save:
+        one: "%{count} game with no save"
+        other: "%{count} games with no save"
+    auto_scan_schedule:
+      title: "Auto-scan schedule"
+      enable: "Enable auto-scan"
+      hint: "Paths marked \"auto-scan on\" will be scanned automatically"
+      interval: "Interval"
+      save: "Save"
+    onboarding_banner:
+      back: "Back"
+      next: "Next"
+    scan_paths_list:
+      auto_scan_on: "Auto-scan on"
+      auto_scan_off: "Auto-scan off"
+      edit_path: "Edit path"
+    quick_sync_content:
+      view: "View →"
+      last_save: "Last save: %{time} ago"
+      download: "Download"
+      select_emulator: "Select emulator to download for…"
+      place_file: "Place file at:"
+      copy_path: "Copy path"
+      no_save: "No save uploaded yet. Upload one below."
+      upload_title: "Upload New Version"
+      emulator_hint: "Which emulator is this save from? (optional)"
+      upload_button: "Upload"
+      no_game_title: "No game set as Now Playing."
+      no_game_hint: "Open a game and tap \"Set as current\" to enable quick sync."
+  game_saves:
+    create:
+      success: "Save uploaded."
+    destroy:
+      success: "Save removed."
+      failure: "Could not remove save."
+    form:
+      select_emulator: "Select emulator…"
+      emulator_label: "Emulator Profile"
+      slot_label: "Slot (0 = auto-save)"
+      file_label: "Save File"
+      submit: "Upload Save"
+  settings:
+    show:
+      page_title: "Settings — EmuVault"
+      title: "Settings"
+    account:
+      title: "Account"
+      change_password: "Change Password"
+      current_password: "Current password"
+      new_password: "New password"
+      confirm_password: "Confirm new password"
+      update_password: "Update Password"
+    theme:
+      title: "Theme"
+      description: "Choose the look and feel of EmuVault."
+      save: "Save theme"
+      unsaved_title: "Unsaved theme change"
+      unsaved_message: "You have an unsaved theme change. Leave and save it, or stay to continue editing."
+      leave_and_save: "Leave and save"
+      stay: "Stay"
+    library_scan:
+      title: "Scan Paths"
+      description: "Directories where your game files are stored. EmuVault scans these to discover games automatically."
+    push_notifications:
+      title: "Push Notifications"
+      description: "Get notified on this device when a new save is uploaded. Works when EmuVault is installed as a home screen app."
+      enable: "Enable push notifications"
+      dialog_title: "Push Notifications"
+      ok: "OK"
+    data:
+      title: "Data"
+      description: "Export your games and save files, or restore from a previous export."
+      export_title: "Export library"
+      export_description: "Downloads all games and save files as a ZIP archive"
+      export_button: "Export"
+      import_title: "Import library"
+      import_description: "Restore from a previous EmuVault export ZIP"
+      import_button: "Import"
+    monitoring:
+      title: "Monitoring"
+      description: "Internal dashboards for your self-hosted instance."
+      pghero_title: "PgHero"
+      pghero_description: "Database performance — slow queries, index usage, table sizes"
+      sidekiq_title: "Sidekiq"
+      sidekiq_description: "Background job queues, failures, and throughput"
+      kuma_title: "Uptime Kuma"
+      kuma_description: "Uptime monitoring — health checks, alerts, and status pages"
+      kuma_setup_title: "Uptime Kuma"
+      kuma_setup_hint: "Run as a standalone app on your server. Monitor EmuVault at "
+      kuma_endpoint: "%{host}/up"
+    update:
+      success: "Settings saved."
+    passwords:
+      update:
+        success: "Password updated."
+        incorrect: "Current password is incorrect."
+  activity:
+    show:
+      page_title: "Activity — EmuVault"
+      subtitle: "Recent uploads and downloads"
+      empty_title: "No activity yet"
+      empty_description: "Uploads and downloads will appear here."
+    filters:
+      all_games: "All games"
+      newest: "Newest first"
+      oldest: "Oldest first"
+      event_count:
+        one: "%{count} event"
+        other: "%{count} events"
+  notifications:
+    index:
+      empty: "No notifications yet"
+  data_imports:
+    create:
+      no_file: "Please select an export file."
+      invalid: "Invalid export file — could not read manifest."
+    resolutions:
+      create:
+        started: "Import started — your library will be restored shortly."
+    reviews:
+      show:
+        page_title: "Review Import — EmuVault"
+        title: "Review Import"
+      content:
+        analyzing: "Analyzing export file…"
+        invalid_title: "Invalid export file"
+        invalid_description: "Could not read the manifest from the uploaded file."
+        back_to_settings: "Back to Settings"
+        game_count:
+          one: "%{count} game"
+          other: "%{count} games"
+        save_count:
+          one: "%{count} save"
+          other: "%{count} saves"
+        profile_count:
+          one: "%{count} profile"
+          other: "%{count} profiles"
+        conflict_count:
+          one: "%{count} conflict"
+          other: "%{count} conflicts"
+        new_games:
+          one: "%{count} New Game"
+          other: "%{count} New Games"
+        new_games_hint: "Will be added to your library"
+        existing_title:
+          one: "%{count} Conflict"
+          other: "%{count} Conflicts"
+        existing_hint: "These games already exist in your library"
+        exists: "Exists"
+        keep_existing: "Keep existing"
+        keep_hint: "Imported saves are discarded"
+        replace: "Replace"
+        replace_hint: "Overwrites all existing saves"
+        profiles_title:
+          one: "%{count} Emulator Profile"
+          other: "%{count} Emulator Profiles"
+        profiles_hint: "Existing profiles with the same name will be skipped"
+        cancel: "Cancel"
+        start_import: "Start Import"
+  game_emulator_configs:
+    update:
+      success: "Emulator filenames saved."
+  games:
+    create:
+      added: "%{title} added."
+    update:
+      updated: "%{title} updated."
+    index:
+      page_title: "Games — EmuVault"
+      scan_library: "Scan Library"
+      empty_title: "No games yet"
+      empty_description: "Add your first game to start syncing saves."
+      scan_review_title: "Scan Review"
+      scan_review_description: "Select the games you want to add to your library"
+      add_to_library: "Add to library"
+      dismiss: "Dismiss"
+    filters:
+      all_systems: "All systems"
+    onboarding_game_list_item:
+      remove_title: "Remove game?"
+      remove_message: "Remove %{title} from your library?"
+    game_list_item:
+      remove_title: "Remove game?"
+      remove_message: "Remove %{title} from your library? This will also delete all saved versions."
+    destroy:
+      success: "%{title} removed."
+      failure: "Could not remove %{title}."
+    scans:
+      review_content:
+        skipped_paths:
+          one: "%{count} path could not be read"
+          other: "%{count} paths could not be read"
+        no_new_games: "No new games found"
+        check_paths: "Check your scan paths in Settings."
+        already_in_lib:
+          one: "%{count} game already in library"
+          other: "%{count} games already in library"
+        games_found:
+          one: "%{count} game"
+          other: "%{count} games"
+        saves_found:
+          one: "%{count} save file found"
+          other: "%{count} save files found"
+    show:
+      page_title: "%{title} — EmuVault"
+      breadcrumb: "Games"
+      current_save: "Current Save"
+      unknown_source: "Unknown source"
+      download: "Download"
+      place_file: "Place the downloaded file at:"
+      download_note: "Your browser will save it to Downloads — move it to the path above."
+      upload_title: "Upload New Version"
+      upload_button: "Upload Save File"
+      previous_versions: "Previous Versions"
+      view_all: "View all %{count}"
+      emulator_filenames: "Emulator Save Filenames"
+    header:
+      set_current: "Set as current"
+      edit_game: "Edit Game"
+      edit: "Edit"
+      save_changes: "Save Changes"
+      remove_title: "Remove game?"
+      remove_message: "Remove %{title} from your library? This will also delete all saved versions."
+    new:
+      page_title: "Add Game — EmuVault"
+    edit:
+      page_title: "Edit %{title} — EmuVault"
+      heading: "Edit Game"
+      submit: "Save Changes"
+    form:
+      title_label: "Title"
+      system_label: "System"
+      system_prompt: "— select a system —"
+      rom_hash_label: "ROM Hash (optional)"
+      rom_hash_hint: "SHA-256 or MD5 of the ROM file — used to uniquely identify the game."
+      cover_label: "Cover Image (optional)"
+      cover_hint: "PNG, JPEG, or WebP. Max 5 MB."
+    upload_form:
+      emulator_hint: "Which emulator is this save from? (optional)"
+    emulator_filenames:
+      title: "Emulator Save Filenames"
+      description: "Set the filename each emulator expects for this game. Leave blank to use a default based on the game title."
+      save_button: "Save Filenames"
+      empty: "No emulators selected. Add emulators from the Profiles page."
+    crop_dialog:
+      title: "Crop Cover Image"
+      confirm: "Crop & Use"
+      cancel: "Cancel"
+    paths:
+      create:
+        success: "Scan path added."
+      update:
+        success: "Scan path updated."
+      destroy:
+        success: "Scan path removed."
+        failure: "Could not remove scan path."
+      browser:
+        show:
+          not_found: "Directory not found"
+          permission_denied: "Permission denied"
+      section:
+        add_path: "Add scan path"
+        scan_now: "Scan Now"
+      form:
+        directory_label: "Directory path"
+        directory_placeholder: "/saves/gba/"
+        directory_hint: "Enter the path to your games directory. On a NAS or Docker setup, mount the directory as a volume first (e.g. /saves). On a local install, use the full path directly (e.g. /home/user/games/gba)."
+        system_prompt: "Select system"
+        auto_scan: "Include in auto-scan"
+        submit: "Add path"
+      edit_form:
+        directory_label: "Directory path"
+        submit: "Save changes"
+      directory_browser:
+        select: "Select folder"
+        jump_to: "Jump to:"
+        placeholder: "Click Browse to explore"
+  current_game:
+    update:
+      success: "Now playing: %{title}"
+    destroy:
+      success: "Cleared current game"
+  models:
+    game_system:
+      nes: "NES"
+      snes: "SNES"
+      gb: "Game Boy"
+      gbc: "Game Boy Color"
+      gba: "Game Boy Advance"
+      nds: "Nintendo DS"
+      genesis: "Sega Genesis"
+      sms: "Sega Master System"
+      gg: "Game Gear"
+      psx: "PlayStation"
+      ps2: "PlayStation 2"
+      psp: "PlayStation Portable"
+      n64: "Nintendo 64"
+      gc: "GameCube"
+      wii: "Wii"
+      arcade: "Arcade"
+    platform:
+      linux: "Linux"
+      windows: "Windows"
+      macos: "macOS"
+      ios: "iOS"
+      android: "Android"
+    scan_interval:
+      hourly: "Every hour"
+      every_6_hours: "Every 6 hours"
+      daily: "Daily"
+    device:
+      phone: "Phone"
+      tablet: "Tablet"
+      desktop: "Desktop"
+    sync_action:
+      push: "Upload"
+      pull: "Download"
+  dashboard:
+    index:
+      page_title: "Dashboard — EmuVault"
+      storage_used: "Storage Used"
+      save_files: "Save files"
+      sync_events: "Sync Events"
+    top_games:
+      title: "Most Active Games"
+      empty: "No syncs yet."
+      sync_count:
+        one: "1 sync"
+        other: "%{count} syncs"
+    systems:
+      title: "Systems"
+      empty: "No games yet."
+      game_count:
+        one: "1 game"
+        other: "%{count} games"
+    recent_activity:
+      title: "Recent Activity"
+      view_all: "View all"
+      empty: "No activity yet."
+  helpers:
+    games:
+      sort:
+        title_asc: "Title A→Z"
+        title_desc: "Title Z→A"
+        newest: "Newest first"
+        oldest: "Oldest first"
+        system: "By system"
+  emulator_profiles:
+    index:
+      page_title: "Emulator Profiles — EmuVault"
+    page_header:
+      title: "Emulator Profiles"
+      subtitle: "Your configured emulators by game system"
+    profiles_list:
+      deselect_all: "Deselect all"
+      delete_selected: "Delete selected"
+      no_save_path: "No save path set"
+      remove_games_first: "Remove all %{system} games first"
+      remove_profile_title: "Remove profile?"
+      remove_profile_message: "Remove this profile from your list? You can add it back later."
+      delete_profile_title: "Delete profile?"
+      delete_profile_message: "Delete this profile permanently?"
+      empty_title: "No emulators configured yet"
+      empty_description: "Add emulators from the library or create a custom profile."
+      add_from_library: "Add from library"
+      add_custom: "Add custom profile"
+      library_modal_title: "Add from library"
+      library_modal_description: "Select the systems you want to add emulators for."
+      confirm: "Confirm"
+      custom_modal_title: "Add custom profile"
+      save: "Save"
+    form:
+      name_label: "Emulator name"
+      platform_prompt: "Select platform"
+      platform_label: "Platform"
+      system_prompt: "Select game system"
+      system_hint: "Required for library scanning"
+      extension_label: "Save extension (without dot)"
+      extension_placeholder: "e.g. srm"
+      path_label: "Save directory"
+      path_placeholder: "e.g. /games/retroarch/saves/gba/"
+      path_hint: "Path inside the container — mount your saves directory as a volume"
+    library_step:
+      all_added: "All available emulators from the library are already added."
+    library_system_step:
+      games_exist: "Games exist for this system"
+    create:
+      success: "Profile added."
+    update:
+      success: "Profile updated."
+    destroy:
+      in_use: "Can't remove — you have games for this system. Remove those games first."
+      failure: "Could not remove profile."
+    library:
+      create:
+        success: "Emulators added."
+  onboarding:
+    emulator_profiles:
+      index:
+        page_title: "Select Emulators — EmuVault"
+    games:
+      index:
+        page_title: "Add Games — EmuVault"
+        title: "Add your games"
+        description: "Configure scan paths to discover games automatically, or add them manually."
+        complete: "Complete Setup"
+        scan_paths: "Scan Paths"
+        scan_paths_hint: "Point EmuVault at directories where your game files are stored."
+        add_game_hint: "Manually add a game to your library."
+        add_game_button: "Add game"
+      create:
+        added: "%{title} added."
+  javascript:
+    push_subscription:
+      not_supported: "Push notifications are not supported on this browser."
+      permission_denied: "Notification permission was denied. You can enable it in your browser settings."
+      enabled: "Push notifications enabled."
+      error: "Could not subscribe: %{message}"
+    profile_select:
+      selected: "%{count} selected"
+    directory_browser:
+      no_subdirectories: "No subdirectories"
+      error: "Could not read directory"
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            kuma_url:
+              invalid_url: "must be an HTTP or HTTPS URL"

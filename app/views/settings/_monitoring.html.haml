@@ -2,9 +2,9 @@
   = render ::UI::CardComponent.new do |card|
     = card.with_header do
       %h2.text-sm.font-semibold.mb-1
-        = "Monitoring"
+        = t(".title")
       %p.text-sm.text-muted
-        = "Internal dashboards for your self-hosted instance."
+        = t(".description")
 
     = card.with_body do
       .space-y-2
@@ -14,9 +14,9 @@
           target: "_blank") do |a|
           .min-w-0
             %p.text-sm.font-medium
-              = "PgHero"
+              = t(".pghero_title")
             %p.text-xs.text-muted
-              = "Database performance — slow queries, index usage, table sizes"
+              = t(".pghero_description")
           - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
         = render ::UI::ActionComponent.new(href: "/sidekiq",
           variant: :default,
@@ -24,9 +24,9 @@
           target: "_blank") do |a|
           .min-w-0
             %p.text-sm.font-medium
-              = "Sidekiq"
+              = t(".sidekiq_title")
             %p.text-xs.text-muted
-              = "Background job queues, failures, and throughput"
+              = t(".sidekiq_description")
           - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
 
         - if user.kuma_url_in_database.present?
@@ -36,19 +36,19 @@
             target: "_blank") do |a|
             .min-w-0
               %p.text-sm.font-medium
-                = "Uptime Kuma"
+                = t(".kuma_title")
               %p.text-xs.text-muted
-                = "Uptime monitoring — health checks, alerts, and status pages"
+                = t(".kuma_description")
             - a.with_trailing_icon(name: "fa-arrow-up-right-from-square", class: "text-muted group-hover:text-primary transition-colors shrink-0 ml-3")
         - else
           .flex.items-center.justify-between.rounded-lg.border.px-4.py-3.border-base-300
             .min-w-0
               %p.text-sm.font-medium
-                = "Uptime Kuma"
+                = t(".kuma_setup_title")
               %p.text-xs.text-muted
-                = "Run as a standalone app on your server. Monitor EmuVault at "
+                = t(".kuma_setup_hint")
                 %span.font-mono.break-all
-                  = "#{request.host}/up"
+                  = t(".kuma_endpoint", host: request.host)
 
       -# Kuma URL setting
       .mt-4.border-t.border-base-300.pt-4

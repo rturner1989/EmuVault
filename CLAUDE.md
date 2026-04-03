@@ -388,6 +388,34 @@ checksum = Digest::SHA256.hexdigest(uploaded.read)
 checksum = Digest::SHA256.hexdigest(record.file.download)
 ```
 
+## i18n
+
+All user-facing strings live in `config/locales/en.yml`. The app supports 5 locales: `en`, `fr`, `de`, `es`, `it`.
+
+### Conventions
+- **Views/controllers**: Use lazy lookup — `t(".key")` auto-scopes to the view/controller path
+- **Models**: Use explicit keys — `I18n.t("models.game_system.#{value}")`
+- **Helpers**: Use explicit keys — `I18n.t("helpers.games.sort.title_asc")`
+- **JavaScript**: Pass translated strings via Stimulus values (`data-*` attributes), not a JS i18n library
+- **Components**: Use explicit keys — `t("components.app_shell.dashboard")`
+- **Page titles**: Include the `" — EmuVault"` suffix in the translation value
+
+### Adding new strings
+1. Add the English key to `config/locales/en.yml`
+2. Use `t(".key")` (lazy) or `I18n.t("full.path")` (explicit) in the source
+3. Run `scripts/translate.sh` to generate translations for fr/de/es/it
+
+### Translation script
+```bash
+scripts/translate.sh          # translate new/changed keys
+scripts/translate.sh --force  # re-translate everything
+```
+
+Uses the `claude` CLI (login auth, no API key). Change detection via checksums in `config/locales/.en_checksums.yml`.
+
+### Locale selection
+Set `DEFAULT_LOCALE` env var (defaults to `en`). No per-user locale setting — single env var controls the entire app.
+
 ## SimpleForm error styling
 
 SimpleForm generates `<span class="error">` inside a `.field_with_errors` wrapper. Tailwind won't include these classes via scanning. Add explicit rules in `_application.tailwind.css`:

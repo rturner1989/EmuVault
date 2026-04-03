@@ -2,9 +2,9 @@
   "theme-current-value": user.theme }) do |card|
   = card.with_header do
     %h2.text-sm.font-semibold.mb-1
-      = "Theme"
+      = t(".title")
     %p.text-sm.text-muted
-      = "Choose the look and feel of EmuVault."
+      = t(".description")
 
   = card.with_body do
     = form_with model: user, url: settings_path, method: :patch do |f|
@@ -28,25 +28,25 @@
           size: :sm,
           type: :submit,
           data: { action: "click->theme#save" }) do
-          = "Save theme"
+          = t(".save")
 
     -# Unsaved theme confirmation dialog
     = render ::UI::ModalComponent.new(id: "unsaved-theme-dialog",
-      title: "Unsaved theme change",
+      title: t(".unsaved_title"),
       container_data: { theme_target: "dialog" },
       swipeable: false) do |modal|
       = modal.with_body do
         %p.text-sm.text-muted
-          = "You have an unsaved theme change. Leave and save it, or stay to continue editing."
+          = t(".unsaved_message")
       = modal.with_footer do
         .flex.items-center.gap-3
           = render ::UI::ActionComponent.new(variant: :primary,
             size: :sm,
             type: :button,
             data: { action: "theme#confirmLeaveAndSave" }) do
-            = "Leave and save"
+            = t(".leave_and_save")
           = render ::UI::ActionComponent.new(variant: :ghost,
             size: :sm,
             type: :button,
             data: { action: "theme#cancelLeave" }) do
-            = "Stay"
+            = t(".stay")

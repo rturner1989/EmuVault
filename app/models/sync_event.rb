@@ -52,7 +52,7 @@ class SyncEvent < ApplicationRecord
   end
 
   def device_label
-    { phone: "Phone", tablet: "Tablet", desktop: "Desktop" }[device_type]
+    I18n.t("models.device.#{device_type}")
   end
 
   def device_badge_color
@@ -60,7 +60,7 @@ class SyncEvent < ApplicationRecord
   end
 
   def action_label
-    push? ? "Upload" : "Download"
+    I18n.t("models.sync_action.#{action}")
   end
 
   def action_icon

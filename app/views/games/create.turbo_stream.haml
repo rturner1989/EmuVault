@@ -2,4 +2,4 @@
 = turbo_stream.update "games-list", partial: "games/games_content", locals: { games: @games, pagy: @pagy }
 = turbo_stream.update "game_stats", partial: "shared/game_stats", locals: { games_count: @games_count, games_without_save: @games_without_save }
 = turbo_stream.update "games-filters", partial: "games/filters", locals: { games_count: @games_count, system_options: @system_options, selected_system: nil, selected_sort: @selected_sort }
-= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "#{@game.title} added.")
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: t(".added", title: @game.title))

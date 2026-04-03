@@ -2,9 +2,9 @@
   .mt-4.rounded-lg.overflow-hidden.bg-base-100.border.border-base-300
     .px-4.py-3.border-b.border-base-300
       %h2.text-sm.font-semibold
-        = "Emulator Save Filenames"
+        = t(".title")
       %p.text-xs.text-muted.mt-1
-        = "Set the filename each emulator expects for this game. Leave blank to use a default based on the game title."
+        = t(".description")
 
     - if user_profiles.any?
       = form_with url: game_emulator_configs_path(game), method: :patch do |f|
@@ -27,7 +27,7 @@
                     = ".#{profile.save_extension}"
         .px-4.py-3.flex.justify-start.border-t.border-base-300
           = render ::UI::ActionComponent.new(variant: :primary, type: "submit") do
-            = "Save Filenames"
+            = t(".save_button")
     - else
       .px-4.py-4.text-sm.text-muted
-        = "No emulators selected. Add emulators from the Profiles page."
+        = t(".empty")

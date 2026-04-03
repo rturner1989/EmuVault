@@ -1,4 +1,4 @@
-- content_for :title, "Add Games — EmuVault"
+- content_for :title, t(".page_title")
 
 = turbo_stream_from "scans_#{current_user.id}"
 
@@ -6,35 +6,35 @@
   = turbo_frame_tag "onboarding-banner", style: "display: contents" do
     = render "shared/onboarding_banner",
       step: 2,
-      title: "Add your games",
-      description: "Configure scan paths to discover games automatically, or add them manually.",
+      title: t(".title"),
+      description: t(".description"),
       back_path: onboarding_emulator_profiles_path,
       next_path: (onboarding_completion_path if Game.exists?),
-      next_label: "Complete Setup",
+      next_label: t(".complete"),
       next_method: (Game.exists? ? :post : nil)
 
   .space-y-6.mb-6
     = render ::UI::CardComponent.new(padding: :sm) do |card|
       - card.with_header do
         %span.font-medium.text-sm
-          = "Scan Paths"
+          = t(".scan_paths")
       %div{ class: "px-4 py-3" }
         %p.text-sm.text-muted.mb-3
-          = "Point EmuVault at directories where your game files are stored."
+          = t(".scan_paths_hint")
         = turbo_frame_tag "onboarding_scan_paths" do
           = render "games/paths/section", scan_paths: @scan_paths, show_scan_button: true, scan_path: onboarding_scan_path
 
     = render ::UI::CardComponent.new(padding: :sm) do |card|
       - card.with_header do
         %span.font-medium.text-sm
-          = "Add Game"
+          = t("common.add_game")
       %div{ class: "px-4 py-3" }
         %p.text-sm.text-muted.mb-3
-          = "Manually add a game to your library."
+          = t(".add_game_hint")
         %details
           %summary.text-sm.text-primary.cursor-pointer.font-medium
             = render ::UI::IconComponent.new(name: "fa-plus", class: "fa-fw mr-1")
-            = "Add game"
+            = t(".add_game_button")
           .mt-3
             = turbo_frame_tag "onboarding-game-form", style: "display: contents" do
               = render "games/form", form_url: onboarding_games_path, form_id: "add-game-form-inline"
@@ -43,14 +43,14 @@
                 size: :sm,
                 type: :submit,
                 form: "add-game-form-inline") do
-                = "Add Game"
+                = t("common.add_game")
 
   %div{ id: "scan-progress" }
     - if current_user.last_scan_result&.dig("status") == "scanning"
       .flex.items-center.gap-3.rounded-lg.px-4.py-3.mb-4.bg-base-200.border.border-base-300
         %span.loading.loading-spinner.loading-sm.text-primary
         %p.text-sm.text-muted
-          = "Scanning your library..."
+          = t("common.scanning")
 
   = turbo_frame_tag "onboarding-games-list", class: "space-y-3 block" do
     - if @games.any?

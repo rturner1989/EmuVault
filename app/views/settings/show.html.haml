@@ -1,7 +1,7 @@
-- content_for :title, "Settings — EmuVault"
+- content_for :title, t(".page_title")
 
 .p-4.lg:p-6.space-y-4
-  = render ::UI::PageHeaderComponent.new(title: "Settings")
+  = render ::UI::PageHeaderComponent.new(title: t(".title"))
 
   = render "settings/account", user: @user
   = render "settings/library_scan", user: @user, scan_paths: @scan_paths

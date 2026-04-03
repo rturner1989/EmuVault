@@ -23,12 +23,12 @@
           size: :sm,
           data: { turbo_frame: "_top" }) do |a|
           - a.with_leading_icon(name: "fa-arrow-left")
-          = "Back"
+          = t(".back")
       - if local_assigns[:next_path]
         = render ::UI::ActionComponent.new(href: next_path,
           variant: :primary,
           size: :sm,
           method: local_assigns[:next_method],
           data: { turbo_frame: "_top" }) do |a|
-          = local_assigns[:next_label] || "Next"
+          = local_assigns[:next_label] || t(".next")
           - a.with_trailing_icon(name: "fa-arrow-right")

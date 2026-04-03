@@ -1,2 +1,2 @@
 = turbo_stream.update "monitoring", partial: "settings/monitoring", locals: { user: @user }
-= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: "Settings saved.")
+= turbo_stream.append "flash-container", ::Layouts::FlashComponent::Item.new(type: :notice, message: t("settings.update.success"))

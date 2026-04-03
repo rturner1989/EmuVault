@@ -39,17 +39,17 @@ class User < ApplicationRecord
 
   GAMES_VIEW_PREFERENCES = %w[card list].freeze
 
-  SCAN_INTERVAL_LABELS = {
-    hourly: "Every hour",
-    every_6_hours: "Every 6 hours",
-    daily: "Daily"
-  }.freeze
-
   enum :scan_interval, { hourly: "hourly", every_6_hours: "every_6_hours", daily: "daily" }
+
+  def self.scan_interval_options
+    { hourly: "hourly", every_6_hours: "every_6_hours", daily: "daily" }.map do |key, value|
+      [ I18n.t("models.scan_interval.#{key}"), value ]
+    end
+  end
 
   validates :theme, inclusion: { in: ALL_THEMES }
   validates :games_view_preference, inclusion: { in: GAMES_VIEW_PREFERENCES }
-  validates :kuma_url, format: { with: /\Ahttps?:\/\/\S+\z/i, message: "must be an HTTP or HTTPS URL" }, allow_blank: true
+  validates :kuma_url, format: { with: /\Ahttps?:\/\/\S+\z/i, message: :invalid_url }, allow_blank: true
 
   has_secure_password
 

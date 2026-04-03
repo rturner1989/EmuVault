@@ -1,18 +1,22 @@
 = render ::UI::CardComponent.new(data: { controller: "push-subscription",
-  "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s }) do |card|
+  "push-subscription-vapid-public-key-value": ENV["VAPID_PUBLIC_KEY"].to_s,
+  "push-subscription-not-supported-text-value": t("javascript.push_subscription.not_supported"),
+  "push-subscription-permission-denied-text-value": t("javascript.push_subscription.permission_denied"),
+  "push-subscription-enabled-text-value": t("javascript.push_subscription.enabled"),
+  "push-subscription-error-text-value": t("javascript.push_subscription.error") }) do |card|
   = card.with_header do
     %h2.text-sm.font-semibold.mb-1
-      = "Push Notifications"
+      = t(".title")
     %p.text-sm.text-muted
-      = "Get notified on this device when a new save is uploaded. Works when EmuVault is installed as a home screen app."
+      = t(".description")
 
   = card.with_body do
     = render ::UI::ActionComponent.new(variant: :primary, data: { action: "push-subscription#subscribe", "push-subscription-target": "button" }) do
-      = "Enable push notifications"
+      = t(".enable")
     %p.text-xs.text-muted.mt-2{ data: { "push-subscription-target": "status" } }
 
     = render ::UI::ModalComponent.new(id: "push-notification-dialog",
-      title: "Push Notifications",
+      title: t(".dialog_title"),
       container_data: { "push-subscription-target": "dialog" }) do |modal|
       = modal.with_body do
         %p.text-sm.text-muted{ data: { "push-subscription-target": "dialogMessage" } }
@@ -22,4 +26,4 @@
             size: :sm,
             type: :button,
             data: { action: "push-subscription#closeDialog" }) do
-            = "OK"
+            = t(".ok")

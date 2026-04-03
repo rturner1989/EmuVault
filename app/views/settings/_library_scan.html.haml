@@ -1,9 +1,9 @@
 = render ::UI::CardComponent.new do |card|
   = card.with_header do
     %h2.text-sm.font-semibold.mb-1
-      = "Scan Paths"
+      = t(".title")
     %p.text-sm.text-muted
-      = "Directories where your game files are stored. EmuVault scans these to discover games automatically."
+      = t(".description")
 
   = card.with_body do
     = turbo_frame_tag "scan_paths" do

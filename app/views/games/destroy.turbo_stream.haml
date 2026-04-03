@@ -2,11 +2,11 @@
   = turbo_stream.remove @game
   - if @games_count == 0
     = turbo_stream.update "games-list" do
-      = render ::UI::EmptyStateComponent.new(title: "No games yet", description: "Add your first game to start syncing saves.") do |c|
+      = render ::UI::EmptyStateComponent.new(title: t("games.index.empty_title"), description: t("games.index.empty_description")) do |c|
         - c.with_action do
           = render ::UI::ActionComponent.new(variant: :primary, data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
-            = "Add Game"
+            = t("common.add_game")
   = turbo_stream.update "games-filters", partial: "games/filters", locals: { games_count: @games_count, system_options: @system_options, selected_system: nil, selected_sort: @selected_sort }
   = turbo_stream.update :quick_sync_content, partial: "shared/quick_sync_content"
 

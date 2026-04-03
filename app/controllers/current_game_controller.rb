@@ -4,7 +4,7 @@ class CurrentGameController < MainController
   def update
     @previous_game = current_user.current_game
     current_user.update!(current_game: @game)
-    @notice = "Now playing: #{@game.title}"
+    @notice = t(".success", title: @game.title)
 
     respond_to do |format|
       format.turbo_stream { load_quick_sync_data }
@@ -15,7 +15,7 @@ class CurrentGameController < MainController
   def destroy
     current_user.update!(current_game: nil)
     current_user.reload
-    @notice = "Cleared current game"
+    @notice = t(".success")
 
     respond_to do |format|
       format.turbo_stream { load_quick_sync_data }

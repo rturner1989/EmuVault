@@ -7,7 +7,7 @@
     - a.with_leading_icon(name: "fa-rotate", class: "text-primary")
     .min-w-0.flex-1
       %p.text-xs.text-muted.leading-none.mb-0.5
-        = "Now Playing"
+        = t("common.now_playing")
       %p.text-sm.font-medium.truncate
         = @quick_sync_game.title
     - a.with_trailing_icon(name: "fa-chevron-up", class: "text-muted text-xs")
@@ -18,7 +18,7 @@
       = render ::UI::IconComponent.new(name: "fa-rotate", class: "text-primary shrink-0")
       .min-w-0.flex-1
         %p.text-xs.text-muted.leading-none.mb-0.5
-          = "Now Playing"
+          = t("common.now_playing")
         %p.text-sm.font-medium.truncate
           = @quick_sync_game.title
       = render ::UI::IconComponent.new(name: "fa-chevron-down", class: "text-muted text-xs shrink-0 details-chevron")

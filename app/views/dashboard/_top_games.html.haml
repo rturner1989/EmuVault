@@ -1,11 +1,11 @@
 .rounded-lg.bg-base-100.border.border-base-300
   .px-5.py-4.border-b.border-base-300
     %h2.text-sm.font-semibold
-      = "Most Active Games"
+      = t(".title")
 
   - if top_games.empty?
     .px-5.py-6.text-center.text-sm.text-muted
-      = "No syncs yet."
+      = t(".empty")
   - else
     %ul.divide-y.divide-base-300
       - top_games.each do |game|
@@ -15,4 +15,4 @@
             class: "text-sm truncate") do
             = game[:title]
           .text-xs.text-muted.shrink-0
-            = "#{game[:count]} sync#{"s" if game[:count] != 1}"
+            = t(".sync_count", count: game[:count])

@@ -1,13 +1,11 @@
 module GamesHelper
-  SORT_OPTIONS = [
-    [ "Title A→Z", "title_asc" ],
-    [ "Title Z→A", "title_desc" ],
-    [ "Newest first", "newest" ],
-    [ "Oldest first", "oldest" ],
-    [ "By system", "system" ]
-  ].freeze
-
   def game_sort_options
-    SORT_OPTIONS
+    [
+      [ I18n.t("helpers.games.sort.title_asc"), "title_asc" ],
+      [ I18n.t("helpers.games.sort.title_desc"), "title_desc" ],
+      [ I18n.t("helpers.games.sort.newest"), "newest" ],
+      [ I18n.t("helpers.games.sort.oldest"), "oldest" ],
+      [ I18n.t("helpers.games.sort.system"), "system" ]
+    ]
   end
 end

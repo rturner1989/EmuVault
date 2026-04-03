@@ -70,7 +70,7 @@ Designed to run on your own PC or home server and be accessed from any device vi
 - [Push notifications](#push-notifications)
 - [Monitoring](#monitoring)
 - [Configuration](#configuration)
-- [First-run setup wizard](#first-run-setup-wizard)
+- [First-run onboarding](#first-run-onboarding)
 - [Usage](#usage)
   - [Adding a game](#adding-a-game)
   - [Uploading a save](#uploading-a-save)
@@ -89,18 +89,23 @@ Designed to run on your own PC or home server and be accessed from any device vi
 
 - **Save sync** — upload a save file from any device, download it to any other
 - **Automatic filename handling** — configure per-game filenames per emulator; downloads are renamed to match what each emulator expects (e.g. `Pokemon - Emerald Version.srm` for RetroArch, `Pokemon_Emerald.sav` for Delta)
-- **Save history** — every upload is versioned; previous saves are kept and can be re-downloaded
+- **Save history** — every upload is versioned with a version number; previous saves are kept and can be re-downloaded from the game show page
 - **Save path hints** — shows the exact path to place the downloaded file based on your emulator's configured save directory
+- **Cover images** — upload a cover image for each game with automatic 3:4 cropping. Displayed on game cards and the game show page
+- **Card and list views** — toggle between a card grid (with cover images) and a compact list view on the games page. Preference is persisted server-side
+- **Infinite scroll** — games load automatically as you scroll down, no manual pagination
+- **Now Playing banner** — the currently playing game is highlighted at the top of the games page with quick access to view and clear
 - **Library scan** — point EmuVault at your ROM/save directories and it discovers games automatically, grouped by system. Scan results appear in a review modal where you choose which to import. Games appear in real-time via ActionCable as they're imported
 - **Auto-scan** — scheduled scans run in the background (hourly, every 6 hours, or daily). When new games are found, a notification is sent and the review modal auto-opens on your next visit to the games page
 - **Multi-emulator support** — ships with profiles for RetroArch, Delta, mGBA, Dolphin, PPSSPP, melonDS, Snes9x, OpenEmu, DuckStation and more (28 profiles across Linux, Windows, macOS, iOS, Android)
-- **Export / Import** — export your entire library (games, saves, emulator configs) as a ZIP archive; restore from a previous export with conflict resolution
+- **Export / Import** — export your entire library (games, saves, emulator configs) as a ZIP archive; restore from a previous export with per-game conflict resolution (keep existing or replace)
 - **Quick Sync** — set a game as "Now Playing" for one-tap upload and download from the mobile nav
-- **Activity log** — every upload and download is recorded with timestamp, device type (inferred from user agent), and IP address
+- **Activity log** — every upload and download is recorded with timestamp, device type (inferred from user agent), and IP address. Paginated with automatic cleanup of old entries
 - **Themes** — 22 selectable themes (dark and light), applied instantly with live preview
 - **First-run onboarding** — guided 2-step setup: choose your emulators from the built-in library → add games (scan or manual). Dedicated onboarding layout with step progress indicator
 - **Notifications** — in-app notification panel with live badge updates via ActionCable; web push to iPhone (when installed as a home screen app) via the Web Push API. Notifies on new save uploads and auto-scan discoveries
-- **Mobile-first UI** — works on iPhone with safe-area insets, installable as a home screen app (PWA)
+- **Mobile-first UI** — works on iPhone with safe-area insets, installable as a home screen app (PWA). Bottom sheet modals on mobile
+- **Multi-language** — supports English, French, German, Spanish, and Italian. Set the `DEFAULT_LOCALE` env var to change the app language
 - **Single-user** — self-hosted, no accounts or cloud services
 
 ## Supported emulators (built-in profiles)
@@ -287,6 +292,7 @@ All configuration is via environment variables. Key variables:
 | `VAPID_PUBLIC_KEY` | Web push public key | — |
 | `VAPID_PRIVATE_KEY` | Web push private key | — |
 | `ACTIVITY_RETENTION_DAYS` | Days to retain activity log entries | `90` |
+| `DEFAULT_LOCALE` | App language (`en`, `fr`, `de`, `es`, `it`) | `en` |
 | `FORCE_SSL` | Enable SSL redirect | `false` |
 
 See `.env.example` for the full list.
@@ -295,10 +301,10 @@ See `.env.example` for the full list.
 
 On first login you'll be walked through a 2-step onboarding flow in a dedicated layout:
 
-1. **Select emulators** — choose which emulators you use from the built-in library (28 profiles across 10 emulators). Toggle profiles on/off per system. Systems with games in your library are locked.
+1. **Select emulators** — choose which emulators you use from the built-in library (28 profiles across 10 emulators). You can also create custom profiles. Systems with games in your library are locked.
 2. **Add games** — configure scan paths to discover games automatically, or add them manually. Games imported via scan appear in real-time. Click "Complete Setup" when ready.
 
-After completing setup you'll be taken to the dashboard with an optional guided tour (driver.js).
+After completing setup you'll be taken to the games page.
 
 ## Usage
 
@@ -377,9 +383,12 @@ The `/activity` page shows a full history of all uploads and downloads, includin
 - **HAML** templates, **ViewComponent** for UI components, **SimpleForm** for forms
 - **Active Storage** for save file storage
 - **Sidekiq** + Redis for background jobs and scheduled scans
+- **Pagy** for infinite scroll pagination
+- **Cropper.js** for cover image cropping
 - **Noticed** for in-app notifications + web push
 - **a11y-dialog** for accessible modals
-- **RSpec** + Capybara + Playwright for testing (430+ specs)
+- **RSpec** + Capybara + Playwright for testing (547 specs)
+- **i18n** — 5 locales (en, fr, de, es, it) with automated translation via Claude CLI
 - **Docker** for development and deployment
 
 ## Contributing

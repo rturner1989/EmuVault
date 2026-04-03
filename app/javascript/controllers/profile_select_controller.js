@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["checkbox", "bulkBar", "bulkForm", "count", "selectAll"]
+  static values = { selectedText: { type: String, default: "%{count} selected" } }
 
   toggle() {
     this.updateState()
@@ -19,7 +20,7 @@ export default class extends Controller {
 
     if (count > 0) {
       this.bulkBarTarget.classList.remove("hidden")
-      this.countTarget.textContent = `${count} selected`
+      this.countTarget.textContent = this.selectedTextValue.replace("%{count}", count)
     } else {
       this.bulkBarTarget.classList.add("hidden")
     }

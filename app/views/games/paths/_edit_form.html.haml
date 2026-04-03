@@ -1,8 +1,10 @@
 = form_with model: sp,
   url: scan_path_path(sp),
   method: :patch,
-  html: { class: "space-y-4", data: { controller: "directory-browser" } } do |f|
-  = f.label :path, "Directory path", class: "block text-sm mb-1"
+  html: { class: "space-y-4", data: { controller: "directory-browser",
+    "directory-browser-no-subdirectories-text-value": t("javascript.directory_browser.no_subdirectories"),
+    "directory-browser-error-text-value": t("javascript.directory_browser.error") } } do |f|
+  = f.label :path, t(".directory_label"), class: "block text-sm mb-1"
   .flex.items-center.gap-2
     = f.text_field :path, required: true, class: "input input-bordered input-sm flex-1 min-w-0 font-mono", data: { "directory-browser-target": "input" }
     = render ::UI::ActionComponent.new(variant: :ghost,
@@ -10,15 +12,15 @@
       type: :button,
       data: { action: "click->directory-browser#toggle" }) do |a|
       - a.with_leading_icon(name: "fa-folder-open")
-      = "Browse"
+      = t("common.browse")
 
   = render "games/paths/directory_browser"
 
-  = f.label :game_system, "Game system", class: "block text-sm mb-1"
-  = f.select :game_system, ScanPath::GAME_SYSTEM_OPTIONS, {}, class: "select select-bordered w-full", required: true
+  = f.label :game_system, t("common.game_system"), class: "block text-sm mb-1"
+  = f.select :game_system, ScanPath.game_system_options, {}, class: "select select-bordered w-full", required: true
 
   .pt-1
     = render ::UI::ActionComponent.new(variant: :primary,
       size: :sm,
       type: :submit) do
-      = "Save changes"
+      = t(".submit")

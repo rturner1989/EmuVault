@@ -3,7 +3,7 @@
     .flex.flex-col.items-center.justify-center.py-12.px-4.text-center
       = render ::UI::IconComponent.new(name: "fa-bell-slash", class: "text-3xl text-muted mb-3")
       %p.text-sm.text-muted
-        = "No notifications yet"
+        = t(".empty")
   - else
     .divide-y.divide-base-300
       - @notifications.each do |notification|

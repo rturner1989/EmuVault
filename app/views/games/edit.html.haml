@@ -1,6 +1,6 @@
-- content_for :title, "Edit #{@game.title} — EmuVault"
+- content_for :title, t(".page_title", title: @game.title)
 
 .p-4.lg:p-6
-  = render ::UI::PageHeaderComponent.new(title: "Edit Game")
+  = render ::UI::PageHeaderComponent.new(title: t(".heading"))
   .rounded-lg.p-6.bg-base-100.border.border-base-300
-    = render "form", form_url: game_path(@game), submit_label: "Save Changes", cancel_path: game_path(@game)
+    = render "form", form_url: game_path(@game), submit_label: t(".submit"), cancel_path: game_path(@game)

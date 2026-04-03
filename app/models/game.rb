@@ -54,7 +54,7 @@ class Game < ApplicationRecord
 
   def self.system_options_in_use
     systems = systems_in_use
-    GAME_SYSTEM_OPTIONS.select { |_text, value| systems.include?(value.to_sym) }
+    game_system_options.select { |_text, value| systems.include?(value.to_sym) }
   end
 
   def self.storage_used_bytes

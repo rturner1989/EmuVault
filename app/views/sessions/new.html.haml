@@ -1,4 +1,4 @@
-- content_for :title, "Sign in — EmuVault"
+- content_for :title, t(".page_title")
 
 .h-screen.flex.items-center.justify-center.overflow-hidden.bg-base-200
   .w-full.max-w-sm.px-4
@@ -6,23 +6,23 @@
       .flex.justify-center
         = render ::UI::LogoComponent.new(size: :lg)
       %p.mt-2.text-sm.text-muted
-        = "Sign in to your vault"
+        = t(".heading")
 
     = render ::UI::CardComponent.new do |c|
       - c.with_body do
         = simple_form_for :session, url: session_path, method: :post, html: { class: "space-y-4" } do |f|
           = f.input :username,
-            label: "Username",
+            label: t(".username"),
             required: true,
             input_html: { autocomplete: "username", required: true, class: "input input-bordered w-full" },
             label_html: { class: "label-text font-medium" }
           = f.input :password,
             as: :password,
-            label: "Password",
+            label: t(".password"),
             required: true,
             input_html: { autocomplete: "current-password", required: true, class: "input input-bordered w-full" },
             label_html: { class: "label-text font-medium" }
           = render ::UI::ActionComponent.new(variant: :primary,
             type: :submit,
             class: "w-full mt-2") do
-            = "Sign in"
+            = t(".sign_in")

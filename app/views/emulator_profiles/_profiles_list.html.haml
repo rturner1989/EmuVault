@@ -1,6 +1,6 @@
 = turbo_frame_tag "profiles_list" do
   - if selected_by_system.any?
-    %div{ data: { controller: "profile-select" } }
+    %div{ data: { controller: "profile-select", profile_select_selected_text_value: t("javascript.profile_select.selected") } }
       = form_with url: emulator_profiles_bulk_destroy_path,
         method: :post,
         data: { profile_select_target: "bulkForm" } do |f|
@@ -14,13 +14,13 @@
           = render ::UI::ActionComponent.new(variant: :ghost,
             size: :xs,
             data: { action: "profile-select#clearSelection" }) do
-            = "Deselect all"
+            = t(".deselect_all")
           = render ::UI::ActionComponent.new(variant: :danger,
             size: :xs,
             type: :button,
             data: { action: "profile-select#submitBulk" }) do |a|
             - a.with_leading_icon(name: "fa-trash-can")
-            = "Delete selected"
+            = t(".delete_selected")
 
       - in_use_systems = local_assigns.fetch(:in_use_systems, Game.systems_in_use)
       .space-y-4
@@ -54,7 +54,7 @@
                         = profile.default_save_path
                     - else
                       %p.text-xs.text-muted
-                        = "No save path set"
+                        = t(".no_save_path")
                   .flex.items-center.gap-2.shrink-0
                     - unless profile.is_default
                       = render ::UI::ModalComponent.new(id: dom_id(profile, :edit), title: "Edit Profile") do |modal|
@@ -73,42 +73,42 @@
                             size: :sm,
                             type: :submit,
                             form: dom_id(profile, :edit_form)) do
-                            = "Save"
+                            = t(".save")
                     - if profile_in_use
                       = render ::UI::ActionComponent.new(variant: :danger,
                         size: :xs,
                         disabled: true,
-                        title: "Remove all #{system_label} games first") do
+                        title: t(".remove_games_first", system: system_label)) do
                         = "Remove"
                     - else
                       = render ::UI::ConfirmComponent.new(id: dom_id(profile, :delete),
-                        title: profile.is_default ? "Remove profile?" : "Delete profile?",
-                        message: profile.is_default ? "Remove this profile from your list? You can add it back later." : "Delete this profile permanently?",
+                        title: profile.is_default ? t(".remove_profile_title") : t(".delete_profile_title"),
+                        message: profile.is_default ? t(".remove_profile_message") : t(".delete_profile_message"),
                         url: emulator_profile_path(profile),
                         method: :delete,
                         trigger_label: "Remove",
                         size: :xs)
   - else
-    = render ::UI::EmptyStateComponent.new(title: "No emulators configured yet", description: "Add emulators from the library or create a custom profile.") do |c|
+    = render ::UI::EmptyStateComponent.new(title: t(".empty_title"), description: t(".empty_description")) do |c|
       - c.with_action do
         .flex.items-center.gap-3.flex-wrap.justify-center
           = render ::UI::ActionComponent.new(variant: :primary, data: { "a11y-dialog-show": "library-modal" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
-            = "Add from library"
+            = t(".add_from_library")
           = render ::UI::ActionComponent.new(variant: :secondary, data: { "a11y-dialog-show": "new-profile-dialog" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
-            = "Add custom profile"
+            = t(".add_custom")
 
   -# Actions row and modal containers
   - if selected_by_system.any?
     .flex.items-center.gap-3.flex-wrap.mt-2
       = render ::UI::ModalComponent.new(id: "library-modal",
-        title: "Add from library",
-        subtitle: "Select the systems you want to add emulators for.") do |modal|
+        title: t(".library_modal_title"),
+        subtitle: t(".library_modal_description")) do |modal|
         = modal.with_trigger do
           = render ::UI::ActionComponent.new(variant: :secondary, data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
-            = "Add from library"
+            = t(".add_from_library")
         = modal.with_body do
           = turbo_frame_tag :library_modal_frame, src: emulator_profiles_library_index_path do
             .py-4.text-center
@@ -119,12 +119,12 @@
             type: :submit,
             form: "library-step-form") do |a|
             - a.with_trailing_icon(name: "fa-check")
-            = "Confirm"
-      = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: "New Profile") do |modal|
+            = t(".confirm")
+      = render ::UI::ModalComponent.new(id: "new-profile-dialog", title: t(".custom_modal_title")) do |modal|
         = modal.with_trigger do
           = render ::UI::ActionComponent.new(variant: :secondary, data: { action: "dialog#open" }) do |a|
             - a.with_leading_icon(name: "fa-plus")
-            = "Add custom profile"
+            = t(".add_custom")
         = modal.with_body do
           = render "emulator_profiles/form", profile: EmulatorProfile.new,
             url: emulator_profiles_path,
@@ -135,12 +135,12 @@
             size: :sm,
             type: :submit,
             form: "new-profile-form") do
-            = "Save"
+            = t(".save")
   - else
     -# Render modal containers without triggers so a11y-dialog-show works from the empty state
     = render ::UI::ModalComponent.new(id: "library-modal",
-      title: "Add from library",
-      subtitle: "Select the systems you want to add emulators for.") do |modal|
+      title: t(".library_modal_title"),
+      subtitle: t(".library_modal_description")) do |modal|
       = modal.with_body do
         = turbo_frame_tag :library_modal_frame, src: emulator_profiles_library_index_path do
           .py-4.text-center
@@ -151,9 +151,9 @@
           type: :submit,
           form: "library-step-form") do |a|
           - a.with_trailing_icon(name: "fa-check")
-          = "Confirm"
+          = t(".confirm")
     = render ::UI::ModalComponent.new(id: "new-profile-dialog",
-      title: "New Profile") do |modal|
+      title: t(".custom_modal_title")) do |modal|
       = modal.with_body do
         = render "emulator_profiles/form", profile: EmulatorProfile.new,
           url: emulator_profiles_path,
@@ -164,4 +164,4 @@
           size: :sm,
           type: :submit,
           form: "new-profile-form") do
-          = "Save"
+          = t(".save")

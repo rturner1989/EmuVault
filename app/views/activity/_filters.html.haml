@@ -3,12 +3,12 @@
     .flex.items-center.gap-2.flex-wrap
       - if games.any?
         = select_tag :game_id,
-          options_for_select([["All games", ""], *games.map { |g| [g.title, g.id] }], selected_game_id),
+          options_for_select([[t(".all_games"), ""], *games.map { |g| [g.title, g.id] }], selected_game_id),
           class: "select select-bordered select-sm w-44",
           data: { action: "change->auto-submit#submit" }
 
       = select_tag :sort,
-        options_for_select([["Newest first", "newest"], ["Oldest first", "oldest"]], selected_sort),
+        options_for_select([[t(".newest"), "newest"], [t(".oldest"), "oldest"]], selected_sort),
         class: "select select-bordered select-sm w-44",
         data: { action: "change->auto-submit#submit" }
 
@@ -18,7 +18,7 @@
           size: :sm,
           class: "text-xs text-muted hover:text-base-content transition-colors") do |a|
           - a.with_leading_icon(name: "fa-xmark")
-          = "Clear"
+          = t("common.clear")
 
       .ml-auto.text-xs.text-muted
-        = "#{total_count} #{"event".pluralize(total_count)}"
+        = t(".event_count", count: total_count)

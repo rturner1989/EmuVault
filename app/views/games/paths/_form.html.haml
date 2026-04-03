@@ -1,13 +1,15 @@
 = form_with model: ScanPath.new,
   url: scan_paths_path,
   method: :post,
-  html: { class: "space-y-4", autocomplete: "off", data: { controller: "directory-browser" } } do |f|
+  html: { class: "space-y-4", autocomplete: "off", data: { controller: "directory-browser",
+    "directory-browser-no-subdirectories-text-value": t("javascript.directory_browser.no_subdirectories"),
+    "directory-browser-error-text-value": t("javascript.directory_browser.error") } } do |f|
 
   -# Path input + browse button
-  = f.label :path, "Directory path", class: "block text-sm mb-1"
+  = f.label :path, t(".directory_label"), class: "block text-sm mb-1"
   .flex.items-center.gap-2
     .relative.flex-1.min-w-0
-      = f.text_field :path, placeholder: "/saves/gba/",
+      = f.text_field :path, placeholder: t(".directory_placeholder"),
         required: true,
         class: "input input-bordered input-sm w-full font-mono pr-8",
         data: { "directory-browser-target": "input" }
@@ -21,35 +23,28 @@
       type: :button,
       data: { action: "click->directory-browser#toggle" }) do |a|
       - a.with_leading_icon(name: "fa-folder-open")
-      = "Browse"
+      = t("common.browse")
 
   = render "games/paths/directory_browser"
 
   %p.text-xs.text-muted
-    = "Enter the path to your games directory. "
-    = "On a NAS or Docker setup, mount the directory as a volume first (e.g. "
-    %span.font-mono
-      = "/saves"
-    = "). On a local install, use the full path directly (e.g. "
-    %span.font-mono
-      = "/home/user/games/gba"
-    = ")."
+    = t(".directory_hint")
 
   -# Game system
-  = f.label :game_system, "Game system", class: "block text-sm mb-1"
+  = f.label :game_system, t("common.game_system"), class: "block text-sm mb-1"
   = f.select :game_system,
-    ScanPath::GAME_SYSTEM_OPTIONS.select { |_label, value| @available_systems&.include?(value.to_sym) },
-    { include_blank: "Select system" },
+    ScanPath.game_system_options.select { |_label, value| @available_systems&.include?(value.to_sym) },
+    { include_blank: t(".system_prompt") },
     class: "select select-bordered w-full",
     required: true
 
   -# Auto-scan toggle
   .flex.items-center.gap-2
     = f.check_box :auto_scan, class: "checkbox checkbox-primary"
-    = f.label :auto_scan, "Include in auto-scan", class: "text-sm cursor-pointer"
+    = f.label :auto_scan, t(".auto_scan"), class: "text-sm cursor-pointer"
 
   .pt-2
     = render ::UI::ActionComponent.new(variant: :primary,
       type: :submit,
       size: :sm) do
-      = "Add path"
+      = t(".submit")

@@ -13,15 +13,15 @@
       class: "shrink-0",
       type: :button,
       data: { action: "click->directory-browser#select" }) do
-      = "Select folder"
+      = t(".select")
 
   -# Quick-jump shortcuts
   .flex.items-center.flex-wrap.gap-1.px-3.py-2.border-b.border-base-300
     %span.text-xs.text-muted.shrink-0
-      = "Jump to:"
+      = t(".jump_to")
     .flex.items-center.flex-wrap.gap-1{ data: { "directory-browser-target": "shortcuts" } }
 
   -# Directory listing
   .max-h-48.overflow-y-auto{ data: { "directory-browser-target": "list" } }
     %p.text-xs.text-muted.px-3.py-3
-      = "Click Browse to explore"
+      = t(".placeholder")

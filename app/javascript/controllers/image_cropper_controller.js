@@ -6,7 +6,8 @@ export default class extends Controller {
   static targets = ["input", "filename", "preview"]
   static values = {
     aspectRatio: { type: Number, default: 3 / 4 },
-    dialogId: { type: String, default: "crop-cover-dialog" }
+    dialogId: { type: String, default: "crop-cover-dialog" },
+    noFileText: { type: String, default: "No file selected" }
   }
 
   connect () {
@@ -16,7 +17,7 @@ export default class extends Controller {
     const form = this.element.closest("form")
     if (form) {
       form.addEventListener("reset", () => {
-        this.filenameTarget.textContent = "No file selected"
+        this.filenameTarget.textContent = this.noFileTextValue
         this.revokePreview()
         if (this.hasPreviewTarget) this.previewTarget.classList.add("hidden")
       })
@@ -42,7 +43,7 @@ export default class extends Controller {
       this.destroyCropper()
       if (!this.confirmed) {
         this.inputTarget.value = ""
-        this.filenameTarget.textContent = "No file selected"
+        this.filenameTarget.textContent = this.noFileTextValue
         this.revokePreview()
       }
       this.confirmed = false

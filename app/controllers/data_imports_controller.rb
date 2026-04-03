@@ -3,7 +3,7 @@
 class DataImportsController < MainController
   def create
     unless params[:file].present?
-      return redirect_to settings_path, alert: "Please select an export file."
+      return redirect_to settings_path, alert: t(".no_file")
     end
 
     import = DataImport.new(status: :analyzing)
@@ -12,7 +12,7 @@ class DataImportsController < MainController
     manifest, conflicts = DataImport.analyze_zip(params[:file])
 
     if manifest.nil?
-      return redirect_to settings_path, alert: "Invalid export file — could not read manifest."
+      return redirect_to settings_path, alert: t(".invalid")
     end
 
     import.manifest = manifest
