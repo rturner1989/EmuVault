@@ -33,7 +33,7 @@ gem "rubyzip"
 gem "webpush"
 
 gem "bcrypt", "~> 3.1"
-gem "pagy", "~> 43.4"
+gem "pagy", "~> 43.5"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
